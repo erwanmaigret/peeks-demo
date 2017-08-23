@@ -6,26 +6,85 @@ block content
   script(src="/javascripts/three.js")
   script(src="/javascripts/peeks_three.js")
   script.
-    var renderWidth = 300;
-    var renderHeight = 200;
+    var renderWidth = 800;
+    var renderHeight = 400;
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, renderWidth/renderHeight, 0.1, 1000 );
 
-    var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setClearColor( 0x000000, 0 );
     renderer.setSize( renderWidth, renderHeight );
     document.body.appendChild( renderer.domElement );
 
-    var asset = new PEEKS.Asset();
-    scene.add(asset.threeSynch());
+    var peeks = new PEEKS.Scene();
+
+    var asset;
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(0, -2);
+    asset.setSize(20, 20);
+    asset.setRotation(90, 0, 0);
+    asset.setColor(.43, .4, .1);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(2, 0);
+    asset.setSize(1, 2);
+    asset.setRotation(0, -90, 0);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(2, 0, -2);
+    asset.setSize(1, 2);
+    asset.setRotation(0, -90, 0);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(2, 0, 2);
+    asset.setSize(1, 2);
+    asset.setRotation(0, -90, 0);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(-2, 0, -2);
+    asset.setSize(1, 2);
+    asset.setRotation(0, 90, 0);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(-2, 0);
+    asset.setSize(1, 2);
+    asset.setRotation(0, 90, 0);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(-2, 0, 2);
+    asset.setSize(1, 2);
+    asset.setRotation(0, 90, 0);
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setPosition(0, 2);
+    asset.setSize(5, 1);
+    asset.setColor(.7, .75, 1);
+    peeks.add(asset);
+
+    scene.add(peeks.threeGetNode());
 
     camera.position.z = 5;
 
+    var time = 0;
+
     var animate = function () {
       requestAnimationFrame( animate );
+      time += .02;
 
-      scene.rotation.x += 0.01;
-      scene.rotation.y += 0.01;
+      //scene.rotation.x += 0.01;
+      //scene.rotation.y += 0.01;
+      // scene.rotation.z += 0.01;
+      scene.rotation.y = Math.sin(time) * .3;
+      scene.position.z = Math.sin(time);
 
       renderer.render(scene, camera);
     };
