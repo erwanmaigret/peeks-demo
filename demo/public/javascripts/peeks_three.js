@@ -3,9 +3,22 @@ PEEKS.Asset.prototype.threeSynch = function() {
 		if (this.primitive) {
 			if (this.primitive == PEEKS.Asset.PrimitivePlane) {
 				var geometry = new THREE.PlaneGeometry( 1, 1 );
-				var material = new THREE.MeshBasicMaterial( {color: 0xaaaaaa, side: THREE.DoubleSide} );
+				var material = new THREE.MeshBasicMaterial( {color: 0xaaaaaa, transparent: true} );
 				var plane = new THREE.Mesh( geometry, material );
 				this.threeNode = plane;
+
+				if (this.textureUrl != '') {
+					var url = this.textureUrl;
+					var loader = new THREE.TextureLoader();
+		      if (/^data:/.test(this.textureUrl)) {
+						loader.setCrossOrigin(url);
+		      } else {
+						loader.setCrossOrigin('');
+		      }
+		      material.map = loader.load(url);
+					// Don't mind not POT textures
+					material.map.minFilter = THREE.LinearFilter;
+				}
 			} else {
 				this.threeNode = new THREE.Object3D();
 			}

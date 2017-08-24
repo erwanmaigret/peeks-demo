@@ -74,6 +74,7 @@
 		this.color = [.7, .7, .7]; // Default color is grey, not white
 		this.type = 'Asset';
 		this.primitive = Asset.PrimitiveNone;
+		this.textureUrl = '';
 	}
 
 	Asset.PrimitiveNone = 0;
@@ -105,6 +106,10 @@
 				if (red) 		this.color[0] = red;
 				if (green) 	this.color[1] = green;
 				if (blue) 	this.color[2] = blue;
+			},
+
+			setTexture: function(url) {
+				this.textureUrl = url;
 			},
 		}
 	);

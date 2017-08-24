@@ -13,6 +13,7 @@ block content
     var camera = new THREE.PerspectiveCamera( 75, renderWidth/renderHeight, 0.1, 1000 );
 
     var renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.sortObjects = false;
     renderer.setClearColor( 0x000000, 0 );
     renderer.setSize( renderWidth, renderHeight );
     document.body.appendChild( renderer.domElement );
@@ -24,50 +25,58 @@ block content
     asset = new PEEKS.Plane();
     asset.setPosition(0, -2);
     asset.setSize(20, 20);
-    asset.setRotation(90, 0, 0);
-    asset.setColor(.43, .4, .1);
+    asset.setRotation(-90, 0, 0);
+    asset.setColor(1, 1, 1);
+    asset.setTexture('http://img.freepik.com/free-vector/blue-watercolor-texture-with-dots_1035-6833.jpg');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(2, 0);
     asset.setSize(1, 2);
     asset.setRotation(0, -90, 0);
+    asset.setTexture('https://images.vexels.com/media/users/3/129408/isolated/preview/729a1419381b9d6572742b4ae641c7d6-black-ladies-dress-by-vexels.png');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(2, 0, -2);
     asset.setSize(1, 2);
     asset.setRotation(0, -90, 0);
+    asset.setTexture('https://images.vexels.com/media/users/3/129408/isolated/preview/729a1419381b9d6572742b4ae641c7d6-black-ladies-dress-by-vexels.png');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(2, 0, 2);
     asset.setSize(1, 2);
     asset.setRotation(0, -90, 0);
+    asset.setTexture('https://images.vexels.com/media/users/3/129408/isolated/preview/729a1419381b9d6572742b4ae641c7d6-black-ladies-dress-by-vexels.png');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(-2, 0, -2);
     asset.setSize(1, 2);
     asset.setRotation(0, 90, 0);
+    asset.setTexture('https://images.vexels.com/media/users/3/129408/isolated/preview/729a1419381b9d6572742b4ae641c7d6-black-ladies-dress-by-vexels.png');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(-2, 0);
     asset.setSize(1, 2);
     asset.setRotation(0, 90, 0);
+    asset.setTexture('https://images.vexels.com/media/users/3/129408/isolated/preview/729a1419381b9d6572742b4ae641c7d6-black-ladies-dress-by-vexels.png');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(-2, 0, 2);
     asset.setSize(1, 2);
     asset.setRotation(0, 90, 0);
+    asset.setTexture('https://images.vexels.com/media/users/3/129408/isolated/preview/729a1419381b9d6572742b4ae641c7d6-black-ladies-dress-by-vexels.png');
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
-    asset.setPosition(0, 2);
-    asset.setSize(5, 1);
+    asset.setPosition(0, 0, -4);
+    asset.setSize(4, .8);
     asset.setColor(.7, .75, 1);
+    asset.setTexture('http://vignette4.wikia.nocookie.net/logopedia/images/e/ec/Bloomingdales_Logo.png/revision/latest?cb=20130313234836');
     peeks.add(asset);
 
     scene.add(peeks.threeGetNode());
