@@ -75,6 +75,14 @@
 		this.type = 'Asset';
 		this.primitive = Asset.PrimitiveNone;
 		this.textureUrl = '';
+		this.bounds = {
+			x0: -.5,
+			y0: -.5,
+			z0: -.5,
+			x1: .5,
+			y1: .5,
+			z1: .5,
+		};
 	}
 
 	Asset.PrimitiveNone = 0;
@@ -110,6 +118,46 @@
 
 			setTexture: function(url) {
 				this.textureUrl = url;
+			},
+
+			updateLayout: function() {
+				if (this.layout) {
+					var bounds = this.getParentBounds();
+					var sx = bounds.x1 - bounds.x0;
+
+					this.size[0] = bounds.x1 - bounds.x0;
+					this.size[1] = bounds.y1 - bounds.y0;
+					this.size[2] = bounds.z1 - bounds.z0;
+
+					// Finish computing the layout info from there
+					this.position[1] = 0;
+					this.position[2] = -5;
+				}
+			},
+
+			getParentBounds: function() {
+				if (this.parent) {
+					return this.parent.getBounds();
+				} else {
+					return this.getBounds();
+				}
+			},
+
+			getBounds: function() {
+				if (this.bounds) {
+					// This can be set explicitly in case we don't want to assotiate it
+					//	with the scale
+					return this.bounds;
+				} else {
+					return {
+						x0: -this.size[0] / 2,
+						y0: -this.size[1] / 2,
+						z0: -this.size[2] / 2,
+						x1: this.size[0] / 2,
+						y1: this.size[1] / 2,
+						z1: this.size[2] / 2,
+					};
+				}
 			},
 		}
 	);

@@ -23,6 +23,8 @@ PEEKS.Asset.prototype.threeSynch = function() {
 				this.threeNode = new THREE.Object3D();
 			}
 
+			this.updateLayout();
+			
 			this.threeNode.position.x = this.position[0];
 			this.threeNode.position.y = this.position[1];
 			this.threeNode.position.z = this.position[2];

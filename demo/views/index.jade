@@ -19,8 +19,12 @@ block content
     document.body.appendChild( renderer.domElement );
 
     var peeks = new PEEKS.Scene();
-
+    peeks.bounds = { x0: -4, y0: 0, z0: -3, x1: 4, y1: 2, z1: 3 };
     var asset;
+
+    asset = new PEEKS.Plane();
+    asset.layout = {};
+    peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.setPosition(0, -2);
