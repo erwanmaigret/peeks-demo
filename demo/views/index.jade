@@ -89,15 +89,26 @@ block content
 
     var time = 0;
 
+    peeks.add(new PEEKS.Animation({
+      duration: 2,
+      p0: [0, 0, 0],
+      p1: [0, -2, 0],
+      p2: [0, -2, 3],
+      p3: [0, 0, 3],
+    }));
+
     var animate = function () {
       requestAnimationFrame( animate );
       time += .02;
 
+      peeks.update(time);
+      peeks.threeSynch();
+
       //scene.rotation.x += 0.01;
       //scene.rotation.y += 0.01;
       // scene.rotation.z += 0.01;
-      scene.rotation.y = Math.sin(time) * .3;
-      scene.position.z = Math.sin(time);
+      //scene.rotation.y = Math.sin(time) * .3;
+      //scene.position.z = Math.sin(time);
 
       renderer.render(scene, camera);
     };

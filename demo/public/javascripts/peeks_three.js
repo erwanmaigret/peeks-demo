@@ -24,18 +24,6 @@ PEEKS.Asset.prototype.threeSynch = function() {
 			}
 
 			this.updateLayout();
-			
-			this.threeNode.position.x = this.position[0];
-			this.threeNode.position.y = this.position[1];
-			this.threeNode.position.z = this.position[2];
-
-			this.threeNode.rotation.x = THREE.Math.degToRad(this.rotation[0]);
-			this.threeNode.rotation.y = THREE.Math.degToRad(this.rotation[1]);
-			this.threeNode.rotation.z = THREE.Math.degToRad(this.rotation[2]);
-
-			this.threeNode.scale.x = this.size[0];
-			this.threeNode.scale.y = this.size[1];
-			this.threeNode.scale.z = this.size[2];
 
 			if (this.threeNode.material) {
 				this.threeNode.material.color.r = this.color[0];
@@ -47,10 +35,26 @@ PEEKS.Asset.prototype.threeSynch = function() {
 		}
 	}
 
+	if (this.position) {
+		this.threeNode.position.x = this.position[0];
+		this.threeNode.position.y = this.position[1];
+		this.threeNode.position.z = this.position[2];
+
+		this.threeNode.rotation.x = THREE.Math.degToRad(this.rotation[0]);
+		this.threeNode.rotation.y = THREE.Math.degToRad(this.rotation[1]);
+		this.threeNode.rotation.z = THREE.Math.degToRad(this.rotation[2]);
+
+		this.threeNode.scale.x = this.size[0];
+		this.threeNode.scale.y = this.size[1];
+		this.threeNode.scale.z = this.size[2];
+	}
+
 	for (var childI = 0; childI < this.children.length; childI++) {
 		var child = this.children[childI];
 		if (!child.threeNode) {
-			this.threeNode.add(child.threeSynch());
+			this.threeNode.add(child.threeGetNode());
+		} else {
+			child.threeSynch();
 		}
 	}
 

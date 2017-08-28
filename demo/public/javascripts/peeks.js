@@ -120,6 +120,12 @@
 				this.textureUrl = url;
 			},
 
+			update: function(time) {
+				for (var childI = 0; childI < this.children.length; childI++) {
+					this.children[childI].update(time);
+				}
+			},
+
 			updateLayout: function() {
 				if (this.layout) {
 					var bounds = this.getParentBounds();
@@ -181,11 +187,60 @@
 		}
 	);
 
+	function Animation( data ) {
+		Asset.call( this );
+		this.startTime = 0;
+		this.duration = 10;
+		this.p0 = [0, 0, 0];
+		this.p1 = [1, 0, 0];
+		this.p2 = [2, 1, 0];
+		this.p3 = [2, 2, 0];
+		if (data.duration) this.duration = data.duration;
+		if (data.p0) this.p0 = data.p0;
+		if (data.p1) this.p1 = data.p1;
+		if (data.p2) this.p2 = data.p2;
+		if (data.p3) this.p3 = data.p3;
+		this.track = 't';
+	}
+	Animation.prototype = Object.assign(Object.create( Asset.prototype ),
+		{
+			constructor: Animation,
+
+			update: function(time) {
+				var t = 0;
+				if (time < this.startTime) {
+					t = 0;
+				} else if (time > (this.startTime + this.duration)) {
+					t = 1;
+				} else {
+					t = (time - this.startTime) / this.duration;
+				}
+				var k0 = (1 - t) * (1 - t) * (1 - t);
+				var k1 = 3 * (1 - t) * (1 - t) * t;
+				var k2 = 3 * (1 - t) * t * t;
+				var k3 = t * t * t;
+
+				var p = [
+					k0 * this.p0[0] + k1 * this.p1[0] + k2 * this.p2[0] + k3 * this.p3[0],
+					k0 * this.p0[1] + k1 * this.p1[1] + k2 * this.p2[1] + k3 * this.p3[1],
+					k0 * this.p0[2] + k1 * this.p1[2] + k2 * this.p2[2] + k3 * this.p3[2],
+				];
+
+				if (this.parent) {
+					if (this.track == 't') {
+						this.parent.position = p;
+					}
+				}
+			},
+		}
+	);
+
 	exports.EventDispatcher = EventDispatcher;
 	exports.Node = Node;
 	exports.Asset = Asset;
 	exports.Scene = Scene;
 	exports.Plane = Plane;
+	exports.Animation = Animation;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));
