@@ -85,16 +85,21 @@ block content
 
     scene.add(peeks.threeGetNode());
 
-    camera.position.z = 5;
-
     var time = 0;
 
-    peeks.add(new PEEKS.Animation({
-      duration: 2,
+    peeks.camera.add(new PEEKS.Animation({
+      duration: 10,
+      begin: [0, 0, 5],
+      end: [0, 0, -1]
+    }));
+    peeks.camera.add(new PEEKS.Animation({
+      duration: 9,
+      delay: 1,
       p0: [0, 0, 0],
-      p1: [0, -2, 0],
-      p2: [0, -2, 3],
-      p3: [0, 0, 3],
+      p1: [0, 80, 10],
+      p2: [0, -80, -10],
+      p3: [0, 0, 0],
+      attribute: 'rotation'
     }));
 
     var animate = function () {
@@ -104,11 +109,8 @@ block content
       peeks.update(time);
       peeks.threeSynch();
 
-      //scene.rotation.x += 0.01;
-      //scene.rotation.y += 0.01;
-      // scene.rotation.z += 0.01;
-      //scene.rotation.y = Math.sin(time) * .3;
-      //scene.position.z = Math.sin(time);
+      peeks.camera.threeSynch(camera);
+
 
       renderer.render(scene, camera);
     };

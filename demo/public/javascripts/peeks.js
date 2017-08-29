@@ -56,18 +56,19 @@
 		this.parent = null;
 		this.children = [];
 	}
-	Object.assign( Node.prototype, EventDispatcher.prototype,
+	Object.assign(Node.prototype, EventDispatcher.prototype,
 		{
-			add: function ( node ) {
+			add: function (node) {
 				node.parent = this;
 				this.children[ this.children.length ] = node;
+				return node;
 			},
 		}
 	);
 
 	// Asset
-	function Asset( ) {
-		Node.call( this );
+	function Asset() {
+		Node.call(this);
 		this.position = [0, 0, 0];
 		this.rotation = [0, 0, 0];
 		this.size = [1, 1, 1];
@@ -168,8 +169,18 @@
 		}
 	);
 
+	function Camera( ) {
+		Asset.call(this);
+	}
+	Camera.prototype = Object.assign(Object.create( Asset.prototype ),
+		{
+			constructor: Camera,
+		}
+	);
+
 	function Scene( ) {
 		Asset.call( this );
+		this.camera = this.add(new Camera());
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -187,34 +198,69 @@
 		}
 	);
 
-	function Animation( data ) {
+	function Animation(data) {
 		Asset.call( this );
 		this.startTime = 0;
 		this.duration = 10;
+		this.delay = 0;
 		this.p0 = [0, 0, 0];
-		this.p1 = [1, 0, 0];
-		this.p2 = [2, 1, 0];
-		this.p3 = [2, 2, 0];
+		this.p1 = [0, 0, 0];
+		this.p2 = [10, 0, 0];
+		this.p3 = [10, 0, 0];
+		this.attribute = 'position';
+		this.interpolate = Animation.InterpolateEaseInOut;
+
+		// Assign all passed in attributes
 		if (data.duration) this.duration = data.duration;
+		if (data.delay) this.delay = data.delay;
+		if (data.begin) this.p0 = this.p1 = data.begin;
+		if (data.end) this.p3 = this.p2 = data.end;
 		if (data.p0) this.p0 = data.p0;
 		if (data.p1) this.p1 = data.p1;
 		if (data.p2) this.p2 = data.p2;
 		if (data.p3) this.p3 = data.p3;
-		this.track = 't';
+		if (data.attribute) this.attribute = data.attribute;
+		if (data.interpolate) this.interpolate = data.interpolate;
 	}
+
+	Animation.InterpolateLinear = 0;
+	Animation.InterpolateEaseInOut = 1;
+	Animation.InterpolateEaseIn = 2;
+	Animation.InterpolateEaseOut = 3;
+
 	Animation.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
 			constructor: Animation,
 
+			interpolateEaseIn: function(p) {
+			  return p * p;
+			},
+			interpolateEaseOut: function(p) {
+			  return -(p * (p - 2));
+			},
+			interpolateEaseInOut: function(p) {
+			  if (p < 0.5) return 2 * p * p;
+			  else return (-2 * p * p) + (4 * p) - 1;
+			},
+
 			update: function(time) {
 				var t = 0;
-				if (time < this.startTime) {
+				var startTime = this.startTime + this.delay;
+				var endTime = startTime + this.duration;
+				if (time <= startTime) {
 					t = 0;
-				} else if (time > (this.startTime + this.duration)) {
+				} else if (time >= endTime) {
 					t = 1;
 				} else {
-					t = (time - this.startTime) / this.duration;
+					t = (time - startTime) / this.duration;
 				}
+				switch (this.interpolate) {
+					case Animation.InterpolateLinear: break;
+					case Animation.InterpolateEaseInOut: t = this.interpolateEaseInOut(t); break;
+					case Animation.InterpolateEaseIn: t = this.interpolateEaseIn(t); break;
+					case Animation.InterpolateEaseOut: t = this.interpolateEaseOut(t); break;
+				}
+
 				var k0 = (1 - t) * (1 - t) * (1 - t);
 				var k1 = 3 * (1 - t) * (1 - t) * t;
 				var k2 = 3 * (1 - t) * t * t;
@@ -227,8 +273,8 @@
 				];
 
 				if (this.parent) {
-					if (this.track == 't') {
-						this.parent.position = p;
+					if (this.parent[this.attribute]) {
+						this.parent[this.attribute] = p;
 					}
 				}
 			},
@@ -239,6 +285,7 @@
 	exports.Node = Node;
 	exports.Asset = Asset;
 	exports.Scene = Scene;
+	exports.Camera = Camera;
 	exports.Plane = Plane;
 	exports.Animation = Animation;
 

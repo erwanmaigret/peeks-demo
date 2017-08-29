@@ -1,4 +1,4 @@
-PEEKS.Asset.prototype.threeSynch = function() {
+PEEKS.Asset.prototype.threeSynch = function(threeNode) {
 	if (!this.threeNode) {
 		if (this.primitive) {
 			if (this.primitive == PEEKS.Asset.PrimitivePlane) {
@@ -35,18 +35,22 @@ PEEKS.Asset.prototype.threeSynch = function() {
 		}
 	}
 
+	if (threeNode === undefined) {
+		threeNode = this.threeNode;
+	}
+
 	if (this.position) {
-		this.threeNode.position.x = this.position[0];
-		this.threeNode.position.y = this.position[1];
-		this.threeNode.position.z = this.position[2];
+		threeNode.position.x = this.position[0];
+		threeNode.position.y = this.position[1];
+		threeNode.position.z = this.position[2];
 
-		this.threeNode.rotation.x = THREE.Math.degToRad(this.rotation[0]);
-		this.threeNode.rotation.y = THREE.Math.degToRad(this.rotation[1]);
-		this.threeNode.rotation.z = THREE.Math.degToRad(this.rotation[2]);
+		threeNode.rotation.x = THREE.Math.degToRad(this.rotation[0]);
+		threeNode.rotation.y = THREE.Math.degToRad(this.rotation[1]);
+		threeNode.rotation.z = THREE.Math.degToRad(this.rotation[2]);
 
-		this.threeNode.scale.x = this.size[0];
-		this.threeNode.scale.y = this.size[1];
-		this.threeNode.scale.z = this.size[2];
+		threeNode.scale.x = this.size[0];
+		threeNode.scale.y = this.size[1];
+		threeNode.scale.z = this.size[2];
 	}
 
 	for (var childI = 0; childI < this.children.length; childI++) {
