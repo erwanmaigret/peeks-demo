@@ -234,19 +234,19 @@
 				var isCombinedKey = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey;
 				var manipFactor = isCombinedKey ? 1 : 20;
 				switch (event.keyCode) {
-		      case 37: { // Arrow Left
+					case 37: { // Arrow Left
 						this.position[0] += manipFactor * .1;
 		        break;
 		      }
-		      case 38: { // Arrow Up
+					case 38: { // Arrow Up
 						this.position[2] += manipFactor * .1;
 		        break;
 		      }
-		      case 39: { // Arrow Right
+					case 39: { // Arrow Right
 						this.position[0] -= manipFactor * .1;
 		        break;
 		      }
-		      case 40: { // Arrow Down
+					case 40: { // Arrow Down
 						this.position[2] -= manipFactor * .1;
 		        break;
 		      }
