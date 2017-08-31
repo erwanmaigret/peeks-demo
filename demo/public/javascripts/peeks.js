@@ -6,6 +6,37 @@
 
 	'use strict';
 
+	// General logging, 2 == info, 3 == warning, 4 == error
+	var logLevel = 2;
+	function setLogLevel(level) {
+		logLevel = level;
+	};
+	function logSuperDebug(message) {
+		if (logLevel <= 0) {
+			console.log("Peeks.IO SUPER DEBUG: " + message);
+		}
+	};
+	function logDebug(message) {
+		if (logLevel <= 1) {
+			console.log("Peeks.IO DEBUG: " + message);
+		}
+	};
+	function logInfo(message) {
+		if (logLevel <= 2) {
+			console.log("Peeks.IO INFO: " + message);
+		}
+	};
+	function logWarning(message) {
+		if (logLevel <= 3) {
+			console.log("Peeks.IO WARNING: " + message);
+		}
+	};
+	function logError(message) {
+		if (logLevel <= 4) {
+			console.log("Peeks.IO ERROR: " + message);
+		}
+	};
+
 	function EventDispatcher() {}
 		Object.assign( EventDispatcher.prototype, {
 			addEventListener: function ( type, listener ) {
@@ -185,6 +216,30 @@
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
 			constructor: Scene,
+
+			onMouseMove: function (event) {
+				logDebug('onMouseMove');
+			},
+
+			onMouseDown: function (event) {
+				logDebug('onMouseDown');
+			},
+
+			onMouseUp: function (event) {
+				logDebug('onMouseUp');
+			},
+
+			onKeyDown: function (event) {
+				logDebug('onKeyDown');
+			},
+
+			onKeyUp: function (event) {
+				logDebug('onKeyUp');
+			},
+
+			onMouseWheel: function (event) {
+				logDebug('onMouseWheel');
+			},
 		}
 	);
 
@@ -288,6 +343,8 @@
 	exports.Camera = Camera;
 	exports.Plane = Plane;
 	exports.Animation = Animation;
+
+	exports.setLogLevel = setLogLevel;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));

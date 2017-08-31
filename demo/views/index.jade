@@ -12,14 +12,28 @@ block content
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, renderWidth/renderHeight, 0.1, 1000 );
 
-    var renderer = new THREE.WebGLRenderer({ alpha: true });
+    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.sortObjects = false;
     renderer.setClearColor( 0x000000, 0 );
     renderer.setSize( renderWidth, renderHeight );
     document.body.appendChild( renderer.domElement );
 
+    PEEKS.setLogLevel(1);
+
     var peeks = new PEEKS.Scene();
     peeks.bounds = { x0: -4, y0: 0, z0: -3, x1: 4, y1: 2, z1: 3 };
+
+    document.addEventListener('mousemove', function(event) { peeks.onMouseMove(event); });
+    document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseDown(event); } });
+    document.addEventListener('mouseup', function(event) { peeks.onMouseUp(event); });
+    document.addEventListener('keydown', function(event) { peeks.onKeyDown(event); });
+    document.addEventListener('keyup', function(event) { peeks.onKeyUp(event); });
+    document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseWheel(event); } });
+    document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseWheel(event); } });
+    document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseDown(event); } } );
+    document.addEventListener('touchend', function(event) { peeks.onMouseUp(event); } );
+    document.addEventListener('touchmove', function(event) { peeks.onMouseMove(event); } );
+
     var asset;
 
     asset = new PEEKS.Plane();
