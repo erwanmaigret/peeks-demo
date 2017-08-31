@@ -260,38 +260,61 @@
 
 			onKeyDown: function (event) {
 				logDebug('onKeyDown');
-				var isCombinedKey = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey;
-				var manipFactor = isCombinedKey ? .1 : 1;
-				var positionAnim;
-				var rotationAnim;
+				var manipFactor = event.shiftKey ? .1 : 1;
+				var animAttribute;
+				var animValue;
 				switch (event.keyCode) {
 					case 37: { // Arrow Left
-						positionAnim = [-manipFactor, 0, 0];
+						if (event.altKey) {
+							animAttribute = 'rotation';
+							animValue = [0, manipFactor * 20, 0];
+						} else {
+							animAttribute = 'position';
+							animValue = [-manipFactor, 0, 0];
+						}
 		        break;
 		      }
 					case 38: { // Arrow Up
-						positionAnim = [0, 0, -manipFactor];
+						if (event.altKey) {
+							animAttribute = 'rotation';
+							animValue = [manipFactor * 20, 0, 0];
+						} else {
+							animAttribute = 'position';
+							animValue = [0, 0, -manipFactor];
+						}
 		        break;
 		      }
 					case 39: { // Arrow Right
-						positionAnim = [manipFactor, 0, 0];
+						if (event.altKey) {
+							animAttribute = 'rotation';
+							animValue = [0, -manipFactor * 20, 0];
+						} else {
+							animAttribute = 'position';
+							animValue = [manipFactor, 0, 0];
+						}
 		        break;
 		      }
 					case 40: { // Arrow Down
-						positionAnim = [0, 0, manipFactor];
+						if (event.altKey) {
+							animAttribute = 'rotation';
+							animValue = [-manipFactor * 20, 0, 0];
+						} else {
+							animAttribute = 'position';
+							animValue = [0, 0, manipFactor];
+						}
 		        break;
 		      }
 				}
 
 				var target = this.camera;
 				if (target) {
-					if (positionAnim) {
+					if (animAttribute && animValue) {
 						target.add(new PEEKS.Animation({
 							duration: 1,
 							delay: this.time,
 							begin: [0, 0, 0],
-							end: positionAnim,
-							attribute: 'position'
+							end: animValue,
+							attribute: animAttribute
 						}));
 					}
 				}
