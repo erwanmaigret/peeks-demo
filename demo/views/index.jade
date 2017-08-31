@@ -101,13 +101,15 @@ block content
 
     var time = 0;
 
+    var animSpeed = 4;
+
     peeks.camera.add(new PEEKS.Animation({
-      duration: 10,
+      duration: 10 / animSpeed,
       begin: [0, 0, 5],
       end: [0, 0, -1]
     }));
     peeks.camera.add(new PEEKS.Animation({
-      duration: 9,
+      duration: 9 / animSpeed,
       delay: 1,
       p0: [0, 0, 0],
       p1: [0, 80, 10],

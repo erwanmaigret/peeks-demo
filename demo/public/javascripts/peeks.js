@@ -103,8 +103,10 @@
 		this.position = [0, 0, 0];
 		this.rotation = [0, 0, 0];
 		this.size = [1, 1, 1];
+		this.updateInitial();
 		this.color = [.7, .7, .7]; // Default color is grey, not white
 		this.type = 'Asset';
+		this.time = 0;
 		this.primitive = Asset.PrimitiveNone;
 		this.textureUrl = '';
 		this.bounds = {
@@ -124,22 +126,43 @@
 		{
 			constructor: Asset,
 
+			resetToInitial: function() {
+				this.position = this.initialPosition.slice();
+				this.rotation = this.initialRotation.slice();
+				this.size = this.initialSize.slice();
+			},
+
+			updateInitial: function() {
+				this.initialPosition = this.position.slice();
+				this.initialRotation = this.rotation.slice();
+				this.initialSize = this.size.slice();
+			},
+
 			setPosition: function ( x, y, z ) {
 				if (x) this.position[0] = x;
 				if (y) this.position[1] = y;
 				if (z) this.position[2] = z;
+
+				// When set from the outside we update the initial value too
+				this.initialPosition = this.position.slice();
 			},
 
 			setRotation: function ( x, y, z ) {
 				if (x) this.rotation[0] = x;
 				if (y) this.rotation[1] = y;
 				if (z) this.rotation[2] = z;
+
+				// When set from the outside we update the initial value too
+				this.initialRotation = this.rotation.slice();
 			},
 
 			setSize: function(width, height, depth) {
 				if (width) 	this.size[0] = width;
 				if (height)	this.size[1] = height;
 				if (depth)	this.size[2] = depth;
+
+				// When set from the outside we update the initial value too
+				this.initialSize = this.size.slice();
 			},
 
 			setColor: function(red, green, blue) {
@@ -153,6 +176,8 @@
 			},
 
 			update: function(time) {
+				this.time = time;
+				this.resetToInitial();
 				for (var childI = 0; childI < this.children.length; childI++) {
 					this.children[childI].update(time);
 				}
@@ -170,6 +195,10 @@
 					// Finish computing the layout info from there
 					this.position[1] = 0;
 					this.position[2] = -5;
+
+					// Until we get to support animated layout we'll keep this forcing
+					// update of initial state
+					this.updateInitial();
 				}
 			},
 
@@ -232,24 +261,39 @@
 			onKeyDown: function (event) {
 				logDebug('onKeyDown');
 				var isCombinedKey = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey;
-				var manipFactor = isCombinedKey ? 1 : 20;
+				var manipFactor = isCombinedKey ? .1 : 1;
+				var positionAnim;
+				var rotationAnim;
 				switch (event.keyCode) {
 					case 37: { // Arrow Left
-						this.position[0] += manipFactor * .1;
+						positionAnim = [-manipFactor, 0, 0];
 		        break;
 		      }
 					case 38: { // Arrow Up
-						this.position[2] += manipFactor * .1;
+						positionAnim = [0, 0, -manipFactor];
 		        break;
 		      }
 					case 39: { // Arrow Right
-						this.position[0] -= manipFactor * .1;
+						positionAnim = [manipFactor, 0, 0];
 		        break;
 		      }
 					case 40: { // Arrow Down
-						this.position[2] -= manipFactor * .1;
+						positionAnim = [0, 0, manipFactor];
 		        break;
 		      }
+				}
+
+				var target = this.camera;
+				if (target) {
+					if (positionAnim) {
+						target.add(new PEEKS.Animation({
+							duration: 1,
+							delay: this.time,
+							begin: [0, 0, 0],
+							end: positionAnim,
+							attribute: 'position'
+						}));
+					}
 				}
 			},
 
@@ -349,7 +393,9 @@
 
 				if (this.parent) {
 					if (this.parent[this.attribute]) {
-						this.parent[this.attribute] = p;
+						this.parent[this.attribute][0] += p[0];
+						this.parent[this.attribute][1] += p[1];
+						this.parent[this.attribute][2] += p[2];
 					}
 				}
 			},
