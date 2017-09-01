@@ -18,7 +18,7 @@ block content
     directionalLight.position.set( 0, 0, 1 );
     scene.add( directionalLight );
 
-    var camera = new THREE.PerspectiveCamera( 75, renderWidth/renderHeight, 0.1, 1000 );
+    var camera = new THREE.PerspectiveCamera( 55, renderWidth/renderHeight, 0.1, 1000 );
 
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.sortObjects = false;
@@ -59,13 +59,19 @@ block content
       loop: true
     }));
 
+    asset = new PEEKS.Plane();
+    asset.setGeometry('assets/ball_chair.obj');
+    asset.setPosition(-2, -1, -3);
+    asset.setRotation(0, 45, 0);
+    asset.setSize(1.5, 1.5, 1.5);
+    peeks.add(asset);
 
     asset = new PEEKS.Plane();
     asset.layout = {};
     peeks.add(asset);
 
     asset = new PEEKS.Plane();
-    asset.setPosition(0, -2);
+    asset.setPosition(0, -1);
     asset.setSize(20, 20);
     asset.setRotation(-90, 0, 0);
     asset.setColor(1, 1, 1);
