@@ -2,22 +2,74 @@ PEEKS.Asset.prototype.threeSynch = function(threeNode) {
 	if (!this.threeNode) {
 		if (this.primitive) {
 			if (this.primitive == PEEKS.Asset.PrimitivePlane) {
-				var geometry = new THREE.PlaneGeometry( 1, 1 );
-				var material = new THREE.MeshBasicMaterial( {color: 0xaaaaaa, transparent: true} );
-				var plane = new THREE.Mesh( geometry, material );
-				this.threeNode = plane;
+				if (this.geometryUrl) {
+					this.threeNode = new THREE.Object3D();
 
-				if (this.textureUrl != '') {
-					var url = this.textureUrl;
-					var loader = new THREE.TextureLoader();
-		      if (/^data:/.test(this.textureUrl)) {
-						loader.setCrossOrigin(url);
-		      } else {
-						loader.setCrossOrigin('');
-		      }
-		      material.map = loader.load(url);
-					// Don't mind not POT textures
-					material.map.minFilter = THREE.LinearFilter;
+					var manager = new THREE.LoadingManager();
+						manager.onProgress = function ( item, loaded, total ) {
+						console.log( item, loaded, total );
+					};
+
+					var onProgress = function ( xhr ) {
+						if ( xhr.lengthComputable ) {
+							var percentComplete = xhr.loaded / xhr.total * 100;
+							console.log( Math.round(percentComplete, 2) + '% downloaded' );
+						}
+					};
+
+					var onError = function ( xhr ) {
+					};
+
+					var node = this.threeNode;
+					var textureUrl = this.textureUrl;
+					var loader = new THREE.OBJLoader( manager );
+					loader.load(this.geometryUrl, function ( object ) {
+						node.add(object);
+
+						if (textureUrl != '') {
+							var url = textureUrl;
+							var loader = new THREE.TextureLoader();
+							if (/^data:/.test(textureUrl)) {
+								loader.setCrossOrigin(url);
+							} else {
+								loader.setCrossOrigin('');
+							}
+							object.texture = loader.load(url);
+							object.traverse( function ( child ) {
+								if ( child instanceof THREE.Mesh ) {
+									// This does not work just yet, we need to figure out
+									//	how to properly setup a simple textured model
+									// So far the texture is loading but does not get
+									//	to render if just attached like this below:
+									// child.material.map = object.texture;
+									child.material.emissive.r = .2;
+									child.material.emissive.g = .2;
+									child.material.emissive.b = .3;
+								}
+							} );
+						}
+					}, onProgress, onError );
+				} else {
+					var geometry = new THREE.PlaneGeometry(1, 1);
+					var material = new THREE.MeshBasicMaterial({
+						color: 0xffffff,
+						transparent: true
+					});
+					var plane = new THREE.Mesh(geometry, material);
+					this.threeNode = plane;
+
+					if (this.textureUrl != '') {
+						var url = this.textureUrl;
+						var loader = new THREE.TextureLoader();
+						if (/^data:/.test(this.textureUrl)) {
+							loader.setCrossOrigin(url);
+						} else {
+							loader.setCrossOrigin('');
+						}
+						material.map = loader.load(url);
+						// Don't mind not POT textures
+						material.map.minFilter = THREE.LinearFilter;
+					}
 				}
 			} else {
 				this.threeNode = new THREE.Object3D();

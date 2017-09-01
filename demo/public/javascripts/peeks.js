@@ -109,6 +109,7 @@
 		this.time = 0;
 		this.primitive = Asset.PrimitiveNone;
 		this.textureUrl = '';
+		this.geomertryUrl = '';
 		this.bounds = {
 			x0: -.5,
 			y0: -.5,
@@ -173,6 +174,10 @@
 
 			setTexture: function(url) {
 				this.textureUrl = url;
+			},
+
+			setGeometry: function(url) {
+				this.geometryUrl = url;
 			},
 
 			update: function(time) {
@@ -345,24 +350,56 @@
 		this.startTime = 0;
 		this.duration = 10;
 		this.delay = 0;
-		this.p0 = [0, 0, 0];
-		this.p1 = [0, 0, 0];
-		this.p2 = [10, 0, 0];
-		this.p3 = [10, 0, 0];
 		this.attribute = 'position';
-		this.interpolate = Animation.InterpolateEaseInOut;
+		this.loop = false;
 
 		// Assign all passed in attributes
 		if (data.duration) this.duration = data.duration;
 		if (data.delay) this.delay = data.delay;
-		if (data.begin) this.p0 = this.p1 = data.begin;
-		if (data.end) this.p3 = this.p2 = data.end;
+
+		if (data.begin) this.p0 = data.begin;
+		if (data.end) this.p3 = data.end;
 		if (data.p0) this.p0 = data.p0;
 		if (data.p1) this.p1 = data.p1;
 		if (data.p2) this.p2 = data.p2;
 		if (data.p3) this.p3 = data.p3;
+
+		if (!this.p0) {
+			this.p0 = [0, 0, 0];
+		}
+		if (!this.p3) {
+			this.p3 = [0, 0, 0];
+		}
+		if (!this.p1) {
+			this.p1 = [
+				this.p0[0] * 2 / 3 + this.p3[0] / 3,
+				this.p0[1] * 2 / 3 + this.p3[1] / 3,
+				this.p0[2] * 2 / 3 + this.p3[2] / 3
+			];
+		}
+		if (!this.p2) {
+			this.p2 = [
+				this.p0[0] * 1 / 3 + this.p3[0] * 2 / 3,
+				this.p0[1] * 1 / 3 + this.p3[1] * 2 / 3,
+				this.p0[2] * 1 / 3 + this.p3[2] * 2 / 3
+			];
+		}
+
 		if (data.attribute) this.attribute = data.attribute;
-		if (data.interpolate) this.interpolate = data.interpolate;
+
+		if (data.loop) {
+			this.loop = data.loop;
+		}
+
+		if (data.interpolate) {
+			this.interpolate = data.interpolate;
+		} else {
+			if (this.loop) {
+				this.interpolate = Animation.InterpolateLinear;
+			} else {
+				this.interpolate = Animation.InterpolateEaseInOut;
+			}
+		}
 	}
 
 	Animation.InterpolateLinear = 0;
@@ -392,7 +429,14 @@
 				if (time <= startTime) {
 					t = 0;
 				} else if (time >= endTime) {
-					t = 1;
+					if (this.loop) {
+						while (time > endTime) {
+							time -= this.duration;
+						}
+						t = (time - startTime) / this.duration;
+					} else {
+						t = 1;
+					}
 				} else {
 					t = (time - startTime) / this.duration;
 				}

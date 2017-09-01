@@ -4,7 +4,9 @@ block content
   h1= title
   script(src="/javascripts/peeks.js")
   script(src="/javascripts/three.js")
+  script(src="/javascripts/three/loaders/OBJLoader.js")
   script(src="/javascripts/peeks_three.js")
+
   script.
     var renderWidth = 800;
     var renderHeight = 400;
@@ -35,6 +37,22 @@ block content
     document.addEventListener('touchmove', function(event) { peeks.onMouseMove(event); } );
 
     var asset;
+
+    asset = new PEEKS.Plane();
+    asset.setGeometry('assets/vr_controller_vive_1_5.obj');
+    asset.setTexture('assets/vr_controller_vive_1_5.png');
+    asset.setRotation(90, 0, 0);
+    asset.setSize(4, 4, 4);
+    peeks.add(asset);
+
+    asset.add(new PEEKS.Animation({
+      duration: 10,
+      begin: [0, 0, 0],
+      end: [0, 0, 360],
+      attribute: 'rotation',
+      loop: true
+    }));
+
 
     asset = new PEEKS.Plane();
     asset.layout = {};
@@ -106,7 +124,7 @@ block content
     peeks.camera.add(new PEEKS.Animation({
       duration: 10 / animSpeed,
       begin: [0, 0, 5],
-      end: [0, 0, -1]
+      end: [0, 0, 1]
     }));
     peeks.camera.add(new PEEKS.Animation({
       duration: 9 / animSpeed,
