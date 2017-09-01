@@ -37,11 +37,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeNode) {
 							object.texture = loader.load(url);
 							object.traverse( function ( child ) {
 								if ( child instanceof THREE.Mesh ) {
-									// This does not work just yet, we need to figure out
-									//	how to properly setup a simple textured model
-									// So far the texture is loading but does not get
-									//	to render if just attached like this below:
-									// child.material.map = object.texture;
+									child.material.map = object.texture;
 									child.material.emissive.r = .2;
 									child.material.emissive.g = .2;
 									child.material.emissive.b = .3;
