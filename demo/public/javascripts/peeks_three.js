@@ -1,9 +1,9 @@
-PEEKS.Asset.prototype.threeSynch = function(threeNode) {
-	if (!this.threeNode) {
+PEEKS.Asset.prototype.threeSynch = function(threeObject) {
+	if (!this.threeObject) {
 		if (this.primitive) {
 			if (this.primitive == PEEKS.Asset.PrimitivePlane) {
 				if (this.geometryUrl) {
-					this.threeNode = new THREE.Object3D();
+					this.threeObject = new THREE.Object3D();
 
 					var manager = new THREE.LoadingManager();
 						manager.onProgress = function ( item, loaded, total ) {
@@ -20,7 +20,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeNode) {
 					var onError = function ( xhr ) {
 					};
 
-					var node = this.threeNode;
+					var node = this.threeObject;
 					var textureUrl = this.textureUrl;
 					var loader = new THREE.OBJLoader( manager );
 					loader.load(this.geometryUrl, function ( object ) {
@@ -52,7 +52,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeNode) {
 						transparent: true
 					});
 					var plane = new THREE.Mesh(geometry, material);
-					this.threeNode = plane;
+					this.threeObject = plane;
 
 					if (this.textureUrl != '') {
 						var url = this.textureUrl;
@@ -68,52 +68,63 @@ PEEKS.Asset.prototype.threeSynch = function(threeNode) {
 					}
 				}
 			} else {
-				this.threeNode = new THREE.Object3D();
+				this.threeObject = new THREE.Object3D();
 			}
 
 			this.updateLayout();
 
-			if (this.threeNode.material) {
-				this.threeNode.material.color.r = this.color[0];
-				this.threeNode.material.color.g = this.color[1];
-				this.threeNode.material.color.b = this.color[2];
+			if (this.threeObject.material) {
+				this.threeObject.material.color.r = this.color[0];
+				this.threeObject.material.color.g = this.color[1];
+				this.threeObject.material.color.b = this.color[2];
 			}
 		} else {
-			this.threeNode = new THREE.Object3D();
+			this.threeObject = new THREE.Object3D();
 		}
+
+		this.threeObject.peeksAsset = this;
 	}
 
-	if (threeNode === undefined) {
-		threeNode = this.threeNode;
+	if (threeObject === undefined) {
+		threeObject = this.threeObject;
 	}
 
 	if (this.position) {
-		threeNode.position.x = this.position[0];
-		threeNode.position.y = this.position[1];
-		threeNode.position.z = this.position[2];
+		threeObject.position.x = this.position[0];
+		threeObject.position.y = this.position[1];
+		threeObject.position.z = this.position[2];
 
-		threeNode.rotation.x = THREE.Math.degToRad(this.rotation[0]);
-		threeNode.rotation.y = THREE.Math.degToRad(this.rotation[1]);
-		threeNode.rotation.z = THREE.Math.degToRad(this.rotation[2]);
+		threeObject.rotation.x = THREE.Math.degToRad(this.rotation[0]);
+		threeObject.rotation.y = THREE.Math.degToRad(this.rotation[1]);
+		threeObject.rotation.z = THREE.Math.degToRad(this.rotation[2]);
 
-		threeNode.scale.x = this.size[0];
-		threeNode.scale.y = this.size[1];
-		threeNode.scale.z = this.size[2];
+		threeObject.scale.x = this.size[0];
+		threeObject.scale.y = this.size[1];
+		threeObject.scale.z = this.size[2];
 	}
 
 	for (var childI = 0; childI < this.children.length; childI++) {
 		var child = this.children[childI];
-		if (!child.threeNode) {
-			this.threeNode.add(child.threeGetNode());
+		if (!child.threeObject) {
+			this.threeObject.add(child.threeGetNode());
 		} else {
 			child.threeSynch();
 		}
 	}
 
-	return this.threeNode;
+	return this.threeObject;
 }
 
 PEEKS.Asset.prototype.threeGetNode = function() {
 	this.threeSynch();
-	return this.threeNode;
+	return this.threeObject;
+}
+
+PEEKS.Scene.prototype.pickNode = function(mouse) {
+	var raycaster = new THREE.Raycaster();
+	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.threeCamera);
+	var intersectedObjects = raycaster.intersectObjects(this.threeObject.children, true);
+	if (intersectedObjects.length > 0) {
+		return intersectedObjects[0].object.peeksAsset;
+	}
 }

@@ -243,20 +243,64 @@
 		}
 	);
 
-	function Scene( ) {
-		Asset.call( this );
+	function Scene(domElement) {
+		Asset.call(this);
 		this.camera = this.add(new Camera());
+		this.domElement = domElement;
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
 			constructor: Scene,
 
+			convertMouse: function(mouseX, mouseY, window) {
+			  var rect = this.domElement.getBoundingClientRect();
+			  var x = mouseX;
+			  var y = mouseY;
+			  var pointX = x - rect.left;
+			  var pointY = y - rect.top;
+
+			  if (window) {
+			    return [pointX, -pointY];
+			  } else {
+			    pointX = pointX / rect.width;
+			    pointY = pointY / rect.height;
+			    return [pointX * 2 - 1, -pointY * 2 + 1];
+			  }
+			},
+
+			getMouse: function(event, window) {
+				if (event.touches) {
+					if (event.touches.length > 0) {
+						return this.convertMouse(event.touches[0].clientX, event.touches[0].clientY, window);
+					} else {
+						return this.convertMouse(0, 0, window);
+					}
+				} else {
+					return this.convertMouse(event.clientX, event.clientY, window);
+				}
+			},
+
+			pickNode: function(mouse) {
+				logDebug('pickNode');
+			},
+
 			onMouseMove: function (event) {
-				logDebug('onMouseMove');
+				// logDebug('onMouseMove');
 			},
 
 			onMouseDown: function (event) {
 				logDebug('onMouseDown');
+				var asset = this.pickNode(this.getMouse(event));
+				if (asset) {
+					console.log(asset);
+					asset.add(new PEEKS.Animation({
+			      duration: 2,
+						delay: this.time,
+			      begin: [0, 0, 0],
+			      end: [0, 360, 0],
+			      attribute: 'rotation'
+			    }));
+				}
 			},
 
 			onMouseUp: function (event) {
