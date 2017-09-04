@@ -3,45 +3,18 @@ extends layout
 block content
   h1= title
   script(src="/javascripts/peeks.js")
+
+  // Use threeJS specialization
   script(src="/javascripts/three.js")
   script(src="/javascripts/three/loaders/OBJLoader.js")
   script(src="/javascripts/peeks_three.js")
 
   script.
-    var renderWidth = 800;
-    var renderHeight = 400;
-
-    var scene = new THREE.Scene();
-    var ambient = new THREE.AmbientLight( 0x101030 );
-    scene.add( ambient );
-    var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-    directionalLight.position.set( 0, 0, 1 );
-    scene.add( directionalLight );
-
-    var camera = new THREE.PerspectiveCamera( 55, renderWidth/renderHeight, 0.1, 1000 );
-
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.sortObjects = false;
-    renderer.setClearColor( 0x000000, 0 );
-    renderer.setSize( renderWidth, renderHeight );
-    document.body.appendChild( renderer.domElement );
-
     PEEKS.setLogLevel(1);
 
-    var peeks = new PEEKS.Scene(renderer.domElement);
-    peeks.threeCamera = camera;
-    peeks.bounds = { x0: -4, y0: 0, z0: -3, x1: 4, y1: 2, z1: 3 };
+    var peeks = new PEEKS.Scene();
 
-    document.addEventListener('mousemove', function(event) { peeks.onMouseMove(event); });
-    document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseDown(event); } });
-    document.addEventListener('mouseup', function(event) { peeks.onMouseUp(event); });
-    document.addEventListener('keydown', function(event) { peeks.onKeyDown(event); });
-    document.addEventListener('keyup', function(event) { peeks.onKeyUp(event); });
-    document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseWheel(event); } });
-    document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseWheel(event); } });
-    document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { peeks.onMouseDown(event); } } );
-    document.addEventListener('touchend', function(event) { peeks.onMouseUp(event); } );
-    document.addEventListener('touchmove', function(event) { peeks.onMouseMove(event); } );
+    peeks.bounds = { x0: -4, y0: 0, z0: -3, x1: 4, y1: 2, z1: 3 };
 
     var asset;
 
@@ -128,10 +101,6 @@ block content
     asset.setTexture('http://vignette4.wikia.nocookie.net/logopedia/images/e/ec/Bloomingdales_Logo.png/revision/latest?cb=20130313234836');
     peeks.add(asset);
 
-    scene.add(peeks.threeGetNode());
-
-    var time = 0;
-
     var animSpeed = 4;
 
     peeks.camera.add(new PEEKS.Animation({
@@ -149,17 +118,4 @@ block content
       attribute: 'rotation'
     }));
 
-    var animate = function () {
-      requestAnimationFrame( animate );
-      time += .02;
-
-      peeks.update(time);
-      peeks.threeSynch();
-
-      peeks.camera.threeSynch(camera);
-
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
+    peeks.start(document);

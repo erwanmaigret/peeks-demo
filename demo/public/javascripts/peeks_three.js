@@ -120,11 +120,37 @@ PEEKS.Asset.prototype.threeGetNode = function() {
 	return this.threeObject;
 }
 
-PEEKS.Scene.prototype.pickNode = function(mouse) {
+PEEKS.Scene.prototype.onPickNode = function(mouse) {
 	var raycaster = new THREE.Raycaster();
-	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.threeCamera);
+	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
 	var intersectedObjects = raycaster.intersectObjects(this.threeObject.children, true);
 	if (intersectedObjects.length > 0) {
 		return intersectedObjects[0].object.peeksAsset;
 	}
+}
+
+PEEKS.Scene.prototype.onStart = function() {
+	this.three = {};
+
+	var renderWidth = 800;
+	var renderHeight = 400;
+
+	var scene = new THREE.Scene();
+	var ambient = new THREE.AmbientLight( 0x101030 );
+	scene.add( ambient );
+	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight.position.set( 0, 0, 1 );
+	scene.add( directionalLight );
+
+	var camera = new THREE.PerspectiveCamera( 55, renderWidth/renderHeight, 0.1, 1000 );
+
+	var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+	renderer.sortObjects = false;
+	renderer.setClearColor( 0x000000, 0 );
+	renderer.setSize( renderWidth, renderHeight );
+
+	this.three.scene = scene;
+	this.three.camera = camera;
+	this.three.renderer = renderer;
+	this.domElement = this.three.renderer.domElement;
 }

@@ -37,6 +37,22 @@
 		}
 	};
 
+	var startTime = Date.now();
+
+	var utils = {};
+
+	utils.mathMin = function(v1, v2) {
+		return v1 > v2 ? v2 : v1;
+	}
+
+	utils.v2Distance = function (v1, v2) {
+		var x = v2[0] - v1[0];
+		var y = v2[1] - v1[1];
+		return Math.sqrt(x * x + y * y);
+	};
+
+	var scene;
+
 	function EventDispatcher() {}
 		Object.assign( EventDispatcher.prototype, {
 			addEventListener: function ( type, listener ) {
@@ -181,6 +197,10 @@
 			},
 
 			update: function(time) {
+				if (time == undefined) {
+					time = (Date.now() - startTime) / 1000;
+				}
+
 				this.time = time;
 				this.resetToInitial();
 				for (var childI = 0; childI < this.children.length; childI++) {
@@ -243,10 +263,10 @@
 		}
 	);
 
-	function Scene(domElement) {
+	function Scene() {
 		Asset.call(this);
 		this.camera = this.add(new Camera());
-		this.domElement = domElement;
+		this.mouseDownTime = 0;
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -280,8 +300,8 @@
 				}
 			},
 
-			pickNode: function(mouse) {
-				logDebug('pickNode');
+			onPickNode: function(mouse) {
+				logDebug('onPickNode');
 			},
 
 			onMouseMove: function (event) {
@@ -290,21 +310,33 @@
 
 			onMouseDown: function (event) {
 				logDebug('onMouseDown');
-				var asset = this.pickNode(this.getMouse(event));
-				if (asset) {
-					console.log(asset);
-					asset.add(new PEEKS.Animation({
-			      duration: 2,
-						delay: this.time,
-			      begin: [0, 0, 0],
-			      end: [0, 360, 0],
-			      attribute: 'rotation'
-			    }));
-				}
+				this.mouseDown = this.getMouse(event);
+				this.mouseDownTime = this.time;
 			},
 
 			onMouseUp: function (event) {
 				logDebug('onMouseUp');
+				this.mouseUp = this.getMouse(event);
+				this.mouseDownTime = this.time;
+				if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05) {
+					this.onClick(event);
+				}
+			},
+
+			onClick: function (event) {
+				logDebug('onClick');
+
+				var asset = this.onPickNode(this.getMouse(event));
+				if (asset) {
+					console.log(asset);
+					asset.add(new PEEKS.Animation({
+						duration: 2,
+						delay: this.time,
+						begin: [0, 0, 0],
+						end: [0, 360, 0],
+						attribute: 'rotation'
+					}));
+				}
 			},
 
 			onKeyDown: function (event) {
@@ -375,6 +407,51 @@
 
 			onMouseWheel: function (event) {
 				logDebug('onMouseWheel');
+			},
+
+			onStart: function () {
+			},
+
+			onAnimate: function () {
+			},
+
+			onSynch: function () {
+			},
+
+			start: function (document) {
+				logDebug('Scene.start');
+
+				this.onStart();
+
+				scene = this;
+
+				if (document) {
+					document.body.appendChild( scene.domElement );
+			    document.addEventListener('mousemove', function(event) { scene.onMouseMove(event); });
+			    document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } });
+			    document.addEventListener('mouseup', function(event) { scene.onMouseUp(event); });
+			    document.addEventListener('keydown', function(event) { scene.onKeyDown(event); });
+			    document.addEventListener('keyup', function(event) { scene.onKeyUp(event); });
+			    document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } });
+			    document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } });
+			    document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
+			    document.addEventListener('touchend', function(event) { scene.onMouseUp(event); } );
+			    document.addEventListener('touchmove', function(event) { scene.onMouseMove(event); } );
+				}
+
+				scene.three.scene.add(scene.threeGetNode());
+
+				var animate = function () {
+					requestAnimationFrame(animate);
+
+					scene.update();
+					scene.threeSynch();
+
+					scene.camera.threeSynch(scene.three.camera);
+					scene.three.renderer.render(scene.three.scene, scene.three.camera);
+				};
+
+				animate();
 			},
 		}
 	);
