@@ -89,6 +89,52 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		threeObject = this.threeObject;
 	}
 
+	if (this.useVideoTexture) {
+		var video;
+		var scene = this.getScene();
+		if (scene) {
+			var video = scene.getVideo();
+			var window = scene.window;
+			var navigator = window.navigator;
+			if (video && navigator) {
+				if (threeObject.material &&
+					(threeObject.material.map === null ||
+						threeObject.material.map !== video.texture))
+				{
+					if (!video.texture) {
+						video.texture = new THREE.Texture(video);
+		        video.texture.minFilter = THREE.NearestFilter;
+		        video.texture.magFilter = THREE.NearestFilter;
+						navigator.getUserMedia = (
+							navigator.getUserMedia ||
+							navigator.webkitGetUserMedia ||
+							navigator.mozGetUserMedia ||
+							navigator.msGetUserMedia
+						);
+						if (navigator.getUserMedia) {
+							navigator.getUserMedia ({ video: true },
+								function(localMediaStream) {
+									video.src = window.URL.createObjectURL(localMediaStream);
+								},
+								function(err) {
+									 this.error("The following error occured: " + err);
+								}
+						 	);
+						} else {
+							 this.error("getUserMedia not supported");
+						}
+					}
+					threeObject.material.map = video.texture;
+				}
+
+				if (video.texture &&
+					video.readyState === video.HAVE_ENOUGH_DATA) {
+					video.texture.needsUpdate = true;
+				}
+			}
+		}
+	}
+
 	if (this.position) {
 		threeObject.position.x = this.position[0];
 		threeObject.position.y = this.position[1];

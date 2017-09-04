@@ -100,7 +100,6 @@
 	function Node() {
 		this.name = '';
 		this.type = 'Node';
-		this.parent = null;
 		this.children = [];
 	}
 	Object.assign(Node.prototype, EventDispatcher.prototype,
@@ -174,9 +173,19 @@
 			},
 
 			setSize: function(width, height, depth) {
-				if (width) 	this.size[0] = width;
-				if (height)	this.size[1] = height;
-				if (depth)	this.size[2] = depth;
+				if (width) {
+					this.size[0] = width;
+					if (height) {
+						this.size[1] = height;
+					} else {
+						this.size[1] = width;
+					}
+					if (depth) {
+						this.size[2] = depth;
+					} else if (!height) {
+						this.size[2] = width;
+					}
+				}
 
 				// When set from the outside we update the initial value too
 				this.initialSize = this.size.slice();
@@ -190,6 +199,10 @@
 
 			setTexture: function(url) {
 				this.textureUrl = url;
+			},
+
+			setUseVideoTexture: function() {
+				this.useVideoTexture = true;
 			},
 
 			setGeometry: function(url) {
@@ -251,6 +264,14 @@
 					};
 				}
 			},
+
+			getScene: function() {
+				var scene = this;
+				while (scene && scene.type != 'Scene') {
+					scene = scene.parent;
+				}
+				return scene;
+			},
 		}
 	);
 
@@ -267,6 +288,7 @@
 		Asset.call(this);
 		this.camera = this.add(new Camera());
 		this.mouseDownTime = 0;
+		this.type = 'Scene';
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -317,8 +339,10 @@
 			onMouseUp: function (event) {
 				logDebug('onMouseUp');
 				this.mouseUp = this.getMouse(event);
-				this.mouseDownTime = this.time;
-				if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05) {
+				this.mouseUpTime = this.time;
+				if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
+				(this.mouseUpTime - this.mouseDownTime) < .3) {
+
 					this.onClick(event);
 				}
 			},
@@ -418,7 +442,14 @@
 			onSynch: function () {
 			},
 
-			start: function (document) {
+			getVideo: function() {
+				return this.video;
+			},
+
+			start: function (window) {
+				this.window = window;
+				var document = window.document;
+
 				logDebug('Scene.start');
 
 				this.onStart();
@@ -437,6 +468,12 @@
 			    document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
 			    document.addEventListener('touchend', function(event) { scene.onMouseUp(event); } );
 			    document.addEventListener('touchmove', function(event) { scene.onMouseMove(event); } );
+
+					this.video = document.createElement('video');
+					this.video.width = 400;
+					this.video.height = 400;
+					this.video.autoplay = true;
+					this.video.texture = undefined;
 				}
 
 				scene.three.scene.add(scene.threeGetNode());
