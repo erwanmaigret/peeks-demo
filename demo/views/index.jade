@@ -16,6 +16,33 @@ block content
 
     peeks.bounds = { x0: -4, y0: 0, z0: -3, x1: 4, y1: 2, z1: 3 };
 
+    peeks.addButton({
+      image: 'images/wall_bricks.jpg',
+      imageRepeat: [3, 3],
+      position: [0, 0, -10.1],
+      rotation: [0, 0, 0],
+      size: 21,
+      onClick: 'toggleVisible',
+    });
+
+    peeks.addButton({
+      image: 'images/wall_bricks.jpg',
+      imageRepeat: [3, 3],
+      position: [-10, 0, 0],
+      rotation: [0, 90, 0],
+      size: 21,
+      onClick: 'toggleVisible',
+    });
+
+    peeks.addButton({
+      image: 'images/wall_bricks.jpg',
+      imageRepeat: [3, 3],
+      position: [10, 0, 0],
+      rotation: [0, -90, 0],
+      size: 21,
+      onClick: 'toggleVisible',
+    });
+
     peeks.addImage({
       image: 'images/bloomingdales_logo.png',
       position: [0, 2.5, -4],
@@ -23,15 +50,36 @@ block content
     });
 
     peeks.addButton({
+      image: 'ui/icon_reload.png',
+      position: [-5, 2.5 , -4],
+      size: .5,
+      onClick: function() { },
+    })
+
+    peeks.addButton({
+      image: 'ui/icon_previous.png',
+      position: [-4, 2.5 , -4],
+      size: .5,
+      onClick: function() { },
+    })
+
+    peeks.addButton({
+      image: 'ui/icon_next.png',
+      position: [-3, 2.5 , -4],
+      size: .5,
+      onClick: function() { },
+    })
+
+    peeks.addButton({
       image: 'ui/icon_ar.png',
-      position: [-2, 1.5 , -3],
+      position: [5, 2.5 , -4],
       size: .5,
       onClick: function() { peeks.toggleArMode(); },
     })
 
     peeks.addButton({
       image: 'ui/icon_peeks.png',
-      position: [2, 1.5, -3],
+      position: [4, 2.5, -4],
     })
 
     peeks.addGeometry({
@@ -73,11 +121,11 @@ block content
       }
     }
 
-    var animSpeed = 4;
+    var animSpeed = 2;
 
     peeks.camera.animate({
       duration: 10 / animSpeed,
-      begin: [0, 0, 5],
+      begin: [0, 0, 10],
       end: [0, 0, 2]
     });
     peeks.camera.animate({

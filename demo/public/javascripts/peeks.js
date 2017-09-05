@@ -527,8 +527,8 @@
 				if (state) {
 					if (!this.arImage) {
 						var asset = new PEEKS.Plane();
-				    asset.setPosition(0, 0, -10);
-				    asset.setSize(30);
+				    asset.setPosition(0, 2, -10);
+				    asset.setSize(10);
 				    asset.setUseVideoTexture(true);
 				    this.arAsset.add(asset);
 						this.arImage = asset;
