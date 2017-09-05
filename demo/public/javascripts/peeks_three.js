@@ -49,7 +49,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var geometry = new THREE.PlaneGeometry(1, 1);
 					var material = new THREE.MeshBasicMaterial({
 						color: 0xffffff,
-						transparent: true
+						transparent: true,
+						side: THREE.DoubleSide,
 					});
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
@@ -64,7 +65,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						}
 						material.map = loader.load(url);
 						// Don't mind not POT textures
-						material.map.minFilter = THREE.LinearFilter;
+						material.map.minFilter = THREE.LinearMipMapLinearFilter;
 					}
 				}
 			} else {
@@ -85,8 +86,16 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		this.threeObject.peeksAsset = this;
 	}
 
+	this.threeObject.visible = this.visible;
+
 	if (threeObject === undefined) {
 		threeObject = this.threeObject;
+		threeObject.visible = this.visible;
+	}
+
+	if (!threeObject.visible) {
+		// Skip any operations on such objects
+		return;
 	}
 
 	if (this.useVideoTexture) {

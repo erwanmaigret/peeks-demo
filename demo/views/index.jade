@@ -19,16 +19,11 @@ block content
     var asset;
 
     asset = new PEEKS.Plane();
-    asset.setPosition(0, 0, -10);
-    asset.setSize(30);
-    asset.setUseVideoTexture(true);
-    peeks.add(asset);
-
-    asset = new PEEKS.Plane();
     asset.setGeometry('assets/vr_controller_vive_1_5.obj');
     asset.setTexture('assets/vr_controller_vive_1_5.png');
     asset.setRotation(90, 0, 0);
-    asset.setSize(4, 4, 4);
+    asset.setSize(4);
+    asset.setPosition(1, 0, -2);
     peeks.add(asset);
 
     asset.add(new PEEKS.Animation({
@@ -123,5 +118,20 @@ block content
       p3: [0, 0, 0],
       attribute: 'rotation'
     }));
+
+    asset = new PEEKS.Plane();
+    asset.setTexture('ui/icon_ar.png');
+    asset.setPosition(-2, 1.5 , -3);
+    asset.setSize(.5);
+    asset.onClick = function() {
+      peeks.toggleArMode();
+    };
+    peeks.add(asset);
+
+    asset = new PEEKS.Plane();
+    asset.setTexture('ui/icon_peeks.png');
+    asset.setPosition(2, 1.5, -3);
+    asset.setSize(1);
+    peeks.add(asset);
 
     peeks.start(window);

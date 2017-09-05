@@ -133,6 +133,7 @@
 			y1: .5,
 			z1: .5,
 		};
+		this.visible = true;
 	}
 
 	Asset.PrimitiveNone = 0;
@@ -272,6 +273,14 @@
 				}
 				return scene;
 			},
+
+			show: function() {
+				this.visible = true;
+			},
+
+			hide: function() {
+				this.visible = false;
+			},
 		}
 	);
 
@@ -289,6 +298,7 @@
 		this.camera = this.add(new Camera());
 		this.mouseDownTime = 0;
 		this.type = 'Scene';
+		this.arAsset = this.add(new PEEKS.Asset());
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -352,14 +362,18 @@
 
 				var asset = this.onPickNode(this.getMouse(event));
 				if (asset) {
-					console.log(asset);
-					asset.add(new PEEKS.Animation({
-						duration: 2,
-						delay: this.time,
-						begin: [0, 0, 0],
-						end: [0, 360, 0],
-						attribute: 'rotation'
-					}));
+					if (asset.onClick) {
+						asset.onClick();
+					} else {
+						console.log(asset);
+						asset.add(new PEEKS.Animation({
+							duration: 2,
+							delay: this.time,
+							begin: [0, 0, 0],
+							end: [0, 360, 0],
+							attribute: 'rotation'
+						}));
+					}
 				}
 			},
 
@@ -444,6 +458,32 @@
 
 			getVideo: function() {
 				return this.video;
+			},
+
+			toggleArMode: function() {
+				this.setArMode(!this.arMode);
+			},
+
+			setArMode: function(state) {
+				if (state === undefined) {
+					state = true;
+				}
+				if (state) {
+					if (!this.arImage) {
+						var asset = new PEEKS.Plane();
+				    asset.setPosition(0, 0, -10);
+				    asset.setSize(30);
+				    asset.setUseVideoTexture(true);
+				    this.arAsset.add(asset);
+						this.arImage = asset;
+					}
+					this.arImage.show();
+				} else {
+					if (this.arImage) {
+						this.arImage.hide();
+					}
+				}
+				this.arMode = state;
 			},
 
 			start: function (window) {
