@@ -66,6 +66,12 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						material.map = loader.load(url);
 						// Don't mind not POT textures
 						material.map.minFilter = THREE.LinearMipMapLinearFilter;
+
+						material.map.wrapS = THREE.RepeatWrapping;
+						material.map.wrapT = THREE.RepeatWrapping;
+						material.map.repeat.set(
+							this.textureRepeat[0],
+							this.textureRepeat[1]);
 					}
 				}
 			} else {

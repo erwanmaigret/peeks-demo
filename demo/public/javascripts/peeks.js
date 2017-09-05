@@ -109,6 +109,41 @@
 				this.children[ this.children.length ] = node;
 				return node;
 			},
+
+			addButton: function (params) {
+				var asset = new PEEKS.Plane();
+				if (params.image) asset.setTexture(params.image);
+				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
+				if (params.position) asset.setPosition(params.position);
+				if (params.rotation) asset.setRotation(params.rotation);
+				if (params.size) asset.setSize(params.size);
+				if (params.onClick) asset.onClick = params.onClick;
+				return this.add(asset);
+			},
+
+			addImage: function (params) {
+				var asset = new PEEKS.Plane();
+				if (params.image) asset.setTexture(params.image);
+				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
+				if (params.position) asset.setPosition(params.position);
+				if (params.rotation) asset.setRotation(params.rotation);
+				if (params.size) asset.setSize(params.size);
+				return this.add(asset);
+			},
+
+			addGeometry: function (params) {
+				var asset = new PEEKS.Plane();
+				if (params.geometry) asset.setGeometry(params.geometry);
+				if (params.texture) asset.setTexture(params.texture);
+				if (params.position) asset.setPosition(params.position);
+				if (params.rotation) asset.setRotation(params.rotation);
+				if (params.size) asset.setSize(params.size);
+				return this.add(asset);
+			},
+
+			animate: function (params) {
+				return this.add(new PEEKS.Animation(params));
+			},
 		}
 	);
 
@@ -124,6 +159,7 @@
 		this.time = 0;
 		this.primitive = Asset.PrimitiveNone;
 		this.textureUrl = '';
+		this.textureRepeat = [1, 1];
 		this.geomertryUrl = '';
 		this.bounds = {
 			x0: -.5,
@@ -155,36 +191,48 @@
 				this.initialSize = this.size.slice();
 			},
 
-			setPosition: function ( x, y, z ) {
-				if (x) this.position[0] = x;
-				if (y) this.position[1] = y;
-				if (z) this.position[2] = z;
+			setPosition: function (x, y, z) {
+				if (typeof x === "number") {
+					if (x) this.position[0] = x;
+					if (y) this.position[1] = y;
+					if (z) this.position[2] = z;
+				} else {
+					this.position = x;
+				}
 
 				// When set from the outside we update the initial value too
 				this.initialPosition = this.position.slice();
 			},
 
-			setRotation: function ( x, y, z ) {
-				if (x) this.rotation[0] = x;
-				if (y) this.rotation[1] = y;
-				if (z) this.rotation[2] = z;
+			setRotation: function (x, y, z) {
+				if (typeof x === "number") {
+					if (x) this.rotation[0] = x;
+					if (y) this.rotation[1] = y;
+					if (z) this.rotation[2] = z;
+				} else {
+					this.rotation = x;
+				}
 
 				// When set from the outside we update the initial value too
 				this.initialRotation = this.rotation.slice();
 			},
 
 			setSize: function(width, height, depth) {
-				if (width) {
-					this.size[0] = width;
-					if (height) {
-						this.size[1] = height;
+				if (width !== undefined) {
+					if (typeof width === "number") {
+						this.size[0] = width;
+						if (height) {
+							this.size[1] = height;
+						} else {
+							this.size[1] = width;
+						}
+						if (depth) {
+							this.size[2] = depth;
+						} else if (!height) {
+							this.size[2] = width;
+						}
 					} else {
-						this.size[1] = width;
-					}
-					if (depth) {
-						this.size[2] = depth;
-					} else if (!height) {
-						this.size[2] = width;
+						this.size = arguments[0];
 					}
 				}
 
@@ -281,6 +329,10 @@
 			hide: function() {
 				this.visible = false;
 			},
+
+			toggleVisible: function() {
+				this.visible = !this.visible;
+			},
 		}
 	);
 
@@ -363,16 +415,20 @@
 				var asset = this.onPickNode(this.getMouse(event));
 				if (asset) {
 					if (asset.onClick) {
-						asset.onClick();
+						if (typeof asset.onClick === 'string') {
+							var onClick = asset[asset.onClick];
+							onClick.call(asset);
+						} else {
+							asset.onClick();
+						}
 					} else {
-						console.log(asset);
-						asset.add(new PEEKS.Animation({
+						asset.animate({
 							duration: 2,
 							delay: this.time,
 							begin: [0, 0, 0],
 							end: [0, 360, 0],
 							attribute: 'rotation'
-						}));
+						});
 					}
 				}
 			},
