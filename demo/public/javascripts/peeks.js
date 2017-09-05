@@ -123,6 +123,7 @@
 
 			addImage: function (params) {
 				var asset = new PEEKS.Plane();
+				asset.needsTransition = true;
 				if (params.image) asset.setTexture(params.image);
 				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
 				if (params.position) asset.setPosition(params.position);
@@ -170,6 +171,7 @@
 			z1: .5,
 		};
 		this.visible = true;
+		this.needsTransition = false;
 	}
 
 	Asset.PrimitiveNone = 0;
@@ -261,6 +263,10 @@
 			update: function(time) {
 				if (time == undefined) {
 					time = (Date.now() - startTime) / 1000;
+				}
+
+				if (this.needsTransition) {
+					this.needsTransition = false;
 				}
 
 				this.time = time;
@@ -714,9 +720,15 @@
 
 				if (this.parent) {
 					if (this.parent[this.attribute]) {
-						this.parent[this.attribute][0] += p[0];
-						this.parent[this.attribute][1] += p[1];
-						this.parent[this.attribute][2] += p[2];
+						if (this.attribute === 'size') {
+							this.parent[this.attribute][0] *= p[0];
+							this.parent[this.attribute][1] *= p[1];
+							this.parent[this.attribute][2] *= p[2];
+						} else {
+							this.parent[this.attribute][0] += p[0];
+							this.parent[this.attribute][1] += p[1];
+							this.parent[this.attribute][2] += p[2];
+						}
 					}
 				}
 			},
