@@ -1,3 +1,23 @@
+var loadTexture = function(material, textureUrl, textureRepeat)
+{
+	if (textureUrl != '') {
+		var loader = new THREE.TextureLoader();
+
+		loader.setCrossOrigin(null);
+
+		material.map = loader.load(textureUrl);
+
+		// Don't mind not POT textures
+		material.map.minFilter = THREE.LinearMipMapLinearFilter;
+
+		material.map.wrapS = THREE.RepeatWrapping;
+		material.map.wrapT = THREE.RepeatWrapping;
+		if (textureRepeat) {
+			material.map.repeat.set(textureRepeat[0], textureRepeat[1]);
+		}
+	}
+}
+
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {
 		if (this.primitive) {
@@ -46,32 +66,33 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						}
 					}, onProgress, onError );
 				} else {
+					var backSide;
+
+					if (this.textureBackUrl !== "") {
+						var geometry = new THREE.PlaneGeometry(1, 1);
+						var material = new THREE.MeshBasicMaterial({
+							color: 0xffffff,
+							transparent: true,
+							side: THREE.FrontSide,
+						});
+						backSide = new THREE.Mesh(geometry, material);
+						backSide.rotation.y = THREE.Math.degToRad(180);
+						loadTexture(material, this.textureBackUrl, this.textureRepeat);
+					}
+
 					var geometry = new THREE.PlaneGeometry(1, 1);
 					var material = new THREE.MeshBasicMaterial({
 						color: 0xffffff,
 						transparent: true,
-						side: THREE.DoubleSide,
+						side: backSide ? THREE.FrontSide : THREE.DoubleSide,
 					});
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-					if (this.textureUrl != '') {
-						var url = this.textureUrl;
-						var loader = new THREE.TextureLoader();
-						if (/^data:/.test(this.textureUrl)) {
-							loader.setCrossOrigin(url);
-						} else {
-							loader.setCrossOrigin('');
-						}
-						material.map = loader.load(url);
-						// Don't mind not POT textures
-						material.map.minFilter = THREE.LinearMipMapLinearFilter;
+					loadTexture(material, this.textureUrl, this.textureRepeat);
 
-						material.map.wrapS = THREE.RepeatWrapping;
-						material.map.wrapT = THREE.RepeatWrapping;
-						material.map.repeat.set(
-							this.textureRepeat[0],
-							this.textureRepeat[1]);
+					if (backSide) {
+						this.threeObject.add(backSide);
 					}
 				}
 			} else {
@@ -186,14 +207,20 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
 	var intersectedObjects = raycaster.intersectObjects(this.threeObject.children, true);
 	if (intersectedObjects.length > 0) {
-		return intersectedObjects[0].object.peeksAsset;
+		var object = intersectedObjects[0].object;
+		while (object) {
+			if (object.peeksAsset) {
+				return object.peeksAsset;
+			}
+			object = object.parent;
+		}
 	}
 }
 
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
 
-	var renderWidth = 800;
+	var renderWidth = 600;
 	var renderHeight = 400;
 
 	var scene = new THREE.Scene();

@@ -16,31 +16,28 @@ block content
 
     peeks.bounds = { x0: -4, y0: 0, z0: -3, x1: 4, y1: 2, z1: 3 };
 
-    peeks.addButton({
+    peeks.addImage({
       image: 'images/wall_bricks.jpg',
       imageRepeat: [3, 3],
       position: [0, 0, -10.1],
       rotation: [0, 0, 0],
       size: 21,
-      onClick: 'toggleVisible',
     });
 
-    peeks.addButton({
+    peeks.addImage({
       image: 'images/wall_bricks.jpg',
       imageRepeat: [3, 3],
       position: [-10, 0, 0],
       rotation: [0, 90, 0],
       size: 21,
-      onClick: 'toggleVisible',
     });
 
-    peeks.addButton({
+    peeks.addImage({
       image: 'images/wall_bricks.jpg',
       imageRepeat: [3, 3],
       position: [10, 0, 0],
       rotation: [0, -90, 0],
       size: 21,
-      onClick: 'toggleVisible',
     });
 
     peeks.addImage({
@@ -97,7 +94,7 @@ block content
 
     peeks.addGeometry({
       geometry: 'assets/ball_chair.obj',
-      position: [-1.5, -1, 0],
+      position: [-2, -1, 0],
       rotation: [0, 45, 0],
     });
 
@@ -107,39 +104,62 @@ block content
       position: [0, -1, 0],
       rotation: [-90, 0, 0],
       size: 20,
-      onClick: 'toggleVisible',
     });
 
-    for (var z = -2; z < 0; z++) {
-      for (var x = 1; x <= 4; x++) {
-        peeks.addImage({
-          image: 'images/dress' + x.toString() + '.png',
-          position: [(-2.5 + x) * 2, 0, z],
-          rotation: [0, 0, 0],
-          size: [1,1.5, 1],
-        }).animate({
-          duration: 1 + Math.random() * 2,
-          delay: 2 + Math.random() * 3,
-          begin: [0, 0, 0],
-          end: [1, 1, 1],
-          attribute: 'size'
-        });
-      }
+    // Imported from Bloomingdales website:
+    var assets = [
+      ['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
+      ['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
+      ['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
+      ['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
+      ['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
+    ];
+
+    for (var assetI = 0; assetI < assets.length; assetI++) {
+      peeks.addImage({
+        image: 'images/' + assets[assetI][0],
+        imageBack: 'images/' + assets[assetI][1],
+        position: [assetI - assets.length / 2 + .5, 0, -3],
+        rotation: [0, 0, 0],
+        size: [1, 1.2, 1],
+      }).animate({
+        duration: 1 + Math.random() * 2,
+        delay: 1 + Math.random() * 3,
+        begin: [0, -2, 0],
+        end: [0, 0, 0],
+        attribute: 'position'
+      });
+    }
+
+    for (var x = 1; x <= 4; x++) {
+      var position = [(-2.5 + x) * 2, 0, 0];
+      peeks.addImage({
+        image: 'images/dress' + x.toString() + '.png',
+        position: position,
+        rotation: [0, 0, 0],
+        size: [1,1.5, 1],
+      }).animate({
+        duration: 1 + Math.random() * 2,
+        delay: 1 + Math.random() * 3,
+        begin: [0, -2, 0],
+        end: [0, 0, 0],
+        attribute: 'position'
+      });
     }
 
     var animSpeed = 2;
 
     peeks.camera.animate({
       duration: 10 / animSpeed,
-      begin: [0, 0, 10],
-      end: [0, 0, 2]
+      begin: [0, 0, 12],
+      end: [0, 0, 4]
     });
     peeks.camera.animate({
       duration: 9 / animSpeed,
       delay: 1,
       p0: [0, 0, 0],
-      p1: [0, 80, 10],
-      p2: [0, -80, -10],
+      p1: [0, 40, 10],
+      p2: [0, -40, -10],
       p3: [0, 0, 0],
       attribute: 'rotation'
     });

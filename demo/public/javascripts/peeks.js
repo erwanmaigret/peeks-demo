@@ -111,20 +111,16 @@
 			},
 
 			addButton: function (params) {
-				var asset = new PEEKS.Plane();
-				if (params.image) asset.setTexture(params.image);
-				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
-				if (params.position) asset.setPosition(params.position);
-				if (params.rotation) asset.setRotation(params.rotation);
-				if (params.size) asset.setSize(params.size);
+				var asset = this.addImage(params);
 				if (params.onClick) asset.onClick = params.onClick;
-				return this.add(asset);
+				return asset;
 			},
 
 			addImage: function (params) {
 				var asset = new PEEKS.Plane();
 				asset.needsTransition = true;
 				if (params.image) asset.setTexture(params.image);
+				if (params.imageBack) asset.setTextureBack(params.imageBack);
 				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
 				if (params.position) asset.setPosition(params.position);
 				if (params.rotation) asset.setRotation(params.rotation);
@@ -160,6 +156,7 @@
 		this.time = 0;
 		this.primitive = Asset.PrimitiveNone;
 		this.textureUrl = '';
+		this.textureBackUrl = '';
 		this.textureRepeat = [1, 1];
 		this.geomertryUrl = '';
 		this.bounds = {
@@ -250,6 +247,10 @@
 
 			setTexture: function(url) {
 				this.textureUrl = url;
+			},
+
+			setTextureBack: function(url) {
+				this.textureBackUrl = url;
 			},
 
 			setUseVideoTexture: function() {
@@ -429,10 +430,10 @@
 						}
 					} else {
 						asset.animate({
-							duration: 2,
+							duration: 1,
 							delay: this.time,
 							begin: [0, 0, 0],
-							end: [0, 360, 0],
+							end: [0, 180, 0],
 							attribute: 'rotation'
 						});
 					}
