@@ -352,6 +352,11 @@
 		}
 	);
 
+	var pages = {};
+	function registerPage(name, ctor) {
+		pages[name] = ctor;
+	}
+
 	function Scene() {
 		Asset.call(this);
 		this.camera = this.add(new Camera());
@@ -547,6 +552,15 @@
 					}
 				}
 				this.arMode = state;
+			},
+
+			loadPage: function(name) {
+				if (pages[name]) {
+					logError("Registering " + name);
+					pages[name](this);
+				} else {
+					logError("Can't load unregistered page " + name);
+				}
 			},
 
 			start: function (window) {
@@ -745,6 +759,7 @@
 	exports.Animation = Animation;
 
 	exports.setLogLevel = setLogLevel;
+	exports.registerPage = registerPage;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));
