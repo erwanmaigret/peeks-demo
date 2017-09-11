@@ -110,6 +110,11 @@
 				return node;
 			},
 
+			addCanvas: function (params) {
+				var asset = new PEEKS.Canvas();
+				return this.add(asset);
+			},
+
 			addButton: function (params) {
 				var asset = this.addImage(params);
 				if (params.onClick) asset.onClick = params.onClick;
@@ -620,6 +625,17 @@
 		}
 	);
 
+	function Canvas() {
+		Asset.call(this);
+		this.name = "Canvas";
+		this.type = "Canvas";
+	}
+	Canvas.prototype = Object.assign(Object.create(Asset.prototype),
+		{
+			constructor: Canvas,
+		}
+	);
+
 	function Animation(data) {
 		Asset.call( this );
 		this.startTime = 0;
@@ -755,6 +771,7 @@
 	exports.Asset = Asset;
 	exports.Scene = Scene;
 	exports.Camera = Camera;
+	exports.Canvas = Canvas;
 	exports.Plane = Plane;
 	exports.Animation = Animation;
 

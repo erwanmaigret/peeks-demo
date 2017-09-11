@@ -18,6 +18,77 @@ var loadTexture = function(material, textureUrl, textureRepeat)
 	}
 }
 
+PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
+	if (threeObject === undefined) {
+		threeObject = this.threeObject;
+	}
+
+	if (threeObject) {
+		if (this.position) {
+			threeObject.position.x = this.position[0];
+			threeObject.position.y = this.position[1];
+			threeObject.position.z = this.position[2];
+
+			threeObject.rotation.x = THREE.Math.degToRad(this.rotation[0]);
+			threeObject.rotation.y = THREE.Math.degToRad(this.rotation[1]);
+			threeObject.rotation.z = THREE.Math.degToRad(this.rotation[2]);
+
+			threeObject.scale.x = this.size[0];
+			threeObject.scale.y = this.size[1];
+			threeObject.scale.z = this.size[2];
+		}
+	}
+}
+
+PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
+	var threeObject = this.threeObject;
+	if (threeObject && this.useVideoTexture) {
+		var video;
+		var scene = this.getScene();
+		if (scene) {
+			var video = scene.getVideo();
+			var window = scene.window;
+			var navigator = window.navigator;
+			if (video && navigator) {
+				if (threeObject.material &&
+					(threeObject.material.map === null ||
+						threeObject.material.map !== video.texture))
+				{
+					if (!video.texture) {
+						video.texture = new THREE.Texture(video);
+		        video.texture.minFilter = THREE.NearestFilter;
+		        video.texture.magFilter = THREE.NearestFilter;
+						navigator.getUserMedia = (
+							navigator.getUserMedia ||
+							navigator.webkitGetUserMedia ||
+							navigator.mozGetUserMedia ||
+							navigator.msGetUserMedia
+						);
+						if (navigator.getUserMedia) {
+							navigator.getUserMedia ({ video: true },
+								function(localMediaStream) {
+									video.src = window.URL.createObjectURL(localMediaStream);
+								},
+								function(err) {
+									 this.error("The following error occured: " + err);
+								}
+						 	);
+						} else {
+							 this.error("getUserMedia not supported");
+						}
+					}
+					threeObject.material.map = video.texture;
+				}
+
+				if (video.texture &&
+					video.readyState === video.HAVE_ENOUGH_DATA) {
+					video.texture.needsUpdate = true;
+				}
+			}
+		}
+	}
+}
+
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {
 		if (this.primitive) {
@@ -109,7 +180,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		} else {
 			this.threeObject = new THREE.Object3D();
 		}
-
 		this.threeObject.peeksAsset = this;
 	}
 
@@ -125,65 +195,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		return;
 	}
 
-	if (this.useVideoTexture) {
-		var video;
-		var scene = this.getScene();
-		if (scene) {
-			var video = scene.getVideo();
-			var window = scene.window;
-			var navigator = window.navigator;
-			if (video && navigator) {
-				if (threeObject.material &&
-					(threeObject.material.map === null ||
-						threeObject.material.map !== video.texture))
-				{
-					if (!video.texture) {
-						video.texture = new THREE.Texture(video);
-		        video.texture.minFilter = THREE.NearestFilter;
-		        video.texture.magFilter = THREE.NearestFilter;
-						navigator.getUserMedia = (
-							navigator.getUserMedia ||
-							navigator.webkitGetUserMedia ||
-							navigator.mozGetUserMedia ||
-							navigator.msGetUserMedia
-						);
-						if (navigator.getUserMedia) {
-							navigator.getUserMedia ({ video: true },
-								function(localMediaStream) {
-									video.src = window.URL.createObjectURL(localMediaStream);
-								},
-								function(err) {
-									 this.error("The following error occured: " + err);
-								}
-						 	);
-						} else {
-							 this.error("getUserMedia not supported");
-						}
-					}
-					threeObject.material.map = video.texture;
-				}
-
-				if (video.texture &&
-					video.readyState === video.HAVE_ENOUGH_DATA) {
-					video.texture.needsUpdate = true;
-				}
-			}
-		}
-	}
-
-	if (this.position) {
-		threeObject.position.x = this.position[0];
-		threeObject.position.y = this.position[1];
-		threeObject.position.z = this.position[2];
-
-		threeObject.rotation.x = THREE.Math.degToRad(this.rotation[0]);
-		threeObject.rotation.y = THREE.Math.degToRad(this.rotation[1]);
-		threeObject.rotation.z = THREE.Math.degToRad(this.rotation[2]);
-
-		threeObject.scale.x = this.size[0];
-		threeObject.scale.y = this.size[1];
-		threeObject.scale.z = this.size[2];
-	}
+	this.threeSynchVideoTexture();
+	this.threeSynchXform(threeObject);
 
 	for (var childI = 0; childI < this.children.length; childI++) {
 		var child = this.children[childI];

@@ -130,6 +130,12 @@ PEEKS.registerPage('bloomingdales', function(peeks){
 		});
 	}
 
+	var canvas = peeks.addCanvas();
+	canvas.addButton({
+		image: 'ui/icon_peeks.png',
+		position: [0, 0, 0],
+	});
+
 	var animSpeed = 2;
 
 	peeks.camera.animate({
