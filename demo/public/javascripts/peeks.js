@@ -367,6 +367,24 @@
 	Camera.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
 			constructor: Camera,
+
+			animateIntro: function() {
+				var animSpeed = 2;
+				this.animate({
+					duration: 10 / animSpeed,
+					begin: [0, 0, 12],
+					end: [0, 0, 4]
+				});
+				this.animate({
+					duration: 9 / animSpeed,
+					delay: 1,
+					p0: [0, 0, 0],
+					p1: [0, 40, 10],
+					p2: [0, -40, -10],
+					p3: [0, 0, 0],
+					attribute: 'rotation'
+				});
+			}
 		}
 	);
 
@@ -575,13 +593,15 @@
 			loadPage: function(name) {
 				if (pages[name]) {
 					logError("Registering " + name);
-					pages[name](this);
+					this.add(pages[name]());
 				} else {
 					logError("Can't load unregistered page " + name);
 				}
 			},
 
 			start: function (window) {
+				this.camera.animateIntro();
+
 				this.window = window;
 				var document = window.document;
 
