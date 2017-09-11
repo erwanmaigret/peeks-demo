@@ -29,39 +29,6 @@ PEEKS.registerPage('bloomingdales', function(peeks){
 		size: [4, .8, 1],
 	});
 
-	peeks.addButton({
-		image: 'ui/icon_reload.png',
-		position: [-5, 2.5 , -4],
-		size: .5,
-		onClick: function() { },
-	})
-
-	peeks.addButton({
-		image: 'ui/icon_previous.png',
-		position: [-4, 2.5 , -4],
-		size: .5,
-		onClick: function() { },
-	})
-
-	peeks.addButton({
-		image: 'ui/icon_next.png',
-		position: [-3, 2.5 , -4],
-		size: .5,
-		onClick: function() { },
-	})
-
-	peeks.addButton({
-		image: 'ui/icon_ar.png',
-		position: [5, 2.5 , -4],
-		size: .5,
-		onClick: function() { peeks.toggleArMode(); },
-	})
-
-	peeks.addButton({
-		image: 'ui/icon_peeks.png',
-		position: [4, 2.5, -4],
-	})
-
 	peeks.addGeometry({
 		geometry: 'assets/vr_controller_vive_1_5.obj',
 		texture: 'assets/vr_controller_vive_1_5.png',
@@ -131,9 +98,54 @@ PEEKS.registerPage('bloomingdales', function(peeks){
 	}
 
 	var canvas = peeks.addCanvas();
+
+	canvas.addButton({
+		image: 'ui/icon_reload.png',
+		position: [-.45, .45],
+		size: .08,
+		onClick: function() { },
+	})
+
+	canvas.addButton({
+		image: 'ui/icon_previous.png',
+		position: [-.35, .45],
+		size: .08,
+		onClick: function() { },
+	})
+
+	canvas.addButton({
+		image: 'ui/icon_next.png',
+		position: [-.25, .45],
+		size: .08,
+		onClick: function() { },
+	})
+
+	canvas.addButton({
+		image: 'ui/icon_ar.png',
+		position: [.45, .45],
+		size: .08,
+		onClick: function() { peeks.toggleArMode(); },
+	});
+
 	canvas.addButton({
 		image: 'ui/icon_peeks.png',
-		position: [0, 0, 0],
+		position: [0, -.45],
+		size: .2,
+	});
+
+	canvas.animate({
+		duration: 2,
+		delay: 4,
+		begin: [-5, 0, -2],
+		end: [0, 0, 0],
+		attribute: 'position'
+	});
+	canvas.animate({
+		duration: 1,
+		delay: 5,
+		begin: [0, 0, 20],
+		end: [0, 0, 0],
+		attribute: 'rotation'
 	});
 
 	var animSpeed = 2;

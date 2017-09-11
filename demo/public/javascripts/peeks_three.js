@@ -37,6 +37,17 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 			threeObject.scale.y = this.size[1];
 			threeObject.scale.z = this.size[2];
 		}
+
+		if (this.type == 'Canvas') {
+			var camera = this.getCamera();
+			this.threeObjectPivot.position.x = camera.position[0];
+			this.threeObjectPivot.position.y = camera.position[1];
+			this.threeObjectPivot.position.z = camera.position[2];
+			this.threeObjectPivot.rotation.x = THREE.Math.degToRad(camera.rotation[0]);
+			this.threeObjectPivot.rotation.y = THREE.Math.degToRad(camera.rotation[1]);
+			this.threeObjectPivot.rotation.z = THREE.Math.degToRad(camera.rotation[2]);
+			threeObject.position.z -= 1;
+		}
 	}
 }
 
@@ -92,6 +103,16 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {
 		if (this.primitive) {
+			var isScreenSpace = false;
+			var parent = this;
+			while (parent) {
+				if (parent.type === 'Canvas') {
+					isScreenSpace = true;
+					break;
+				}
+				parent = parent.parent;
+			}
+
 			if (this.primitive == PEEKS.Asset.PrimitivePlane) {
 				if (this.geometryUrl) {
 					this.threeObject = new THREE.Object3D();
@@ -156,7 +177,9 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						color: 0xffffff,
 						transparent: true,
 						side: backSide ? THREE.FrontSide : THREE.DoubleSide,
+						depthTest: isScreenSpace ? false : true,
 					});
+
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
@@ -180,6 +203,9 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		} else {
 			this.threeObject = new THREE.Object3D();
 		}
+		this.threeObjectPivot = new THREE.Object3D();
+		this.threeObjectPivot.add(this.threeObject);
+
 		this.threeObject.peeksAsset = this;
 	}
 
@@ -201,7 +227,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	for (var childI = 0; childI < this.children.length; childI++) {
 		var child = this.children[childI];
 		if (!child.threeObject) {
-			this.threeObject.add(child.threeGetNode());
+			child.threeSynch();
+			this.threeObject.add(child.threeObjectPivot);
 		} else {
 			child.threeSynch();
 		}

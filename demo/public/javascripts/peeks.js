@@ -201,7 +201,13 @@
 					if (y) this.position[1] = y;
 					if (z) this.position[2] = z;
 				} else {
-					this.position = x;
+					if (arguments.length > 0) {
+						if (arguments[0].length == 2) {
+							this.position = [arguments[0][0], arguments[0][1], 0];
+						} else if (arguments[0].length == 3) {
+							this.position = arguments[0].slice();
+						}
+					}
 				}
 
 				// When set from the outside we update the initial value too
@@ -332,6 +338,13 @@
 					scene = scene.parent;
 				}
 				return scene;
+			},
+
+			getCamera: function() {
+				var scene = this.getScene();
+				if (scene) {
+					return scene.camera;
+				}
 			},
 
 			show: function() {
