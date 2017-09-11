@@ -112,14 +112,14 @@ PEEKS.registerPage('bloomingdales', function() {
 		image: 'ui/icon_previous.png',
 		position: [-.35, .45],
 		size: .08,
-		onClick: function() { },
+		onClick: 'loadPreviousPage',
 	})
 
 	canvas.addButton({
 		image: 'ui/icon_next.png',
 		position: [-.25, .45],
 		size: .08,
-		onClick: function() { },
+		onClick: 'loadNextPage',
 	})
 
 	canvas.addButton({

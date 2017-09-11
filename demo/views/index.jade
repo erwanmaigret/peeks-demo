@@ -11,9 +11,11 @@ block content
 
   // Load some pages
   script(src="/assets/bloomingdales.js")
+  script(src="/assets/terraworlds.js")
+  script(src="/assets/menu.js")
 
   script.
     PEEKS.setLogLevel(1);
     var peeks = new PEEKS.Scene();
-    peeks.loadPage('bloomingdales');
+    peeks.loadPage('menu');
     peeks.start(window);

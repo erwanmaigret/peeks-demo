@@ -242,6 +242,16 @@ PEEKS.Asset.prototype.threeGetNode = function() {
 	return this.threeObject;
 }
 
+PEEKS.Asset.prototype.onUnload = function() {
+	if (this.threeObjectPivot) {
+		if (this.threeObjectPivot.parent) {
+			this.threeObjectPivot.parent.remove(this.threeObjectPivot);
+		}
+		delete this.threeObjectPivot;
+		delete this.threeObject;
+	}
+}
+
 PEEKS.Scene.prototype.onPickNode = function(mouse) {
 	var raycaster = new THREE.Raycaster();
 	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);

@@ -110,6 +110,24 @@
 				return node;
 			},
 
+			destroy: function () {
+				this.unload();
+				var parent = this.parent;
+				if (parent) {
+					delete this.parent;
+					for (var childI = 0; childI < parent.children.length; childI++) {
+							if (parent.children[childI] === this) {
+								parent.children.splice(childI, 1);
+								break;
+							}
+					}
+				}
+			},
+
+			unload: function () {
+				this.onUnload();
+			},
+
 			addCanvas: function (params) {
 				var asset = new PEEKS.Canvas();
 				return this.add(asset);
@@ -118,6 +136,7 @@
 			addButton: function (params) {
 				var asset = this.addImage(params);
 				if (params.onClick) asset.onClick = params.onClick;
+				if (params.onClickArgs) asset.onClickArgs = params.onClickArgs;
 				return asset;
 			},
 
@@ -399,6 +418,8 @@
 		this.mouseDownTime = 0;
 		this.type = 'Scene';
 		this.arAsset = this.add(new PEEKS.Asset());
+		this.pagesHistory = [];
+		this.pageIndex = -1;
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -465,7 +486,14 @@
 					if (asset.onClick) {
 						if (typeof asset.onClick === 'string') {
 							var onClick = asset[asset.onClick];
-							onClick.call(asset);
+							if (onClick) {
+								onClick.apply(asset, asset.onClickArgs);
+							} else {
+								onClick = this[asset.onClick];
+								if (onClick) {
+									onClick.apply(this, asset.onClickArgs);
+								}
+							}
 						} else {
 							asset.onClick();
 						}
@@ -590,12 +618,55 @@
 				this.arMode = state;
 			},
 
-			loadPage: function(name) {
-				if (pages[name]) {
-					logError("Registering " + name);
-					this.add(pages[name]());
+			loadPage: function(page) {
+				if (typeof page === 'string') {
+					var name = page;
+					if (pages[name]) {
+						if (this.page) {
+							logError("Unloading current page");
+							this.page.destroy();
+						}
+						logError("Registering " + name);
+						var page = pages[name]();
+						page.name = name;
+						this.add(page);
+						this.page = page;
+
+						this.pageIndex++;
+						if (this.pageIndex < (this.pagesHistory.length - 1)) {
+							this.pagesHistory.push(name);
+						} else {
+							this.pagesHistory[this.pageIndex] = name;
+						}
+					} else {
+						logError("Can't load unregistered page " + name);
+					}
 				} else {
-					logError("Can't load unregistered page " + name);
+					var pageIndex = page;
+					if (pageIndex >= 0 && pageIndex < this.pagesHistory.length) {
+						var name = this.pagesHistory[pageIndex];
+						if (this.page) {
+							logError("Unloading current page");
+							this.page.destroy();
+						}
+						var page = pages[name]();
+						page.name = name;
+						this.add(page);
+						this.page = page;
+						this.pageIndex = pageIndex;
+					}
+				}
+			},
+
+			loadPreviousPage: function() {
+				if (this.pageIndex > 0) {
+					this.loadPage(this.pageIndex - 1);
+				}
+			},
+
+			loadNextPage: function() {
+				if (this.pageIndex < (this.pagesHistory.length - 1)) {
+					this.loadPage(this.pageIndex + 1);
 				}
 			},
 
