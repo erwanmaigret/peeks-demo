@@ -9,6 +9,14 @@ block content
   script(src="/javascripts/three/loaders/OBJLoader.js")
   script(src="/javascripts/peeks_three.js")
 
+  // Default page
+  script(src="/pages/peeks_background.js")
+  script(src="/pages/peeks_recommendations.js")
+  script(src="/pages/peeks_welcome.js")
+  script(src="/pages/peeks_history.js")
+  script(src="/pages/peeks_search.js")
+  script(src="/pages/peeks_toolbar.js")
+
   // Load some pages
   script(src="/assets/bloomingdales.js")
   script(src="/assets/terraworlds.js")
@@ -17,5 +25,5 @@ block content
   script.
     PEEKS.setLogLevel(1);
     var peeks = new PEEKS.Scene();
-    peeks.loadPage('menu');
+    peeks.loadPage('peeks_welcome');
     peeks.start(window);

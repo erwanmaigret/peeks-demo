@@ -41,14 +41,48 @@
 
 	var utils = {};
 
-	utils.mathMin = function(v1, v2) {
-		return v1 > v2 ? v2 : v1;
-	}
-
 	utils.v2Distance = function (v1, v2) {
 		var x = v2[0] - v1[0];
 		var y = v2[1] - v1[1];
 		return Math.sqrt(x * x + y * y);
+	};
+
+	utils.v3 = function(x, y, z) {
+	    if (arguments.length === 3) {
+	        return [x, y, z];
+	    } else if (arguments.length === 1) {
+	        if (arguments[0].length === 3) {
+	            return [arguments[0][0], arguments[0][1], arguments[0][2]];
+	        } else {
+	            return [arguments[0], arguments[0], arguments[0]];
+	        }
+	    } else {
+	      return [0, 0, 0];
+	    }
+	};
+
+	utils.hex2rgb = function(h) {
+	    if (h.charAt(0) === "#") h = h.substring(1,9);
+	    var a = [parseInt(h.substring(0,2),16)/255, parseInt(h.substring(2,4),16)/255, parseInt(h.substring(4,6),16)/255];
+	    if(h.length > 6) a.push(parseInt(h.substring(6,8),16)/255);
+	    return a;
+	};
+
+	utils.color = function() {
+	    if (arguments.length === 3) {
+	        return utils.v3(arguments[0], arguments[1], arguments[2]);
+	    } else if (arguments.length === 1) {
+	        if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
+	            var rgb = utils.hex2rgb(arguments[0]);
+	            if (rgb.length === 3) {
+	                return utils.v3(rgb);
+	            }
+	        } else if (arguments[0].length === 3) {
+	            return utils.v3(arguments[0]);
+	        } else {
+	            return utils.v3(arguments);
+	        }
+	    }
 	};
 
 	var scene;
@@ -107,7 +141,18 @@
 			add: function (node) {
 				node.parent = this;
 				this.children[ this.children.length ] = node;
+				node.applyCss(node, true);
 				return node;
+			},
+
+			addPage: function (name) {
+				var page = PEEKS.loadPage(name);
+				if (page) {
+					this.add(page);
+				} else {
+					logDebug('Can not add missing page ' + name);
+				}
+				return page;
 			},
 
 			destroy: function () {
@@ -141,14 +186,45 @@
 			},
 
 			addImage: function (params) {
-				var asset = new PEEKS.Plane();
-				asset.needsTransition = true;
+				var asset = this.addView(params);
 				if (params.image) asset.setTexture(params.image);
 				if (params.imageBack) asset.setTextureBack(params.imageBack);
 				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
+				return asset;
+			},
+
+			applyCss: function(asset, recurse) {
+				if (this.parent) {
+					this.parent.applyCss(asset);
+				}
+				if (recurse) {
+					for (var childI = 0; childI < this.children.length; childI++) {
+						this.children[childI].applyCss(this.children[childI], true);
+					}
+				}
+				if (this.parent) {
+					this.parent.applyCss(asset);
+				}
+				if (this.css) {
+					if (this.css.bgColor && asset.bgColor === undefined) {
+						asset.bgColor = utils.color.apply(this, this.css.bgColor);
+					}
+					if (this.css.viewBgColor && asset.viewBgColor === undefined) {
+						asset.viewBgColor = utils.color.apply(this, this.css.viewBgColor);
+					}
+				}
+			},
+
+			addView: function (params) {
+				var asset = new PEEKS.Plane();
+				this.applyCss(this);
+				asset.needsTransition = true;
 				if (params.position) asset.setPosition(params.position);
 				if (params.rotation) asset.setRotation(params.rotation);
 				if (params.size) asset.setSize(params.size);
+				if (params.color) asset.setColor(params.color);
+				if (params.bgColor) asset.setBgColor(params.bgColor);
+				if (params.alpha) asset.alpha = params.alpha;
 				return this.add(asset);
 			},
 
@@ -175,7 +251,7 @@
 		this.rotation = [0, 0, 0];
 		this.size = [1, 1, 1];
 		this.updateInitial();
-		this.color = [.7, .7, .7]; // Default color is grey, not white
+		this.color = [1, 1, 1];
 		this.type = 'Asset';
 		this.time = 0;
 		this.primitive = Asset.PrimitiveNone;
@@ -183,14 +259,7 @@
 		this.textureBackUrl = '';
 		this.textureRepeat = [1, 1];
 		this.geomertryUrl = '';
-		this.bounds = {
-			x0: -.5,
-			y0: -.5,
-			z0: -.5,
-			x1: .5,
-			y1: .5,
-			z1: .5,
-		};
+		this.bounds = { x0: -.5, y0: -.5, z0: -.5, x1: .5, y1: .5, z1: .5 };
 		this.visible = true;
 		this.needsTransition = false;
 	}
@@ -269,10 +338,12 @@
 				this.initialSize = this.size.slice();
 			},
 
-			setColor: function(red, green, blue) {
-				if (red) 		this.color[0] = red;
-				if (green) 	this.color[1] = green;
-				if (blue) 	this.color[2] = blue;
+			setColor: function(color) {
+				this.color = utils.color.apply(this, arguments);
+			},
+
+			setBgColor: function(color) {
+				this.bgColor = utils.color.apply(this, arguments);
 			},
 
 			setTexture: function(url) {
@@ -412,6 +483,16 @@
 		pages[name] = ctor;
 	}
 
+	function loadPage(name) {
+		if (pages[name]) {
+			var page = pages[name]();
+			page.name = name;
+			return page;
+		} else {
+			logError("Can't load unregistered page " + name);
+		}
+	}
+
 	function Scene() {
 		Asset.call(this);
 		this.camera = this.add(new Camera());
@@ -420,6 +501,10 @@
 		this.arAsset = this.add(new PEEKS.Asset());
 		this.pagesHistory = [];
 		this.pageIndex = -1;
+		this.css = {
+			viewBgColor: [.8, .8, 1],
+			bgColor: [.9, .9, 1],
+		};
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -484,6 +569,7 @@
 				var asset = this.onPickNode(this.getMouse(event));
 				if (asset) {
 					if (asset.onClick) {
+						console.log(asset.onClick);
 						if (typeof asset.onClick === 'string') {
 							var onClick = asset[asset.onClick];
 							if (onClick) {
@@ -627,8 +713,7 @@
 							this.page.destroy();
 						}
 						logError("Registering " + name);
-						var page = pages[name]();
-						page.name = name;
+						var page = loadPage(name);
 						this.add(page);
 						this.page = page;
 
@@ -649,8 +734,7 @@
 							logError("Unloading current page");
 							this.page.destroy();
 						}
-						var page = pages[name]();
-						page.name = name;
+						var page = loadPage(name);
 						this.add(page);
 						this.page = page;
 						this.pageIndex = pageIndex;
@@ -670,8 +754,12 @@
 				}
 			},
 
-			start: function (window) {
-				this.camera.animateIntro();
+			start: function (window, animate) {
+				if (animate) {
+					this.camera.animateIntro();
+				} else {
+					this.camera.setPosition([0, 0, 4]);
+				}
 
 				this.window = window;
 				var document = window.document;
@@ -881,6 +969,7 @@
 
 	exports.setLogLevel = setLogLevel;
 	exports.registerPage = registerPage;
+	exports.loadPage = loadPage;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));

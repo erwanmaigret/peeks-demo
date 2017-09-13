@@ -196,9 +196,20 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			this.updateLayout();
 
 			if (this.threeObject.material) {
-				this.threeObject.material.color.r = this.color[0];
-				this.threeObject.material.color.g = this.color[1];
-				this.threeObject.material.color.b = this.color[2];
+				var color = this.color;
+				if (this.textureUrl === undefined || this.textureUrl === "") {
+					if (this.viewBgColor) {
+						color = this.viewBgColor;
+					}
+				}
+				if (color) {
+					this.threeObject.material.color.r = color[0];
+					this.threeObject.material.color.g = color[1];
+					this.threeObject.material.color.b = color[2];
+				}
+				if (this.alpha !== undefined) {
+					this.threeObject.material.opacity = this.alpha;
+				}
 			}
 		} else {
 			this.threeObject = new THREE.Object3D();
@@ -255,12 +266,27 @@ PEEKS.Asset.prototype.onUnload = function() {
 PEEKS.Scene.prototype.onPickNode = function(mouse) {
 	var raycaster = new THREE.Raycaster();
 	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
-	var intersectedObjects = raycaster.intersectObjects(this.threeObject.children, true);
-	if (intersectedObjects.length > 0) {
-		var object = intersectedObjects[0].object;
+	var objects = raycaster.intersectObjects(this.threeObject.children, true);
+	for (var objectI = 0; objectI < objects.length; objectI++) {
+		var object = objects[objectI].object;
+		while (object) {
+			if (object.peeksAsset && object.peeksAsset.onClick !== undefined) {
+				if (object.peeksAsset !== this) {
+					return object.peeksAsset;
+				}
+			}
+			object = object.parent;
+		}
+	}
+
+	// Second pass for default click if handled
+	for (var objectI = 0; objectI < objects.length; objectI++) {
+		var object = objects[objectI].object;
 		while (object) {
 			if (object.peeksAsset) {
-				return object.peeksAsset;
+				if (object.peeksAsset !== this) {
+					return object.peeksAsset;
+				}
 			}
 			object = object.parent;
 		}
@@ -270,8 +296,8 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
 
-	var renderWidth = 600;
-	var renderHeight = 400;
+	var renderWidth = 500;
+	var renderHeight = 500;
 
 	var scene = new THREE.Scene();
 	var ambient = new THREE.AmbientLight( 0x101030 );
