@@ -9,28 +9,28 @@ PEEKS.registerPage('peeks_search', function() {
 		alpha: .2,
 	});
 
-	pane.addView({
+	pane.addButton({
 		position: [0, 0],
 		size: [.6, .2, 1],
 	});
 
-	pane.addView({
+	pane.addButton({
 		position: [-.45, .3],
 		size: [.05, .25, 1],
 	});
-	pane.addView({
+	pane.addButton({
 		position: [-.45, -.3],
 		size: [.05, .25, 1],
 	});
-	pane.addView({
+	pane.addButton({
 		position: [.45, .3],
 		size: [.05, .25, 1],
 	});
-	pane.addView({
+	pane.addButton({
 		position: [.45, 0],
 		size: [.05, .25, 1],
 	});
-	pane.addView({
+	pane.addButton({
 		position: [.45, -.3],
 		size: [.05, .25, 1],
 	});

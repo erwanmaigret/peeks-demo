@@ -12,7 +12,7 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	pane.addButton({
 		image: 'ui/icon_clothes.png',
 		position: [-.25, -.25, 0],
-		size: .45,
+		size: .4,
 		onClick: 'loadPage',
 		onClickArgs: ['bloomingdales'],
 	});
@@ -20,7 +20,7 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	pane.addButton({
 		image: 'ui/icon_games.png',
 		position: [-.25, .25, 0],
-		size: .45,
+		size: .4,
 		onClick: 'loadPage',
 		onClickArgs: ['terraworlds'],
 	});
@@ -28,13 +28,13 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	pane.addButton({
 		image: 'ui/icon_travel.png',
 		position: [.25, -.25, 0],
-		size: .45,
+		size: .4,
 	});
 
 	pane.addButton({
 		image: 'ui/icon_videos.png',
 		position: [.25, .25, 0],
-		size: .45,
+		size: .4,
 	});
 
 	return page;

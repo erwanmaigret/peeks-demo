@@ -32,19 +32,6 @@ PEEKS.registerPage('bloomingdales', function() {
 	});
 
 	page.addGeometry({
-		geometry: 'assets/vr_controller_vive_1_5.obj',
-		texture: 'assets/vr_controller_vive_1_5.png',
-		position: [1.5, 0, 0],
-		size: 3,
-	}).animate({
-		duration: 10,
-		begin: [0, 0, 0],
-		end: [360, 360, 360],
-		attribute: 'rotation',
-		loop: true
-	});
-
-	page.addGeometry({
 		geometry: 'assets/ball_chair.obj',
 		position: [-2, -1, 0],
 		rotation: [0, 45, 0],
@@ -100,56 +87,7 @@ PEEKS.registerPage('bloomingdales', function() {
 		});
 	}
 
-	var canvas = page.addCanvas();
-
-	canvas.addButton({
-		image: 'ui/icon_reload.png',
-		position: [-.45, .45],
-		size: .08,
-		onClick: function() { },
-	})
-
-	canvas.addButton({
-		image: 'ui/icon_previous.png',
-		position: [-.35, .45],
-		size: .08,
-		onClick: 'loadPreviousPage',
-	})
-
-	canvas.addButton({
-		image: 'ui/icon_next.png',
-		position: [-.25, .45],
-		size: .08,
-		onClick: 'loadNextPage',
-	})
-
-	canvas.addButton({
-		image: 'ui/icon_ar.png',
-		position: [.45, .45],
-		size: .08,
-		onClick: function() { peeks.toggleArMode(); },
-	});
-
-	canvas.addButton({
-		image: 'ui/icon_peeks.png',
-		position: [0, -.45],
-		size: .2,
-	});
-
-	canvas.animate({
-		duration: 2,
-		delay: 4,
-		begin: [-5, 0, -2],
-		end: [0, 0, 0],
-		attribute: 'position'
-	});
-	canvas.animate({
-		duration: 1,
-		delay: 5,
-		begin: [0, 0, 20],
-		end: [0, 0, 0],
-		attribute: 'rotation'
-	});
+	page.addPage('peeks_toolbar');
 
 	return page;
 });

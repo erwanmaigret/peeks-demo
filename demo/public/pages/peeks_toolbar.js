@@ -37,5 +37,13 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		size: .2,
 	});
 
+	canvas.animate({
+		duration: 1,
+		delay: 2,
+		begin: [0, -2, 0],
+		end: [0, 0, 0],
+		attribute: 'position'
+	});
+
 	return page;
 });

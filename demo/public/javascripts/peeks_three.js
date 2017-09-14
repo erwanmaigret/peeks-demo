@@ -100,6 +100,24 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 	}
 }
 
+PEEKS.Scene.prototype.onRender = function() {
+	this.threeSynch();
+	if (this.page) {
+		var bgColor = this.page.bgColor;
+		if (bgColor === undefined) {
+			bgColor = [1, 1, 1];
+		}
+		this.three.renderer.setClearColor(
+			new THREE.Color(
+				bgColor[0],
+				bgColor[1],
+				bgColor[2]),
+			1);
+	}
+	this.camera.threeSynch(this.three.camera);
+	this.three.renderer.render(this.three.scene, this.three.camera);
+},
+
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {
 		if (this.primitive) {
@@ -310,11 +328,12 @@ PEEKS.Scene.prototype.onStart = function() {
 
 	var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 	renderer.sortObjects = false;
-	renderer.setClearColor( 0x000000, 0 );
-	renderer.setSize( renderWidth, renderHeight );
+	renderer.setClearColor(0xffffff, 1);
+	renderer.setSize(renderWidth, renderHeight);
 
 	this.three.scene = scene;
 	this.three.camera = camera;
 	this.three.renderer = renderer;
 	this.domElement = this.three.renderer.domElement;
+	this.three.scene.add(this.threeGetNode());
 }

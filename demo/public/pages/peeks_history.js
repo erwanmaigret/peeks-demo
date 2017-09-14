@@ -9,22 +9,22 @@ PEEKS.registerPage('peeks_history', function() {
 		alpha: .2,
 	});
 
-	pane.addView({
+	pane.addButton({
 		position: [0, .35],
 		size: [.6, .2, 1],
 	});
 
-	pane.addView({
+	pane.addButton({
 		position: [0, .12],
 		size: [.6, .2, 1],
 	});
 
-	pane.addView({
+	pane.addButton({
 		position: [0, -.12],
 		size: [.6, .2, 1],
 	});
 
-	pane.addView({
+	pane.addButton({
 		position: [0, -.35],
 		size: [.6, .2, 1],
 	});

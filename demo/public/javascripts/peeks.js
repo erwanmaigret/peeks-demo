@@ -383,6 +383,13 @@
 				}
 			},
 
+			render: function() {
+				this.onRender();
+			},
+
+			onRender: function() {
+			},
+
 			updateLayout: function() {
 				if (this.layout) {
 					var bounds = this.getParentBounds();
@@ -539,7 +546,7 @@
 		this.pageIndex = -1;
 		this.css = {
 			viewBgColor: [.8, .8, 1],
-			bgColor: [.9, .9, 1],
+			bgColor: [1, 1, 1],
 		};
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
@@ -818,16 +825,11 @@
 					this.video.texture = undefined;
 				}
 
-				scene.three.scene.add(scene.threeGetNode());
-
 				var animate = function () {
 					requestAnimationFrame(animate);
 
 					scene.update();
-					scene.threeSynch();
-
-					scene.camera.threeSynch(scene.three.camera);
-					scene.three.renderer.render(scene.three.scene, scene.three.camera);
+					scene.render();
 				};
 
 				animate();
