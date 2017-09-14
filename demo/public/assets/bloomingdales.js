@@ -50,7 +50,7 @@ PEEKS.registerPage('bloomingdales', function() {
 		rotation: [0, 45, 0],
 	});
 
-	page.addButton({
+	page.addImage({
 		image: 'images/floor_wood.jpg',
 		imageRepeat: [10, 10],
 		position: [0, -1, 0],
@@ -68,12 +68,13 @@ PEEKS.registerPage('bloomingdales', function() {
 	];
 
 	for (var assetI = 0; assetI < assets.length; assetI++) {
-		page.addImage({
+		page.addButton({
 			image: 'images/' + assets[assetI][0],
 			imageBack: 'images/' + assets[assetI][1],
 			position: [assetI - assets.length / 2 + .5, 0, -3],
 			rotation: [0, 0, 0],
 			size: [1, 1.2, 1],
+			onClick: 'animateFlip',
 		}).animate({
 			duration: 1 + Math.random() * 2,
 			delay: 1 + Math.random() * 3,

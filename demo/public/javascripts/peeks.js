@@ -180,7 +180,12 @@
 
 			addButton: function (params) {
 				var asset = this.addImage(params);
-				if (params.onClick) asset.onClick = params.onClick;
+				if (params.onClick) {
+					asset.onClick = params.onClick;
+				} else {
+					// Assign default empty callback so it's clickable
+					asset.onClick = function () {};
+				}
 				if (params.onClickArgs) asset.onClickArgs = params.onClickArgs;
 				return asset;
 			},
@@ -448,6 +453,37 @@
 			toggleVisible: function() {
 				this.visible = !this.visible;
 			},
+
+			animateFlip: function() {
+				this.animate({
+					duration: 1,
+					delay: this.time,
+					begin: [0, 0, 0],
+					end: [0, 180, 0],
+					attribute: 'rotation'
+				});
+			},
+
+			animateClick: function() {
+				this.animate({
+					duration: .4,
+					delay: this.time,
+					p0: [1, 1, 1],
+					p1: [1.1, 1.1, 1.1],
+					p2: [1.1, 1.1, 1.1],
+					p3: [1, 1, 1],
+					attribute: 'size'
+				});
+				this.animate({
+					duration: .5,
+					delay: this.time,
+					p0: [0, 0, 0],
+					p1: [0, 0, 5],
+					p2: [0, 0, -5],
+					p3: [0, 0, 0],
+					attribute: 'rotation'
+				});
+			},
 		}
 	);
 
@@ -569,7 +605,7 @@
 				var asset = this.onPickNode(this.getMouse(event));
 				if (asset) {
 					if (asset.onClick) {
-						console.log(asset.onClick);
+						asset[`animateClick`]();
 						if (typeof asset.onClick === 'string') {
 							var onClick = asset[asset.onClick];
 							if (onClick) {
@@ -583,14 +619,6 @@
 						} else {
 							asset.onClick();
 						}
-					} else {
-						asset.animate({
-							duration: 1,
-							delay: this.time,
-							begin: [0, 0, 0],
-							end: [0, 180, 0],
-							attribute: 'rotation'
-						});
 					}
 				}
 			},
