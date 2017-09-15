@@ -558,8 +558,8 @@
 		this.mouseDownTime = 0;
 		this.type = 'Scene';
 		this.arAsset = this.add(new PEEKS.Asset());
-		this.pagesHistory = [];
-		this.pageIndex = -1;
+		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
+		this.pageIndex = 0;
 		this.css = {
 			viewBgColor: [.8, .8, 1],
 			bgColor: [1, 1, 1],
