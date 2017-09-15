@@ -246,6 +246,22 @@
 			animate: function (params) {
 				return this.add(new PEEKS.Animation(params));
 			},
+
+			superDebug: function(message) {
+				logSuperDebug(message);
+			},
+			debug: function(message) {
+				logDebug(message);
+			},
+			info: function(message) {
+				logInfo(message);
+			},
+			warn: function(message) {
+				logWarning(message);
+			},
+			error: function(message) {
+				logError(message);
+			},
 		}
 	);
 
@@ -573,8 +589,6 @@
 				if (event.touches) {
 					if (event.touches.length > 0) {
 						return this.convertMouse(event.touches[0].clientX, event.touches[0].clientY, window);
-					} else {
-						return this.convertMouse(0, 0, window);
 					}
 				} else {
 					return this.convertMouse(event.clientX, event.clientY, window);
@@ -587,6 +601,8 @@
 
 			onMouseMove: function (event) {
 				// logDebug('onMouseMove');
+				this.mouseMove = this.getMouse(event);
+				this.mouseMoveTime = this.time;
 			},
 
 			onMouseDown: function (event) {
@@ -597,19 +613,27 @@
 
 			onMouseUp: function (event) {
 				logDebug('onMouseUp');
-				this.mouseUp = this.getMouse(event);
-				this.mouseUpTime = this.time;
-				if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
-				(this.mouseUpTime - this.mouseDownTime) < .3) {
-
-					this.onClick(event);
+				if (this.mouseDown) {
+					this.mouseUp = this.getMouse(event);
+					if (this.mouseUp === undefined) {
+						this.mouseUp = this.mouseMove;
+					}
+					if (this.mouseUp === undefined) {
+						this.mouseUp = this.mouseDown;
+					}
+					this.mouseUpTime = this.time;
+					if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
+						(this.mouseUpTime - this.mouseDownTime) < .3)
+					{
+						this.onClick(this.mouseUp);
+					}
 				}
 			},
 
-			onClick: function (event) {
+			onClick: function (mouse) {
 				logDebug('onClick');
 
-				var asset = this.onPickNode(this.getMouse(event));
+				var asset = this.onPickNode(mouse);
 				if (asset) {
 					if (asset.onClick) {
 						asset[`animateClick`]();

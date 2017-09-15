@@ -69,6 +69,11 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 						video.texture = new THREE.Texture(video);
 		        video.texture.minFilter = THREE.NearestFilter;
 		        video.texture.magFilter = THREE.NearestFilter;
+						console.log('video texture');
+						console.log(navigator.getUserMedia);
+						console.log(navigator.webkitGetUserMedia);
+						console.log(navigator.mozGetUserMedia);
+						console.log(navigator.msGetUserMedia);
 						navigator.getUserMedia = (
 							navigator.getUserMedia ||
 							navigator.webkitGetUserMedia ||
@@ -92,11 +97,28 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 				}
 
 				if (video.texture &&
-					video.readyState === video.HAVE_ENOUGH_DATA) {
+					video.readyState === video.HAVE_ENOUGH_DATA)
+				{
+					video.isActive = true;
 					video.texture.needsUpdate = true;
+					return true;
 				}
 			}
 		}
+	}
+
+	return false;
+}
+
+PEEKS.Asset.prototype.threeGetVisibility = function() {
+	if (this.visible) {
+		if (this.threeObject && this.useVideoTexture) {
+			return this.threeSynchVideoTexture();
+		} else {
+			return true;
+		}
+	} else {
+		return false;
 	}
 }
 
@@ -238,11 +260,13 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		this.threeObject.peeksAsset = this;
 	}
 
-	this.threeObject.visible = this.visible;
+	this.threeSynchVideoTexture();
+
+	var visible = this.threeGetVisibility();
+	this.threeObject.visible = this.threeGetVisibility();
 
 	if (threeObject === undefined) {
 		threeObject = this.threeObject;
-		threeObject.visible = this.visible;
 	}
 
 	if (!threeObject.visible) {
@@ -250,7 +274,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		return;
 	}
 
-	this.threeSynchVideoTexture();
 	this.threeSynchXform(threeObject);
 
 	for (var childI = 0; childI < this.children.length; childI++) {
