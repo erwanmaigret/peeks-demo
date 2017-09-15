@@ -69,11 +69,6 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 						video.texture = new THREE.Texture(video);
 		        video.texture.minFilter = THREE.NearestFilter;
 		        video.texture.magFilter = THREE.NearestFilter;
-						console.log('video texture');
-						console.log(navigator.getUserMedia);
-						console.log(navigator.webkitGetUserMedia);
-						console.log(navigator.mozGetUserMedia);
-						console.log(navigator.msGetUserMedia);
 						navigator.getUserMedia = (
 							navigator.getUserMedia ||
 							navigator.webkitGetUserMedia ||
@@ -81,14 +76,17 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 							navigator.msGetUserMedia
 						);
 						if (navigator.getUserMedia) {
-							navigator.getUserMedia ({ video: true },
-								function(localMediaStream) {
-									video.src = window.URL.createObjectURL(localMediaStream);
-								},
-								function(err) {
-									 this.error("The following error occured: " + err);
-								}
-						 	);
+							var facingMode = "user";
+							var constraints = {
+							  audio: false,
+							  video: {
+							   facingMode: facingMode
+							  }
+							};
+							navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+							  video.srcObject = stream;
+								video.play();
+							});
 						} else {
 							 this.error("getUserMedia not supported");
 						}
@@ -96,10 +94,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 					threeObject.material.map = video.texture;
 				}
 
-				if (video.texture &&
-					video.readyState === video.HAVE_ENOUGH_DATA)
-				{
-					video.isActive = true;
+				if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
 					video.texture.needsUpdate = true;
 					return true;
 				}

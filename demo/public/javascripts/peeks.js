@@ -846,7 +846,9 @@
 					this.video.width = 400;
 					this.video.height = 400;
 					this.video.autoplay = true;
-					this.video.texture = undefined;
+					this.video.setAttribute('autoplay', '');
+					this.video.setAttribute('muted', '');
+					this.video.setAttribute('playsinline', '');
 				}
 
 				var animate = function () {
