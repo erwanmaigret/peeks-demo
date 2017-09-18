@@ -202,6 +202,14 @@
 				return asset;
 			},
 
+			addText: function (params) {
+				var asset = this.addView(params);
+				if (params) {
+					if (params.text) asset.text = params.text;
+				}
+				return asset;
+			},
+
 			applyCss: function(asset, recurse) {
 				if (this.parent) {
 					this.parent.applyCss(asset);
@@ -388,6 +396,28 @@
 				this.viewBgColor = utils.color.apply(this, arguments);
 			},
 
+			createTextTexture: function(fontAsset, rect, color, size, text) {
+				var document = this.getDocument();
+				if (document) {
+					var texture = {};
+					texture.canvas = document.createElement('canvas');
+					texture.context = texture.canvas.getContext('2d');
+					texture.canvas.width = 256;
+					texture.canvas.height = 256;
+					texture.context.clearRect(0, 0, texture.canvas.width, texture.canvas.height);
+					texture.context.font = `${size.toString()}px Arial`;
+				  texture.context.fillStyle = 'rgba(' +
+				    Math.round(color[0] * 255) + ',' +
+				    Math.round(color[1] * 255) + ',' +
+				    Math.round(color[2] * 255) + ',' +
+				    color[3] + ')';
+				  texture.context.fillText(text, rect[0], rect[1] + rect[3] * 3/4);
+					return texture;
+				} else {
+					this.logError("Can't draw text in empty texture");
+				}
+			},
+
 			setTexture: function(url) {
 				this.textureUrl = url;
 			},
@@ -477,6 +507,13 @@
 					scene = scene.parent;
 				}
 				return scene;
+			},
+
+			getDocument: function() {
+				var scene = this.getScene();
+				if (scene && scene.window) {
+					return scene.window.document;
+				}
 			},
 
 			getCamera: function() {

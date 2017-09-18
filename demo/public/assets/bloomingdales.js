@@ -118,6 +118,11 @@ PEEKS.registerPage('bloomingdales', function() {
 	}
 	*/
 
+	page.addText({
+		position: [0, 1, -5],
+		'text': 'Bloomingdales',
+	});
+
 	page.addPage('peeks_toolbar');
 
 	return page;

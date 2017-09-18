@@ -220,7 +220,17 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-					loadTexture(material, this.textureUrl, this.textureRepeat);
+					if (this.text) {
+						textTexture = this.createTextTexture('', [0, 0, 100, 100], [0, 0, 0, 1], 36, this.text);
+						if (textTexture) {
+							var texture = new THREE.Texture(textTexture.canvas);
+							texture.needsUpdate = true;
+							texture.premultiplyAlpha = true;
+							material.map = texture;
+						}
+					} else {
+						loadTexture(material, this.textureUrl, this.textureRepeat);
+					}
 
 					if (backSide) {
 						this.threeObject.add(backSide);
