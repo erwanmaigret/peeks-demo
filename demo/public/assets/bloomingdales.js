@@ -54,8 +54,10 @@ PEEKS.registerPage('bloomingdales', function() {
 		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
 	];
 
+	var panel = page.addAsset();
+
 	for (var assetI = 0; assetI < assets.length; assetI++) {
-		page.addButton({
+		panel.addButton({
 			image: 'images/' + assets[assetI][0],
 			imageBack: 'images/' + assets[assetI][1],
 			position: [assetI - assets.length / 2 + .5, 0, -3],

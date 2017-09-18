@@ -180,21 +180,25 @@
 
 			addButton: function (params) {
 				var asset = this.addImage(params);
-				if (params.onClick) {
-					asset.onClick = params.onClick;
-				} else {
-					// Assign default empty callback so it's clickable
-					asset.onClick = function () {};
+				if (params) {
+					if (params.onClick) {
+						asset.onClick = params.onClick;
+					} else {
+						// Assign default empty callback so it's clickable
+						asset.onClick = function () {};
+					}
+					if (params.onClickArgs) asset.onClickArgs = params.onClickArgs;
 				}
-				if (params.onClickArgs) asset.onClickArgs = params.onClickArgs;
 				return asset;
 			},
 
 			addImage: function (params) {
 				var asset = this.addView(params);
-				if (params.image) asset.setTexture(params.image);
-				if (params.imageBack) asset.setTextureBack(params.imageBack);
-				if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
+				if (params) {
+					if (params.image) asset.setTexture(params.image);
+					if (params.imageBack) asset.setTextureBack(params.imageBack);
+					if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
+				}
 				return asset;
 			},
 
@@ -220,26 +224,38 @@
 				}
 			},
 
-			addView: function (params) {
-				var asset = new PEEKS.Plane();
+			initAsset: function (asset, params) {
 				this.applyCss(this);
 				asset.needsTransition = true;
-				if (params.position) asset.setPosition(params.position);
-				if (params.rotation) asset.setRotation(params.rotation);
-				if (params.size) asset.setSize(params.size);
-				if (params.color) asset.setColor(params.color);
-				if (params.bgColor) asset.setBgColor(params.bgColor);
-				if (params.alpha) asset.alpha = params.alpha;
+				if (params) {
+					if (params.position) asset.setPosition(params.position);
+					if (params.rotation) asset.setRotation(params.rotation);
+					if (params.size) asset.setSize(params.size);
+					if (params.color) asset.setColor(params.color);
+					if (params.bgColor) asset.setBgColor(params.bgColor);
+					if (params.alpha) asset.alpha = params.alpha;
+				}
+			},
+
+			addView: function (params) {
+				var asset = new PEEKS.Plane();
+				this.initAsset(asset, params);
+				return this.add(asset);
+			},
+
+			addAsset: function (params) {
+				var asset = new PEEKS.Asset();
+				this.initAsset(asset, params);
 				return this.add(asset);
 			},
 
 			addGeometry: function (params) {
 				var asset = new PEEKS.Plane();
-				if (params.geometry) asset.setGeometry(params.geometry);
-				if (params.texture) asset.setTexture(params.texture);
-				if (params.position) asset.setPosition(params.position);
-				if (params.rotation) asset.setRotation(params.rotation);
-				if (params.size) asset.setSize(params.size);
+				if (params) {
+					if (params.geometry) asset.setGeometry(params.geometry);
+					if (params.texture) asset.setTexture(params.texture);
+					this.initAsset(asset, params);
+					}
 				return this.add(asset);
 			},
 
