@@ -231,23 +231,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			}
 
 			this.updateLayout();
-
-			if (this.threeObject.material) {
-				var color = this.color;
-				if (this.textureUrl === undefined || this.textureUrl === "") {
-					if (this.viewBgColor) {
-						color = this.viewBgColor;
-					}
-				}
-				if (color) {
-					this.threeObject.material.color.r = color[0];
-					this.threeObject.material.color.g = color[1];
-					this.threeObject.material.color.b = color[2];
-				}
-				if (this.alpha !== undefined) {
-					this.threeObject.material.opacity = this.alpha;
-				}
-			}
 		} else {
 			this.threeObject = new THREE.Object3D();
 		}
@@ -272,6 +255,23 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	}
 
 	this.threeSynchXform(threeObject);
+
+	if (threeObject.material) {
+		var color = this.color;
+		if (this.textureUrl === undefined || this.textureUrl === "") {
+			if (this.viewBgColor) {
+				color = this.viewBgColor;
+			}
+		}
+		if (color) {
+			threeObject.material.color.r = color[0];
+			threeObject.material.color.g = color[1];
+			threeObject.material.color.b = color[2];
+		}
+		if (this.alpha !== undefined) {
+			threeObject.material.opacity = this.alpha;
+		}
+	}
 
 	for (var childI = 0; childI < this.children.length; childI++) {
 		var child = this.children[childI];

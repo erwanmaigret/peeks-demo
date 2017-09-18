@@ -384,6 +384,10 @@
 				this.bgColor = utils.color.apply(this, arguments);
 			},
 
+			setViewBgColor: function(color) {
+				this.viewBgColor = utils.color.apply(this, arguments);
+			},
+
 			setTexture: function(url) {
 				this.textureUrl = url;
 			},
