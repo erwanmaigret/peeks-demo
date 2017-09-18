@@ -402,16 +402,22 @@
 					var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
-					texture.canvas.width = 256;
-					texture.canvas.height = 256;
-					texture.context.clearRect(0, 0, texture.canvas.width, texture.canvas.height);
+					var canvasWidth = 260;
+					var canvasHeight = 260;
+					texture.canvas.width = canvasWidth;
+					texture.canvas.height = canvasHeight;
+					texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
 					texture.context.font = `${size.toString()}px Arial`;
 				  texture.context.fillStyle = 'rgba(' +
 				    Math.round(color[0] * 255) + ',' +
 				    Math.round(color[1] * 255) + ',' +
 				    Math.round(color[2] * 255) + ',' +
 				    color[3] + ')';
-				  texture.context.fillText(text, rect[0], rect[1] + rect[3] * 3/4);
+					var width = texture.context.measureText(text).width;
+					var height = size * 4/3;
+					var xOffset = (canvasWidth - width) / 2;
+					var yOffset = (canvasHeight - height) / 2;
+				  texture.context.fillText(text, xOffset, yOffset);
 					return texture;
 				} else {
 					this.logError("Can't draw text in empty texture");
