@@ -27,15 +27,17 @@ PEEKS.registerPage('bloomingdales', function() {
 
 	page.addImage({
 		image: 'images/bloomingdales_logo.png',
-		position: [0, 2.5, -4],
-		size: [4, .8, 1],
+		position: [0, 1, -5],
+		size: [2, .4, .5],
 	});
 
+	/*
 	page.addGeometry({
 		geometry: 'assets/ball_chair.obj',
 		position: [-2, -1, 0],
 		rotation: [0, 45, 0],
 	});
+	*/
 
 	page.addImage({
 		image: 'images/floor_wood.jpg',
@@ -52,27 +54,53 @@ PEEKS.registerPage('bloomingdales', function() {
 		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
 		['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
 		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
+		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
+		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
+		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
+		['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
+		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
+		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
+		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
+		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
+		['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
+		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
+		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
+		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
+		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
 	];
 
 	var panel = page.addAsset();
 
 	for (var assetI = 0; assetI < assets.length; assetI++) {
-		panel.addButton({
+		var pivot = panel.addAsset({
+			rotation: [0, (assetI - assets.length / 2) * 20, 0]
+		});
+		pivot.addButton({
 			image: 'images/' + assets[assetI][0],
 			imageBack: 'images/' + assets[assetI][1],
-			position: [assetI - assets.length / 2 + .5, 0, -3],
+			position: [0, 0, -4],
 			rotation: [0, 0, 0],
 			size: [1, 1.2, 1],
 			onClick: 'animateFlip',
-		}).animate({
-			duration: 1 + Math.random() * 2,
-			delay: 1 + Math.random() * 3,
+		});
+		/*.animate({
+			duration: 1,
+			delay: Math.random() * 1,
 			begin: [0, -2, 0],
 			end: [0, 0, 0],
 			attribute: 'position'
 		});
+		*/
 	}
 
+	panel.animate({
+		duration: 3,
+		begin: [0, -100, 0],
+		end: [0, 0, 0],
+		attribute: 'rotation'
+	});
+
+	/*
 	for (var x = 1; x <= 4; x++) {
 		var position = [(-2.5 + x) * 2, 0, 0];
 		page.addImage({
@@ -88,6 +116,7 @@ PEEKS.registerPage('bloomingdales', function() {
 			attribute: 'position'
 		});
 	}
+	*/
 
 	page.addPage('peeks_toolbar');
 

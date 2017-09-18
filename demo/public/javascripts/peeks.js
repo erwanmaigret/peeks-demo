@@ -865,7 +865,7 @@
 				this.camera.destroy();
 				this.camera = this.add(new Camera());
 
-				this.camera.setPosition([0, 0, 8]);
+				this.camera.setPosition([0, 0, 0]);
 				if (animate) {
 					this.camera.animateIntro();
 				}
