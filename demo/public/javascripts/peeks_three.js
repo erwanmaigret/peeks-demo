@@ -46,7 +46,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 			this.threeObjectPivot.rotation.x = THREE.Math.degToRad(camera.rotation[0]);
 			this.threeObjectPivot.rotation.y = THREE.Math.degToRad(camera.rotation[1]);
 			this.threeObjectPivot.rotation.z = THREE.Math.degToRad(camera.rotation[2]);
-			threeObject.position.z -= 1;
+			threeObject.position.z -= 2;
 		}
 	}
 }
@@ -342,7 +342,7 @@ PEEKS.Scene.prototype.onStart = function() {
 	directionalLight.position.set( 0, 0, 1 );
 	scene.add( directionalLight );
 
-	var camera = new THREE.PerspectiveCamera( 55, renderWidth/renderHeight, 0.1, 1000 );
+	var camera = new THREE.PerspectiveCamera( 30, renderWidth/renderHeight, 0.1, 1000 );
 
 	var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 	renderer.sortObjects = false;

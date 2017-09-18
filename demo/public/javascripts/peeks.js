@@ -521,8 +521,8 @@
 				var animSpeed = 2;
 				this.animate({
 					duration: 10 / animSpeed,
-					begin: [0, 0, 12],
-					end: [0, 0, 4]
+					begin: [0, 0, 16],
+					end: [0, 0, 0]
 				});
 				this.animate({
 					duration: 9 / animSpeed,
@@ -600,18 +600,21 @@
 			},
 
 			onMouseMove: function (event) {
+				event.preventDefault();
 				// logDebug('onMouseMove');
 				this.mouseMove = this.getMouse(event);
 				this.mouseMoveTime = this.time;
 			},
 
 			onMouseDown: function (event) {
+				event.preventDefault();
 				logDebug('onMouseDown');
 				this.mouseDown = this.getMouse(event);
 				this.mouseDownTime = this.time;
 			},
 
 			onMouseUp: function (event) {
+				event.preventDefault();
 				logDebug('onMouseUp');
 				if (this.mouseDown) {
 					this.mouseUp = this.getMouse(event);
@@ -655,6 +658,8 @@
 			},
 
 			onKeyDown: function (event) {
+				event.preventDefault();
+
 				logDebug('onKeyDown');
 				var manipFactor = event.shiftKey ? .1 : 1;
 				var animAttribute;
@@ -717,10 +722,12 @@
 			},
 
 			onKeyUp: function (event) {
+				event.preventDefault();
 				logDebug('onKeyUp');
 			},
 
 			onMouseWheel: function (event) {
+				event.preventDefault();
 				logDebug('onMouseWheel');
 			},
 
@@ -799,6 +806,8 @@
 						this.pageIndex = pageIndex;
 					}
 				}
+
+				this.resetCamera();
 			},
 
 			loadPreviousPage: function() {
@@ -813,13 +822,18 @@
 				}
 			},
 
-			start: function (window, animate) {
+			resetCamera: function (animate) {
+				this.camera.destroy();
+				this.camera = this.add(new Camera());
+
+				this.camera.setPosition([0, 0, 8]);
 				if (animate) {
 					this.camera.animateIntro();
-				} else {
-					this.camera.setPosition([0, 0, 4]);
 				}
+			},
 
+			start: function (window, animate) {
+				this.resetCamera(animate);
 				this.window = window;
 				var document = window.document;
 
