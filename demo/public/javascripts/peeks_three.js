@@ -32,6 +32,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 			threeObject.rotation.x = THREE.Math.degToRad(this.rotation[0]);
 			threeObject.rotation.y = THREE.Math.degToRad(this.rotation[1]);
 			threeObject.rotation.z = THREE.Math.degToRad(this.rotation[2]);
+			threeObject.rotation.order = this.rotationOrder;
 
 			threeObject.scale.x = this.size[0];
 			threeObject.scale.y = this.size[1];
@@ -43,6 +44,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 			this.threeObjectPivot.position.x = camera.position[0];
 			this.threeObjectPivot.position.y = camera.position[1];
 			this.threeObjectPivot.position.z = camera.position[2];
+			this.threeObjectPivot.rotation.order = camera.rotationOrder;
 			this.threeObjectPivot.rotation.x = THREE.Math.degToRad(camera.rotation[0]);
 			this.threeObjectPivot.rotation.y = THREE.Math.degToRad(camera.rotation[1]);
 			this.threeObjectPivot.rotation.z = THREE.Math.degToRad(camera.rotation[2]);

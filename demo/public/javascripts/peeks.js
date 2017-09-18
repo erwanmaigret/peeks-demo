@@ -270,6 +270,7 @@
 		Node.call(this);
 		this.position = [0, 0, 0];
 		this.rotation = [0, 0, 0];
+		this.rotationOrder = 'XYZ';
 		this.size = [1, 1, 1];
 		this.updateInitial();
 		this.color = [1, 1, 1];
@@ -512,6 +513,7 @@
 
 	function Camera( ) {
 		Asset.call(this);
+		this.rotationOrder = 'ZYX';
 	}
 	Camera.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -602,14 +604,32 @@
 			onMouseMove: function (event) {
 				event.preventDefault();
 				// logDebug('onMouseMove');
-				this.mouseMove = this.getMouse(event);
-				this.mouseMoveTime = this.time;
+
+				if (this.mouseDown) {
+					this.mouseMove = this.getMouse(event);
+					this.mouseMoveTime = this.time;
+					this.mouseDownCanClick = false;
+
+					var mouseMove = utils.v2Distance(this.mouseMove, this.mouseDown);
+					if (mouseMove > .01) {
+						this.mouseDownCanClick = false;
+						if (this.mouseDownCameraRotation) {
+							this.camera.setRotation(
+								this.mouseDownCameraRotation[0] - (this.mouseMove[1] - this.mouseDown[1]) * 45,
+								this.mouseDownCameraRotation[1] + (this.mouseMove[0] - this.mouseDown[0]) * 45,
+								this.mouseDownCameraRotation[2]
+							);
+						}
+					}
+				}
 			},
 
 			onMouseDown: function (event) {
 				event.preventDefault();
 				logDebug('onMouseDown');
 				this.mouseDown = this.getMouse(event);
+				this.mouseDownCameraRotation = this.camera.rotation;
+				this.mouseDownCanClick = true;
 				this.mouseDownTime = this.time;
 			},
 
@@ -617,19 +637,22 @@
 				event.preventDefault();
 				logDebug('onMouseUp');
 				if (this.mouseDown) {
-					this.mouseUp = this.getMouse(event);
-					if (this.mouseUp === undefined) {
-						this.mouseUp = this.mouseMove;
+					if (this.mouseDownCanClick) {
+						this.mouseUp = this.getMouse(event);
+						if (this.mouseUp === undefined) {
+							this.mouseUp = this.mouseMove;
+						}
+						if (this.mouseUp === undefined) {
+							this.mouseUp = this.mouseDown;
+						}
+						this.mouseUpTime = this.time;
+						if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
+							(this.mouseUpTime - this.mouseDownTime) < .3)
+						{
+							this.onClick(this.mouseUp);
+						}
 					}
-					if (this.mouseUp === undefined) {
-						this.mouseUp = this.mouseDown;
-					}
-					this.mouseUpTime = this.time;
-					if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
-						(this.mouseUpTime - this.mouseDownTime) < .3)
-					{
-						this.onClick(this.mouseUp);
-					}
+					delete this.mouseDown;
 				}
 			},
 
