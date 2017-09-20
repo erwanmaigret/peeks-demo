@@ -71,6 +71,24 @@ PEEKS.registerPage('bloomingdales', function() {
 
 	var panel = page.addAsset();
 
+    var hideInfo = function () {
+        var infoPage = this.parent;
+        console.log('there!');
+        infoPage.animate({
+            duration: 1,
+            begin: [0, 0, 0],
+            end: [.5, 0, 0],
+            attribute: 'position'
+        });
+        infoPage.parent.assetPage.animate({
+            duration: 1,
+            begin: [0, 0, 0],
+            end: [-.4, 0, 0],
+            attribute: 'position'
+        });;
+        infoPage.parent.assetPage.infoVisible = false;
+    };
+
     var showInfo = function () {
         var asset = this.parent;
         if (asset) {
@@ -86,27 +104,37 @@ PEEKS.registerPage('bloomingdales', function() {
                     attribute: 'position'
                 });
 
-                asset.infoPage = asset.addAsset({
-                    position: [0, 0, -.1],
-                    size: .8,
-                });
+                asset.assetPage = this;
+                if (asset.infoPage === undefined) {
+                    asset.infoPage = asset.addAsset({
+                        position: [0, 0, -.1],
+                        size: .8,
+                    });
+                    var pane = asset.infoPage.addButton({
+                        size: 1,
+                        onClick: hideInfo,
+                    });
+                    pane.addText({
+                		position: [0, .4, .01],
+                        size: 1,
+                		text: 'Product Name',
+                        textAlign: 'center',
+                        fontSize: 18
+                	});
+                    pane.addText({
+                		position: [.1, .3, .01],
+                        size: 1,
+                		text: 'Product description',
+                        textAlign: 'left',
+                        fontSize: 12
+                	});
+                }
                 asset.infoPage.animate({
                     duration: 1,
                     begin: [0, 0, 0],
                     end: [-.5, 0, 0],
                     attribute: 'position'
                 });
-
-                var pane = asset.infoPage.addButton({
-                    size: 1,
-                });
-                pane.addText({
-            		position: [0, -.5, .01],
-                    size: 1,
-            		text: 'Product Name',
-                    textAlign: 'left',
-                    fontSize: 18
-            	});
             }
         }
     };
