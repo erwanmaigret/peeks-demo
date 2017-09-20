@@ -101,9 +101,11 @@ PEEKS.registerPage('bloomingdales', function() {
                     size: 1,
                 });
                 pane.addText({
-            		position: [0, -.5, 0],
-                    size: .8,
-            		'text': 'infos',
+            		position: [0, -.5, .01],
+                    size: 1,
+            		text: 'Product Name',
+                    textAlign: 'left',
+                    fontSize: 18
             	});
             }
         }

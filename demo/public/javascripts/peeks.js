@@ -205,11 +205,22 @@
 
 			addText: function (params) {
 				var asset = this.addView(params);
-				if (params) {
-					if (params.text) asset.text = params.text;
-				}
+                this.applyParams(asset, params);
 				return asset;
 			},
+
+            applyParams: function(asset, params) {
+                if (params) {
+                    for (var key in params) {
+                        var setterName = "set" + key.charAt(0).toUpperCase() + key.slice(1);
+                        if (asset[setterName] !== undefined) {
+                            asset[setterName].call(asset, params[key]);
+                        } else {
+                            asset[key] = params[key];
+                        }
+                    }
+                }
+            },
 
 			applyCss: function(asset, recurse) {
 				if (this.parent) {
@@ -224,26 +235,23 @@
 					this.parent.applyCss(asset);
 				}
 				if (this.css) {
-					if (this.css.bgColor && asset.bgColor === undefined) {
-						asset.bgColor = utils.color.apply(this, this.css.bgColor);
+                    for (var key in this.css) {
+                        if (asset[key] === undefined) {
+                            asset[key] = this.css[key];
+                        }
+                    }
+                    if (asset.bgColor !== undefined) {
+						asset.bgColor = utils.color.apply(this, asset.bgColor);
 					}
-					if (this.css.viewBgColor && asset.viewBgColor === undefined) {
-						asset.viewBgColor = utils.color.apply(this, this.css.viewBgColor);
+					if (asset.viewBgColor !== undefined) {
+						asset.viewBgColor = utils.color.apply(this, asset.viewBgColor);
 					}
 				}
 			},
 
 			initAsset: function (asset, params) {
 				this.applyCss(this);
-				asset.needsTransition = true;
-				if (params) {
-					if (params.position) asset.setPosition(params.position);
-					if (params.rotation) asset.setRotation(params.rotation);
-					if (params.size) asset.setSize(params.size);
-					if (params.color) asset.setColor(params.color);
-					if (params.bgColor) asset.setBgColor(params.bgColor);
-					if (params.alpha) asset.alpha = params.alpha;
-				}
+                this.applyParams(asset, params);
 			},
 
 			addView: function (params) {
@@ -309,7 +317,6 @@
 		this.geomertryUrl = '';
 		this.bounds = { x0: -.5, y0: -.5, z0: -.5, x1: .5, y1: .5, z1: .5 };
 		this.visible = true;
-		this.needsTransition = false;
 	}
 
 	Asset.PrimitiveNone = 0;
@@ -398,9 +405,12 @@
 				this.viewBgColor = utils.color.apply(this, arguments);
 			},
 
-			createTextTexture: function(fontAsset, color, size, text) {
+			createTextTexture: function() {
 				var document = this.getDocument();
 				if (document) {
+                    var size = this.fontSize;
+                    var text = this.text;
+                    var color = this.fontColor;
 					var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
@@ -419,8 +429,23 @@
                         color[3] + ')';
 					var width = texture.context.measureText(text).width;
 					var height = size * 4/3;
-					var xOffset = (canvasWidth - width) / 2;
 					var yOffset = (canvasHeight - height) / 2 + (height / 2);
+                    var xOffset;
+                    console.log(this.textAlign);
+                    switch (this.textAlign) {
+                        case 'left': {
+                            xOffset = 0;
+                            break;
+                        }
+                        case 'right': {
+                            xOffset = canvasWidth - width;
+                            break;
+                        }
+                        default: {
+                            xOffset = (canvasWidth - width) / 2;
+                            break;
+                        }
+                    }
                     console.log(xOffset);
                     console.log(yOffset);
                     texture.context.fillText(text, xOffset, yOffset);
@@ -449,10 +474,6 @@
 			update: function(time) {
 				if (time == undefined) {
 					time = (Date.now() - startTime) / 1000;
-				}
-
-				if (this.needsTransition) {
-					this.needsTransition = false;
 				}
 
 				this.time = time;
@@ -630,7 +651,11 @@
 		this.pageIndex = 0;
 		this.css = {
 			viewBgColor: [1, 1, 1],
-			bgColor: [1, 1, 1],
+            bgColor: [1, 1, 1],
+            fontSize: 12,
+            fontColor: [0, 0, 0, 1],
+            valign: 'center',
+            align: 'center',
 		};
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
