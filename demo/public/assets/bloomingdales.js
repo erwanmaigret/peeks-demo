@@ -163,7 +163,7 @@ PEEKS.registerPage('bloomingdales', function() {
 		*/
 	}
 
-    var entranceAnimation = false;
+    var entranceAnimation = true;
     if (entranceAnimation) {
     	panel.animate({
     		duration: 3,
