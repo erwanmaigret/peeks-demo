@@ -85,7 +85,7 @@
 	    }
 	};
 
-	var scene;
+	var mainScene;
 
 	function EventDispatcher() {}
 		Object.assign( EventDispatcher.prototype, {
@@ -268,7 +268,10 @@
 			},
 
 			animate: function (params) {
-				return this.add(new PEEKS.Animation(params));
+				var anim = this.add(new PEEKS.Animation(params));
+                if (!anim.delay && this.time !== undefined) {
+                    anim.delay = this.time;
+                }
 			},
 
 			superDebug: function(message) {
@@ -402,8 +405,8 @@
 					var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
-					var canvasWidth = 260;
-					var canvasHeight = 260;
+					var canvasWidth = 256;
+					var canvasHeight = 256;
 					texture.canvas.width = canvasWidth;
 					texture.canvas.height = canvasHeight;
 					texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -416,7 +419,7 @@
 					var width = texture.context.measureText(text).width;
 					var height = size * 4/3;
 					var xOffset = (canvasWidth - width) / 2;
-					var yOffset = (canvasHeight - height) / 2;
+					var yOffset = (canvasHeight - height) / 2 + (height / 2);
 				  texture.context.fillText(text, xOffset, yOffset);
 					return texture;
 				} else {
@@ -927,20 +930,68 @@
 
 				this.onStart();
 
-				scene = this;
+				mainScene = this;
 
 				if (document) {
-					document.body.appendChild( scene.domElement );
-			    document.addEventListener('mousemove', function(event) { scene.onMouseMove(event); });
-			    document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } });
-			    document.addEventListener('mouseup', function(event) { scene.onMouseUp(event); });
-			    document.addEventListener('keydown', function(event) { scene.onKeyDown(event); });
-			    document.addEventListener('keyup', function(event) { scene.onKeyUp(event); });
-			    document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } });
-			    document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } });
-			    document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
-			    document.addEventListener('touchend', function(event) { scene.onMouseUp(event); } );
-			    document.addEventListener('touchmove', function(event) { scene.onMouseMove(event); } );
+					document.body.appendChild( mainScene.domElement );
+
+                    document.addEventListener('mousemove',
+                        function(event) {
+                            mainScene.onMouseMove(event);
+                        });
+
+                    document.addEventListener('mousedown',
+                        function(event) {
+                            if (event.target.nodeName === 'CANVAS') {
+                                mainScene.onMouseDown(event);
+                            }
+                        });
+
+                    document.addEventListener('mouseup',
+                        function(event) {
+                            mainScene.onMouseUp(event);
+                        });
+
+                    document.addEventListener('keydown',
+                        function(event) {
+                            mainScene.onKeyDown(event);
+                        });
+
+                    document.addEventListener('keyup',
+                        function(event) {
+                            mainScene.onKeyUp(event);
+                        });
+
+                    document.addEventListener('mousewheel',
+                        function(event) {
+                            if (event.target.nodeName === 'CANVAS') {
+                                mainScene.onMouseWheel(event);
+                            }
+                        });
+
+                    document.addEventListener('MozMousePixelScroll',
+                        function(event) {
+                            if (event.target.nodeName === 'CANVAS') {
+                                mainScene.onMouseWheel(event);
+                            }
+                        });
+
+                    document.addEventListener('touchstart',
+                        function(event) {
+                            if (event.target.nodeName === 'CANVAS') {
+                                mainScene.onMouseDown(event);
+                            }
+                        });
+
+                    document.addEventListener('touchend',
+                        function(event) {
+                            mainScene.onMouseUp(event);
+                        });
+
+                    document.addEventListener('touchmove',
+                        function(event) {
+                            mainScene.onMouseMove(event);
+                        });
 
 					this.video = document.createElement('video');
 					this.video.width = 400;
@@ -954,8 +1005,8 @@
 				var animate = function () {
 					requestAnimationFrame(animate);
 
-					scene.update();
-					scene.render();
+					mainScene.update();
+					mainScene.render();
 				};
 
 				animate();

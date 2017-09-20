@@ -71,17 +71,48 @@ PEEKS.registerPage('bloomingdales', function() {
 
 	var panel = page.addAsset();
 
+    var showInfo = function () {
+        var asset = this.parent;
+        if (asset) {
+            if (this.infoVisible) {
+                this.animateFlip();
+            } else {
+                this.infoVisible = true;
+
+                this.animate({
+                    duration: 1,
+                    begin: [0, 0, 0],
+                    end: [.3, 0, 1],
+                    attribute: 'position'
+                });
+
+                asset.infoPage = asset.addCanvas();
+
+                var pane = asset.infoPage.addView({
+                    position: [-.4, -.05],
+                    size: 1,
+                });
+                pane.addText({
+            		position: [0, -.5, 0],
+            		'text': 'info',
+            	});
+            }
+        }
+    };
+
 	for (var assetI = 0; assetI < assets.length; assetI++) {
 		var pivot = panel.addAsset({
 			rotation: [0, (assetI - assets.length / 2) * 20, 0]
 		});
-		pivot.addButton({
+        var asset = pivot.addAsset({
+			position: [0, 0, -4],
+		});
+		asset.addButton({
 			image: 'images/' + assets[assetI][0],
 			imageBack: 'images/' + assets[assetI][1],
-			position: [0, 0, -4],
 			rotation: [0, 0, 0],
 			size: [1, 1.2, 1],
-			onClick: 'animateFlip',
+			onClick: showInfo,
 		});
 		/*.animate({
 			duration: 1,
@@ -117,11 +148,6 @@ PEEKS.registerPage('bloomingdales', function() {
 		});
 	}
 	*/
-
-	page.addText({
-		position: [0, 1, -5],
-		'text': 'Bloomingdales',
-	});
 
 	page.addPage('peeks_toolbar');
 
