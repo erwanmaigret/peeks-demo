@@ -3,21 +3,21 @@ PEEKS.registerPage('terraworlds', function() {
 
 	page.setBgColor(0, 0, .1);
 
-	var size = 20;
+	var size = 15;
 	for (var x = -size; x < size; x++) {
 		for (var z = -size; z < size; z++) {
 			page.addButton({
 				position: [x, -1, z],
 				rotation: [90, 0, 0],
-				size: .9,
+				size: .97,
 				onClick: function() {
 					this.setViewBgColor(.2, 1, .2);
 				}
 			}).animate({
-				duration: 3 + Math.random() * 4,
-				delay: Math.random() * 3,
+				duration: 2 + Math.random() * 2,
+				delay: .5 + Math.random() * .5,
 				p0: [0, 0, 0],
-				p1: [0, -.5, 0],
+				p1: [0, -.3, 0],
 				p2: [0, -.1, 0],
 				p3: [0, 0, 0],
 				attribute: 'position',

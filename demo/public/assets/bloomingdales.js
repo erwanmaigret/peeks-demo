@@ -82,19 +82,28 @@ PEEKS.registerPage('bloomingdales', function() {
                 this.animate({
                     duration: 1,
                     begin: [0, 0, 0],
-                    end: [.3, 0, 1],
+                    end: [.4, 0, 0],
                     attribute: 'position'
                 });
 
-                asset.infoPage = asset.addCanvas();
+                asset.infoPage = asset.addAsset({
+                    position: [0, 0, -.1],
+                    size: .8,
+                });
+                asset.infoPage.animate({
+                    duration: 1,
+                    begin: [0, 0, 0],
+                    end: [-.5, 0, 0],
+                    attribute: 'position'
+                });
 
-                var pane = asset.infoPage.addView({
-                    position: [-.4, -.05],
+                var pane = asset.infoPage.addButton({
                     size: 1,
                 });
                 pane.addText({
             		position: [0, -.5, 0],
-            		'text': 'info',
+                    size: .8,
+            		'text': 'infos',
             	});
             }
         }
@@ -124,12 +133,15 @@ PEEKS.registerPage('bloomingdales', function() {
 		*/
 	}
 
-	panel.animate({
-		duration: 3,
-		begin: [0, -100, 0],
-		end: [0, 0, 0],
-		attribute: 'rotation'
-	});
+    var entranceAnimation = false;
+    if (entranceAnimation) {
+    	panel.animate({
+    		duration: 3,
+    		begin: [0, -100, 0],
+    		end: [0, 0, 0],
+    		attribute: 'rotation'
+    	});
+    }
 
 	/*
 	for (var x = 1; x <= 4; x++) {

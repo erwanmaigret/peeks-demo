@@ -140,6 +140,7 @@
 		{
 			add: function (node) {
 				node.parent = this;
+                node.time = this.time;
 				this.children[ this.children.length ] = node;
 				node.applyCss(node, true);
 				return node;
@@ -269,9 +270,7 @@
 
 			animate: function (params) {
 				var anim = this.add(new PEEKS.Animation(params));
-                if (!anim.delay && this.time !== undefined) {
-                    anim.delay = this.time;
-                }
+                return anim;
 			},
 
 			superDebug: function(message) {
@@ -399,7 +398,7 @@
 				this.viewBgColor = utils.color.apply(this, arguments);
 			},
 
-			createTextTexture: function(fontAsset, rect, color, size, text) {
+			createTextTexture: function(fontAsset, color, size, text) {
 				var document = this.getDocument();
 				if (document) {
 					var texture = {};
@@ -410,17 +409,21 @@
 					texture.canvas.width = canvasWidth;
 					texture.canvas.height = canvasHeight;
 					texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
-					texture.context.font = `${size.toString()}px Arial`;
-				  texture.context.fillStyle = 'rgba(' +
-				    Math.round(color[0] * 255) + ',' +
-				    Math.round(color[1] * 255) + ',' +
-				    Math.round(color[2] * 255) + ',' +
-				    color[3] + ')';
+                    //texture.context.fillStyle = 'rgba(200,0,0,255)';
+                    //texture.context.fillRect(0, 0, canvasWidth, canvasHeight);
+                    texture.context.font = `${size.toString()}px Arial`;
+                    texture.context.fillStyle = 'rgba(' +
+                        Math.round(color[0] * 255) + ',' +
+                        Math.round(color[1] * 255) + ',' +
+                        Math.round(color[2] * 255) + ',' +
+                        color[3] + ')';
 					var width = texture.context.measureText(text).width;
 					var height = size * 4/3;
 					var xOffset = (canvasWidth - width) / 2;
 					var yOffset = (canvasHeight - height) / 2 + (height / 2);
-				  texture.context.fillText(text, xOffset, yOffset);
+                    console.log(xOffset);
+                    console.log(yOffset);
+                    texture.context.fillText(text, xOffset, yOffset);
 					return texture;
 				} else {
 					this.logError("Can't draw text in empty texture");
@@ -547,7 +550,6 @@
 			animateFlip: function() {
 				this.animate({
 					duration: 1,
-					delay: this.time,
 					begin: [0, 0, 0],
 					end: [0, 180, 0],
 					attribute: 'rotation'
@@ -557,7 +559,6 @@
 			animateClick: function() {
 				this.animate({
 					duration: .4,
-					delay: this.time,
 					p0: [1, 1, 1],
 					p1: [1.1, 1.1, 1.1],
 					p2: [1.1, 1.1, 1.1],
@@ -566,7 +567,6 @@
 				});
 				this.animate({
 					duration: .5,
-					delay: this.time,
 					p0: [0, 0, 0],
 					p1: [0, 0, 5],
 					p2: [0, 0, -5],
@@ -629,7 +629,7 @@
 		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
 		this.pageIndex = 0;
 		this.css = {
-			viewBgColor: [.8, .8, 1],
+			viewBgColor: [1, 1, 1],
 			bgColor: [1, 1, 1],
 		};
 	}
@@ -801,7 +801,6 @@
 					if (animAttribute && animValue) {
 						target.add(new PEEKS.Animation({
 							duration: 1,
-							delay: this.time,
 							begin: [0, 0, 0],
 							end: animValue,
 							attribute: animAttribute
@@ -1053,7 +1052,6 @@
 
 	function Animation(data) {
 		Asset.call( this );
-		this.startTime = 0;
 		this.duration = 10;
 		this.delay = 0;
 		this.attribute = 'position';
@@ -1130,6 +1128,9 @@
 
 			update: function(time) {
 				var t = 0;
+                if (this.startTime === undefined) {
+                    this.startTime = time;
+                }
 				var startTime = this.startTime + this.delay;
 				var endTime = startTime + this.duration;
 				if (time <= startTime) {

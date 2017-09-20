@@ -221,7 +221,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					this.threeObject = plane;
 
 					if (this.text) {
-						textTexture = this.createTextTexture('', [0, 0, 100, 100], [0, 0, 0, 1], 36, this.text);
+						textTexture = this.createTextTexture('', [0, 0, 0, 1], 36, this.text);
 						if (textTexture) {
 							var texture = new THREE.Texture(textTexture.canvas);
 							texture.needsUpdate = true;

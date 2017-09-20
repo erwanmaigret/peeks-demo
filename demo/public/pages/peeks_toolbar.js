@@ -39,8 +39,8 @@ PEEKS.registerPage('peeks_toolbar', function() {
 
 	canvas.animate({
 		duration: 1,
-		delay: 2,
-		begin: [0, -2, 0],
+		delay: .2,
+		begin: [0, -.3, 0],
 		end: [0, 0, 0],
 		attribute: 'position'
 	});
