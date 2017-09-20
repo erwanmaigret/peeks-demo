@@ -820,7 +820,10 @@
 				logDebug('onMouseWheel');
 			},
 
-			onStart: function () {
+            onStart: function () {
+			},
+
+            onResize: function () {
 			},
 
 			onAnimate: function () {
@@ -924,7 +927,8 @@
 			start: function (window, animate) {
 				this.resetCamera(animate);
 				this.window = window;
-				var document = window.document;
+                this.width = this.window.innerWidth;
+                this.height = this.window.innerHeight;
 
 				logDebug('Scene.start');
 
@@ -932,6 +936,7 @@
 
 				mainScene = this;
 
+                var document = window.document;
 				if (document) {
 					document.body.appendChild( mainScene.domElement );
 
@@ -1003,10 +1008,21 @@
 				}
 
 				var animate = function () {
-					requestAnimationFrame(animate);
+                    if (mainScene) {
+    					requestAnimationFrame(animate);
 
-					mainScene.update();
-					mainScene.render();
+                        if (mainScene.width !== mainScene.window.innerWidth ||
+                            mainScene.height !== mainScene.window.innerHeight)
+                        {
+                            mainScene.width = mainScene.window.innerWidth;
+                            mainScene.height = mainScene.window.innerHeight;
+
+                            mainScene.onResize();
+                        }
+
+    					mainScene.update();
+    					mainScene.render();
+                    }
 				};
 
 				animate();
