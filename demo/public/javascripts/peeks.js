@@ -962,75 +962,87 @@
 				if (document) {
 					document.body.appendChild(mainScene.domElement);
 
-                    var onDeviceOrientationChangeEvent = function(event) {
-                        if (event.alpha != null) {
-                            mainScene.deviceOrientation = event;
+                    window.addEventListener('orientationchange',
+                        function() {
+                            mainScene.screenOrientation = window.orientation || 0;
                         }
-                    };
-                    var onScreenOrientationChangeEvent = function() {
-                        mainScene.screenOrientation = window.orientation || 0;
-                    };
+                    );
 
-                    window.addEventListener('orientationchange', onScreenOrientationChangeEvent);
-            		window.addEventListener('deviceorientation', onDeviceOrientationChangeEvent);
+            		window.addEventListener('deviceorientation',
+                        function(event) {
+                            if (event.alpha != null) {
+                                mainScene.deviceOrientation = event;
+                            }
+                        }
+                    );
 
                     document.addEventListener('mousemove',
                         function(event) {
                             mainScene.onMouseMove(event);
-                        });
+                        }
+                    );
 
                     document.addEventListener('mousedown',
                         function(event) {
                             if (event.target.nodeName === 'CANVAS') {
                                 mainScene.onMouseDown(event);
                             }
-                        });
+                        }
+                    );
 
                     document.addEventListener('mouseup',
                         function(event) {
                             mainScene.onMouseUp(event);
-                        });
+                        }
+                    );
 
                     document.addEventListener('keydown',
                         function(event) {
                             mainScene.onKeyDown(event);
-                        });
+                        }
+                    );
 
                     document.addEventListener('keyup',
                         function(event) {
                             mainScene.onKeyUp(event);
-                        });
+                        }
+                    );
 
                     document.addEventListener('mousewheel',
                         function(event) {
                             if (event.target.nodeName === 'CANVAS') {
                                 mainScene.onMouseWheel(event);
                             }
-                        });
+                        }
+                    );
 
                     document.addEventListener('MozMousePixelScroll',
                         function(event) {
                             if (event.target.nodeName === 'CANVAS') {
                                 mainScene.onMouseWheel(event);
                             }
-                        });
+                        }
+                    );
 
                     document.addEventListener('touchstart',
                         function(event) {
                             if (event.target.nodeName === 'CANVAS') {
                                 mainScene.onMouseDown(event);
                             }
-                        });
+                        }
+                    );
 
                     document.addEventListener('touchend',
                         function(event) {
                             mainScene.onMouseUp(event);
-                        });
+                        }
+                    );
 
                     document.addEventListener('touchmove',
                         function(event) {
                             mainScene.onMouseMove(event);
-                        });
+                        }
+                    );
 
 					this.video = document.createElement('video');
 					this.video.width = 400;
