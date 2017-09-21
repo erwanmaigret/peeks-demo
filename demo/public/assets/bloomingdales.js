@@ -2,51 +2,39 @@ PEEKS.registerPage('bloomingdales', function() {
 	var page = new PEEKS.Asset();
 
 	page.addImage({
-		image: 'images/wall_bricks.jpg',
-		imageRepeat: [3, 3],
+		image: 'images/bg_shop_1.jpg',
+		imageRepeat: [1, 1],
 		position: [0, 0, -10.1],
 		rotation: [0, 0, 0],
-		size: 21,
+		size: 10,
+        onClick: function() {
+            this.addButton({
+        		image: 'images/wall_bricks_1.jpg',
+                imageRepeat: [1.5, 1.5],
+        		position: [0, 0, .001],
+                onClick: function() {
+                    this.destroy();
+                },
+            });
+        },
 	});
 
 	page.addImage({
-		image: 'images/wall_bricks.jpg',
-		imageRepeat: [3, 3],
-		position: [-10, 0, 0],
-		rotation: [0, 90, 0],
-		size: 21,
-	});
-
-	page.addImage({
-		image: 'images/wall_bricks.jpg',
-		imageRepeat: [3, 3],
-		position: [10, 0, 0],
-		rotation: [0, -90, 0],
-		size: 21,
-	});
-
-    /*
-	page.addImage({
-		image: 'images/bloomingdales_logo.png',
-		position: [0, 1, -5],
-		size: [2, .4, .5],
-	});
-    */
-
-	/*
-	page.addGeometry({
-		geometry: 'assets/ball_chair.obj',
-		position: [-2, -1, 0],
-		rotation: [0, 45, 0],
-	});
-	*/
-
-	page.addImage({
-		image: 'images/floor_wood.jpg',
-		imageRepeat: [10, 10],
+		image: 'images/floor_tiles_1.jpg',
+		imageRepeat: [6.5, 6.5],
 		position: [0, -1, 0],
 		rotation: [-90, 0, 0],
 		size: 20,
+        onClick: function() {
+            this.addButton({
+        		image: 'images/floor_wood_1.jpg',
+                imageRepeat: [10, 10],
+        		position: [0, 0, .001],
+                onClick: function() {
+                    this.destroy();
+                },
+            });
+        },
 	});
 
 	// Imported from Bloomingdales website:
@@ -203,6 +191,12 @@ PEEKS.registerPage('bloomingdales', function() {
 		});
 	}
 	*/
+
+    page.addGeometry({
+		geometry: 'assets/ball_chair.obj',
+		position: [-2, -.5, -4.5],
+		rotation: [0, 45, 0],
+	});
 
     var canvas = page.addCanvas();
     canvas.addImage({

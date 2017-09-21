@@ -7,9 +7,7 @@ PEEKS.registerPage('peeks_background', function() {
 		rotation: [0, 0, 0],
 		size: 15,
         onClick: function() {
-            console.log(1);
             if (this.fgImage === undefined) {
-                console.log(2);
                 this.addButton({
             		image: 'images/bg_library_1.jpg',
             		position: [0, 0, .1],
