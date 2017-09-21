@@ -960,11 +960,11 @@
 
                 var document = window.document;
 				if (document) {
-					document.body.appendChild( mainScene.domElement );
+					document.body.appendChild(mainScene.domElement);
 
-                    var onDeviceOrientationChangeEvent = function( event ) {
+                    var onDeviceOrientationChangeEvent = function(event) {
                         if (event.alpha != null) {
-                            mainScene.deviceOrientation = [event.beta, event.gamma, event.alpha];
+                            mainScene.deviceOrientation = event;
                         }
                     };
                     var onScreenOrientationChangeEvent = function() {

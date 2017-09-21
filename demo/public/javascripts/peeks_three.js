@@ -19,24 +19,15 @@ var loadTexture = function(material, textureUrl, textureRepeat)
 }
 
 var setObjectQuaternion = function(quaternion, alpha, beta, gamma, orient) {
-
-		var zee = new THREE.Vector3( 0, 0, 1 );
-
-		var euler = new THREE.Euler();
-
-		var q0 = new THREE.Quaternion();
-
-		var q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
-
-			euler.set( beta, alpha, - gamma, 'YXZ' ); // 'ZXY' for the device, but 'YXZ' for us
-
-			quaternion.setFromEuler( euler ); // orient the device
-
-			quaternion.multiply( q1 ); // camera looks out the back of the device, not the top
-
-			quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
-
-	}
+    var zee = new THREE.Vector3( 0, 0, 1 );
+    var euler = new THREE.Euler();
+    var q0 = new THREE.Quaternion();
+    var q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
+    euler.set( beta, alpha, - gamma, 'YXZ' ); // 'ZXY' for the device, but 'YXZ' for us
+    quaternion.setFromEuler( euler ); // orient the device
+    quaternion.multiply( q1 ); // camera looks out the back of the device, not the top
+    quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
+}
 
 PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 	if (threeObject === undefined) {
@@ -63,34 +54,16 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
         if (this === camera) {
             var scene = this.getScene();
             if (scene && scene.deviceOrientation !== undefined) {
-                var alpha = scene.deviceOrientation[2];
-                		var beta = scene.deviceOrientation[0];
-                        var gamma = scene.deviceOrientation[1];
-                		var orient = 0;
-                        threeObject.rotation.order = 'YXZ';
-                        //setObjectQuaternion( threeObject.quaternion, alpha, beta, gamma, orient );
-                        setObjectQuaternion( threeObject.quaternion,
-                            THREE.Math.degToRad(alpha),
-                            THREE.Math.degToRad(beta),
-                            THREE.Math.degToRad(gamma),
-                            0);
-                        //threeObject.alpha = alpha;
-
-
-
-/*                threeObject.rotation.order = 'YXZ';
-                //threeObject.rotation.order = 'XYZ';
-
-
-
-    	        threeObject.rotation.x = THREE.Math.degToRad(scene.orientation[0]);
-    			threeObject.rotation.y = THREE.Math.degToRad(scene.orientation[1]);
-    			threeObject.rotation.z = THREE.Math.degToRad(scene.orientation[2]);
-                threeObject.parent.rotation.x = THREE.Math.degToRad(-90);
-                threeObject.parent.rotation.x = THREE.Math.degToRad(0);
-    			threeObject.parent.rotation.y = THREE.Math.degToRad(0);
-    			threeObject.parent.rotation.z = THREE.Math.degToRad(0);
-                */
+                var alpha = scene.deviceOrientation.alpha;
+                var beta = scene.deviceOrientation.beta;
+                var gamma = scene.deviceOrientation.gamma;
+                var orient = scene.screenOrientation || 0;
+                threeObject.rotation.order = 'YXZ';
+                setObjectQuaternion(threeObject.quaternion,
+                    THREE.Math.degToRad(alpha),
+                    THREE.Math.degToRad(beta),
+                    THREE.Math.degToRad(gamma),
+                    THREE.Math.degToRad(orient));
             }
         } else if (this.type == 'Canvas') {
 			this.threeObjectPivot.position.x = camera.position[0];
