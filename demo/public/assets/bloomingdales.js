@@ -73,7 +73,6 @@ PEEKS.registerPage('bloomingdales', function() {
 
     var hideInfo = function () {
         var infoPage = this.parent;
-        console.log('there!');
         infoPage.animate({
             duration: 1,
             begin: [0, 0, 0],

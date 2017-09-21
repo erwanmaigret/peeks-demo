@@ -431,7 +431,6 @@
 					var height = size * 4/3;
 					var yOffset = (canvasHeight - height) / 2 + (height / 2);
                     var xOffset;
-                    console.log(this.textAlign);
                     switch (this.textAlign) {
                         case 'left': {
                             xOffset = 0;
@@ -446,8 +445,6 @@
                             break;
                         }
                     }
-                    console.log(xOffset);
-                    console.log(yOffset);
                     texture.context.fillText(text, xOffset, yOffset);
 					return texture;
 				} else {
@@ -600,7 +597,8 @@
 
 	function Camera( ) {
 		Asset.call(this);
-		this.rotationOrder = 'ZYX';
+        this.rotationOrder = 'ZYX';
+        this.type = 'Camera';
 	}
 	Camera.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -963,6 +961,18 @@
                 var document = window.document;
 				if (document) {
 					document.body.appendChild( mainScene.domElement );
+
+                    var onDeviceOrientationChangeEvent = function( event ) {
+                        if (event.alpha != null) {
+                            mainScene.deviceOrientation = [event.beta, event.gamma, event.alpha];
+                        }
+                    };
+                    var onScreenOrientationChangeEvent = function() {
+                        mainScene.screenOrientation = window.orientation || 0;
+                    };
+
+                    window.addEventListener('orientationchange', onScreenOrientationChangeEvent);
+            		window.addEventListener('deviceorientation', onDeviceOrientationChangeEvent);
 
                     document.addEventListener('mousemove',
                         function(event) {
