@@ -697,8 +697,6 @@
 				if (this.mouseDown) {
 					this.mouseMove = this.getMouse(event);
 					this.mouseMoveTime = this.time;
-					this.mouseDownCanClick = false;
-
 					var mouseMove = utils.v2Distance(this.mouseMove, this.mouseDown);
 					if (mouseMove > .01) {
 						this.mouseDownCanClick = false;
@@ -742,6 +740,7 @@
 						}
 					}
 					delete this.mouseDown;
+                    delete this.mouseMove;
 				}
 			},
 
@@ -896,7 +895,7 @@
 							logError("Unloading current page");
 							this.page.destroy();
 						}
-						logError("Registering " + name);
+						logDebug("Registering " + name);
 						var page = loadPage(name);
 						this.add(page);
 						this.page = page;
