@@ -858,7 +858,11 @@
 				return this.video;
 			},
 
-			toggleArMode: function() {
+            toggleGyroscope: function() {
+				this.gyroscope = !this.gyroscope;
+			},
+
+            toggleArMode: function() {
 				this.setArMode(!this.arMode);
 			},
 

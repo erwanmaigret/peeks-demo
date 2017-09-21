@@ -53,7 +53,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
         var camera = this.getCamera();
         if (this === camera) {
             var scene = this.getScene();
-            if (scene && scene.deviceOrientation !== undefined) {
+            if (scene && scene.deviceOrientation !== undefined && scene.gyroscope) {
                 var alpha = scene.deviceOrientation.alpha;
                 var beta = scene.deviceOrientation.beta;
                 var gamma = scene.deviceOrientation.gamma;
