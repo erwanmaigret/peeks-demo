@@ -212,9 +212,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 							object.traverse( function ( child ) {
 								if ( child instanceof THREE.Mesh ) {
 									child.material.map = object.texture;
-									child.material.emissive.r = .2;
-									child.material.emissive.g = .2;
-									child.material.emissive.b = .3;
+                                    child.material.emissive.r = .2;
+    								child.material.emissive.g = .2;
+        					        child.material.emissive.b = .2;
+                                    child.material.side = THREE.DoubleSide;
 								}
 							} );
 						}

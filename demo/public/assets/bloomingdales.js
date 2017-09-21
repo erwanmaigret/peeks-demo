@@ -25,11 +25,13 @@ PEEKS.registerPage('bloomingdales', function() {
 		size: 21,
 	});
 
+    /*
 	page.addImage({
 		image: 'images/bloomingdales_logo.png',
 		position: [0, 1, -5],
 		size: [2, .4, .5],
 	});
+    */
 
 	/*
 	page.addGeometry({
@@ -49,24 +51,24 @@ PEEKS.registerPage('bloomingdales', function() {
 
 	// Imported from Bloomingdales website:
 	var assets = [
-		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
-		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
-		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
-		['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
-		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
-		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
-		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
-		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
-		['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
-		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
-		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
-		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
-		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
-		['9579778_fpx.jpeg', '9579779_fpx.jpeg'],
-		['9617416_fpx.jpeg', '9617417_fpx.jpeg'],
-		['9427112_fpx.jpeg', '9427113_fpx.jpeg'],
-		['9477418_fpx.jpeg', '9477419_fpx.jpeg'],
-		['9513483_fpx.jpeg', '9513484_fpx.jpeg'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+		['9579778_fpx.png', '9579779_fpx.png'],
+		['9617416_fpx.png', '9617417_fpx.png'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+		['9579778_fpx.png', '9579779_fpx.png'],
+		['9617416_fpx.png', '9617417_fpx.png'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+		['9579778_fpx.png', '9579779_fpx.png'],
+		['9617416_fpx.png', '9617417_fpx.png'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
 	];
 
 	var panel = page.addAsset();
@@ -76,7 +78,7 @@ PEEKS.registerPage('bloomingdales', function() {
         infoPage.animate({
             duration: 1,
             begin: [0, 0, 0],
-            end: [.5, 0, 0],
+            end: [.4, 0, 0],
             attribute: 'position'
         });
         infoPage.parent.assetPage.animate({
@@ -107,31 +109,39 @@ PEEKS.registerPage('bloomingdales', function() {
                 if (asset.infoPage === undefined) {
                     asset.infoPage = asset.addAsset({
                         position: [0, 0, -.1],
-                        size: .8,
+                        size: .6,
                     });
                     var pane = asset.infoPage.addButton({
                         size: 1,
+                        alpha: 0,
                         onClick: hideInfo,
                     });
+                    pane.addImage({
+                		position: [0, -.2, .1],
+                        size: 1,
+                        image: 'images/bloomingdales_product_card.png',
+                	});
                     pane.addText({
-                		position: [0, .4, .01],
+                		position: [0, .4, .1],
                         size: 1,
                 		text: 'Product Name',
                         textAlign: 'center',
                         fontSize: 18
                 	});
+                    /*
                     pane.addText({
-                		position: [.1, .3, .01],
+                		position: [.1, .3, .1],
                         size: 1,
                 		text: 'Product description',
                         textAlign: 'left',
                         fontSize: 12
                 	});
+                    */
                 }
                 asset.infoPage.animate({
                     duration: 1,
                     begin: [0, 0, 0],
-                    end: [-.5, 0, 0],
+                    end: [-.4, 0, 0],
                     attribute: 'position'
                 });
             }
@@ -142,24 +152,28 @@ PEEKS.registerPage('bloomingdales', function() {
 		var pivot = panel.addAsset({
 			rotation: [0, (assetI - assets.length / 2) * 20, 0]
 		});
-        var asset = pivot.addAsset({
-			position: [0, 0, -4],
-		});
-		asset.addButton({
-			image: 'images/' + assets[assetI][0],
-			imageBack: 'images/' + assets[assetI][1],
-			rotation: [0, 0, 0],
-			size: [1, 1.2, 1],
-			onClick: showInfo,
-		});
-		/*.animate({
-			duration: 1,
-			delay: Math.random() * 1,
-			begin: [0, -2, 0],
-			end: [0, 0, 0],
-			attribute: 'position'
-		});
-		*/
+
+        if (assetI === 8) {
+            pivot.addGeometry({
+                geometry: 'assets/shoes_1.obj',
+                texture: 'assets/shoes_1.jpg',
+                position: [0, -.5, -4],
+                rotation: [0, 40, 0],
+                size: .02,
+                onClick: `animateFlip`,
+            });
+        } else {
+            var asset = pivot.addAsset({
+    			position: [0, 0, -4],
+    		});
+    		asset.addButton({
+    			image: 'images/' + assets[assetI][0],
+    			imageBack: 'images/' + assets[assetI][1],
+    			rotation: [0, 0, 0],
+    			size: [1, 1.2, 1],
+    			onClick: showInfo,
+    		});
+        }
 	}
 
     var entranceAnimation = true;
@@ -190,6 +204,12 @@ PEEKS.registerPage('bloomingdales', function() {
 	}
 	*/
 
+    var canvas = page.addCanvas();
+    canvas.addImage({
+        image: 'images/bloomingdales_banner.png',
+        position: [0, .45],
+        size: [.8, .2, 1],
+    });
 	page.addPage('peeks_toolbar');
 
 	return page;
