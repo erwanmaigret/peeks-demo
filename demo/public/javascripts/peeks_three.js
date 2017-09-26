@@ -248,6 +248,11 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                                 plane.scale.y = textTexture.size[1] / textTexture.textSize[1];
                                 plane.scale.x = plane.scale.y * textTexture.size[0] / textTexture.size[1];
                             }
+
+                            // Reset to have a fixed fit in height for all texts
+                            // unless specified to fit in width (and then fallback to above computation)
+                            plane.scale.x = textTexture.size[0] * .0005;
+                            plane.scale.y = textTexture.size[1] * .0005;
                         }
 					}
                 } else {

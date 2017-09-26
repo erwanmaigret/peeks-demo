@@ -370,6 +370,18 @@
 				this.initialRotation = this.rotation.slice();
 			},
 
+            getPropagatedSize: function(node) {
+                var size = node.size.slice();
+                node = node.parent;
+                while (node) {
+                    size[0] *= node.size[0];
+                    size[1] *= node.size[1];
+                    size[2] *= node.size[2];
+                    node = node.parent;
+                }
+                return size;
+            },
+
 			setSize: function(width, height, depth) {
 				if (width !== undefined) {
 					if (typeof width === "number") {
@@ -510,7 +522,7 @@
             createTextTexture: function() {
 				var document = this.getDocument();
 				if (document) {
-                    var size = this.fontSize;
+                    var size = 2 * this.fontSize;
                     var text = this.text;
                     var color = this.fontColor;
 					var texture = {};

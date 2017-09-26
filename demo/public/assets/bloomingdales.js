@@ -111,10 +111,9 @@ PEEKS.registerPage('bloomingdales', function() {
                 	});
                     pane.addText({
                 		position: [0, .4, .1],
-                        size: 1,
                 		text: 'Product Name',
                         textAlign: 'center',
-                        fontSize: 18
+                        fontSize: 80
                 	});
                     /*
                     pane.addText({
@@ -199,11 +198,38 @@ PEEKS.registerPage('bloomingdales', function() {
 	});
 
     var canvas = page.addCanvas();
-    canvas.addImage({
-        image: 'images/bloomingdales_banner.png',
-        position: [0, .45],
-        size: [.8, .2, 1],
+    canvas.addText({
+        position: [0, .45, 0],
+        text: "Bloomingdale's Official Site - Shop For Designer Clothing & Accessories",
+        fontSize: 30,
     });
+    var menuItemFontSize = 24;
+    canvas.addText({
+        position: [-.4, .4, 0],
+        text: "WOMEN",
+        fontSize: menuItemFontSize,
+    });
+    canvas.addText({
+        position: [-.25, .4, 0],
+        text: "SHOES",
+        fontSize: menuItemFontSize,
+    });
+    canvas.addText({
+        position: [-.05, .4, 0],
+        text: "HANDBAGS",
+        fontSize: menuItemFontSize,
+    });
+    canvas.addText({
+        position: [.2, .4, 0],
+        text: "JEWEL & ACCESSORIES",
+        fontSize: menuItemFontSize,
+    });
+    canvas.addText({
+        position: [.4, .4, 0],
+        text: "MEN",
+        fontSize: menuItemFontSize,
+    });
+
 	page.addPage('peeks_toolbar');
 
 	return page;
