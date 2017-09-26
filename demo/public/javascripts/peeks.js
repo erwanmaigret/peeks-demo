@@ -405,7 +405,109 @@
 				this.viewBgColor = utils.color.apply(this, arguments);
 			},
 
-			createTextTexture: function() {
+            measureText: function(aFont, aSize, aChars, aOptions={}) {
+                // if you do pass aOptions.ctx, keep in mind that the ctx properties will be changed and not set back. so you should have a devoted canvas for this
+                // if you dont pass in a width to aOptions, it will return it to you in the return object
+                // the returned width is Math.ceil'ed
+                var defaultOptions = {
+                    width: undefined, // if you specify a width then i wont have to use measureText to get the width
+                    canAndCtx: undefined, // set it to object {can:,ctx:} // if not provided, i will make one
+                    range: 3
+                };
+
+                aOptions.range = aOptions.range || 3; // multiples the aSize by this much
+
+                if (aChars === '') {
+                    // no characters, so obviously everything is 0
+                    return {
+                        relativeBot: 0,
+                        relativeTop: 0,
+                        height: 0,
+                        width: 0
+                    };
+                    // otherwise i will get IndexSizeError: Index or size is negative or greater than the allowed amount error somewhere below
+                }
+
+                // validateOptionsObj(aOptions, defaultOptions); // not needed because all defaults are undefined
+
+                var can;
+                var ctx;
+                if (!aOptions.canAndCtx) {
+                    can = document.createElement('canvas');;
+                    can.mozOpaque = 'true'; // improved performanceo on firefox i guess
+                    ctx = can.getContext('2d');
+
+                    // can.style.position = 'absolute';
+                    // can.style.zIndex = 10000;
+                    // can.style.left = 0;
+                    // can.style.top = 0;
+                    // document.body.appendChild(can);
+                } else {
+                    can = aOptions.canAndCtx.can;
+                    ctx = aOptions.canAndCtx.ctx;
+                }
+
+                var w = aOptions.width;
+                if (!w) {
+                    ctx.textBaseline = 'alphabetic';
+                    ctx.textAlign = 'left';
+                    ctx.font = aFont;
+                    w = ctx.measureText(aChars).width;
+                }
+
+                w = Math.ceil(w); // needed as i use w in the calc for the loop, it needs to be a whole number
+
+                // must set width/height, as it wont paint outside of the bounds
+                can.width = w;
+                can.height = aSize * aOptions.range;
+
+                ctx.font = aFont; // need to set the .font again, because after changing width/height it makes it forget for some reason
+                ctx.textBaseline = 'alphabetic';
+                ctx.textAlign = 'left';
+
+                ctx.fillStyle = 'white';
+
+                var avgOfRange = (aOptions.range + 1) / 2;
+                var yBaseline = Math.ceil(aSize * avgOfRange);
+
+                ctx.fillText(aChars, 0, yBaseline);
+
+                var yEnd = aSize * aOptions.range;
+
+                var data = ctx.getImageData(0, 0, w, yEnd).data;
+                // console.log('data:', data)
+
+                var botBound = -1;
+                var topBound = -1;
+
+                // measureHeightY:
+                for (var y=0; y<=yEnd; y++) {
+                    for (var x = 0; x < w; x += 1) {
+                        var n = 4 * (w * y + x);
+                        var r = data[n];
+                        var g = data[n + 1];
+                        var b = data[n + 2];
+                        // var a = data[n + 3];
+
+                        if (r+g+b > 0) { // non black px found
+                            if (topBound == -1) {
+                                topBound = y;
+                            }
+                            botBound = y; // break measureHeightY; // dont break measureHeightY ever, keep going, we till yEnd. so we get proper height for strings like "`." or ":" or "!"
+                            break;
+                        }
+                    }
+                }
+
+                return {
+                    relativeBot: botBound - yBaseline, // relative to baseline of 0 // bottom most row having non-black
+                    relativeTop: topBound - yBaseline, // relative to baseline of 0 // top most row having non-black
+                    height: (botBound - topBound) + 1,
+                    width: w// EDIT: comma has been added to fix old broken code.
+                };
+            },
+
+            createTextTexture: function() {
 				var document = this.getDocument();
 				if (document) {
                     var size = this.fontSize;
@@ -414,22 +516,25 @@
 					var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
-					var canvasWidth = 256;
-					var canvasHeight = 256;
+                    var font = `${size.toString()}px ` + this.fontName;
+                    texture.context.font = font;
+                    var measure = this.measureText(font, size, text);
+					var width = measure.width;
+                    var height = measure.height;
+                    var canvasWidth = 2;
+                    var canvasHeight = 2;
+                    while (canvasWidth < width) {
+                        canvasWidth *= 2;
+                    }
+                    while (canvasHeight < height) {
+                        canvasHeight *= 2;
+                    }
+                    canvasHeight *= 2;
 					texture.canvas.width = canvasWidth;
 					texture.canvas.height = canvasHeight;
-					texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
-                    //texture.context.fillStyle = 'rgba(200,0,0,255)';
-                    //texture.context.fillRect(0, 0, canvasWidth, canvasHeight);
-                    texture.context.font = `${size.toString()}px Arial`;
-                    texture.context.fillStyle = 'rgba(' +
-                        Math.round(color[0] * 255) + ',' +
-                        Math.round(color[1] * 255) + ',' +
-                        Math.round(color[2] * 255) + ',' +
-                        color[3] + ')';
-					var width = texture.context.measureText(text).width;
-					var height = size * 4/3;
-					var yOffset = (canvasHeight - height) / 2 + (height / 2);
+                    texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+                    var yOffset = (canvasHeight - height) / 2 + (height / 2);
                     var xOffset;
                     switch (this.textAlign) {
                         case 'left': {
@@ -445,7 +550,29 @@
                             break;
                         }
                     }
+                    // Force it to be centered and let the caller adjust position if needed
+                    xOffset = (canvasWidth - width) / 2;
+                    yOffset = canvasHeight / 2;
+
+                    texture.context.fillStyle = 'rgba(' +
+                        Math.round(this.fontBgColor[0] * 255) + ',' +
+                        Math.round(this.fontBgColor[1] * 255) + ',' +
+                        Math.round(this.fontBgColor[2] * 255) + ',' +
+                        Math.round(this.fontBgColor[3] * 255) + ')';
+                    texture.context.fillRect(xOffset, yOffset + measure.relativeTop, width, height);
+
+                    // Set it again now to make sure it's properly applied
+                    //  previous operations will have reset this value
+                    texture.context.font = font;
+                    texture.context.fillStyle = 'rgba(' +
+                        Math.round(color[0] * 255) + ',' +
+                        Math.round(color[1] * 255) + ',' +
+                        Math.round(color[2] * 255) + ',' +
+                        Math.round(color[3] * 255) + ')';
                     texture.context.fillText(text, xOffset, yOffset);
+
+                    texture.textSize = [width, height];
+                    texture.size = [canvasWidth, canvasHeight];
 					return texture;
 				} else {
 					this.logError("Can't draw text in empty texture");
@@ -652,6 +779,9 @@
             bgColor: [1, 1, 1],
             fontSize: 12,
             fontColor: [0, 0, 0, 1],
+            fontBgColor: [1, 1, 1, 0],
+            //fontName: 'Arial',
+            fontName: 'Georgia',
             valign: 'center',
             align: 'center',
 		};

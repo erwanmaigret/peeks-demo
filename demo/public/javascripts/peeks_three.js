@@ -220,7 +220,37 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 							} );
 						}
 					}, onProgress, onError );
-				} else {
+				} else if (this.text) {
+                    this.threeObject = new THREE.Object3D();
+
+					var geometry = new THREE.PlaneGeometry(1, 1);
+					var material = new THREE.MeshBasicMaterial({
+						color: 0xffffff,
+						transparent: true,
+						side: backSide ? THREE.FrontSide : THREE.DoubleSide,
+						depthTest: isScreenSpace ? false : true,
+					});
+
+					var plane = new THREE.Mesh(geometry, material);
+					this.threeObject.add(plane);
+
+					textTexture = this.createTextTexture();
+					if (textTexture) {
+						var texture = new THREE.Texture(textTexture.canvas);
+						texture.needsUpdate = true;
+						texture.premultiplyAlpha = true;
+						material.map = texture;
+                        if (textTexture.size) {
+                            if (textTexture.size[0] > textTexture.size[1]) {
+                                plane.scale.x = textTexture.size[0] / textTexture.textSize[0];
+                                plane.scale.y = plane.scale.x * textTexture.size[1] / textTexture.size[0];
+                            } else {
+                                plane.scale.y = textTexture.size[1] / textTexture.textSize[1];
+                                plane.scale.x = plane.scale.y * textTexture.size[0] / textTexture.size[1];
+                            }
+                        }
+					}
+                } else {
 					var backSide;
 
 					if (this.textureBackUrl !== "") {
@@ -246,17 +276,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-					if (this.text) {
-						textTexture = this.createTextTexture();
-						if (textTexture) {
-							var texture = new THREE.Texture(textTexture.canvas);
-							texture.needsUpdate = true;
-							texture.premultiplyAlpha = true;
-							material.map = texture;
-						}
-					} else {
-						loadTexture(material, this.textureUrl, this.textureRepeat);
-					}
+                    loadTexture(material, this.textureUrl, this.textureRepeat);
 
 					if (backSide) {
 						this.threeObject.add(backSide);
