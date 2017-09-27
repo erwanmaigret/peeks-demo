@@ -230,12 +230,17 @@ PEEKS.registerPage('bloomingdales', function() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            var title = this.responseText;
-            if (title) {
+            var data = JSON.parse(this.responseText);
+            if (data.title) {
                 canvas.addText({
                     position: [0, .45, 0],
-                    text: title,
+                    text: data.title,
                     fontSize: 30,
+                }).animate({
+                    duration: 1,
+                    begin: [0, .5, 0],
+                    end: [0, 0, 0],
+                    attribute: 'position'
                 });
             }
         }

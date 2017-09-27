@@ -21,7 +21,9 @@ router.get('/', function(req, res, next) {
                 if (!error) {
                     if (response.statusCode == 200) {
                         var dom = new JSDOM(html);
-                        res.send(dom.window.document.title);
+                        var scrapData = {};
+                        scrapData.title = dom.window.document.title;
+                        res.send(JSON.stringify(scrapData));
                     }
                 }
             }
