@@ -198,11 +198,6 @@ PEEKS.registerPage('bloomingdales', function() {
 	});
 
     var canvas = page.addCanvas();
-    canvas.addText({
-        position: [0, .45, 0],
-        text: "Bloomingdale's Official Site - Shop For Designer Clothing & Accessories",
-        fontSize: 30,
-    });
     var menuItemFontSize = 24;
     canvas.addText({
         position: [-.4, .4, 0],
@@ -231,6 +226,24 @@ PEEKS.registerPage('bloomingdales', function() {
     });
 
 	page.addPage('peeks_toolbar');
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var title = this.responseText;
+            if (title) {
+                canvas.addText({
+                    position: [0, .45, 0],
+                    text: title,
+                    fontSize: 30,
+                });
+            }
+        }
+    };
+    xhttp.open("GET",
+        "/scrap?uri=" + encodeURI('https://www.bloomingdales.com'),
+        true);
+    xhttp.send();
 
 	return page;
 });
