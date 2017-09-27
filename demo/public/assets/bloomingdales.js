@@ -198,32 +198,6 @@ PEEKS.registerPage('bloomingdales', function() {
 	});
 
     var canvas = page.addCanvas();
-    var menuItemFontSize = 24;
-    canvas.addText({
-        position: [-.4, .4, 0],
-        text: "WOMEN",
-        fontSize: menuItemFontSize,
-    });
-    canvas.addText({
-        position: [-.25, .4, 0],
-        text: "SHOES",
-        fontSize: menuItemFontSize,
-    });
-    canvas.addText({
-        position: [-.05, .4, 0],
-        text: "HANDBAGS",
-        fontSize: menuItemFontSize,
-    });
-    canvas.addText({
-        position: [.2, .4, 0],
-        text: "JEWEL & ACCESSORIES",
-        fontSize: menuItemFontSize,
-    });
-    canvas.addText({
-        position: [.4, .4, 0],
-        text: "MEN",
-        fontSize: menuItemFontSize,
-    });
 
 	page.addPage('peeks_toolbar');
 
@@ -234,6 +208,7 @@ PEEKS.registerPage('bloomingdales', function() {
             if (data.title) {
                 canvas.addText({
                     position: [0, .45, 0],
+                    size: 1.5,
                     text: data.title,
                     fontSize: 30,
                 }).animate({
@@ -242,6 +217,18 @@ PEEKS.registerPage('bloomingdales', function() {
                     end: [0, 0, 0],
                     attribute: 'position'
                 });
+            }
+            if (data.menu && data.menu.length > 0) {
+                for (var menuI = 0; menuI < data.menu.length; menuI++) {
+                    var menu = data.menu[menuI];
+                    if (menu.label) {
+                        canvas.addText({
+                            position: [(menuI - data.menu.length / 2)  * 1.8 / data.menu.length, .4, 0],
+                            text: menu.label,
+                            fontSize: 24,
+                        });
+                    }
+                }
             }
         }
     };

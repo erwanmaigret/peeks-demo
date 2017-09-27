@@ -23,6 +23,19 @@ router.get('/', function(req, res, next) {
                         var dom = new JSDOM(html);
                         var scrapData = {};
                         scrapData.title = dom.window.document.title;
+                        var elems = dom.window.document.querySelectorAll("a");
+                        scrapData.menu = [];
+                        for (var elemI in elems) {
+                            var elem = elems[elemI];
+                            if (elem) {
+                                if (elem.id &&
+                                    elem.id.search('headerNavigationLink') === 0 &&
+                                    elem.textContent)
+                                {
+                                    scrapData.menu.push({label: elem.textContent});
+                                }
+                            }
+                        }
                         res.send(JSON.stringify(scrapData));
                     }
                 }
