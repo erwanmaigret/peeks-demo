@@ -1,5 +1,7 @@
 PEEKS.registerPage('bloomingdales', function() {
-	var page = new PEEKS.Asset();
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+    });
 
 	page.addImage({
 		image: 'images/bg_shop_1.jpg',

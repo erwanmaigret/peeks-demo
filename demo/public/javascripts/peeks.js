@@ -47,7 +47,7 @@
 		return Math.sqrt(x * x + y * y);
 	};
 
-	utils.v3 = function(x, y, z) {
+    utils.v3 = function(x, y, z) {
 	    if (arguments.length === 3) {
 	        return [x, y, z];
 	    } else if (arguments.length === 1) {
@@ -61,6 +61,33 @@
 	    }
 	};
 
+    utils.v4 = function(x, y, z, w) {
+	    if (arguments.length === 3) {
+	        return [x, y, z, 0];
+	    } else if (arguments.length === 4) {
+	        return [x, y, z, w];
+	    } else if (arguments.length === 1) {
+	        if (arguments[0].length === 3) {
+	            return [
+                    arguments[0][0],
+                    arguments[0][1],
+                    arguments[0][2]
+                ];
+            } else if (arguments[0].length === 4) {
+    	        return [
+                    arguments[0][0],
+                    arguments[0][1],
+                    arguments[0][2],
+                    arguments[0][3]
+                ];
+	        } else {
+	            return [arguments[0], arguments[0], arguments[0], 0];
+	        }
+	    } else {
+	      return [0, 0, 0, 0];
+	    }
+	};
+
 	utils.hex2rgb = function(h) {
 	    if (h.charAt(0) === "#") h = h.substring(1,9);
 	    var a = [parseInt(h.substring(0,2),16)/255, parseInt(h.substring(2,4),16)/255, parseInt(h.substring(4,6),16)/255];
@@ -71,19 +98,45 @@
 	utils.color = function() {
 	    if (arguments.length === 3) {
 	        return utils.v3(arguments[0], arguments[1], arguments[2]);
+        } else if (arguments.length === 4) {
+            return utils.v4(arguments[0], arguments[1], arguments[2], arguments[3]);
 	    } else if (arguments.length === 1) {
 	        if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
 	            var rgb = utils.hex2rgb(arguments[0]);
 	            if (rgb.length === 3) {
 	                return utils.v3(rgb);
-	            }
+	            } else {
+                    return utils.v4(rgb);
+                }
 	        } else if (arguments[0].length === 3) {
 	            return utils.v3(arguments[0]);
+            } else if (arguments[0].length === 4) {
+	            return utils.v4(arguments[0]);
 	        } else {
 	            return utils.v3(arguments);
 	        }
 	    } else {
             return [0, 0, 0];
+        }
+	};
+
+    utils.rgba = function() {
+	    if (arguments.length === 3) {
+	        return utils.v4(arguments[0], arguments[1], arguments[2], 1);
+        } else if (arguments.length === 4) {
+            return utils.v4(arguments[0], arguments[1], arguments[2], arguments[3]);
+	    } else if (arguments.length === 1) {
+	        if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
+                return utils.v4(utils.hex2rgb(arguments[0]));
+	        } else if (arguments[0].length === 3) {
+	            return utils.v4(arguments[0]);
+            } else if (arguments[0].length === 4) {
+	            return utils.v4(arguments[0]);
+	        } else {
+	            return utils.v4(arguments);
+	        }
+	    } else {
+            return [0, 0, 0, 0];
         }
 	};
 
@@ -228,8 +281,12 @@
                 this[name] = value;
             },
 
-            getAttrColor: function(name) {
-                return utils.color.apply(this, this.getAttr(name));
+            getAttrColor: function(name, value) {
+                return utils.color.apply(this, this.getAttr(name, value));
+            },
+
+            getAttrRgba: function(name, value) {
+                return utils.rgba.apply(this, this.getAttr(name, value));
             },
 
             getAttr: function(name, value) {
@@ -237,12 +294,41 @@
                     return this.style[name];
                 } else if (this[name] !== undefined) {
                     return this[name];
-                } else if (this.parent) {
-                    return parent.getAttr(name, format, value);
+                }
+
+                if (this.parent) {
+                    return this.parent.getAttr(name, value);
+                } else {
+                    var alias = this.getAttrAlias(name);
+                    if (alias) {
+                        return this.getAttr(alias, value);
+                    }
+
+                    return value;
                 }
             },
 
-			applyStyle: function(asset, recurse) {
+            addAttrAlias: function(name, alias) {
+                if (this.attrAliases === undefined) {
+                    this.attrAliases = {};
+                }
+
+                this.attrAliases[name] = alias;
+            },
+
+            getAttrAlias: function(name) {
+                if (this.attrAliases) {
+                    var alias = this.attrAliases[name];
+                    if (alias) {
+                        return alias;
+                    }
+                }
+                if (this.parent) {
+					return this.parent.getAttrAlias(name);
+				}
+            },
+
+            applyStyle: function(asset, recurse) {
 				if (this.parent) {
 					this.parent.applyStyle(asset);
 				}
@@ -260,9 +346,6 @@
                             asset[key] = this.style[key];
                         }
                     }
-                    if (asset.bgColor !== undefined) {
-						asset.bgColor = utils.color.apply(this, asset.bgColor);
-					}
 				}
 			},
 
@@ -317,8 +400,11 @@
 	);
 
 	// Asset
-	function Asset() {
+	function Asset(params) {
 		Node.call(this);
+        if (params) {
+            this.initAsset(this, params);
+        }
 		this.position = [0, 0, 0];
 		this.rotation = [0, 0, 0];
 		this.rotationOrder = 'XYZ';
@@ -425,10 +511,6 @@
 				this.color = utils.color.apply(this, arguments);
 			},
 
-			setBgColor: function(color) {
-				this.bgColor = utils.color.apply(this, arguments);
-			},
-
             measureText: function(aFont, aSize, aChars, aOptions={}) {
                 // if you do pass aOptions.ctx, keep in mind that the ctx properties will be changed and not set back. so you should have a devoted canvas for this
                 // if you dont pass in a width to aOptions, it will return it to you in the return object
@@ -499,7 +581,6 @@
                 var yEnd = aSize * aOptions.range;
 
                 var data = ctx.getImageData(0, 0, w, yEnd).data;
-                // console.log('data:', data)
 
                 var botBound = -1;
                 var topBound = -1;
@@ -536,8 +617,8 @@
 				if (document) {
                     var size = 2 * this.fontSize;
                     var text = this.text;
-                    var color = this.fontColor;
-					var texture = {};
+                    var color = this.getAttrRgba('fontColor');
+                    var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
                     var font = `${size.toString()}px ` + this.fontName;
@@ -597,6 +678,8 @@
 
                     texture.textSize = [width, height];
                     texture.size = [canvasWidth, canvasHeight];
+                    texture.relativeTop = measure.relativeTop;
+                    texture.relativeBot = measure.relativeBot;
 					return texture;
 				} else {
 					this.logError("Can't draw text in empty texture");
@@ -758,25 +841,26 @@
 			viewBgColor: [1, 1, 1],
             bgColor: [1, 1, 1],
             fontSize: 12,
-            fontColor: [0, 0, 0, 1],
             fontBgColor: [1, 1, 1, 0],
-            //fontName: 'Arial',
-            fontName: 'Georgia',
+            fontName: 'Arial',
+            //fontName: 'Georgia',
             valign: 'center',
             align: 'center',
-            colorDark:   [  0 / 255, 132 / 255, 255 / 255],
-            colorMedium: [ 81 / 255, 187 / 255, 255 / 255],
-            colorLight:  [173 / 255, 223 / 255, 255 / 255],
+            colorDark:   [  0 / 255, 255 / 255, 132 / 255],
+            colorMedium: [ 81 / 255, 255 / 255, 187 / 255],
+            colorLight:  [173 / 255, 255 / 255, 223 / 255],
             colorBlack:  [  0 / 255, 132 / 255, 255 / 255],
             colorGrey:   [ 80 / 255,  80 / 255,  80 / 255],
             colorWhite:  [  0 / 255, 132 / 255, 255 / 255],
 		};
+
+        this.addAttrAlias('fontColor', 'colorDark');
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
 			constructor: Scene,
 
-			convertMouse: function(mouseX, mouseY, window) {
+            convertMouse: function(mouseX, mouseY, window) {
 			  var rect = this.domElement.getBoundingClientRect();
 			  var x = mouseX;
 			  var y = mouseY;

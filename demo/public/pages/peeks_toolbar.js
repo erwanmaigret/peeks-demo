@@ -3,15 +3,6 @@ PEEKS.registerPage('peeks_toolbar', function() {
 
 	var canvas = page.addCanvas();
 
-    /*
-	canvas.addButton({
-		image: 'ui/icon_reload.png',
-		position: [-.35, -.45],
-		size: .08,
-		onClick: function() { },
-	})
-    */
-
 	canvas.addButton({
 		image: 'ui/icon_previous.png',
 		position: [-.25, -.45],
@@ -40,11 +31,11 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		onClick: function() { peeks.toggleGyroscope(); },
 	});
 
-	canvas.addButton({
-		image: 'ui/icon_peeks.png',
-		position: [0, -.45],
-		size: .2,
-	});
+    canvas.addText({
+        position: [0, -.45],
+        text: 'PEEKS',
+        fontSize: 48,
+    });
 
 	canvas.animate({
 		duration: 1,

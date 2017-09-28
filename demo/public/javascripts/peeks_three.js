@@ -144,19 +144,15 @@ PEEKS.Asset.prototype.threeGetVisibility = function() {
 	}
 }
 
+function colorToThreeColor(color) {
+    return new THREE.Color(color[0], color[1], color[2], 1);
+}
+
 PEEKS.Scene.prototype.onRender = function() {
 	this.threeSynch();
 	if (this.page) {
-		var bgColor = this.page.bgColor;
-		if (bgColor === undefined) {
-			bgColor = [1, 1, 1];
-		}
-		this.three.renderer.setClearColor(
-			new THREE.Color(
-				bgColor[0],
-				bgColor[1],
-				bgColor[2]),
-			1);
+        var bgColor = this.page.getAttrColor('bgColor', [1, 1, 1]);
+		this.three.renderer.setClearColor(colorToThreeColor(bgColor));
 	}
 	this.camera.threeSynch(this.three.camera);
 	this.three.renderer.render(this.three.scene, this.three.camera);
@@ -253,6 +249,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             // unless specified to fit in width (and then fallback to above computation)
                             plane.scale.x = textTexture.size[0] * .0005;
                             plane.scale.y = textTexture.size[1] * .0005;
+
+                            var yOffset = (textTexture.relativeTop - textTexture.relativeBot) / 2;
+                            yOffset = yOffset / textTexture.size[1];
+                            plane.position.y = plane.scale.y * yOffset;
                         }
 					}
                 } else {
