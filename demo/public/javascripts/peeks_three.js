@@ -290,8 +290,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			} else {
 				this.threeObject = new THREE.Object3D();
 			}
-
-			this.updateLayout();
 		} else {
 			this.threeObject = new THREE.Object3D();
 		}
@@ -318,11 +316,9 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	this.threeSynchXform(threeObject);
 
 	if (threeObject.material) {
-		var color = this.color;
+		var color = this.getAttrColor('color');
 		if (this.textureUrl === undefined || this.textureUrl === "") {
-			if (this.viewBgColor) {
-				color = this.viewBgColor;
-			}
+            color = this.getAttrColor('viewBgColor');
 		}
 		if (color) {
 			threeObject.material.color.r = color[0];

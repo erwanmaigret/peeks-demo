@@ -82,7 +82,9 @@
 	        } else {
 	            return utils.v3(arguments);
 	        }
-	    }
+	    } else {
+            return [0, 0, 0];
+        }
 	};
 
 	var mainScene;
@@ -142,7 +144,7 @@
 				node.parent = this;
                 node.time = this.time;
 				this.children[ this.children.length ] = node;
-				node.applyCss(node, true);
+				node.applyStyle(node, true);
 				return node;
 			},
 
@@ -222,35 +224,50 @@
                 }
             },
 
-			applyCss: function(asset, recurse) {
+            setAttr: function(name, value) {
+                this[name] = value;
+            },
+
+            getAttrColor: function(name) {
+                return utils.color.apply(this, this.getAttr(name));
+            },
+
+            getAttr: function(name, value) {
+                if (this.style && this.style[name] !== undefined) {
+                    return this.style[name];
+                } else if (this[name] !== undefined) {
+                    return this[name];
+                } else if (this.parent) {
+                    return parent.getAttr(name, format, value);
+                }
+            },
+
+			applyStyle: function(asset, recurse) {
 				if (this.parent) {
-					this.parent.applyCss(asset);
+					this.parent.applyStyle(asset);
 				}
 				if (recurse) {
 					for (var childI = 0; childI < this.children.length; childI++) {
-						this.children[childI].applyCss(this.children[childI], true);
+						this.children[childI].applyStyle(this.children[childI], true);
 					}
 				}
 				if (this.parent) {
-					this.parent.applyCss(asset);
+					this.parent.applyStyle(asset);
 				}
-				if (this.css) {
-                    for (var key in this.css) {
+				if (this.style) {
+                    for (var key in this.style) {
                         if (asset[key] === undefined) {
-                            asset[key] = this.css[key];
+                            asset[key] = this.style[key];
                         }
                     }
                     if (asset.bgColor !== undefined) {
 						asset.bgColor = utils.color.apply(this, asset.bgColor);
 					}
-					if (asset.viewBgColor !== undefined) {
-						asset.viewBgColor = utils.color.apply(this, asset.viewBgColor);
-					}
 				}
 			},
 
 			initAsset: function (asset, params) {
-				this.applyCss(this);
+				this.applyStyle(this);
                 this.applyParams(asset, params);
 			},
 
@@ -315,7 +332,6 @@
 		this.textureBackUrl = '';
 		this.textureRepeat = [1, 1];
 		this.geomertryUrl = '';
-		this.bounds = { x0: -.5, y0: -.5, z0: -.5, x1: .5, y1: .5, z1: .5 };
 		this.visible = true;
 	}
 
@@ -411,10 +427,6 @@
 
 			setBgColor: function(color) {
 				this.bgColor = utils.color.apply(this, arguments);
-			},
-
-			setViewBgColor: function(color) {
-				this.viewBgColor = utils.color.apply(this, arguments);
 			},
 
             measureText: function(aFont, aSize, aChars, aOptions={}) {
@@ -626,50 +638,6 @@
 			onRender: function() {
 			},
 
-			updateLayout: function() {
-				if (this.layout) {
-					var bounds = this.getParentBounds();
-					var sx = bounds.x1 - bounds.x0;
-
-					this.size[0] = bounds.x1 - bounds.x0;
-					this.size[1] = bounds.y1 - bounds.y0;
-					this.size[2] = bounds.z1 - bounds.z0;
-
-					// Finish computing the layout info from there
-					this.position[1] = 0;
-					this.position[2] = -5;
-
-					// Until we get to support animated layout we'll keep this forcing
-					// update of initial state
-					this.updateInitial();
-				}
-			},
-
-			getParentBounds: function() {
-				if (this.parent) {
-					return this.parent.getBounds();
-				} else {
-					return this.getBounds();
-				}
-			},
-
-			getBounds: function() {
-				if (this.bounds) {
-					// This can be set explicitly in case we don't want to assotiate it
-					//	with the scale
-					return this.bounds;
-				} else {
-					return {
-						x0: -this.size[0] / 2,
-						y0: -this.size[1] / 2,
-						z0: -this.size[2] / 2,
-						x1: this.size[0] / 2,
-						y1: this.size[1] / 2,
-						z1: this.size[2] / 2,
-					};
-				}
-			},
-
 			getScene: function() {
 				var scene = this;
 				while (scene && scene.type != 'Scene') {
@@ -786,7 +754,7 @@
 		this.arAsset = this.add(new PEEKS.Asset());
 		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
 		this.pageIndex = 0;
-		this.css = {
+		this.style = {
 			viewBgColor: [1, 1, 1],
             bgColor: [1, 1, 1],
             fontSize: 12,
@@ -796,6 +764,12 @@
             fontName: 'Georgia',
             valign: 'center',
             align: 'center',
+            colorDark:   [  0 / 255, 132 / 255, 255 / 255],
+            colorMedium: [ 81 / 255, 187 / 255, 255 / 255],
+            colorLight:  [173 / 255, 223 / 255, 255 / 255],
+            colorBlack:  [  0 / 255, 132 / 255, 255 / 255],
+            colorGrey:   [ 80 / 255,  80 / 255,  80 / 255],
+            colorWhite:  [  0 / 255, 132 / 255, 255 / 255],
 		};
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),

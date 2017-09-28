@@ -1,7 +1,7 @@
 PEEKS.registerPage('terraworlds', function() {
 	var page = new PEEKS.Asset();
 
-	page.setBgColor(0, 0, .1);
+	page.setAttr('bgColor', [.2, .2, .4]);
 
 	var size = 15;
 	for (var x = -size; x < size; x++) {
@@ -11,7 +11,7 @@ PEEKS.registerPage('terraworlds', function() {
 				rotation: [90, 0, 0],
 				size: .97,
 				onClick: function() {
-					this.setViewBgColor(.2, 1, .2);
+                    this.setAttr('viewBgColor', [.2, 1, .2]);
 				}
 			}).animate({
 				duration: 2 + Math.random() * 2,
