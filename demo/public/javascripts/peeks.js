@@ -197,7 +197,6 @@
 				node.parent = this;
                 node.time = this.time;
 				this.children[ this.children.length ] = node;
-				node.applyStyle(node, true);
 				return node;
 			},
 
@@ -248,6 +247,32 @@
 				return asset;
 			},
 
+            addTextButton: function (params) {
+                var asset = this.addButton(params);
+                asset.addAttrAlias('viewBgColor', 'colorDark');
+                asset.setAttr('alpha', .5);
+
+                var propagatedSize = this.getPropagatedSize();
+
+                asset.addView({
+                    size: [
+                        .9 + .02 / propagatedSize[0],
+                        .9 + .02 / propagatedSize[1],
+                        .9 + .02 / propagatedSize[2],
+                    ],
+                    alpha: .5,
+                }).addAttrAlias('viewBgColor', 'colorLight');
+
+                asset.addText({
+                    position: [0, 0],
+                    fontSize: 40,
+                }).addAttrAlias('color', 'colorLight')
+                  .addAttrAlias('text', 'label')
+                ;
+
+                return asset;
+            },
+
 			addImage: function (params) {
 				var asset = this.addView(params);
 				if (params) {
@@ -296,14 +321,14 @@
                     return this[name];
                 }
 
+                var alias = this.attrAliases && this.attrAliases[name];
+                if (alias) {
+                    return this.getAttr(alias, value);
+                }
+
                 if (this.parent) {
                     return this.parent.getAttr(name, value);
                 } else {
-                    var alias = this.getAttrAlias(name);
-                    if (alias) {
-                        return this.getAttr(alias, value);
-                    }
-
                     return value;
                 }
             },
@@ -314,43 +339,12 @@
                 }
 
                 this.attrAliases[name] = alias;
+
+                // For chained calls
+                return this;
             },
 
-            getAttrAlias: function(name) {
-                if (this.attrAliases) {
-                    var alias = this.attrAliases[name];
-                    if (alias) {
-                        return alias;
-                    }
-                }
-                if (this.parent) {
-					return this.parent.getAttrAlias(name);
-				}
-            },
-
-            applyStyle: function(asset, recurse) {
-				if (this.parent) {
-					this.parent.applyStyle(asset);
-				}
-				if (recurse) {
-					for (var childI = 0; childI < this.children.length; childI++) {
-						this.children[childI].applyStyle(this.children[childI], true);
-					}
-				}
-				if (this.parent) {
-					this.parent.applyStyle(asset);
-				}
-				if (this.style) {
-                    for (var key in this.style) {
-                        if (asset[key] === undefined) {
-                            asset[key] = this.style[key];
-                        }
-                    }
-				}
-			},
-
-			initAsset: function (asset, params) {
-				this.applyStyle(this);
+            initAsset: function (asset, params) {
                 this.applyParams(asset, params);
 			},
 
@@ -410,7 +404,6 @@
 		this.rotationOrder = 'XYZ';
 		this.size = [1, 1, 1];
 		this.updateInitial();
-		this.color = [1, 1, 1];
 		this.type = 'Asset';
 		this.time = 0;
 		this.primitive = Asset.PrimitiveNone;
@@ -472,9 +465,9 @@
 				this.initialRotation = this.rotation.slice();
 			},
 
-            getPropagatedSize: function(node) {
-                var size = node.size.slice();
-                node = node.parent;
+            getPropagatedSize: function() {
+                var size = this.size.slice();
+                var node = this.parent;
                 while (node) {
                     size[0] *= node.size[0];
                     size[1] *= node.size[1];
@@ -505,10 +498,6 @@
 
 				// When set from the outside we update the initial value too
 				this.initialSize = this.size.slice();
-			},
-
-			setColor: function(color) {
-				this.color = utils.color.apply(this, arguments);
 			},
 
             measureText: function(aFont, aSize, aChars, aOptions={}) {
@@ -615,8 +604,14 @@
             createTextTexture: function() {
 				var document = this.getDocument();
 				if (document) {
-                    var size = 2 * this.fontSize;
-                    var text = this.text;
+                    var size = 2 * this.getAttr('fontSize');
+                    var fontScale = this.getPropagatedSize();
+                    if (fontScale[0] > fontScale[1]) {
+                        size /= fontScale[0];
+                    } else {
+                        size /= fontScale[1];
+                    }
+                    var text = this.getAttr('text');
                     var color = this.getAttrRgba('fontColor');
                     var texture = {};
 					texture.canvas = document.createElement('canvas');
@@ -659,11 +654,12 @@
                     xOffset = (canvasWidth - width) / 2;
                     yOffset = canvasHeight / 2;
 
+                    var bgColor = this.getAttrRgba('fontBgColor');
                     texture.context.fillStyle = 'rgba(' +
-                        Math.round(this.fontBgColor[0] * 255) + ',' +
-                        Math.round(this.fontBgColor[1] * 255) + ',' +
-                        Math.round(this.fontBgColor[2] * 255) + ',' +
-                        Math.round(this.fontBgColor[3] * 255) + ')';
+                        Math.round(bgColor[0] * 255) + ',' +
+                        Math.round(bgColor[1] * 255) + ',' +
+                        Math.round(bgColor[2] * 255) + ',' +
+                        Math.round(bgColor[3] * 255) + ')';
                     texture.context.fillRect(xOffset, yOffset + measure.relativeTop, width, height);
 
                     // Set it again now to make sure it's properly applied
@@ -688,6 +684,7 @@
 
 			setTexture: function(url) {
 				this.textureUrl = url;
+                return this;
 			},
 
 			setTextureBack: function(url) {
@@ -846,7 +843,7 @@
             //fontName: 'Georgia',
             valign: 'center',
             align: 'center',
-            colorDark:   [  0 / 255, 255 / 255, 132 / 255],
+            colorDark:   [  0 / 255, 100 / 255,   0 / 255],
             colorMedium: [ 81 / 255, 255 / 255, 187 / 255],
             colorLight:  [173 / 255, 255 / 255, 223 / 255],
             colorBlack:  [  0 / 255, 132 / 255, 255 / 255],

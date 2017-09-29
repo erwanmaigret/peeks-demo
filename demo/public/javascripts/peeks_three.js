@@ -8,7 +8,7 @@ var loadTexture = function(material, textureUrl, textureRepeat)
 		material.map = loader.load(textureUrl);
 
 		// Don't mind not POT textures
-		material.map.minFilter = THREE.LinearMipMapLinearFilter;
+        material.map.minFilter = THREE.LinearMipMapLinearFilter;
 
 		material.map.wrapS = THREE.RepeatWrapping;
 		material.map.wrapT = THREE.RepeatWrapping;
@@ -216,7 +216,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 							} );
 						}
 					}, onProgress, onError );
-				} else if (this.text) {
+				} else if (this.getAttr('text')) {
                     this.threeObject = new THREE.Object3D();
 
 					var geometry = new THREE.PlaneGeometry(1, 1);
@@ -316,7 +316,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	this.threeSynchXform(threeObject);
 
 	if (threeObject.material) {
-		var color = this.getAttrColor('color');
+		var color = this.getAttrColor('color', [1, 1, 1, 1]);
 		if (this.textureUrl === undefined || this.textureUrl === "") {
             color = this.getAttrColor('viewBgColor');
 		}

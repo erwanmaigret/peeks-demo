@@ -9,30 +9,30 @@ PEEKS.registerPage('peeks_recommendations', function() {
 		alpha: .2,
 	});
 
-	pane.addButton({
-		image: 'ui/icon_clothes.png',
+	pane.addTextButton({
+        label: 'FASHION',
 		position: [-.25, -.25, 0],
 		size: .4,
 		onClick: 'loadPage',
 		onClickArgs: ['bloomingdales'],
 	});
 
-	pane.addButton({
-		image: 'ui/icon_games.png',
+	pane.addTextButton({
+        label: 'GAME',
 		position: [-.25, .25, 0],
 		size: .4,
 		onClick: 'loadPage',
 		onClickArgs: ['terraworlds'],
 	});
 
-	pane.addButton({
-		image: 'ui/icon_travel.png',
+	pane.addTextButton({
+		label: 'TRAVEL',
 		position: [.25, -.25, 0],
 		size: .4,
 	});
 
-	pane.addButton({
-		image: 'ui/icon_videos.png',
+    pane.addTextButton({
+        label: 'VIDEOS',
 		position: [.25, .25, 0],
 		size: .4,
 	});

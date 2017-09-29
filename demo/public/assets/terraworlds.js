@@ -1,12 +1,12 @@
 PEEKS.registerPage('terraworlds', function() {
 	var page = new PEEKS.Asset({
-        colorDark:   [  0 / 255, 132 / 255, 255 / 255],
+        colorDark:   [  20 / 255, 40 / 255, 90 / 255],
         colorMedium: [ 81 / 255, 187 / 255, 255 / 255],
         colorLight:  [173 / 255, 223 / 255, 255 / 255],
     });
 
     page.setAttr('bgColor', page.getAttr('colorDark'));
-    page.setAttr('fontColor', page.getAttr('colorMedium'));
+    page.setAttr('fontColor', page.getAttr('colorDark'));
 
 	var size = 15;
 	for (var x = -size; x < size; x++) {
