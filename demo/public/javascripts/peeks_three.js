@@ -191,7 +191,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					};
 
 					var node = this.threeObject;
-					var textureUrl = this.textureUrl;
+					var textureUrl = this.getAttr('textureUrl');
 					var loader = new THREE.OBJLoader( manager );
 					loader.load(this.geometryUrl, function ( object ) {
 						node.add(object);
@@ -281,7 +281,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-                    loadTexture(material, this.textureUrl, this.textureRepeat);
+                    loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
 
 					if (backSide) {
 						this.threeObject.add(backSide);
@@ -317,7 +317,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
 	if (threeObject.material) {
 		var color = this.getAttrColor('color', [1, 1, 1, 1]);
-		if (this.textureUrl === undefined || this.textureUrl === "") {
+		if (this.getAttr('textureUrl') === undefined || this.getAttr('textureUrl') === "") {
             color = this.getAttrColor('viewBgColor');
 		}
 		if (color) {

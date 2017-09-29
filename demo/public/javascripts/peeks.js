@@ -250,7 +250,27 @@
             addTextButton: function (params) {
                 var asset = this.addButton(params);
                 asset.addAttrAlias('viewBgColor', 'colorDark');
-                asset.setAttr('alpha', .5);
+                asset.setAttr('alpha', .7);
+
+                asset.addView({
+                    size: .92,
+                    alpha: .7,
+                }).addAttrAlias('viewBgColor', 'colorLight');
+
+                asset.addText({
+                    position: [0, 0],
+                    fontSize: 40,
+                }).addAttrAlias('color', 'colorLight')
+                  .addAttrAlias('text', 'label')
+                ;
+
+                return asset;
+            },
+
+            addIconButton: function (params) {
+                var asset = this.addButton(params);
+                asset.addAttrAlias('viewBgColor', 'colorDark');
+                asset.setAttr('alpha', .7);
 
                 var propagatedSize = this.getPropagatedSize();
 
@@ -260,15 +280,12 @@
                         .9 + .02 / propagatedSize[1],
                         .9 + .02 / propagatedSize[2],
                     ],
-                    alpha: .5,
+                    alpha: .7,
                 }).addAttrAlias('viewBgColor', 'colorLight');
 
-                asset.addText({
-                    position: [0, 0],
-                    fontSize: 40,
-                }).addAttrAlias('color', 'colorLight')
-                  .addAttrAlias('text', 'label')
-                ;
+                asset.addImage({
+                    image: params.icon,
+                }).addAttrAlias('color', 'colorDark');
 
                 return asset;
             },

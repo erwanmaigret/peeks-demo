@@ -14,23 +14,28 @@ PEEKS.registerPage('peeks_search', function() {
 		size: [.6, .2, 1],
 	});
 
-	pane.addButton({
+    pane.addTextButton({
+        label: '-',
 		position: [-.45, .3],
 		size: [.05, .25, 1],
 	});
-	pane.addButton({
+    pane.addTextButton({
+        label: '-',
 		position: [-.45, -.3],
 		size: [.05, .25, 1],
 	});
-	pane.addButton({
+    pane.addTextButton({
+        label: '-',
 		position: [.45, .3],
 		size: [.05, .25, 1],
 	});
-	pane.addButton({
+    pane.addTextButton({
+        label: '?',
 		position: [.45, 0],
 		size: [.05, .25, 1],
 	});
-	pane.addButton({
+    pane.addTextButton({
+        label: '-',
 		position: [.45, -.3],
 		size: [.05, .25, 1],
 	});

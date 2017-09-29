@@ -9,15 +9,15 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		alpha: .5,
 	});
 
-	canvas.addButton({
-		image: 'ui/icon_previous.png',
+    canvas.addIconButton({
+		icon: 'ui/icon_previous.png',
 		position: [-.25, -.45],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
-	canvas.addButton({
-		image: 'ui/icon_next.png',
+    canvas.addIconButton({
+		icon: 'ui/icon_next.png',
 		position: [-.15, -.45],
 		size: .08,
 		onClick: 'loadNextPage',
@@ -39,8 +39,16 @@ PEEKS.registerPage('peeks_toolbar', function() {
         onClick: function() { peeks.toggleArMode(); },
     });
 
+/*
     canvas.addButton({
 		image: 'ui/icon_gyroscope.png',
+		position: [.15, -.45],
+		size: .08,
+		onClick: function() { peeks.toggleGyroscope(); },
+	});
+*/
+    canvas.addIconButton({
+		icon: 'ui/icon_gyroscope.png',
 		position: [.15, -.45],
 		size: .08,
 		onClick: function() { peeks.toggleGyroscope(); },

@@ -9,22 +9,26 @@ PEEKS.registerPage('peeks_history', function() {
 		alpha: .2,
 	});
 
-	pane.addButton({
+    pane.addTextButton({
+        label: '1',
 		position: [0, .35],
 		size: [.6, .2, 1],
 	});
 
-	pane.addButton({
+    pane.addTextButton({
+        label: '2',
 		position: [0, .12],
 		size: [.6, .2, 1],
 	});
 
-	pane.addButton({
+    pane.addTextButton({
+        label: '3',
 		position: [0, -.12],
 		size: [.6, .2, 1],
 	});
 
-	pane.addButton({
+    pane.addTextButton({
+        label: '4',
 		position: [0, -.35],
 		size: [.6, .2, 1],
 	});
