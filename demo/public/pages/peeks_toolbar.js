@@ -4,22 +4,22 @@ PEEKS.registerPage('peeks_toolbar', function() {
 	var canvas = page.addCanvas();
 
     canvas.addView({
-		position: [0, -.45],
-		size: [1, .1, 1],
+		position: [0, -.44],
+		size: [1, .12, 1],
 		alpha: .2,
 	});
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_previous.png',
-		position: [-.25, -.45],
-		size: .08,
+		position: [-.4, -.44],
+		size: .1,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_next.png',
-		position: [-.15, -.45],
-		size: .08,
+		position: [-.2, -.44],
+		size: .1,
 		onClick: 'loadNextPage',
 	})
 
@@ -33,8 +33,8 @@ PEEKS.registerPage('peeks_toolbar', function() {
     */
 
     canvas.addRoundTextButton({
-        position: [.25, -.45],
-		size: .08,
+        position: [.4, -.44],
+		size: .1,
         label: 'AR',
         onClick: function() { peeks.toggleArMode(); },
     });
@@ -49,13 +49,13 @@ PEEKS.registerPage('peeks_toolbar', function() {
 */
     canvas.addRoundIconButton({
 		icon: 'ui/icon_gyroscope.png',
-		position: [.15, -.45],
-		size: .08,
+		position: [.2, -.44],
+		size: .1,
 		onClick: function() { peeks.toggleGyroscope(); },
 	});
 
     canvas.addText({
-        position: [0, -.45],
+        position: [0, -.44],
         text: 'PEEKS',
         fontSize: 48,
     }).addAttrAlias('fontColor', 'colorMedium');
