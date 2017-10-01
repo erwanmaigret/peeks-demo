@@ -247,45 +247,45 @@
 				return asset;
 			},
 
+            addCube: function (params) {
+				var asset = this.addButton(params);
+                asset.primitive = Asset.PrimitiveCube;
+				if (params) {
+					if (params.onClick) {
+						asset.onClick = params.onClick;
+					} else {
+						// Assign default empty callback so it's clickable
+						asset.onClick = function () {};
+					}
+					if (params.onClickArgs) asset.onClickArgs = params.onClickArgs;
+				}
+				return asset;
+			},
+
             addTextButton: function (params) {
                 var asset = this.addButton(params);
-                asset.addAttrAlias('viewBgColor', 'colorDark');
-                asset.setAttr('alpha', .7);
-
-                asset.addView({
-                    size: .92,
-                    alpha: .7,
-                }).addAttrAlias('viewBgColor', 'colorLight');
+                asset.addAttrAlias('viewBgColor', 'colorWhite');
+                asset.addAttrAlias('alpha', 'buttonBgAlpha');
 
                 asset.addText({
                     position: [0, 0],
                     fontSize: 40,
-                }).addAttrAlias('color', 'colorLight')
-                  .addAttrAlias('text', 'label')
-                ;
+                }).addAttrAlias('text', 'label')
+                .addAttrAlias('fontColor', 'colorMedium');
 
                 return asset;
             },
 
             addIconButton: function (params) {
                 var asset = this.addButton(params);
-                asset.addAttrAlias('viewBgColor', 'colorDark');
-                asset.setAttr('alpha', .7);
+                asset.addAttrAlias('viewBgColor', 'colorWhite');
+                asset.addAttrAlias('alpha', 'buttonBgAlpha');
 
                 var propagatedSize = this.getPropagatedSize();
 
-                asset.addView({
-                    size: [
-                        .9 + .02 / propagatedSize[0],
-                        .9 + .02 / propagatedSize[1],
-                        .9 + .02 / propagatedSize[2],
-                    ],
-                    alpha: .7,
-                }).addAttrAlias('viewBgColor', 'colorLight');
-
                 asset.addImage({
                     image: params.icon,
-                }).addAttrAlias('color', 'colorDark');
+                }).addAttrAlias('color', 'colorMedium');
 
                 return asset;
             },
@@ -432,7 +432,8 @@
 	}
 
 	Asset.PrimitiveNone = 0;
-	Asset.PrimitivePlane = 1;
+    Asset.PrimitivePlane = 1;
+    Asset.PrimitiveCube = 2;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -852,7 +853,9 @@
 		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
 		this.pageIndex = 0;
 		this.style = {
-			viewBgColor: [1, 1, 1],
+            viewBgColor: [1, 1, 1],
+            viewBgAlpha: .2,
+            buttonBgAlpha: .8,
             bgColor: [1, 1, 1],
             fontSize: 12,
             fontBgColor: [1, 1, 1, 0],
@@ -860,12 +863,12 @@
             //fontName: 'Georgia',
             valign: 'center',
             align: 'center',
-            colorDark:   [  0 / 255, 100 / 255,   0 / 255],
-            colorMedium: [ 81 / 255, 255 / 255, 187 / 255],
-            colorLight:  [173 / 255, 255 / 255, 223 / 255],
-            colorBlack:  [  0 / 255, 132 / 255, 255 / 255],
-            colorGrey:   [ 80 / 255,  80 / 255,  80 / 255],
-            colorWhite:  [  0 / 255, 132 / 255, 255 / 255],
+            colorDark:   [   0 / 255, 100 / 255,   0 / 255],
+            colorMedium: [  81 / 255, 150 / 255,  100 / 255],
+            colorLight:  [ 173 / 255, 255 / 255, 223 / 255],
+            colorBlack:  [   0 / 255,   0 / 255,   0 / 255],
+            colorGrey:   [  80 / 255,  80 / 255,  80 / 255],
+            colorWhite:  [ 255 / 255, 255 / 255, 255 / 255],
 		};
 
         this.addAttrAlias('fontColor', 'colorDark');

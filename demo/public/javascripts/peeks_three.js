@@ -171,7 +171,18 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 				parent = parent.parent;
 			}
 
-			if (this.primitive == PEEKS.Asset.PrimitivePlane) {
+            if (this.primitive === PEEKS.Asset.PrimitiveCube) {
+                var geometry = new THREE.CubeGeometry(1, 1, 1);
+                var material = new THREE.MeshPhongMaterial({
+                    color: 0xffffff,
+                    transparent: false,
+                    side: THREE.FrontSide,
+                    //shading: THREE.SmoothShading,
+                    depthTest: isScreenSpace ? false : true,
+                });
+
+                this.threeObject = new THREE.Mesh(geometry, material);
+            } else if (this.primitive === PEEKS.Asset.PrimitivePlane) {
 				if (this.geometryUrl) {
 					this.threeObject = new THREE.Object3D();
 
@@ -325,9 +336,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			threeObject.material.color.g = color[1];
 			threeObject.material.color.b = color[2];
 		}
-		if (this.alpha !== undefined) {
-			threeObject.material.opacity = this.alpha;
-		}
+        threeObject.material.opacity = this.getAttr('alpha', 1);
 	}
 
 	for (var childI = 0; childI < this.children.length; childI++) {

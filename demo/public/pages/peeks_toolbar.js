@@ -6,7 +6,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
     canvas.addView({
 		position: [0, -.45],
 		size: [1, .1, 1],
-		alpha: .5,
+		alpha: .2,
 	});
 
     canvas.addIconButton({
@@ -58,7 +58,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
         position: [0, -.45],
         text: 'PEEKS',
         fontSize: 48,
-    });
+    }).addAttrAlias('fontColor', 'colorMedium');
 
 	canvas.animate({
 		duration: 1,

@@ -1,29 +1,74 @@
 PEEKS.registerPage('terraworlds', function() {
 	var page = new PEEKS.Asset({
-        colorDark:   [  20 / 255, 40 / 255, 90 / 255],
-        colorMedium: [ 81 / 255, 187 / 255, 255 / 255],
-        colorLight:  [173 / 255, 223 / 255, 255 / 255],
+        colorDark:   [.2, 0.2 , 0.5],
+        colorLight:  [.6, 0.6 , 0.8],
     });
 
     page.setAttr('bgColor', page.getAttr('colorDark'));
     page.setAttr('fontColor', page.getAttr('colorDark'));
 
+    var cubeSize = 1;
+    var cubeColor = [0,0,0];
+    var onClick = function()
+    {
+        this.addButton({
+            position: [0, 0, -1],
+            viewBgColor: [Math.random(),Math.random(),Math.random()],
+            onClick: onClick,
+            size: cubeSize,
+        });
+        this.addButton({
+            position: [0, -.5, -.5],
+            rotation: [90, 0, 0],
+            viewBgColor: [Math.random(),Math.random(),Math.random()],
+            onClick: onClick,
+            size: cubeSize,
+        });
+        this.addButton({
+            position: [0, .5, -.5],
+            rotation: [90, 0, 0],
+            viewBgColor: [Math.random(),Math.random(),Math.random()],
+            onClick: onClick,
+            size: cubeSize,
+        });
+        /*
+        this.addButton({
+            position: [0, 0, 0],
+            viewBgColor: [Math.random(),Math.random(),Math.random()],
+            onClick: onClick,
+            size: cubeSize,
+        });
+        */
+        this.addButton({
+            position: [0.5, 0, -.5],
+            rotation: [0, 90, 0],
+            viewBgColor: [Math.random(),Math.random(),Math.random()],
+            onClick: onClick,
+            size: cubeSize,
+        });
+        this.addButton({
+            position: [-0.5, 0, -.5],
+            rotation: [0, 90, 0],
+            viewBgColor: [Math.random(),Math.random(),Math.random()],
+            onClick: onClick,
+            size: cubeSize,
+        });
+    };
+
 	var size = 15;
 	for (var x = -size; x < size; x++) {
 		for (var z = -size; z < size; z++) {
 			page.addButton({
-				position: [x, -1, z],
+                position: [x, -1, z],
 				rotation: [90, 0, 0],
 				size: .97,
-				onClick: function() {
-                    this.setAttr('viewBgColor', [.2, 1, .2]);
-				}
+				onClick: onClick,
 			}).animate({
-				duration: 2 + Math.random() * 2,
+				duration: .1 + Math.random() * 1,
 				delay: .5 + Math.random() * .5,
 				p0: [0, 0, 0],
-				p1: [0, -.3, 0],
-				p2: [0, -.1, 0],
+				p1: [10, -.3,0],
+				p2: [-15, 4, 0],
 				p3: [0, 0, 0],
 				attribute: 'position',
 				//loop: true
