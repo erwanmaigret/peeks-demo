@@ -276,12 +276,17 @@
                 return asset;
             },
 
+            addRoundTextButton: function (params) {
+                var asset = this.addTextButton(params);
+                asset.primitive = Asset.PrimitiveDisk;
+
+                return asset;
+            },
+
             addIconButton: function (params) {
                 var asset = this.addButton(params);
                 asset.addAttrAlias('viewBgColor', 'colorWhite');
                 asset.addAttrAlias('alpha', 'buttonBgAlpha');
-
-                var propagatedSize = this.getPropagatedSize();
 
                 asset.addImage({
                     image: params.icon,
@@ -290,7 +295,14 @@
                 return asset;
             },
 
-			addImage: function (params) {
+            addRoundIconButton: function (params) {
+                var asset = this.addIconButton(params);
+                asset.primitive = Asset.PrimitiveDisk;
+
+                return asset;
+            },
+
+            addImage: function (params) {
 				var asset = this.addView(params);
 				if (params) {
 					if (params.image) asset.setTexture(params.image);
@@ -434,6 +446,7 @@
 	Asset.PrimitiveNone = 0;
     Asset.PrimitivePlane = 1;
     Asset.PrimitiveCube = 2;
+    Asset.PrimitiveDisk = 3;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -855,7 +868,7 @@
 		this.style = {
             viewBgColor: [1, 1, 1],
             viewBgAlpha: .2,
-            buttonBgAlpha: .8,
+            buttonBgAlpha: 1,
             bgColor: [1, 1, 1],
             fontSize: 12,
             fontBgColor: [1, 1, 1, 0],
@@ -864,7 +877,7 @@
             valign: 'center',
             align: 'center',
             colorDark:   [   0 / 255, 100 / 255,   0 / 255],
-            colorMedium: [  81 / 255, 150 / 255,  100 / 255],
+            colorMedium: [  81 / 255, 200 / 255,  100 / 255],
             colorLight:  [ 173 / 255, 255 / 255, 223 / 255],
             colorBlack:  [   0 / 255,   0 / 255,   0 / 255],
             colorGrey:   [  80 / 255,  80 / 255,  80 / 255],

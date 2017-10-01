@@ -9,25 +9,25 @@ PEEKS.registerPage('peeks_history', function() {
 		alpha: .2,
 	});
 
-    pane.addTextButton({
+    pane.addRoundTextButton({
         label: '1',
 		position: [0, .35],
 		size: [.6, .2, 1],
 	});
 
-    pane.addTextButton({
+    pane.addRoundTextButton({
         label: '2',
 		position: [0, .12],
 		size: [.6, .2, 1],
 	});
 
-    pane.addTextButton({
+    pane.addRoundTextButton({
         label: '3',
 		position: [0, -.12],
 		size: [.6, .2, 1],
 	});
 
-    pane.addTextButton({
+    pane.addRoundTextButton({
         label: '4',
 		position: [0, -.35],
 		size: [.6, .2, 1],

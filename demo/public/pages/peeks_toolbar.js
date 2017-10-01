@@ -9,14 +9,14 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		alpha: .2,
 	});
 
-    canvas.addIconButton({
+    canvas.addRoundIconButton({
 		icon: 'ui/icon_previous.png',
 		position: [-.25, -.45],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
-    canvas.addIconButton({
+    canvas.addRoundIconButton({
 		icon: 'ui/icon_next.png',
 		position: [-.15, -.45],
 		size: .08,
@@ -32,7 +32,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
 	});
     */
 
-    canvas.addTextButton({
+    canvas.addRoundTextButton({
         position: [.25, -.45],
 		size: .08,
         label: 'AR',
@@ -47,7 +47,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		onClick: function() { peeks.toggleGyroscope(); },
 	});
 */
-    canvas.addIconButton({
+    canvas.addRoundIconButton({
 		icon: 'ui/icon_gyroscope.png',
 		position: [.15, -.45],
 		size: .08,
