@@ -38,6 +38,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
         position: [.4, -.44],
 		size: .1,
         label: 'AR',
+        fontSize: 40,
         onClick: function() { peeks.toggleArMode(); },
     });
 

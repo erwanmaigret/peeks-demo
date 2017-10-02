@@ -283,6 +283,13 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             plane.scale.x = textTexture.size[0] * .0005;
                             plane.scale.y = textTexture.size[1] * .0005;
 
+                            var scale = this.getPropagatedSize();
+                            if (scale[0] > scale[1]) {
+                                plane.scale.y *= scale[0] / scale[1];
+                            } else {
+                                plane.scale.y *= scale[1] / scale[0];
+                            }
+
                             var yOffset = (textTexture.relativeTop - textTexture.relativeBot) / 2;
                             yOffset = yOffset / textTexture.size[1];
                             plane.position.y = plane.scale.y * yOffset;

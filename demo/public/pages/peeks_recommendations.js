@@ -11,30 +11,73 @@ PEEKS.registerPage('peeks_recommendations', function() {
 
 	pane.addTextButton({
         label: 'FASHION',
-		position: [-.25, -.25, 0],
-		size: .4,
+        position: [0, .4, 0],
+		size: [.9, .15, 1],
 		onClick: 'loadPage',
+		onClickArgs: ['fashion'],
+        fontSize: 40,
+	}).animate({
+		duration: .5,
+        delay: .5,
+		begin: [-90, 0, 0],
+		end: [0, 0, 0],
+        attribute: 'rotation'
+	});
+
+    pane.addTextButton({
+        label: 'Bloomingdales',
+		position: [0, .2, 0],
+		size: [.9, .15, 1],
+        onClick: 'loadPage',
 		onClickArgs: ['bloomingdales'],
+        fontSize: 40,
+	}).animate({
+		duration: .5,
+        delay: 0.8,
+		begin: [-90, 0, 0],
+		end: [0, 0, 0],
+        attribute: 'rotation'
 	});
 
 	pane.addTextButton({
         label: 'GAME',
-		position: [-.25, .25, 0],
-		size: .4,
+        position: [0, .0, 0],
+		size: [.9, .15, 1],
 		onClick: 'loadPage',
 		onClickArgs: ['terraworlds'],
-	});
-
-	pane.addTextButton({
-		label: 'TRAVEL',
-		position: [.25, -.25, 0],
-		size: .4,
+        fontSize: 40,
+	}).animate({
+		duration: .5,
+        delay: 1.1,
+		begin: [-90, 0, 0],
+		end: [0, 0, 0],
+        attribute: 'rotation'
 	});
 
     pane.addTextButton({
-        label: 'VIDEOS',
-		position: [.25, .25, 0],
-		size: .4,
+		label: 'TRAVEL',
+        position: [0, -.2, 0],
+		size: [.9, .15, 1],
+        fontSize: 40,
+	}).animate({
+		duration: .5,
+        delay: 1.4,
+		begin: [-90, 0, 0],
+		end: [0, 0, 0],
+        attribute: 'rotation'
+	});
+
+    pane.addTextButton({
+		label: 'REAL ESTATE',
+        position: [0, -.4, 0],
+		size: [.9, .15, 1],
+        fontSize: 40,
+	}).animate({
+		duration: .5,
+        delay: 1.7,
+		begin: [-90, 0, 0],
+		end: [0, 0, 0],
+        attribute: 'rotation'
 	});
 
 	return page;

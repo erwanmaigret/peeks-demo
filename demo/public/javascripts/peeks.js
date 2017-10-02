@@ -269,8 +269,7 @@
                 asset.addAttrAlias('alpha', 'buttonBgAlpha');
 
                 asset.addText({
-                    position: [0, 0],
-                    fontSize: 40,
+                    position: [0, 0, .01],
                 }).addAttrAlias('text', 'label')
                 .addAttrAlias('fontColor', 'colorMedium');
 

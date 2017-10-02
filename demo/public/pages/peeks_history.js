@@ -10,24 +10,28 @@ PEEKS.registerPage('peeks_history', function() {
 	});
 
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '1',
 		position: [0, .35],
 		size: [.6, .2, 1],
 	});
 
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '2',
 		position: [0, .12],
 		size: [.6, .2, 1],
 	});
 
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '3',
 		position: [0, -.12],
 		size: [.6, .2, 1],
 	});
 
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '4',
 		position: [0, -.35],
 		size: [.6, .2, 1],

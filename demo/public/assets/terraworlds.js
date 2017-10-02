@@ -132,6 +132,7 @@ PEEKS.registerPage('terraworlds', function() {
         position: [.15, .45],
 		size: .08,
         label: 'W',
+        fontSize: 40,
         onClick: function() {
             cubeImage = 'images/minecraft_wood.jpg';
             cubeRepeat = [2, 2];
@@ -142,6 +143,7 @@ PEEKS.registerPage('terraworlds', function() {
         position: [-.15, .45],
 		size: .08,
         label: 'C',
+        fontSize: 40,
         onClick: function() {
             cubeImage = 'images/minecraft_craftingtable.jpg';
             cubeRepeat = [1, 1];
@@ -152,6 +154,7 @@ PEEKS.registerPage('terraworlds', function() {
         position: [0, .45],
 		size: .08,
         label: 'S',
+        fontSize: 40,
         onClick: function() {
             cubeImage = 'images/minecraft_stone.jpg';
             cubeRepeat = [3, 3];
@@ -161,6 +164,7 @@ PEEKS.registerPage('terraworlds', function() {
         position: [-.3, .45],
         size: .08,
         label: 'G',
+        fontSize: 40,
         onClick: function() {
             cubeImage = 'images/minecraft_dirt.jpg';
             cubeRepeat = [1, 1];

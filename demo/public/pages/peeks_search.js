@@ -11,32 +11,39 @@ PEEKS.registerPage('peeks_search', function() {
 		alpha: .2,
 	});
 
-	pane.addButton({
+	pane.addTextButton({
+        label: 'Search PEEKS or type URL',
 		position: [0, 0],
-		size: [.6, .2, 1],
+		size: [.5, .22, 1],
+        fontSize: 24,
 	});
 
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '-',
 		position: [-.45, .3],
 		size: [.05, .25, 1],
 	});
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '-',
 		position: [-.45, -.3],
 		size: [.05, .25, 1],
 	});
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '-',
 		position: [.45, .3],
 		size: [.05, .25, 1],
 	});
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '?',
 		position: [.45, 0],
 		size: [.05, .25, 1],
 	});
     pane.addRoundTextButton({
+        fontSize: 40,
         label: '-',
 		position: [.45, -.3],
 		size: [.05, .25, 1],
