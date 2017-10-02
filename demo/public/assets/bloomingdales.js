@@ -144,12 +144,19 @@ PEEKS.registerPage('bloomingdales', function() {
 
         if (assetI === 8) {
             pivot.addGeometry({
-                geometry: 'assets/shoes_1.obj',
-                texture: 'assets/shoes_1.jpg',
+                geometry: 'assets/black_leather_shoes.obj',
+                texture: 'assets/black_leather_shoes.png',
                 position: [0, -.5, -4],
-                rotation: [0, 40, 0],
-                size: .02,
-                onClick: `animateFlip`,
+                rotation: [0, 200, 0],
+                size: .05,
+                onClick: function() {
+                    this.animate({
+    					duration: 1,
+    					begin: [0, 0, 0],
+    					end: [0, 90, 0],
+    					attribute: 'rotation'
+    				});
+                },
             });
         } else {
             var asset = pivot.addAsset({
@@ -193,13 +200,9 @@ PEEKS.registerPage('bloomingdales', function() {
 	}
 	*/
 
-    page.addGeometry({
-		geometry: 'assets/ball_chair.obj',
-		position: [-2, -.5, -4.5],
-		rotation: [0, 45, 0],
-	});
-
-    var canvas = page.addCanvas();
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
 
 	page.addPage('peeks_toolbar');
 

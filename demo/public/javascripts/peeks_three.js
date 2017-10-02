@@ -80,7 +80,13 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             var distance = h / tan;
             if (scene.width < scene.height) {
                 distance *= scene.height / scene.width;
-                this.threeObjectPivot.position.y -= .5 * (scene.height - scene.width) / scene.width;
+
+                var valign = this.getAttr('valign');
+                if (valign === 'bottom') {
+                    this.threeObjectPivot.position.y -= .5 * (scene.height - scene.width) / scene.width;
+                } else if (valign === 'top') {
+                    this.threeObjectPivot.position.y += .5 * (scene.height - scene.width) / scene.width;
+                }
             }
             threeObject.position.z -= distance;
 		}
@@ -240,8 +246,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
     								child.material.emissive.g = .2;
         					        child.material.emissive.b = .2;
                                     child.material.side = THREE.DoubleSide;
+                                    child.material.shading = THREE.SmoothShading;
+                                    child.geometry.computeFaceNormals();
 								}
-							} );
+							});
 						}
 					}, onProgress, onError );
 				} else if (this.getAttr('text')) {

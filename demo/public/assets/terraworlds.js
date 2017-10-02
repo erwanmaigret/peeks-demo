@@ -124,7 +124,9 @@ PEEKS.registerPage('terraworlds', function() {
 
 	page.addPage('peeks_toolbar');
 
-    var canvas = page.addCanvas();
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
 
     canvas.addRoundTextButton({
         position: [.15, .45],

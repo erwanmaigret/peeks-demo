@@ -230,7 +230,8 @@
 
 			addCanvas: function (params) {
 				var asset = new PEEKS.Canvas();
-				return this.add(asset);
+				this.applyParams(asset, params);
+                return this.add(asset);
 			},
 
 			addButton: function (params) {

@@ -1,7 +1,9 @@
 PEEKS.registerPage('peeks_search', function() {
 	var page = new PEEKS.Asset();
 
-	var canvas = page.addCanvas();
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
 
 	var pane = canvas.addView({
 		position: [0, .4],

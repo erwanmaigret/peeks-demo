@@ -1,7 +1,9 @@
 PEEKS.registerPage('peeks_toolbar', function() {
 	var page = new PEEKS.Asset();
 
-	var canvas = page.addCanvas();
+	var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
 
     canvas.addView({
 		position: [0, -.44],
