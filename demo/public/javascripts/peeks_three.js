@@ -393,6 +393,21 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 	var raycaster = new THREE.Raycaster();
 	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
 	var objects = raycaster.intersectObjects(this.threeObject.children, true);
+
+    // First pass for Canvas only object
+	for (var objectI = 0; objectI < objects.length; objectI++) {
+		var object = objects[objectI].object;
+		while (object) {
+			if (object.peeksAsset && object.peeksAsset.onClick !== undefined) {
+				if (object.peeksAsset !== this && object.peeksAsset.isInCanvas()) {
+					return object.peeksAsset;
+				}
+			}
+			object = object.parent;
+		}
+	}
+
+    // Second pass for any other object
 	for (var objectI = 0; objectI < objects.length; objectI++) {
 		var object = objects[objectI].object;
 		while (object) {
@@ -405,7 +420,7 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 		}
 	}
 
-	// Second pass for default click if handled
+	// Third pass for default click if handled
 	for (var objectI = 0; objectI < objects.length; objectI++) {
 		var object = objects[objectI].object;
 		while (object) {

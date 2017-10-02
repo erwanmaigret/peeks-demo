@@ -453,6 +453,17 @@
 		{
 			constructor: Asset,
 
+            isInCanvas: function() {
+                var parent = this;
+                while (parent) {
+                    if (parent.type === 'Canvas') {
+                        return true;
+                    }
+                    parent = parent.parent;
+                }
+                return false;
+			},
+
 			resetToInitial: function() {
 				this.position = this.initialPosition.slice();
 				this.rotation = this.initialRotation.slice();
