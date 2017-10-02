@@ -256,7 +256,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var material = new THREE.MeshBasicMaterial({
 						color: 0xffffff,
 						transparent: true,
-						side: backSide ? THREE.FrontSide : THREE.DoubleSide,
+						side: THREE.FrontSide,
 						depthTest: isScreenSpace ? false : true,
 					});
 
