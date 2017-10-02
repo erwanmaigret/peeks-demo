@@ -35,7 +35,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 	}
 
 	if (threeObject) {
-		if (this.position) {
+        if (this.position) {
 			threeObject.position.x = this.position[0];
 			threeObject.position.y = this.position[1];
 			threeObject.position.z = this.position[2];
@@ -51,8 +51,8 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 		}
 
         var camera = this.getCamera();
+        var scene = this.getScene();
         if (this === camera) {
-            var scene = this.getScene();
             if (scene && scene.deviceOrientation !== undefined && scene.gyroscope) {
                 var alpha = scene.deviceOrientation.alpha;
                 var beta = scene.deviceOrientation.beta;
@@ -65,14 +65,10 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                     THREE.Math.degToRad(gamma),
                     THREE.Math.degToRad(orient));
             }
-        } else if (this.type == 'Canvas') {
-			this.threeObjectPivot.position.x = camera.position[0];
-			this.threeObjectPivot.position.y = camera.position[1];
-			this.threeObjectPivot.position.z = camera.position[2];
-			this.threeObjectPivot.rotation.order = camera.rotationOrder;
-			this.threeObjectPivot.rotation.x = THREE.Math.degToRad(camera.rotation[0]);
-			this.threeObjectPivot.rotation.y = THREE.Math.degToRad(camera.rotation[1]);
-			this.threeObjectPivot.rotation.z = THREE.Math.degToRad(camera.rotation[2]);
+        } else if (this.type === 'Canvas') {
+            var pivot = this.threeObjectPivot;
+            pivot.position.copy(scene.three.camera.position);
+            pivot.quaternion.copy(scene.three.camera.quaternion);
 
             var h = .5;
             var scene = this.getScene();
@@ -83,11 +79,12 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
                 var valign = this.getAttr('valign');
                 if (valign === 'bottom') {
-                    this.threeObjectPivot.position.y -= .5 * (scene.height - scene.width) / scene.width;
+                    pivot.position.y -= .5 * (scene.height - scene.width) / scene.width;
                 } else if (valign === 'top') {
-                    this.threeObjectPivot.position.y += .5 * (scene.height - scene.width) / scene.width;
+                    pivot.position.y += .5 * (scene.height - scene.width) / scene.width;
                 }
             }
+
             threeObject.position.z -= distance;
 		}
 	}
@@ -164,12 +161,12 @@ function colorToThreeColor(color) {
 }
 
 PEEKS.Scene.prototype.onRender = function() {
+    this.camera.threeSynch(this.three.camera);
 	this.threeSynch();
 	if (this.page) {
         var bgColor = this.page.getAttrColor('bgColor', [1, 1, 1]);
 		this.three.renderer.setClearColor(colorToThreeColor(bgColor));
 	}
-	this.camera.threeSynch(this.three.camera);
 	this.three.renderer.render(this.three.scene, this.three.camera);
 },
 
