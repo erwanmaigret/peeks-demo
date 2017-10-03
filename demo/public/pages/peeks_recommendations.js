@@ -59,6 +59,8 @@ PEEKS.registerPage('peeks_recommendations', function() {
         position: [0, -.2, 0],
 		size: [.9, .15, 1],
         fontSize: 40,
+        onClick: 'loadPage',
+		onClickArgs: ['travel'],
 	}).animate({
 		duration: .5,
         delay: 1.4,

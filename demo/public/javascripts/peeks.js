@@ -953,8 +953,8 @@
 			},
 
 			onMouseDown: function (event) {
-				event.preventDefault();
 				logDebug('onMouseDown');
+
 				this.mouseDown = this.getMouse(event);
 				this.mouseDownCameraRotation = this.camera.rotation;
 				this.mouseDownCanClick = true;
@@ -962,8 +962,8 @@
 			},
 
 			onMouseUp: function (event) {
-				event.preventDefault();
 				logDebug('onMouseUp');
+
 				if (this.mouseDown) {
 					if (this.mouseDownCanClick) {
 						this.mouseUp = this.getMouse(event);
@@ -973,11 +973,14 @@
 						if (this.mouseUp === undefined) {
 							this.mouseUp = this.mouseDown;
 						}
+
 						this.mouseUpTime = this.time;
 						if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
 							(this.mouseUpTime - this.mouseDownTime) < .3)
 						{
-							this.onClick(this.mouseUp);
+							if (this.onClick(this.mouseUp)) {
+                                event.preventDefault();
+                            }
 						}
 					}
 					delete this.mouseDown;
@@ -1006,6 +1009,8 @@
 							asset.onClick();
 						}
 					}
+
+                    return true;
 				}
 			},
 
@@ -1209,7 +1214,7 @@
                     window.addEventListener('orientationchange',
                         function() {
                             mainScene.screenOrientation = window.orientation || 0;
-                        }
+                        },
                     );
 
             		window.addEventListener('deviceorientation',
@@ -1217,7 +1222,7 @@
                             if (event.alpha != null) {
                                 mainScene.deviceOrientation = event;
                             }
-                        }
+                        },
                     );
 
                     document.addEventListener('mousemove',

@@ -397,6 +397,10 @@ PEEKS.Asset.prototype.onUnload = function() {
 }
 
 PEEKS.Scene.prototype.onPickNode = function(mouse) {
+    if (mouse === undefined) {
+        return;
+    }
+    
 	var raycaster = new THREE.Raycaster();
 	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
 	var objects = raycaster.intersectObjects(this.threeObject.children, true);
@@ -462,6 +466,9 @@ PEEKS.Scene.prototype.onStart = function() {
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.sortObjects = false;
 	renderer.setClearColor(0xffffff, 1);
+
+    // Always work retina-style with 4 fragments per pixel
+    renderer.setPixelRatio(2);
 
     this.cameraAngle = 30;
 	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
