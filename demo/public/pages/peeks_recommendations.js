@@ -74,6 +74,8 @@ PEEKS.registerPage('peeks_recommendations', function() {
         position: [0, -.4, 0],
 		size: [.9, .15, 1],
         fontSize: 40,
+        onClick: 'loadPage',
+		onClickArgs: ['housing'],
 	}).animate({
 		duration: .5,
         delay: 1.7,

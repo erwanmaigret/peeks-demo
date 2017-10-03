@@ -25,15 +25,6 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		onClick: 'loadNextPage',
 	})
 
-    /*
-    canvas.addButton({
-		image: 'ui/icon_ar.png',
-		position: [.25, -.45],
-		size: .08,
-		onClick: function() { peeks.toggleArMode(); },
-	});
-    */
-
     canvas.addRoundTextButton({
         position: [.4, -.44],
 		size: .1,
@@ -42,14 +33,6 @@ PEEKS.registerPage('peeks_toolbar', function() {
         onClick: function() { peeks.toggleArMode(); },
     });
 
-/*
-    canvas.addButton({
-		image: 'ui/icon_gyroscope.png',
-		position: [.15, -.45],
-		size: .08,
-		onClick: function() { peeks.toggleGyroscope(); },
-	});
-*/
     canvas.addRoundIconButton({
 		icon: 'ui/icon_gyroscope.png',
 		position: [.2, -.44],
@@ -57,11 +40,11 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		onClick: function() { peeks.toggleGyroscope(); },
 	});
 
-    canvas.addText({
+    canvas.addButton({
+        image: 'ui/icon_peeks.png',
         position: [0, -.44],
-        text: 'PEEKS',
-        fontSize: 48,
-    }).addAttrAlias('fontColor', 'colorMedium');
+        size: [.2, .1, 1],
+    }).addAttrAlias('color', 'colorMedium');
 
 	canvas.animate({
 		duration: 1,
