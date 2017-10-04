@@ -21,22 +21,44 @@ router.get('/', function(req, res, next) {
                 if (!error) {
                     if (response.statusCode == 200) {
                         var dom = new JSDOM(html);
-                        var scrapData = {};
-                        scrapData.title = dom.window.document.title;
+                        var data = {};
+
+                        // Peeks predictive data
+                        data.peeks = {};
+                        data.peeks.title = dom.window.document.title;
+                        data.peeks.menu = [];
+
+                        // Original data:
+                        data.source = {};
+                        data.source.a = [];
+
                         var elems = dom.window.document.querySelectorAll("a");
-                        scrapData.menu = [];
                         for (var elemI in elems) {
                             var elem = elems[elemI];
-                            if (elem) {
-                                if (elem.id &&
-                                    elem.id.search('headerNavigationLink') === 0 &&
-                                    elem.textContent)
-                                {
-                                    scrapData.menu.push({label: elem.textContent});
+                            if (elem && elem.id && elem.textContent && elem.href) {
+                                var href = elem.href;
+                                if (href && href[0] === '/') {
+                                    href = uri + href;
                                 }
+
+                                // Predictive
+                                if (elem.id.search('headerNavigationLink') === 0)
+                                {
+                                    data.peeks.menu.push({
+                                        label: elem.textContent,
+                                        href: href,
+                                    });
+                                }
+
+                                // Generic
+                                data.source.a.push({
+                                    id: elem.id,
+                                    label: elem.textContent,
+                                    href: href,
+                                });
                             }
                         }
-                        res.send(JSON.stringify(scrapData));
+                        res.send(JSON.stringify(data));
                     }
                 }
             }

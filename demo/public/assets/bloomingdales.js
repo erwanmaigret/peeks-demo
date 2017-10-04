@@ -1,6 +1,6 @@
 PEEKS.registerPage('bloomingdales', function() {
 	var page = new PEEKS.Asset({
-        fontColor: [0, 0, 0],
+//        fontColor: [0, 0, 0],
     });
 
     page.setAttr('bgColor', [.8, .9, .8]);
@@ -11,7 +11,7 @@ PEEKS.registerPage('bloomingdales', function() {
 
     var loading = canvasCenter.addText({
         size: 1.5,
-        text: 'Loading...',
+        text: 'Analyzing website...',
         fontSize: 30,
     });
 
@@ -22,7 +22,7 @@ PEEKS.registerPage('bloomingdales', function() {
     var billboard = page.addAsset();
     var itemCount = 0;
 
-    var addItem = function(label) {
+    var addItem = function(label, href) {
         var rotation = [0, 0, 0];
         switch (itemCount) {
             case 0: rotation = [0, 0, 0]; break;
@@ -45,13 +45,21 @@ PEEKS.registerPage('bloomingdales', function() {
             rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
             rotationOrder: 'YXZ',
         });
-        pivot.addTextButton({
+        var button = pivot.addTextButton({
             label: label,
             position: [0, 0, -2],
             rotation: [0, 0, 0],
             size: [.3, .2, 1],
             fontSize: 20,
-        }).animate({
+            onClick: function() {
+                if (this.href) {
+                    var win = window.open(this.href, '_blank');
+                    win.focus();
+                }
+            }
+        });
+        button.href = href;
+        button.animate({
             duration: .5,
             delay: itemCount * .1,
             begin: [0, 0, -100],
@@ -67,11 +75,11 @@ PEEKS.registerPage('bloomingdales', function() {
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var data = JSON.parse(this.responseText);
-            if (data.title) {
+            if (data.peeks.title) {
                 canvas.addText({
                     position: [0, .45, 0],
                     size: 1.5,
-                    text: data.title,
+                    text: data.peeks.title,
                     fontSize: 30,
                 }).animate({
                     duration: 1,
@@ -80,11 +88,11 @@ PEEKS.registerPage('bloomingdales', function() {
                     attribute: 'position'
                 });
             }
-            if (data.menu && data.menu.length > 0) {
-                for (var menuI = 0; menuI < data.menu.length; menuI++) {
-                    var menu = data.menu[menuI];
+            if (data.peeks.menu && data.peeks.menu.length > 0) {
+                for (var menuI = 0; menuI < data.peeks.menu.length; menuI++) {
+                    var menu = data.peeks.menu[menuI];
                     if (menu.label) {
-                        addItem(menu.label);
+                        addItem(menu.label, menu.href);
                     }
                 }
             }
