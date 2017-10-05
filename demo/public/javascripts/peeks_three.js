@@ -168,6 +168,9 @@ PEEKS.Scene.prototype.onRender = function() {
 		this.three.renderer.setClearColor(colorToThreeColor(bgColor));
 	}
 	this.three.renderer.render(this.three.scene, this.three.camera);
+    if (this.three.cssRenderer) {
+        this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
+    }
 },
 
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
@@ -400,7 +403,7 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
     if (mouse === undefined) {
         return;
     }
-    
+
 	var raycaster = new THREE.Raycaster();
 	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
 	var objects = raycaster.intersectObjects(this.threeObject.children, true);
@@ -451,7 +454,28 @@ PEEKS.Scene.prototype.onResize = function() {
     this.three.camera.aspect = width / height;
     this.three.camera.updateProjectionMatrix();
     this.three.renderer.setSize(width, height);
+    if (this.three.cssRenderer) {
+        this.three.cssRenderer.setSize(width, height);
+    }
 }
+
+var CreateCssElement = function ( id, x, y, z) {
+	var div = document.createElement('div');
+	div.style.width = '256px';
+	div.style.height = '256px';
+	div.style.backgroundColor = '#000';
+	var iframe = document.createElement('iframe');
+	iframe.style.width = '256px';
+	iframe.style.height = '256px';
+	iframe.style.border = '0px';
+    iframe.src = [ 'https://assets.bloomingdales.com/navapp/dyn_img/homepage_pools/0929_1009_HP_INTL_02_1505750668351.jpg' ].join( '' );
+	div.appendChild(iframe);
+
+	var object = new THREE.CSS3DObject(div);
+    object.position.set(0, 0, -256);
+    object.scale.set(.1, .1, .1);
+	return object;
+};
 
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
@@ -463,7 +487,28 @@ PEEKS.Scene.prototype.onStart = function() {
 	directionalLight.position.set( 0, 0, 1 );
 	scene.add( directionalLight );
 
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    var addCssLayer = false;
+    if (addCssLayer) {
+        var container = document.createElement( 'div' );
+        container.style.position = 'relative';
+        document.body.appendChild( container );
+
+        var cssRenderer = new THREE.CSS3DRenderer();
+        cssRenderer.setSize(400, 400);
+    	cssRenderer.domElement.style.position = 'absolute';
+    	cssRenderer.domElement.style.top = 0;
+
+        this.three.cssRenderer = cssRenderer;
+        this.three.cssScene = new THREE.Scene();
+    	this.three.cssScene.add(new CreateCssElement( 'OX9I1KyNa8M', 0, 0, -240));
+
+        container.appendChild( cssRenderer.domElement );
+    }
+
+    var renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true
+    });
     renderer.sortObjects = false;
 	renderer.setClearColor(0xffffff, 1);
 

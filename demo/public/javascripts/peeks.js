@@ -570,7 +570,7 @@
                 var can;
                 var ctx;
                 if (!aOptions.canAndCtx) {
-                    can = document.createElement('canvas');;
+                    can = document.createElement('canvas');
                     can.mozOpaque = 'true'; // improved performanceo on firefox i guess
                     ctx = can.getContext('2d');
 
