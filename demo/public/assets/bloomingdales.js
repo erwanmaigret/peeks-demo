@@ -1,9 +1,9 @@
 PEEKS.registerPage('bloomingdales', function() {
 	var page = new PEEKS.Asset({
-        fontColor: [0, 0, 0],
+        fontColor: [0, 0, 0]
     });
 
-    page.setAttr('bgColor', [.9, .9, .9]);
+    page.setAttr('bgColor', [1, 1, 1]);
 
     var url = 'https://www.bloomingdales.com';
 
@@ -24,7 +24,38 @@ PEEKS.registerPage('bloomingdales', function() {
     var billboard = page.addAsset();
     var itemCount = 0;
 
+    var imageCount = 0;
     var addItem = function(label, href) {
+        var x = itemCount - 1;
+        var y = Math.floor(itemCount);
+        if (y % 2 === 0) {
+            y = -y / 2;
+        } else {
+            y = (y + 1) / 2;
+        }
+        var rotation = [1.5, y, 0];
+        var pivot = billboard.addAsset({
+            rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
+            rotationOrder: 'YXZ',
+        });
+        var button = pivot.addTextButtonThin({
+            label: label,
+            position: [0, 0, -2],
+            rotation: [0, 0, 0],
+            size: [.3, .1, 1],
+            fontSize: 20,
+            onClick: function() {
+                if (this.href) {
+                    var win = window.open(this.href, '_blank');
+                    win.focus();
+                }
+            }
+        });
+        button.href = href;
+        button.animateInFromFar(itemCount * .1);
+        itemCount++;
+    };
+    var addItemPrevious = function(label, href) {
         var x = itemCount % 3 - 1;
         var y = 3 + Math.floor(itemCount / 3);
         if (y % 2 === 0) {
@@ -37,7 +68,7 @@ PEEKS.registerPage('bloomingdales', function() {
             rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
             rotationOrder: 'YXZ',
         });
-        var button = pivot.addTextButton({
+        var button = pivot.addTextButtonThin({
             label: label,
             position: [0, 0, -2],
             rotation: [0, 0, 0],
@@ -51,13 +82,7 @@ PEEKS.registerPage('bloomingdales', function() {
             }
         });
         button.href = href;
-        button.animate({
-            duration: .5,
-            delay: itemCount * .1,
-            begin: [0, 0, -100],
-            end: [0, 0, 0],
-            attribute: 'position'
-        });
+        button.animateInFromFar(itemCount * .1);
         itemCount++;
     };
 
@@ -70,7 +95,9 @@ PEEKS.registerPage('bloomingdales', function() {
             image: 'http://35.161.135.124/?url=' + url,
             position: [0, imageY, -5],
             size: [width, height, 1],
-        });
+        }).animateInFromFar(imageCount * .1);
+
+        imageCount++;
 
         imageY -= height;
     }

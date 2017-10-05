@@ -276,6 +276,18 @@
                 return asset;
             },
 
+            addTextButtonThin: function (params) {
+                var asset = this.addButton(params);
+                asset.addAttrAlias('viewBgColor', 'colorWhite');
+                asset.addAttrAlias('alpha', 'buttonBgAlpha');
+
+                asset.addText({
+                    position: [0, 0, .01],
+                }).addAttrAlias('text', 'label');
+
+                return asset;
+            },
+
             addRoundTextButton: function (params) {
                 var asset = this.addTextButton(params);
                 asset.primitive = Asset.PrimitiveDisk;
@@ -821,6 +833,19 @@
 					attribute: 'rotation'
 				});
 			},
+
+            animateInFromFar: function(delay) {
+                if (delay === undefined) {
+                    delay = 0;
+                }
+                this.animate({
+                    duration: .5,
+                    delay: delay,
+                    begin: [0, 0, -100],
+                    end: [0, 0, 0],
+                    attribute: 'position'
+                });
+            }
 		}
 	);
 
