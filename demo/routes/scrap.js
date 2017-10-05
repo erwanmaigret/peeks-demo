@@ -27,11 +27,14 @@ router.get('/', function(req, res, next) {
                         data.peeks = {};
                         data.peeks.title = dom.window.document.title;
                         data.peeks.menu = [];
+                        data.peeks.images = [];
 
                         // Original data:
                         data.source = {};
                         data.source.a = [];
+                        data.source.img = [];
 
+                        // references
                         var elems = dom.window.document.querySelectorAll("a");
                         for (var elemI in elems) {
                             var elem = elems[elemI];
@@ -58,6 +61,27 @@ router.get('/', function(req, res, next) {
                                 });
                             }
                         }
+
+                        // Image assets
+                        elems = dom.window.document.querySelectorAll("img");
+                        for (var elemI in elems) {
+                            var elem = elems[elemI];
+                            if (elem && elem.src && elem.width && elem.height) {
+                                var src = elem.src;
+                                if (src && src[0] === '/') {
+                                    src = uri + src;
+                                }
+
+                                data.source.img.push({
+                                    src: src,
+                                    width: elem.width,
+                                    height: elem.height,
+                                });
+
+                                console.log(src);
+                            }
+                        }
+
                         res.send(JSON.stringify(data));
                     }
                 }

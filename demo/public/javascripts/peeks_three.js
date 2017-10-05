@@ -3,7 +3,7 @@ var loadTexture = function(material, textureUrl, textureRepeat)
 	if (textureUrl != '') {
 		var loader = new THREE.TextureLoader();
 
-		loader.setCrossOrigin(null);
+		//loader.setCrossOrigin(null);
 
 		material.map = loader.load(textureUrl);
 

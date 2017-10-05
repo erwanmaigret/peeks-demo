@@ -1,9 +1,11 @@
 PEEKS.registerPage('bloomingdales', function() {
 	var page = new PEEKS.Asset({
-//        fontColor: [0, 0, 0],
+        fontColor: [0, 0, 0],
     });
 
-    page.setAttr('bgColor', [.8, .9, .8]);
+    page.setAttr('bgColor', [.9, .9, .9]);
+
+    var url = 'https://www.bloomingdales.com';
 
     var canvasCenter = page.addCanvas({
         valign: 'top',
@@ -11,7 +13,7 @@ PEEKS.registerPage('bloomingdales', function() {
 
     var loading = canvasCenter.addText({
         size: 1.5,
-        text: 'Analyzing website...',
+        text: 'Loading ' + url + '...',
         fontSize: 30,
     });
 
@@ -23,24 +25,14 @@ PEEKS.registerPage('bloomingdales', function() {
     var itemCount = 0;
 
     var addItem = function(label, href) {
-        var rotation = [0, 0, 0];
-        switch (itemCount) {
-            case 0: rotation = [0, 0, 0]; break;
-            case 1: rotation = [0, 1, 0]; break;
-            case 2: rotation = [0, -1, 0]; break;
-            case 3: rotation = [1, 0, 0]; break;
-            case 4: rotation = [1, 1, 0]; break;
-            case 5: rotation = [1, -1, 0]; break;
-            case 6: rotation = [-1, 0, 0]; break;
-            case 7: rotation = [-1, 1, 0]; break;
-            case 8: rotation = [-1, -1, 0]; break;
-            case 9: rotation = [0, 2, 0]; break;
-            case 10: rotation = [1, 2, 0]; break;
-            case 11: rotation = [-1, 2, 0]; break;
-            case 12: rotation = [0, -2, 0]; break;
-            case 13: rotation = [1, -2, 0]; break;
-            case 14: rotation = [-1, -2, 0]; break;
+        var x = itemCount % 3 - 1;
+        var y = 3 + Math.floor(itemCount / 3);
+        if (y % 2 === 0) {
+            y = -y / 2;
+        } else {
+            y = (y + 1) / 2;
         }
+        var rotation = [x, y, 0];
         var pivot = billboard.addAsset({
             rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
             rotationOrder: 'YXZ',
@@ -69,6 +61,20 @@ PEEKS.registerPage('bloomingdales', function() {
         itemCount++;
     };
 
+    var imageY = .25;
+
+    var addImage = function(width, height, url) {
+        width = width * .0015;
+        height = height * .0015;
+        page.addImage({
+            image: 'http://35.161.135.124/?url=' + url,
+            position: [0, imageY, -5],
+            size: [width, height, 1],
+        });
+
+        imageY -= height;
+    }
+
     page.addPage('peeks_toolbar');
 
     var xhttp = new XMLHttpRequest();
@@ -96,12 +102,18 @@ PEEKS.registerPage('bloomingdales', function() {
                     }
                 }
             }
+            if (data.source.img && data.source.img.length > 0) {
+                for (var itemI = 0; itemI < data.source.img.length; itemI++) {
+                    var item = data.source.img[itemI];
+                    addImage(item.width, item.height, item.src);
+                }
+            }
 
             loading.destroy();
         }
     };
     xhttp.open("GET",
-        "/scrap?uri=" + encodeURI('https://www.bloomingdales.com'),
+        "/scrap?uri=" + encodeURI(url),
         true);
     xhttp.send();
 
