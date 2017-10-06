@@ -72,13 +72,16 @@ router.get('/', function(req, res, next) {
                                     src = uri + src;
                                 }
 
+                                // Redirection so that we can get around
+                                //  data loading without worrying about CORS
+                                //  issues.
+                                src = 'http://35.161.135.124/?url=' + src;
+
                                 data.source.img.push({
                                     src: src,
                                     width: elem.width,
                                     height: elem.height,
                                 });
-
-                                console.log(src);
                             }
                         }
 

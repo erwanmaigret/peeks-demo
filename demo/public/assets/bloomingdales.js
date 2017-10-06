@@ -92,7 +92,7 @@ PEEKS.registerPage('bloomingdales', function() {
         width = width * .0015;
         height = height * .0015;
         page.addImage({
-            image: 'http://35.161.135.124/?url=' + url,
+            image: url,
             position: [0, imageY, -5],
             size: [width, height, 1],
         }).animateInFromFar(imageCount * .1);
