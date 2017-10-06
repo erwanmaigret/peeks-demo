@@ -5,7 +5,7 @@ PEEKS.registerPage('bloomingdales', function() {
 
     page.setAttr('bgColor', [1, 1, 1]);
 
-    page.scrap('https://www.bloomingdales.com');
+    page.addExternalView('https://www.bloomingdales.com');
 
     page.addPage('peeks_toolbar');
 

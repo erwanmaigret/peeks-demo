@@ -395,26 +395,31 @@
 				return this.add(asset);
 			},
 
-            scrap: function (url) {
-                this.scrap = {
-                };
+            progressStart: function (message) {
+                this.progressStop();
 
-                var page = this.addView();
-                this.scrap.page = page;
-
-                var canvasCenter = page.addCanvas({
-                    valign: 'top',
+                this.progress = this.addCanvas({
                 });
 
-                var loading = canvasCenter.addText({
+                this.progress.addText({
                     size: 1.5,
-                    text: 'Loading ' + url + '...',
+                    text: message,
                     fontSize: 30,
                 });
+            },
 
-                var canvas = page.addCanvas({
-                    valign: 'top',
-                });
+            progressStop: function (message) {
+                if (this.progress) {
+                    this.progress.destroy();
+                    delete this.progress;
+                }
+            },
+
+            addExternalView: function (url) {
+                var page = this.addView();
+                page.url = url;
+
+                page.progressStart('Loading ' + url + '...');
 
                 var billboard = page.addAsset();
                 var itemCount = 0;
@@ -443,8 +448,14 @@
                         fontSize: 20,
                         onClick: function() {
                             if (this.href) {
-                                var win = window.open(this.href, '_blank');
-                                win.focus();
+                                var parent = page.parent;
+                                if (parent) {
+                                    parent.addExternalView(this.href);
+                                    page.destroy();
+                                } else {
+                                    var win = window.open(this.href, '_blank');
+                                    win.focus();
+                                }
                             }
                         }
                     });
@@ -488,7 +499,7 @@
                             }
                         }
 
-                        loading.destroy();
+                        page.progressStop();
                     }
                 };
                 xhttp.open("GET",
