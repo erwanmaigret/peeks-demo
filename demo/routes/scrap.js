@@ -6,10 +6,21 @@ var cheerio = require('cheerio');
 var jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
+function getRootUrl(url) {
+  return url.toString().replace(/^(.*\/\/[^\/?#]*).*$/,"$1");
+}
+
 router.get('/', function(req, res, next) {
     var uri = req.query['uri'];
     if (uri) {
-        console.log('Scapping ' + uri);
+        console.log('Loading ' + uri);
+        //var uriRoot = uri;
+        var uriRoot = getRootUrl(uri);
+        console.log(uriRoot);
+        if (uriRoot[0] !== '//') {
+
+        }
+        console.log('Root Url ' + uriRoot);
         request(
             {
                 uri: uri,
@@ -41,7 +52,7 @@ router.get('/', function(req, res, next) {
                             if (elem && elem.id && elem.textContent && elem.href) {
                                 var href = elem.href;
                                 if (href && href[0] === '/') {
-                                    href = uri + href;
+                                    href = uriRoot + href;
                                 }
 
                                 // Predictive
@@ -69,7 +80,7 @@ router.get('/', function(req, res, next) {
                             if (elem && elem.src && elem.width && elem.height) {
                                 var src = elem.src;
                                 if (src && src[0] === '/') {
-                                    src = uri + src;
+                                    src = uriRoot + src;
                                 }
 
                                 // Redirection so that we can get around
