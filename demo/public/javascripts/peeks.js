@@ -419,7 +419,7 @@
                 var page = this.addView();
                 page.url = url;
 
-                page.progressStart('Loading ' + url + '...');
+                page.progressStart('Loading...');
 
                 var billboard = page.addAsset();
                 var itemCount = 0;
@@ -1000,6 +1000,7 @@
 		if (pages[name]) {
 			var page = pages[name]();
 			page.name = name;
+
 			return page;
 		} else {
 			logError("Can't load unregistered page " + name);
@@ -1012,6 +1013,8 @@
 		this.mouseDownTime = 0;
 		this.type = 'Scene';
 		this.arAsset = this.add(new PEEKS.Asset());
+        this.ground = this.add(new PEEKS.Asset());
+
 		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
 		this.pageIndex = 0;
 		this.style = {
@@ -1307,6 +1310,29 @@
 						this.pageIndex = pageIndex;
 					}
 				}
+
+                if (this.page) {
+                    if (this.groundImage) {
+                        this.groundImage.destroy();
+                        delete this.groundImage;
+                    }
+
+                    var category = this.page.getAttr('category');
+                    var groundFilename;
+                    console.log(category);
+                    if (category === 'fashion') {
+                        groundFilename = 'images/floor_wood_1.jpg';
+                    }
+                    if (groundFilename) {
+                        this.groundImage = this.ground.addImage({
+                            image: groundFilename,
+                            imageRepeat: [50, 50],
+                            position: [0, -1, 0],
+                            rotation: [-90, 0, 0],
+                            size: 100,
+                        });
+                    }
+                }
 
 				this.resetCamera();
 			},
