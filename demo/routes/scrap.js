@@ -16,11 +16,6 @@ router.get('/', function(req, res, next) {
         console.log('Loading ' + uri);
         //var uriRoot = uri;
         var uriRoot = getRootUrl(uri);
-        console.log(uriRoot);
-        if (uriRoot[0] !== '//') {
-
-        }
-        console.log('Root Url ' + uriRoot);
         request(
             {
                 uri: uri,
@@ -38,7 +33,7 @@ router.get('/', function(req, res, next) {
                         data.peeks = {};
                         data.peeks.title = dom.window.document.title;
                         data.peeks.menu = [];
-                        data.peeks.images = [];
+                        data.peeks.img = [];
 
                         // Original data:
                         data.source = {};
@@ -49,19 +44,40 @@ router.get('/', function(req, res, next) {
                         var elems = dom.window.document.querySelectorAll("a");
                         for (var elemI in elems) {
                             var elem = elems[elemI];
-                            if (elem && elem.id && elem.textContent && elem.href) {
+                            if (elem && elem.href) {
                                 var href = elem.href;
                                 if (href && href[0] === '/') {
                                     href = uriRoot + href;
                                 }
 
                                 // Predictive
-                                if (elem.id.search('headerNavigationLink') === 0)
+                                if (elem.textContent &&
+                                    elem.id &&
+                                    elem.id.search('headerNavigationLink') === 0)
                                 {
                                     data.peeks.menu.push({
                                         label: elem.textContent,
                                         href: href,
                                     });
+                                } else {
+                                    var imgs = elem.getElementsByTagName("IMG");
+                                    if (imgs) {
+                                        img = imgs[0];
+                                        if (img && img.src) {
+                                            var src = img.src;
+                                            if (src && src[0] === '/') {
+                                                src = uriRoot + src;
+                                            }
+                                            src = 'http://35.161.135.124/?url=' + src;
+                                            data.peeks.img.push({
+                                                href: href,
+                                                src: src,
+                                                width: 200,
+                                                height: 200,
+                                            });
+                                        }
+                                    }
+                                    // Extract <a> with embedded <img> nodes
                                 }
 
                                 // Generic

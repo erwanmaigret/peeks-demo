@@ -467,6 +467,7 @@
                 var imageY = .25;
 
                 var addImage = function(width, height, url) {
+                    /*
                     width = width * .0015;
                     height = height * .0015;
                     page.addImage({
@@ -478,6 +479,31 @@
                     imageCount++;
 
                     imageY -= height;
+                    */
+
+                    var x = imageCount - 1;
+                    var y = Math.floor(imageCount);
+                    if (y % 2 === 0) {
+                        y = -y / 2;
+                    } else {
+                        y = (y + 1) / 2;
+                    }
+                    var rotation = [0, y, 0];
+                    var pivot = billboard.addAsset({
+                        rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
+                        rotationOrder: 'YXZ',
+                    });
+                    width = width * .0015;
+                    height = height * .0015;
+                    pivot.addImage({
+                        image: url,
+                        position: [0, 0, -2],
+                        rotation: [0, 0, 0],
+                        size: [.3, .3, .3],
+                    });
+                    //.animateInFromFar(imageCount * .1);
+
+                    imageCount++;
                 }
 
                 var xhttp = new XMLHttpRequest();
@@ -492,9 +518,9 @@
                                 }
                             }
                         }
-                        if (data.source.img && data.source.img.length > 0) {
-                            for (var itemI = 0; itemI < data.source.img.length; itemI++) {
-                                var item = data.source.img[itemI];
+                        if (data.peeks.img && data.peeks.img.length > 0) {
+                            for (var itemI = 0; itemI < data.peeks.img.length; itemI++) {
+                                var item = data.peeks.img[itemI];
                                 addImage(item.width, item.height, item.src);
                             }
                         }
