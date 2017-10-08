@@ -426,6 +426,9 @@
 
                 var imageCount = 0;
                 var addItem = function(label, href) {
+                    if (itemCount >= 36) {
+                        return;
+                    }
                     var x = itemCount - 1;
                     var y = Math.floor(itemCount);
                     //var x = itemCount % 3 - 1;
@@ -466,7 +469,10 @@
 
                 var imageY = .25;
 
-                var addImage = function(width, height, url) {
+                var addImage = function(width, height, url, href) {
+                    if (imageCount >= 36) {
+                        return;
+                    }
                     /*
                     width = width * .0015;
                     height = height * .0015;
@@ -495,14 +501,26 @@
                     });
                     width = width * .0015;
                     height = height * .0015;
-                    pivot.addImage({
+                    var button = pivot.addButton({
                         image: url,
                         position: [0, 0, -2],
                         rotation: [0, 0, 0],
                         size: [.3, .3, .3],
+                        onClick: function() {
+                            if (this.href) {
+                                var parent = page.parent;
+                                if (parent) {
+                                    parent.addExternalView(this.href);
+                                    page.destroy();
+                                } else {
+                                    var win = window.open(this.href, '_blank');
+                                    win.focus();
+                                }
+                            }
+                        }
                     });
-                    //.animateInFromFar(imageCount * .1);
-
+                    button.href = href;
+                    button.animateInFromFar(imageCount * .1);
                     imageCount++;
                 }
 
@@ -521,7 +539,7 @@
                         if (data.peeks.img && data.peeks.img.length > 0) {
                             for (var itemI = 0; itemI < data.peeks.img.length; itemI++) {
                                 var item = data.peeks.img[itemI];
-                                addImage(item.width, item.height, item.src);
+                                addImage(item.width, item.height, item.src, item.href);
                             }
                         }
 

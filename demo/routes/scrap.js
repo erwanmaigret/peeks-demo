@@ -63,7 +63,7 @@ router.get('/', function(req, res, next) {
                                     var imgs = elem.getElementsByTagName("IMG");
                                     if (imgs) {
                                         img = imgs[0];
-                                        if (img && img.src) {
+                                        if (img && img.src && img.alt) {
                                             var src = img.src;
                                             if (src && src[0] === '/') {
                                                 src = uriRoot + src;
@@ -72,6 +72,7 @@ router.get('/', function(req, res, next) {
                                             data.peeks.img.push({
                                                 href: href,
                                                 src: src,
+                                                label: img.alt,
                                                 width: 200,
                                                 height: 200,
                                             });
