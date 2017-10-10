@@ -167,9 +167,37 @@ PEEKS.Scene.prototype.onRender = function() {
         var bgColor = this.page.getAttrColor('bgColor', [1, 1, 1]);
 		this.three.renderer.setClearColor(colorToThreeColor(bgColor));
 	}
-	this.three.renderer.render(this.three.scene, this.three.camera);
-    if (this.three.cssRenderer) {
-        this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
+
+    var width = (this.width) ? this.width : 500;
+	var height = (this.height) ? this.height : 500;
+
+    if (this.vrMode) {
+        this.three.renderer.setScissorTest(true);
+
+        this.three.renderer.setViewport(0, 0, width / 2, height);
+        this.three.renderer.setScissor(0, 0, width / 2, height);
+
+        this.three.renderer.render(this.three.scene, this.three.camera);
+        if (this.three.cssRenderer) {
+            this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
+        }
+
+        this.three.renderer.setViewport(width / 2, 0, width / 2, height);
+        this.three.renderer.setScissor(width / 2, 0, width / 2, height);
+
+        this.three.renderer.render(this.three.scene, this.three.camera);
+        if (this.three.cssRenderer) {
+            this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
+        }
+    } else {
+        this.three.renderer.setViewport(0, 0, width, height);
+        this.three.renderer.setScissor(0, 0, width, height);
+        this.three.renderer.setScissorTest(false);
+
+        this.three.renderer.render(this.three.scene, this.three.camera);
+        if (this.three.cssRenderer) {
+            this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
+        }
     }
 },
 
@@ -480,9 +508,15 @@ var CreateCssElement = function ( id, x, y, z) {
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
 
-	var scene = new THREE.Scene();
+    var scene = new THREE.Scene();
+    var a_scene = document.querySelector('a-scene')
+    if (a_scene) {
+        // Use A-Frame's scene instead
+        console.log(a_scene);
+        scene = a_scene.object3D;
+    }
 	var ambient = new THREE.AmbientLight( 0x101030 );
-	scene.add( ambient );
+	scene.add(ambient);
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
 	directionalLight.position.set( 0, 0, 1 );
 	scene.add( directionalLight );
@@ -517,6 +551,18 @@ PEEKS.Scene.prototype.onStart = function() {
 
     this.cameraAngle = 30;
 	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
+    var a_camera = document.querySelector('a-camera')
+    if (a_camera) {
+        // Use A-Frame's scene instead
+        console.log(a_camera);
+        if (a_camera.object3D && a_camera.object3D.children[0]) {
+            var perspectiveCamera = a_camera.object3D.children[0]
+            if (perspectiveCamera.type === 'PerspectiveCamera') {
+                camera = perspectiveCamera;
+            }
+        }
+        //camera = a_camera.object3D;
+    }
 
     this.three.scene = scene;
 	this.three.camera = camera;

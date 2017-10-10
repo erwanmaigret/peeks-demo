@@ -4,8 +4,8 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	var canvas = page.addCanvas();
 
 	var pane = canvas.addView({
-		position: [.2, -.05],
-		size: [.6, .6, 1],
+		position: [0, -.05],
+		size: [1, .6, 1],
 		alpha: .2,
 	});
 
@@ -70,12 +70,12 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	});
 
     pane.addTextButton({
-		label: 'REAL ESTATE',
+		label: 'TEST',
         position: [0, -.4, 0],
 		size: [.9, .15, 1],
         fontSize: 40,
         onClick: 'loadPage',
-		onClickArgs: ['housing'],
+		onClickArgs: ['peeks_test'],
 	}).animate({
 		duration: .5,
         delay: 1.7,

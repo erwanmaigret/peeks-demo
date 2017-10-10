@@ -14,29 +14,37 @@ PEEKS.registerPage('peeks_toolbar', function() {
     canvas.addRoundIconButton({
 		icon: 'ui/icon_previous.png',
 		position: [-.4, -.44],
-		size: .1,
+		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_next.png',
-		position: [-.2, -.44],
-		size: .1,
+		position: [-.25, -.44],
+		size: .08,
 		onClick: 'loadNextPage',
 	})
 
     canvas.addRoundTextButton({
-        position: [.4, -.44],
-		size: .1,
+        position: [.35, -.44],
+		size: .08,
         label: 'AR',
         fontSize: 40,
         onClick: function() { peeks.toggleArMode(); },
     });
 
+    canvas.addRoundTextButton({
+        position: [.45, -.44],
+		size: .08,
+        label: 'VR',
+        fontSize: 40,
+        onClick: function() { peeks.toggleVrMode(); },
+    });
+
     canvas.addRoundIconButton({
 		icon: 'ui/icon_gyroscope.png',
-		position: [.2, -.44],
-		size: .1,
+		position: [.25, -.44],
+		size: .08,
 		onClick: function() { peeks.toggleGyroscope(); },
 	});
 

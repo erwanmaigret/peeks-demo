@@ -14,7 +14,6 @@ router.get('/', function(req, res, next) {
     var uri = req.query['uri'];
     if (uri) {
         console.log('Loading ' + uri);
-        //var uriRoot = uri;
         var uriRoot = getRootUrl(uri);
         request(
             {

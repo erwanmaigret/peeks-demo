@@ -1086,29 +1086,30 @@
 		{
 			constructor: Scene,
 
-            convertMouse: function(mouseX, mouseY, window) {
-			  var rect = this.domElement.getBoundingClientRect();
-			  var x = mouseX;
-			  var y = mouseY;
-			  var pointX = x - rect.left;
-			  var pointY = y - rect.top;
-
-			  if (window) {
-			    return [pointX, -pointY];
-			  } else {
-			    pointX = pointX / rect.width;
-			    pointY = pointY / rect.height;
-			    return [pointX * 2 - 1, -pointY * 2 + 1];
-			  }
+            convertMouse: function(mouseX, mouseY) {
+                var rect = this.domElement.getBoundingClientRect();
+                var x = mouseX;
+                var y = mouseY;
+                var pointX = x - rect.left;
+                var pointY = y - rect.top;
+                pointX = pointX / rect.width;
+                pointY = pointY / rect.height;
+                if (this.vrMode) {
+                    if (pointX > .5) {
+                        pointX -= .5;
+                    }
+                    pointX *= 2;
+                }
+                return [pointX * 2 - 1, -pointY * 2 + 1];
 			},
 
-			getMouse: function(event, window) {
+			getMouse: function(event) {
 				if (event.touches) {
 					if (event.touches.length > 0) {
-						return this.convertMouse(event.touches[0].clientX, event.touches[0].clientY, window);
+						return this.convertMouse(event.touches[0].clientX, event.touches[0].clientY);
 					}
 				} else {
-					return this.convertMouse(event.clientX, event.clientY, window);
+					return this.convertMouse(event.clientX, event.clientY);
 				}
 			},
 
@@ -1316,6 +1317,17 @@
 					}
 				}
 				this.arMode = state;
+			},
+
+            toggleVrMode: function() {
+				this.setVrMode(!this.vrMode);
+			},
+
+            setVrMode: function(state) {
+				if (state === undefined) {
+					state = true;
+				}
+				this.vrMode = state;
 			},
 
 			loadPage: function(page) {
