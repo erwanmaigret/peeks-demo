@@ -226,7 +226,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
                 this.threeObject = new THREE.Mesh(geometry, material);
             } else if (this.primitive === PEEKS.Asset.PrimitiveDisk) {
-                    var geometry = new THREE.CircleGeometry(.5, 32);
+                var geometry = new THREE.CircleGeometry(.5, 32);
+                var material = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    depthTest: isScreenSpace ? false : true,
+                });
+                this.threeObject = new THREE.Mesh(geometry, material);
+            } else if (this.primitive === PEEKS.Asset.PrimitiveRing) {
+                    var geometry = new THREE.RingGeometry(0.4, 0.5, 32);
                     var material = new THREE.MeshBasicMaterial({
                         color: 0xffffff,
                         transparent: true,

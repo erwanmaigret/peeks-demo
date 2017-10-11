@@ -263,6 +263,12 @@
 				return asset;
 			},
 
+            addRing: function (params) {
+                var asset = this.addView(params);
+                asset.primitive = Asset.PrimitiveRing;
+				return asset;
+			},
+
             addTextButton: function (params) {
                 var asset = this.addButton(params);
                 asset.addAttrAlias('viewBgColor', 'colorWhite');
@@ -616,6 +622,7 @@
     Asset.PrimitivePlane = 1;
     Asset.PrimitiveCube = 2;
     Asset.PrimitiveDisk = 3;
+    Asset.PrimitiveRing = 4;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -1160,11 +1167,21 @@
 							this.mouseUp = this.mouseDown;
 						}
 
-						this.mouseUpTime = this.time;
-						if (utils.v2Distance(this.mouseUp, this.mouseDown) < .05 &&
-							(this.mouseUpTime - this.mouseDownTime) < .3)
-						{
-							if (this.onClick(this.mouseUp)) {
+                        this.mouseUpTime = this.time;
+
+                        var mouseDown = this.mouseDown;
+                        var mouseUp = this.mouseUp;
+                        var delay = this.mouseUpTime - this.mouseDownTime;
+                        if (this.vrMode) {
+                            mouseDown = [0, 0];
+                            mouseUp = [0, 0];
+                            // VR devices are less responsive on click than
+                            //  regular finger tap
+                            delay *= 4;
+                        }
+                        var distance = utils.v2Distance(mouseUp, mouseDown);
+                        if (distance < .05 && delay < .3) {
+							if (this.onClick(mouseUp)) {
                                 event.preventDefault();
                             }
 						}
@@ -1547,6 +1564,29 @@
                             mainScene.height = mainScene.window.innerHeight;
 
                             mainScene.onResize();
+                        }
+
+                        // Update global UI components
+                        if (mainScene.vrMode) {
+                            if (mainScene.vrReticle === undefined) {
+                                var canvas = mainScene.addCanvas({
+                                    // valign: 'bottom',
+                                });
+
+                                mainScene.vrReticle = canvas.addRing({
+                                    viewBgColor: [1, 1, 1],
+                                    size: .025
+                                });
+                                mainScene.vrReticle = canvas.addRing({
+                                    viewBgColor: [.3, .3, .3],
+                                    size: .02
+                                });
+                            }
+                        } else {
+                            if (mainScene.vrReticle) {
+                                mainScene.vrReticle.destroy();
+                                delete mainScene.vrReticle;
+                            }
                         }
 
     					mainScene.update();
