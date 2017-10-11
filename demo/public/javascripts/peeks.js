@@ -1301,6 +1301,9 @@
 				if (state === undefined) {
 					state = true;
 				}
+                if (state === this.arMode) {
+                    return;
+                }
 				if (state) {
 					if (!this.arImage) {
 						var asset = new PEEKS.Plane();
@@ -1317,6 +1320,10 @@
 					}
 				}
 				this.arMode = state;
+                this.gyroscope = this.arMode;
+                if (this.arMode) {
+                    this.setVrMode(false);
+                }
 			},
 
             toggleVrMode: function() {
@@ -1327,7 +1334,14 @@
 				if (state === undefined) {
 					state = true;
 				}
+                if (state === this.vrMode) {
+                    return;
+                }
 				this.vrMode = state;
+                this.gyroscope = this.vrMode;
+                if (this.vrMode) {
+                    this.setArMode(false);
+                }
 			},
 
 			loadPage: function(page) {
