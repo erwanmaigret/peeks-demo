@@ -1337,10 +1337,10 @@
 					}
 				}
 				this.arMode = state;
-                this.gyroscope = this.arMode;
                 if (this.arMode) {
                     this.setVrMode(false);
                 }
+                this.gyroscope = this.arMode;
 			},
 
             toggleVrMode: function() {
@@ -1355,10 +1355,10 @@
                     return;
                 }
 				this.vrMode = state;
-                this.gyroscope = this.vrMode;
                 if (this.vrMode) {
                     this.setArMode(false);
                 }
+                this.gyroscope = this.vrMode;
 			},
 
 			loadPage: function(page) {
