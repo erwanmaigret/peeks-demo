@@ -1545,8 +1545,8 @@
                     );
 
 					this.video = document.createElement('video');
-					this.video.width = 400;
-					this.video.height = 400;
+					this.video.width = 1024;
+					this.video.height = 1024;
 					this.video.autoplay = true;
 					this.video.setAttribute('autoplay', '');
 					this.video.setAttribute('muted', '');
