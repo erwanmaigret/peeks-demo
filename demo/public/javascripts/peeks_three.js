@@ -161,33 +161,45 @@ function colorToThreeColor(color) {
 }
 
 PEEKS.Scene.prototype.onRender = function() {
-    this.camera.threeSynch(this.three.camera);
+    var three = this.three;
+
+    this.camera.threeSynch(three.camera);
 	this.threeSynch();
 	if (this.page) {
         var bgColor = this.page.getAttrColor('bgColor', [1, 1, 1]);
-		this.three.renderer.setClearColor(colorToThreeColor(bgColor));
+		three.renderer.setClearColor(colorToThreeColor(bgColor));
 	}
 
     var width = (this.width) ? this.width : 500;
 	var height = (this.height) ? this.height : 500;
 
     if (this.vrMode) {
-        this.three.renderer.setScissorTest(true);
+        var useStereoEffect = false;
+        if (useStereoEffect) {
+            // This is for test, but it's not working very well
+            //  when rotating all the way to the back
+            if (three.stereoEffect === undefined) {
+                three.stereoEffect = new THREE.StereoEffect(three.renderer);
+            }
+            three.stereoEffect.render(three.scene, three.camera);
+        } else {
+            three.renderer.setScissorTest(true);
 
-        this.three.renderer.setViewport(0, 0, width / 2, height);
-        this.three.renderer.setScissor(0, 0, width / 2, height);
+            three.renderer.setViewport(width / 2, 0, width / 2, height);
+            three.renderer.setScissor(width / 2, 0, width / 2, height);
 
-        this.three.renderer.render(this.three.scene, this.three.camera);
-        if (this.three.cssRenderer) {
-            this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
-        }
+            three.renderer.render(three.scene, three.camera);
+            if (three.cssRenderer) {
+                three.cssRenderer.render(three.cssScene, three.camera);
+            }
 
-        this.three.renderer.setViewport(width / 2, 0, width / 2, height);
-        this.three.renderer.setScissor(width / 2, 0, width / 2, height);
+            three.renderer.setViewport(0, 0, width / 2, height);
+            three.renderer.setScissor(0, 0, width / 2, height);
 
-        this.three.renderer.render(this.three.scene, this.three.camera);
-        if (this.three.cssRenderer) {
-            this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
+            three.renderer.render(three.scene, three.camera);
+            if (three.cssRenderer) {
+                three.cssRenderer.render(three.cssScene, three.camera);
+            }
         }
     } else {
         this.three.renderer.setViewport(0, 0, width, height);

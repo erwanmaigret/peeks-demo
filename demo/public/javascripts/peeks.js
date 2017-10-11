@@ -1147,6 +1147,7 @@
 
 			onMouseDown: function (event) {
 				logDebug('onMouseDown');
+                event.preventDefault();
 
 				this.mouseDown = this.getMouse(event);
 				this.mouseDownCameraRotation = this.camera.rotation;
@@ -1156,6 +1157,7 @@
 
 			onMouseUp: function (event) {
 				logDebug('onMouseUp');
+                event.preventDefault();
 
 				if (this.mouseDown) {
 					if (this.mouseDownCanClick) {
@@ -1181,9 +1183,7 @@
                         }
                         var distance = utils.v2Distance(mouseUp, mouseDown);
                         if (distance < .05 && delay < .3) {
-							if (this.onClick(mouseUp)) {
-                                event.preventDefault();
-                            }
+							this.onClick(mouseUp);
 						}
 					}
 					delete this.mouseDown;
