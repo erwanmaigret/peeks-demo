@@ -10,6 +10,14 @@ function getRootUrl(url) {
   return url.toString().replace(/^(.*\/\/[^\/?#]*).*$/,"$1");
 }
 
+function removeUrlTrail(url) {
+    var params = url.indexOf("\?");
+    if (params != -1) {
+        url = url.substring(0, params);
+    }
+    return url;
+}
+
 router.get('/', function(req, res, next) {
     var uri = req.query['uri'];
     if (uri) {
@@ -65,13 +73,18 @@ router.get('/', function(req, res, next) {
                                         if (img && img.src && img.alt) {
                                             var src = img.src;
                                             if (src && src[0] === '/') {
-                                                src = uriRoot + src;
+                                                if (src[1] === '/') {
+                                                    src = 'https:' + src;
+                                                } else {
+                                                    src = uriRoot + src;
+                                                }
                                             }
+                                            src = removeUrlTrail(src);
                                             src = 'http://35.161.135.124/?url=' + src;
                                             data.peeks.img.push({
                                                 href: href,
                                                 src: src,
-                                                label: img.alt,
+                                                label: img.alt || "",
                                                 width: 200,
                                                 height: 200,
                                             });
