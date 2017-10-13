@@ -5,28 +5,31 @@ PEEKS.registerPage('peeks_toolbar', function() {
         valign: 'bottom',
     });
 
+    var height = -.44;
+
     canvas.addView({
-		position: [0, -.44],
+		position: [0, height],
 		size: [1, .12, 1],
-		alpha: .2,
+        viewBgColor: [.3, .3, .3],
+		alpha: 0,
 	});
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_previous.png',
-		position: [-.4, -.44],
+		position: [-.4, height],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_next.png',
-		position: [-.25, -.44],
+        position: [-.25, height],
 		size: .08,
 		onClick: 'loadNextPage',
 	})
 
     canvas.addRoundTextButton({
-        position: [.35, -.44],
+        position: [.35, height],
 		size: .08,
         label: 'AR',
         fontSize: 40,
@@ -34,7 +37,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
     });
 
     canvas.addRoundTextButton({
-        position: [.45, -.44],
+        position: [.45, height],
 		size: .08,
         label: 'VR',
         fontSize: 40,
@@ -43,14 +46,14 @@ PEEKS.registerPage('peeks_toolbar', function() {
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_gyroscope.png',
-		position: [.25, -.44],
+		position: [.25, height],
 		size: .08,
 		onClick: function() { peeks.toggleGyroscope(); },
 	});
 
     canvas.addButton({
         image: 'ui/icon_peeks.png',
-        position: [0, -.44],
+        position: [0, height],
         size: [.2, .1, 1],
     }).addAttrAlias('color', 'colorMedium');
 

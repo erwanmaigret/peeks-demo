@@ -246,13 +246,21 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
             } else if (this.primitive === PEEKS.Asset.PrimitiveRing) {
-                    var geometry = new THREE.RingGeometry(0.4, 0.5, 32);
-                    var material = new THREE.MeshBasicMaterial({
-                        color: 0xffffff,
-                        transparent: true,
-                        depthTest: isScreenSpace ? false : true,
-                    });
-                    this.threeObject = new THREE.Mesh(geometry, material);
+                var geometry = new THREE.RingGeometry(0.4, 0.5, 32);
+                var material = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    depthTest: isScreenSpace ? false : true,
+                });
+                this.threeObject = new THREE.Mesh(geometry, material);
+            } else if (this.primitive === PEEKS.Asset.PrimitiveCircle) {
+                var geometry = new THREE.RingGeometry(0.48, 0.5, 32);
+                var material = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    depthTest: isScreenSpace ? false : true,
+                });
+                this.threeObject = new THREE.Mesh(geometry, material);
             } else if (this.primitive === PEEKS.Asset.PrimitivePlane) {
 				if (this.geometryUrl) {
 					this.threeObject = new THREE.Object3D();
@@ -411,7 +419,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		if (this.getAttr('textureUrl') === undefined || this.getAttr('textureUrl') === "") {
             color = this.getAttrColor('viewBgColor');
 		}
-		if (color) {
+		if (color && threeObject.material.color) {
 			threeObject.material.color.r = color[0];
 			threeObject.material.color.g = color[1];
 			threeObject.material.color.b = color[2];
@@ -535,6 +543,7 @@ PEEKS.Scene.prototype.onStart = function() {
         console.log(a_scene);
         scene = a_scene.object3D;
     }
+    scene.fog = new THREE.FogExp2(0xefd1b5, 0.02);
 	var ambient = new THREE.AmbientLight( 0x101030 );
 	scene.add(ambient);
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );

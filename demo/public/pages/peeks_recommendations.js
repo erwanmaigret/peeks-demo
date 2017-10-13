@@ -6,8 +6,15 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	var pane = canvas.addView({
 		position: [0, -.05],
 		size: [1, .6, 1],
-		alpha: .2,
+        viewBgColor: [.3, .3, .3],
+		alpha: 0,
 	});
+
+    var fontSize = 50;
+    var animDuration = .5;
+    var animDelay = .3;
+    var animItemDelay = .15;
+    var itemCount = 0;
 
 	pane.addTextButton({
         label: 'FASHION',
@@ -15,14 +22,16 @@ PEEKS.registerPage('peeks_recommendations', function() {
 		size: [.9, .15, 1],
 		onClick: 'loadPage',
 		onClickArgs: ['fashion'],
-        fontSize: 40,
+        fontSize: fontSize,
 	}).animate({
-		duration: .5,
-        delay: .5,
+		duration: animDuration,
+        delay: animDelay + animItemDelay * itemCount,
 		begin: [-90, 0, 0],
 		end: [0, 0, 0],
         attribute: 'rotation'
 	});
+
+    itemCount++;
 
     pane.addTextButton({
         label: 'Bloomingdales',
@@ -30,14 +39,16 @@ PEEKS.registerPage('peeks_recommendations', function() {
 		size: [.9, .15, 1],
         onClick: 'loadPage',
 		onClickArgs: ['bloomingdales'],
-        fontSize: 40,
+        fontSize: fontSize,
 	}).animate({
-		duration: .5,
-        delay: 0.8,
+        duration: animDuration,
+        delay: animDelay + animItemDelay * itemCount,
 		begin: [-90, 0, 0],
 		end: [0, 0, 0],
         attribute: 'rotation'
 	});
+
+    itemCount++;
 
 	pane.addTextButton({
         label: 'GAME',
@@ -45,40 +56,44 @@ PEEKS.registerPage('peeks_recommendations', function() {
 		size: [.9, .15, 1],
 		onClick: 'loadPage',
 		onClickArgs: ['terraworlds'],
-        fontSize: 40,
+        fontSize: fontSize,
 	}).animate({
-		duration: .5,
-        delay: 1.1,
+        duration: animDuration,
+        delay: animDelay + animItemDelay * itemCount,
 		begin: [-90, 0, 0],
 		end: [0, 0, 0],
         attribute: 'rotation'
 	});
+
+    itemCount++;
 
     pane.addTextButton({
 		label: 'TRAVEL',
         position: [0, -.2, 0],
 		size: [.9, .15, 1],
-        fontSize: 40,
+        fontSize: fontSize,
         onClick: 'loadPage',
 		onClickArgs: ['travel'],
 	}).animate({
-		duration: .5,
-        delay: 1.4,
+        duration: animDuration,
+        delay: animDelay + animItemDelay * itemCount,
 		begin: [-90, 0, 0],
 		end: [0, 0, 0],
         attribute: 'rotation'
 	});
 
+    itemCount++;
+
     pane.addTextButton({
 		label: 'TEST',
         position: [0, -.4, 0],
 		size: [.9, .15, 1],
-        fontSize: 40,
+        fontSize: fontSize,
         onClick: 'loadPage',
 		onClickArgs: ['peeks_test'],
 	}).animate({
-		duration: .5,
-        delay: 1.7,
+        duration: animDuration,
+        delay: animDelay + animItemDelay * itemCount,
 		begin: [-90, 0, 0],
 		end: [0, 0, 0],
         attribute: 'rotation'

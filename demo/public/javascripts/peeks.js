@@ -273,6 +273,7 @@
                 var asset = this.addButton(params);
                 asset.addAttrAlias('viewBgColor', 'colorWhite');
                 asset.addAttrAlias('alpha', 'buttonBgAlpha');
+                asset.alpha = 0;
 
                 asset.addText({
                     position: [0, 0, .01],
@@ -295,8 +296,16 @@
             },
 
             addRoundTextButton: function (params) {
-                var asset = this.addTextButton(params);
-                asset.primitive = Asset.PrimitiveDisk;
+                var asset = this.addButton(params);
+                //asset.addAttrAlias('viewBgColor', 'colorWhite');
+                //asset.addAttrAlias('alpha', 'buttonBgAlpha');
+                asset.primitive = Asset.PrimitiveCircle;
+
+                asset.addText({
+                    position: [0, 0, .01],
+                }).addAttrAlias('text', 'label')
+                .addAttrAlias('fontColor', 'colorWhite');
+;
 
                 return asset;
             },
@@ -315,7 +324,7 @@
 
             addRoundIconButton: function (params) {
                 var asset = this.addIconButton(params);
-                asset.primitive = Asset.PrimitiveDisk;
+                asset.primitive = Asset.PrimitiveCircle;
 
                 return asset;
             },
@@ -623,6 +632,7 @@
     Asset.PrimitiveCube = 2;
     Asset.PrimitiveDisk = 3;
     Asset.PrimitiveRing = 4;
+    Asset.PrimitiveCircle = 5;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -834,7 +844,7 @@
                     var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
-                    var font = `${size.toString()}px ` + this.fontName;
+                    var font = `${size.toString()}px ` + this.getAttr('fontName');
                     texture.context.font = font;
                     var measure = this.measureText(font, size, text);
 					var width = measure.width;
@@ -988,6 +998,7 @@
 					p3: [1, 1, 1],
 					attribute: 'size'
 				});
+                /*
 				this.animate({
 					duration: .5,
 					p0: [0, 0, 0],
@@ -996,6 +1007,7 @@
 					p3: [0, 0, 0],
 					attribute: 'rotation'
 				});
+                */
 			},
 
             animateInFromFar: function(delay) {
@@ -1075,19 +1087,20 @@
             bgColor: [1, 1, 1],
             fontSize: 12,
             fontBgColor: [1, 1, 1, 0],
-            fontName: 'Arial',
-            //fontName: 'Georgia',
+            fontName: 'Futura',
             valign: 'center',
             align: 'center',
             colorDark:   [   0 / 255, 100 / 255,   0 / 255],
-            colorMedium: [  81 / 255, 200 / 255,  100 / 255],
+            //colorMedium: [  81 / 255, 200 / 255,  100 / 255],
+            colorMedium:  [ 255 / 255, 255 / 255, 255 / 255],
             colorLight:  [ 173 / 255, 255 / 255, 223 / 255],
             colorBlack:  [   0 / 255,   0 / 255,   0 / 255],
             colorGrey:   [  80 / 255,  80 / 255,  80 / 255],
             colorWhite:  [ 255 / 255, 255 / 255, 255 / 255],
 		};
 
-        this.addAttrAlias('fontColor', 'colorDark');
+        //this.addAttrAlias('fontColor', 'colorDark');
+        this.addAttrAlias('fontColor', 'colorWhite');
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{

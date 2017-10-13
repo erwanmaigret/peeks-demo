@@ -4,39 +4,19 @@ PEEKS.registerPage('fashion', function() {
     });
 
 	page.addImage({
-		image: 'images/bg_shop_1.jpg',
-		imageRepeat: [1, 1],
+		image: 'images/wall_bricks_1.jpg',
+        imageRepeat: [1.5, 1.5],
 		position: [0, 0, -10.1],
 		rotation: [0, 0, 0],
 		size: 10,
-        onClick: function() {
-            this.addButton({
-        		image: 'images/wall_bricks_1.jpg',
-                imageRepeat: [1.5, 1.5],
-        		position: [0, 0, .001],
-                onClick: function() {
-                    this.destroy();
-                },
-            });
-        },
 	});
 
 	page.addImage({
-		image: 'images/floor_tiles_1.jpg',
-		imageRepeat: [6.5, 6.5],
+		image: 'images/floor_wood_1.jpg',
+        imageRepeat: [10, 10],
 		position: [0, -1, 0],
 		rotation: [-90, 0, 0],
 		size: 20,
-        onClick: function() {
-            this.addButton({
-        		image: 'images/floor_wood_1.jpg',
-                imageRepeat: [10, 10],
-        		position: [0, 0, .001],
-                onClick: function() {
-                    this.destroy();
-                },
-            });
-        },
 	});
 
 	// Imported from Bloomingdales website:
