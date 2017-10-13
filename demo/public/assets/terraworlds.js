@@ -2,6 +2,7 @@ PEEKS.registerPage('terraworlds', function() {
 	var page = new PEEKS.Asset({
         colorDark:   [.2, 0.2 , 0.5],
         colorLight:  [.6, 0.6 , 0.8],
+        category: 'outdoor',
     });
 
     page.setAttr('bgColor', page.getAttr('colorDark'));

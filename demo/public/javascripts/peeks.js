@@ -1446,6 +1446,8 @@
                     var backgroundFilename;
                     if (category === 'fashion') {
                         backgroundFilename = 'images/bg_360_place.jpg';
+                    } else if (category === 'outdoor') {
+                        backgroundFilename = 'images/bg_360_bridge.jpg';
                     } else {
                         backgroundFilename = 'images/bg_360_canyon.jpg';
                     }
