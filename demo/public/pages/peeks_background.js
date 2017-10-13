@@ -1,23 +1,13 @@
 PEEKS.registerPage('peeks_background', function() {
 	var page = new PEEKS.Asset();
 
-	page.addButton({
-		image: 'images/bg_meadow_1.jpg',
-		position: [0, 0, -15],
-		rotation: [0, 0, 0],
-		size: 15,
-        onClick: function() {
-            if (this.fgImage === undefined) {
-                this.addButton({
-            		image: 'images/bg_library_1.jpg',
-            		position: [0, 0, .1],
-                    onClick: function() {
-                        this.destroy();
-                    },
-                });
-            }
-        },
-	});
-
+/*    page.addSphere({
+        image: 'images/bg_360_canyon.jpg',
+		position: [0, 0, 0],
+		rotation: [0, 100, 0],
+        sides: 'back',
+		size: 1,
+    });
+*/
 	return page;
 });

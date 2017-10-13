@@ -1,23 +1,8 @@
 PEEKS.registerPage('fashion', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
+        category: 'fashion',
     });
-
-	page.addImage({
-		image: 'images/wall_bricks_1.jpg',
-        imageRepeat: [1.5, 1.5],
-		position: [0, 0, -10.1],
-		rotation: [0, 0, 0],
-		size: 10,
-	});
-
-	page.addImage({
-		image: 'images/floor_wood_1.jpg',
-        imageRepeat: [10, 10],
-		position: [0, -1, 0],
-		rotation: [-90, 0, 0],
-		size: 20,
-	});
 
 	// Imported from Bloomingdales website:
 	var assets = [
@@ -92,7 +77,7 @@ PEEKS.registerPage('fashion', function() {
                         image: 'images/bloomingdales_product_card.png',
                 	});
                     pane.addText({
-                		position: [0, .4, .1],
+                		position: [0, .4, .12],
                 		text: 'Product Name',
                         textAlign: 'center',
                         fontSize: 80
@@ -126,7 +111,7 @@ PEEKS.registerPage('fashion', function() {
             pivot.addGeometry({
                 geometry: 'assets/black_leather_shoes.obj',
                 texture: 'assets/black_leather_shoes.png',
-                position: [0, -.5, -4],
+                position: [0, -.5, -3],
                 rotation: [0, 200, 0],
                 size: .05,
                 onClick: function() {
@@ -140,7 +125,7 @@ PEEKS.registerPage('fashion', function() {
             });
         } else {
             var asset = pivot.addAsset({
-    			position: [0, 0, -4],
+    			position: [0, 0, -3],
     		});
     		asset.addButton({
     			image: 'images/' + assets[assetI][0],

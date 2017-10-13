@@ -74,6 +74,7 @@ PEEKS.registerPage('terraworlds', function() {
                 position: [x / 2, -1, z / 2],
 				rotation: [90, 0, 0],
                 //size: .97,
+                sides: 'both',
                 size: .5,
 				onClick: onClick,
 			}).animate({

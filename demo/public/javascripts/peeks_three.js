@@ -235,8 +235,17 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     //shading: THREE.SmoothShading,
                     depthTest: isScreenSpace ? false : true,
                 });
-
+            } else if (this.primitive === PEEKS.Asset.PrimitiveSphere) {
+                var geometry = new THREE.SphereGeometry(1, 32, 32);
+                var material = new THREE.MeshBasicMaterial({
+                    color: 0xff0000,
+                    transparent: true,
+                    side: this.getAttr('sides') === 'back' ? THREE.BackSide : THREE.FrontSide,
+                    depthTest: isScreenSpace ? false : true,
+                    depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
+                });
                 this.threeObject = new THREE.Mesh(geometry, material);
+                loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
             } else if (this.primitive === PEEKS.Asset.PrimitiveDisk) {
                 var geometry = new THREE.CircleGeometry(.5, 32);
                 var material = new THREE.MeshBasicMaterial({
@@ -425,6 +434,20 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			threeObject.material.color.b = color[2];
 		}
         threeObject.material.opacity = this.getAttr('alpha', 1);
+        var sides = this.getAttr('sides');
+        switch (sides) {
+            case 'back':
+                threeObject.material.side = THREE.BackSide;
+                break;
+            case 'both':
+                threeObject.material.side = THREE.DoubleSide;
+                break;
+            default:
+            case 'front':
+                threeObject.material.side = THREE.FrontSide;
+                break;
+        }
+        threeObject.material.depthWrite = this.getAttr('depthWrite') === 'false' ? false : true;
 	}
 
 	for (var childI = 0; childI < this.children.length; childI++) {
@@ -543,7 +566,6 @@ PEEKS.Scene.prototype.onStart = function() {
         console.log(a_scene);
         scene = a_scene.object3D;
     }
-    scene.fog = new THREE.FogExp2(0xefd1b5, 0.02);
 	var ambient = new THREE.AmbientLight( 0x101030 );
 	scene.add(ambient);
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
@@ -576,9 +598,10 @@ PEEKS.Scene.prototype.onStart = function() {
 	renderer.setClearColor(0xffffff, 1);
 
     // Always work retina-style with 4 fragments per pixel
+    // This should be adaptive based on the device performances
     renderer.setPixelRatio(2);
 
-    this.cameraAngle = 30;
+    this.cameraAngle = 50;
 	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
     var a_camera = document.querySelector('a-camera')
     if (a_camera) {

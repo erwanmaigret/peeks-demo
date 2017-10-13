@@ -263,6 +263,12 @@
 				return asset;
 			},
 
+            addSphere: function (params) {
+				var asset = this.addButton(params);
+                asset.primitive = Asset.PrimitiveSphere;
+				return asset;
+			},
+
             addRing: function (params) {
                 var asset = this.addView(params);
                 asset.primitive = Asset.PrimitiveRing;
@@ -305,7 +311,6 @@
                     position: [0, 0, .01],
                 }).addAttrAlias('text', 'label')
                 .addAttrAlias('fontColor', 'colorWhite');
-;
 
                 return asset;
             },
@@ -458,12 +463,12 @@
                         rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
                         rotationOrder: 'YXZ',
                     });
-                    var button = pivot.addTextButtonThin({
+                    var button = pivot.addTextButton({
                         label: label,
                         position: [0, 0, -2],
                         rotation: [0, 0, 0],
                         size: [.3, .1, 1],
-                        fontSize: 20,
+                        fontSize: 40,
                         onClick: function() {
                             if (this.href) {
                                 var parent = page.parent;
@@ -633,6 +638,7 @@
     Asset.PrimitiveDisk = 3;
     Asset.PrimitiveRing = 4;
     Asset.PrimitiveCircle = 5;
+    Asset.PrimitiveSphere = 6;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -1077,6 +1083,7 @@
 		this.type = 'Scene';
 		this.arAsset = this.add(new PEEKS.Asset());
         this.ground = this.add(new PEEKS.Asset());
+        this.background = this.add(new PEEKS.Asset());
 
 		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
 		this.pageIndex = 0;
@@ -1419,7 +1426,6 @@
 
                     var category = this.page.getAttr('category');
                     var groundFilename;
-                    console.log(category);
                     if (category === 'fashion') {
                         groundFilename = 'images/floor_wood_1.jpg';
                     }
@@ -1432,6 +1438,24 @@
                             size: 100,
                         });
                     }
+
+                    if (this.backgroundImage) {
+                        this.backgroundImage.destroy();
+                        delete this.backgroundImage;
+                    }
+                    var backgroundFilename;
+                    if (category === 'fashion') {
+                        backgroundFilename = 'images/bg_360_place.jpg';
+                    } else {
+                        backgroundFilename = 'images/bg_360_canyon.jpg';
+                    }
+                    this.backgroundImage = this.background.addSphere({
+                        image: backgroundFilename,
+                        position: [0, 0, 0],
+                        rotation: [0, 0, 0],
+                        sides: 'back',
+                        size: 20,
+                    });
                 }
 
 				this.resetCamera();
@@ -1603,6 +1627,9 @@
                         }
 
     					mainScene.update();
+
+                        mainScene.background.setPosition(mainScene.camera.position);
+
     					mainScene.render();
                     }
 				};
