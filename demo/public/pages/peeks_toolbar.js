@@ -16,17 +16,25 @@ PEEKS.registerPage('peeks_toolbar', function() {
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_previous.png',
-		position: [-.4, height],
+		position: [-.45, height],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_next.png',
-        position: [-.25, height],
+        position: [-.35, height],
 		size: .08,
 		onClick: 'loadNextPage',
 	})
+
+    canvas.addRoundTextButton({
+        position: [-.25, height],
+		size: .08,
+        label: '2D',
+        fontSize: 40,
+        onClick: function() { peeks.open2D(); },
+    });
 
     canvas.addRoundTextButton({
         position: [.35, height],

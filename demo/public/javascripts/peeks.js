@@ -438,6 +438,8 @@
             addExternalView: function (url) {
                 var page = this.addView();
                 page.url = url;
+                var scene = this.getScene();
+                this.url = url;
 
                 page.progressStart('Loading...');
 
@@ -1334,6 +1336,13 @@
 				this.setArMode(!this.arMode);
 			},
 
+            open2D: function() {
+                if (this.page && this.page.url) {
+                    var win = window.open(this.page.url, '_blank');
+                    win.focus();
+                }
+			},
+
 			setArMode: function(state) {
 				if (state === undefined) {
 					state = true;
@@ -1427,7 +1436,11 @@
                     var category = this.page.getAttr('category');
                     var groundFilename;
                     if (category === 'fashion') {
-                        groundFilename = 'images/floor_wood_1.jpg';
+                        groundFilename = 'images/floor_marble_1.jpg';
+                    } else if (category === 'shopping') {
+                        groundFilename = 'images/floor_marble_4.jpg';
+                    } else if (category === 'entertainment') {
+                        groundFilename = 'images/floor_dot_1.jpg';
                     }
                     if (groundFilename) {
                         this.groundImage = this.ground.addImage({
@@ -1446,6 +1459,10 @@
                     var backgroundFilename;
                     if (category === 'fashion') {
                         backgroundFilename = 'images/bg_360_place.jpg';
+                    } else if (category === 'shopping') {
+                        backgroundFilename = 'images/bg_360_interior2.jpg';
+                    } else if (category === 'entertainment') {
+                        backgroundFilename = 'images/bg_360_interior1.jpg';
                     } else if (category === 'outdoor') {
                         backgroundFilename = 'images/bg_360_bridge.jpg';
                     } else {
@@ -1458,6 +1475,23 @@
                         sides: 'back',
                         size: 20,
                     });
+
+                    if (this.titleText) {
+                        this.titleText.destroy();
+                        delete this.titleText;
+                    }
+                    var title = this.page.getAttr('title');
+                    if (title !== '') {
+                        this.titleText = page.addCanvas({
+                            valign: 'top',
+                        });
+                        this.titleText.addTextButton({
+                            label: title,
+                            position: [0, .4, 0],
+                            size: [.9, .15, 1],
+                            fontSize: 40,
+                        });
+                    }
                 }
 
 				this.resetCamera();

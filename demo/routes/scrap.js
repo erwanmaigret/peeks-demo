@@ -22,13 +22,22 @@ router.get('/', function(req, res, next) {
     var uri = req.query['uri'];
     if (uri) {
         console.log('Loading ' + uri);
+        if(uri.indexOf('35.161.135.124') > -1) {
+            console.log('already proxy present');
+        } else {
+            uri='http://35.161.135.124/?url='+uri+'/';
+        }
         var uriRoot = getRootUrl(uri);
+        console.log('uri=='+uri);
         request(
             {
                 uri: uri,
                 //maxRedirects: '100',
                 jar: true, // Allow cookies to avoid infinite redirects
                 // followRedirect: false,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
+                },
             },
             function (error, response, html) {
                 if (!error) {
