@@ -5,7 +5,21 @@ var loadTexture = function(material, textureUrl, textureRepeat)
 
 		//loader.setCrossOrigin(null);
 
-		material.map = loader.load(textureUrl);
+		material.map = loader.load(textureUrl,
+            function (texture) {
+                var width = texture.image.width;
+                var height = texture.image.height;
+                if (width !== 0 && height !== 0) {
+                    console.log('Loaded texture ' + textureUrl + ' ' +
+                        width.toString() + 'x' + height.toString());
+                }
+            },
+            function (xhr) {
+                // console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+            },
+            function (xhr) {
+                // console.log( 'An error happened' );
+            });
 
 		// Don't mind not POT textures
         material.map.minFilter = THREE.LinearMipMapLinearFilter;
@@ -36,18 +50,20 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
 	if (threeObject) {
         if (this.position) {
-			threeObject.position.x = this.position[0];
-			threeObject.position.y = this.position[1];
-			threeObject.position.z = this.position[2];
+			threeObject.position.set(
+                this.position[0],
+                this.position[1],
+                this.position[2]
+            );
 
-			threeObject.rotation.x = THREE.Math.degToRad(this.rotation[0]);
-			threeObject.rotation.y = THREE.Math.degToRad(this.rotation[1]);
-			threeObject.rotation.z = THREE.Math.degToRad(this.rotation[2]);
+			threeObject.rotation.set(
+                THREE.Math.degToRad(this.rotation[0]),
+                THREE.Math.degToRad(this.rotation[1]),
+                THREE.Math.degToRad(this.rotation[2])
+            );
 			threeObject.rotation.order = this.rotationOrder;
 
-			threeObject.scale.x = this.size[0];
-			threeObject.scale.y = this.size[1];
-			threeObject.scale.z = this.size[2];
+			threeObject.scale.set(this.size[0], this.size[1], this.size[2]);
 		}
 
         var camera = this.getCamera();
@@ -448,6 +464,28 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 break;
         }
         threeObject.material.depthWrite = this.getAttr('depthWrite') === 'false' ? false : true;
+
+
+        // Check on aspect ratio in case of texture present
+        if (this.primitive === PEEKS.Asset.PrimitivePlane) {
+            if (threeObject.material &&
+                threeObject.material.map &&
+                threeObject.material.map.image)
+            {
+                var image = threeObject.material.map.image;
+                if (image.width !== 0 && image.height !== 0) {
+                    var ratio = image.width / image.height;
+                    var sizeRatio = threeObject.scale.x / threeObject.scale.y;
+                    if (ratio !== sizeRatio) {
+                        if (ratio < sizeRatio) {
+                            threeObject.scale.x = ratio * threeObject.scale.y;
+                        } else {
+                            threeObject.scale.y = threeObject.scale.x / ratio;
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 	for (var childI = 0; childI < this.children.length; childI++) {
