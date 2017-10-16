@@ -1644,11 +1644,17 @@
                         }
 
                         // Update global UI components
+                        if (mainScene.vrReticle) {
+                            mainScene.vrReticle.destroy();
+                            delete mainScene.vrReticle;
+                        }
                         if (mainScene.vrMode) {
                             if (mainScene.vrReticle === undefined) {
                                 var canvas = mainScene.addCanvas({
                                     // valign: 'bottom',
                                 });
+
+                                canvas.vrFixed = true;
 
                                 mainScene.vrReticle = canvas.addRing({
                                     viewBgColor: [1, 1, 1],
@@ -1658,11 +1664,6 @@
                                     viewBgColor: [.3, .3, .3],
                                     size: .02
                                 });
-                            }
-                        } else {
-                            if (mainScene.vrReticle) {
-                                mainScene.vrReticle.destroy();
-                                delete mainScene.vrReticle;
                             }
                         }
 

@@ -84,7 +84,11 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
         } else if (this.type === 'Canvas') {
             var pivot = this.threeObjectPivot;
             pivot.position.copy(scene.three.camera.position);
-            pivot.quaternion.copy(scene.three.camera.quaternion);
+            if (scene.vrMode === true && this.vrFixed !== true) {
+                // Do nothing, let the VR drive the orientation
+            } else {
+                pivot.quaternion.copy(scene.three.camera.quaternion);
+            }
 
             var h = .5;
             var scene = this.getScene();
