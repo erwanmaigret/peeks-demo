@@ -204,6 +204,12 @@ PEEKS.Scene.prototype.onRender = function() {
             three.renderer.setViewport(width / 2, 0, width / 2, height);
             three.renderer.setScissor(width / 2, 0, width / 2, height);
 
+            var width = (this.width) ? this.width : 500;
+            var height = (this.height) ? this.height : 500;
+            this.three.camera.aspect = (width / 2) / height;
+            this.three.camera.updateProjectionMatrix();
+            //this.three.renderer.setSize(width, height);
+
             three.renderer.render(three.scene, three.camera);
             if (three.cssRenderer) {
                 three.cssRenderer.render(three.cssScene, three.camera);
@@ -221,6 +227,11 @@ PEEKS.Scene.prototype.onRender = function() {
         this.three.renderer.setViewport(0, 0, width, height);
         this.three.renderer.setScissor(0, 0, width, height);
         this.three.renderer.setScissorTest(false);
+
+        var width = (this.width) ? this.width : 500;
+        var height = (this.height) ? this.height : 500;
+        this.three.camera.aspect = width / height;
+        this.three.camera.updateProjectionMatrix();
 
         this.three.renderer.render(this.three.scene, this.three.camera);
         if (this.three.cssRenderer) {
