@@ -1175,6 +1175,10 @@
 				this.mouseDownCameraRotation = this.camera.rotation;
 				this.mouseDownCanClick = true;
 				this.mouseDownTime = this.time;
+
+                if (this.vrMode) {
+                    this.onMouseUp(event);
+                }
 			},
 
 			onMouseUp: function (event) {
