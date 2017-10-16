@@ -18,16 +18,34 @@ function removeUrlTrail(url) {
     return url;
 }
 
+var scrapDb = [
+    {
+        domain: 'bloomingdales.com',
+        imgExclude: [
+            'spacer.gif',
+            'footer',
+        ]
+    }
+];
+
 router.get('/', function(req, res, next) {
     var uri = req.query['uri'];
     if (uri) {
         console.log('Loading ' + uri);
-        if(uri.indexOf('35.161.135.124') > -1) {
-            console.log('already proxy present');
+        var uriRoot = getRootUrl(uri);
+        var scrapDbNode;
+        for (var scrapDbi = 0; scrapDbi < scrapDb.length; scrapDbi++) {
+            if (uri.search(scrapDb[scrapDbi].domain) !== -1) {
+                scrapDbNode = scrapDb[scrapDbi];
+                break;
+            }
+        }
+        if (uri.indexOf('35.161.135.124') > -1) {
+            //console.log('already proxy present');
         } else {
             uri='http://35.161.135.124/?url='+uri+'/';
         }
-        var uriRoot = getRootUrl(uri);
+        uriRoot = getRootUrl(uri);
         console.log('uri=='+uri);
         request(
             {
@@ -79,6 +97,14 @@ router.get('/', function(req, res, next) {
                                     var imgs = elem.getElementsByTagName("IMG");
                                     if (imgs) {
                                         img = imgs[0];
+                                        if (img && img.src && scrapDbNode) {
+                                            for (var i = 0; i < scrapDbNode.imgExclude.length; i++) {
+                                                if (img.src.search(scrapDbNode.imgExclude[i]) !== -1) {
+                                                    img = undefined;
+                                                    break;
+                                                }
+                                            }
+                                        }
                                         if (img && img.src && img.alt) {
                                             var src = img.src;
                                             if (src && src[0] === '/') {
@@ -90,13 +116,16 @@ router.get('/', function(req, res, next) {
                                             }
                                             src = removeUrlTrail(src);
                                             src = 'http://35.161.135.124/?url=' + src;
-                                            data.peeks.img.push({
+                                            //console.log('adding ' + src);
+                                            var node = {
                                                 href: href,
                                                 src: src,
                                                 label: img.alt || "",
-                                                width: 200,
-                                                height: 200,
-                                            });
+                                                width: img.width,
+                                                height: img.height,
+                                            };
+                                            //console.log(node);
+                                            data.peeks.img.push(node);
                                         }
                                     }
                                     // Extract <a> with embedded <img> nodes
