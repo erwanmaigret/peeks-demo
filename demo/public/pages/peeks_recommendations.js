@@ -4,7 +4,7 @@ PEEKS.registerPage('peeks_recommendations', function() {
 	var canvas = page.addCanvas();
 
 	var pane = canvas.addView({
-		position: [0, 0],
+		position: [0, .1],
 		size: [1, .6, 1],
         viewBgColor: [.3, .3, .3],
 		alpha: 0,
@@ -90,6 +90,23 @@ PEEKS.registerPage('peeks_recommendations', function() {
 		size: [.9, .15, 1],
 		onClick: 'loadPage',
 		onClickArgs: ['fashion'],
+        fontSize: fontSize,
+	}).animate({
+		duration: animDuration,
+        delay: animDelay + animItemDelay * itemCount,
+		begin: [-90, 0, 0],
+		end: [0, 0, 0],
+        attribute: 'rotation'
+	});
+
+    itemCount++;
+
+    pane.addTextButton({
+        label: 'Assets',
+        position: [0, .6 - itemCount * .2, 0],
+		size: [.9, .15, 1],
+		onClick: 'loadPage',
+		onClickArgs: ['assets'],
         fontSize: fontSize,
 	}).animate({
 		duration: animDuration,
