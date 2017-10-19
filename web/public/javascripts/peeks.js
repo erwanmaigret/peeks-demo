@@ -592,7 +592,7 @@
 
 			animate: function (params) {
 				var anim = this.add(new PEEKS.Animation(params));
-                return anim;
+                return this;
 			},
 
 			superDebug: function(message) {
