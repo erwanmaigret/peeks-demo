@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    script(src="/javascripts/peeks.js")
+    script(src="/javascripts/three.js")
+    script(src="/javascripts/peeks_three.js")
+
+    script(src="/pages/peeks_recommendations.js")
+    script(src="/pages/peeks_welcome.js")
+    script(src="/pages/peeks_toolbar.js")
+
+    script.
+        PEEKS.setLogLevel(1);
+        var peeks = new PEEKS.Scene();
+        peeks.loadPage('peeks_welcome');
+        peeks.start(window);
