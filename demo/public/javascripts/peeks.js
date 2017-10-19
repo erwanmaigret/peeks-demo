@@ -269,6 +269,13 @@
 				return asset;
 			},
 
+            addCurvedPanel: function (params) {
+				var asset = this.addButton(params);
+                asset.primitive = Asset.PrimitiveCurvedPanel;
+                asset.sides = 'back';
+				return asset;
+			},
+
             addRing: function (params) {
                 var asset = this.addView(params);
                 asset.primitive = Asset.PrimitiveRing;
@@ -642,6 +649,7 @@
     Asset.PrimitiveRing = 4;
     Asset.PrimitiveCircle = 5;
     Asset.PrimitiveSphere = 6;
+    Asset.PrimitiveCurvedPanel = 7;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{

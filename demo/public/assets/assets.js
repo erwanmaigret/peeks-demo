@@ -6,6 +6,26 @@ PEEKS.registerPage('assets', function() {
 
     page.addPage('peeks_toolbar');
 
+    page.addCurvedPanel({
+        size: 5,
+        texture: 'images/logo_lacoste.png',
+        rotation: [20, 0, 0],
+    });
+
+    page.addCurvedPanel({
+        size: 5,
+        texture: 'images/logo_converse.png',
+        position: [0, 1],
+        rotation: [0, 30, 0],
+    });
+
+    page.addCurvedPanel({
+        size: 5,
+        texture: 'images/logo_converse.png',
+        position: [0, 1],
+        rotation: [0, -30, 0],
+    });
+
     page.addGeometry({
 		geometry: 'assets/converse.obj',
 		texture: 'assets/converse.jpg',

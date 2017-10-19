@@ -1,4 +1,4 @@
-var loadTexture = function(material, textureUrl, textureRepeat)
+var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY)
 {
 	if (textureUrl != '') {
 		var loader = new THREE.TextureLoader();
@@ -29,6 +29,13 @@ var loadTexture = function(material, textureUrl, textureRepeat)
 		if (textureRepeat) {
 			material.map.repeat.set(textureRepeat[0], textureRepeat[1]);
 		}
+
+        if (flipX) {
+            material.map.repeat.x = -1;
+        }
+        if (flipY) {
+            material.map.repeat.y = -1;
+        }
 	}
 }
 
@@ -283,6 +290,19 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
                 loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
+            } else if (this.primitive === PEEKS.Asset.PrimitiveCurvedPanel) {
+                var geometry = new THREE.SphereGeometry(1, 32, 32,
+                    Math.PI * 1.45, Math.PI * .1,
+                    Math.PI * .45, Math.PI * .1);
+                var material = new THREE.MeshBasicMaterial({
+                    color: 0xff0000,
+                    transparent: true,
+                    side: this.getAttr('sides') === 'back' ? THREE.BackSide : THREE.FrontSide,
+                    depthTest: isScreenSpace ? false : true,
+                    depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
+                });
+                this.threeObject = new THREE.Mesh(geometry, material);
+                loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat, true);
             } else if (this.primitive === PEEKS.Asset.PrimitiveDisk) {
                 var geometry = new THREE.CircleGeometry(.5, 32);
                 var material = new THREE.MeshBasicMaterial({
