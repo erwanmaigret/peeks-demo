@@ -10,8 +10,6 @@ var loadTexture = function(material, textureUrl, textureRepeat)
                 var width = texture.image.width;
                 var height = texture.image.height;
                 if (width !== 0 && height !== 0) {
-                    console.log('Loaded texture ' + textureUrl + ' ' +
-                        width.toString() + 'x' + height.toString());
                 }
             },
             function (xhr) {
