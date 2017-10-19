@@ -107,34 +107,16 @@ PEEKS.registerPage('fashion', function() {
 			rotation: [0, (assetI - assets.length / 2) * 20, 0]
 		});
 
-        if (assetI === 8) {
-            pivot.addGeometry({
-                geometry: 'assets/black_leather_shoes.obj',
-                texture: 'assets/black_leather_shoes.png',
-                position: [0, -.5, -3],
-                rotation: [0, 200, 0],
-                size: .05,
-                onClick: function() {
-                    this.animate({
-    					duration: 1,
-    					begin: [0, 0, 0],
-    					end: [0, 90, 0],
-    					attribute: 'rotation'
-    				});
-                },
-            });
-        } else {
-            var asset = pivot.addAsset({
-    			position: [0, 0, -3],
-    		});
-    		asset.addButton({
-    			image: 'images/' + assets[assetI][0],
-    			imageBack: 'images/' + assets[assetI][1],
-    			rotation: [0, 0, 0],
-    			size: [1, 1.2, 1],
-    			onClick: showInfo,
-    		});
-        }
+        var asset = pivot.addAsset({
+			position: [0, 0, -3],
+		});
+		asset.addButton({
+			image: 'images/' + assets[assetI][0],
+			imageBack: 'images/' + assets[assetI][1],
+			rotation: [0, 0, 0],
+			size: [1, 1.2, 1],
+			onClick: showInfo,
+		});
 	}
 
     var entranceAnimation = true;

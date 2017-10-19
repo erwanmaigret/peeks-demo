@@ -9,18 +9,30 @@ PEEKS.registerPage('assets', function() {
     page.addGeometry({
 		geometry: 'assets/converse.obj',
 		texture: 'assets/converse.jpg',
-		position: [-1, 0, -5],
+		position: [-1, 0, -3],
 		rotation: [0, 0, 0],
-		size: .1,
+		size: .05,
+        onClick: 'animateRotate90',
+	});
+
+    page.addAsset({
+        position: [0, .5, -3],
+        onClick: 'animateRotate90',
+    }).addGeometry({
+		geometry: 'assets/lacoste_polo_shirt.obj',
+		texture: 'assets/lacoste_polo_shirt.jpg',
+        rotation: [-90, 0, 0],
+		size: .02,
 	});
 
     page.addGeometry({
-		geometry: 'assets/lacoste_polo_shirt.obj',
-		texture: 'assets/lacoste_polo_shirt.jpg',
-        position: [1, 0, -5],
-		rotation: [-90, 0, 0],
-		size: .02,
-	});
+        geometry: 'assets/black_leather_shoes.obj',
+        texture: 'assets/black_leather_shoes.png',
+        position: [1.5, 0, -3],
+        rotation: [0, 200, 0],
+        size: .1,
+        onClick: 'animateRotate90',
+    });
 
 	return page;
 });

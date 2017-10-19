@@ -85,7 +85,7 @@ PEEKS.registerPage('peeks_recommendations', function() {
     itemCount++;
 
     pane.addTextButton({
-        label: 'FASHION Test',
+        label: '2D Assets',
         position: [0, .6 - itemCount * .2, 0],
 		size: [.9, .15, 1],
 		onClick: 'loadPage',
@@ -102,7 +102,7 @@ PEEKS.registerPage('peeks_recommendations', function() {
     itemCount++;
 
     pane.addTextButton({
-        label: 'Assets',
+        label: '3D Assets',
         position: [0, .6 - itemCount * .2, 0],
 		size: [.9, .15, 1],
 		onClick: 'loadPage',

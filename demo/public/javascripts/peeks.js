@@ -620,7 +620,8 @@
             this.initAsset(this, params);
         }
 		this.position = [0, 0, 0];
-		this.rotation = [0, 0, 0];
+        this.rotation = [0, 0, 0];
+        this.pivotRotation = [0, 0, 0];
 		this.rotationOrder = 'XYZ';
 		this.size = [1, 1, 1];
 		this.updateInitial();
@@ -993,6 +994,15 @@
 					duration: 1,
 					begin: [0, 0, 0],
 					end: [0, 180, 0],
+					attribute: 'rotation'
+				});
+			},
+
+            animateRotate90: function() {
+				this.animate({
+                    duration: 1,
+                    begin: [0, 0, 0],
+                    end: [0, 90, 0],
 					attribute: 'rotation'
 				});
 			},

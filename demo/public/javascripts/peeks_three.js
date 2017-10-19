@@ -106,7 +106,13 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             }
 
             threeObject.position.z -= distance;
-		}
+		} else {
+            this.threeObjectPivot.rotation.set(
+                THREE.Math.degToRad(this.pivotRotation[0]),
+                THREE.Math.degToRad(this.pivotRotation[1]),
+                THREE.Math.degToRad(this.pivotRotation[2])
+            );
+        }
 	}
 }
 
@@ -681,7 +687,7 @@ PEEKS.Scene.prototype.onStart = function() {
     // This should be adaptive based on the device performances
     renderer.setPixelRatio(2);
 
-    this.cameraAngle = 50;
+    this.cameraAngle = 70;
 	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
     var a_camera = document.querySelector('a-camera')
     if (a_camera) {
