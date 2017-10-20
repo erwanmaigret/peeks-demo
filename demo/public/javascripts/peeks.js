@@ -1164,24 +1164,65 @@
 				logDebug('onPickNode');
 			},
 
+            touchPinch: function(event) {
+                if (event.targetTouches && event.changedTouches) {
+                    if (event.targetTouches.length == 2 &&
+                        event.changedTouches.length == 2)
+                    {
+                        var p0 = this.convertMouse(
+                            event.touches[0].clientX,
+                            event.touches[0].clientY);
+                        var p1 = this.convertMouse(
+                            event.touches[1].clientX,
+                            event.touches[1].clientY);
+                        var distance = Math.sqrt(
+                            (p0[0] - p1[0]) * (p0[0] - p1[0]) +
+                            (p0[1] - p1[1]) * (p0[1] - p1[1]));
+
+                        if (this.mousePinchStartDistance === 0) {
+                            this.mousePinchStartDistance = distance;
+                            this.mousePinchStartPosition = this.camera.position.slice();
+                        } else {
+                            distance = this.mousePinchStartDistance - distance;
+                            this.camera.setPosition([
+                                this.mousePinchStartPosition[0],
+                                this.mousePinchStartPosition[1],
+                                this.mousePinchStartPosition[2] + distance * 2
+                            ]);
+                        }
+
+                        this.mouseDownCanMove = false;
+                        return true;
+                    }
+                }
+            },
+
 			onMouseMove: function (event) {
 				event.preventDefault();
 				// logDebug('onMouseMove');
 
 				if (this.mouseDown) {
-					this.mouseMove = this.getMouse(event);
-					this.mouseMoveTime = this.time;
-					var mouseMove = utils.v2Distance(this.mouseMove, this.mouseDown);
-					if (mouseMove > .01) {
-						this.mouseDownCanClick = false;
-						if (this.mouseDownCameraRotation) {
-							this.camera.setRotation(
-								this.mouseDownCameraRotation[0] - (this.mouseMove[1] - this.mouseDown[1]) * 45,
-								this.mouseDownCameraRotation[1] + (this.mouseMove[0] - this.mouseDown[0]) * 45,
-								this.mouseDownCameraRotation[2]
-							);
-						}
-					}
+                    if (this.touchPinch(event)) {
+                        this.mouseDownCanClick = false;
+                    }
+
+                    if (this.mouseDownCanMove) {
+    					this.mouseMove = this.getMouse(event);
+    					this.mouseMoveTime = this.time;
+    					var mouseMove = utils.v2Distance(this.mouseMove, this.mouseDown);
+    					if (mouseMove > .01) {
+    						this.mouseDownCanClick = false;
+    						if (this.mouseDownCameraRotation) {
+    							this.camera.setRotation(
+    								this.mouseDownCameraRotation[0] -
+                                        (this.mouseMove[1] - this.mouseDown[1]) * 45,
+    								this.mouseDownCameraRotation[1] +
+                                        (this.mouseMove[0] - this.mouseDown[0]) * 45,
+    								this.mouseDownCameraRotation[2]
+    							);
+    						}
+    					}
+                    }
 				}
 			},
 
@@ -1191,7 +1232,9 @@
 
 				this.mouseDown = this.getMouse(event);
 				this.mouseDownCameraRotation = this.camera.rotation;
-				this.mouseDownCanClick = true;
+                this.mouseDownCanClick = true;
+                this.mouseDownCanMove = true;
+                this.mousePinchStartDistance = 0;
 				this.mouseDownTime = this.time;
 
                 if (this.vrMode) {
