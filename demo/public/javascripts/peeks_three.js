@@ -56,12 +56,23 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 	}
 
 	if (threeObject) {
+        var camera = this.getCamera();
+        var scene = this.getScene();
+
         if (this.position) {
-			threeObject.position.set(
-                this.position[0],
-                this.position[1],
-                this.position[2]
-            );
+            if (this === camera) {
+                threeObject.position.set(
+                    this.position[0],
+                    this.position[1],
+                    this.position[2]
+                );
+            } else {
+                threeObject.position.set(
+                    this.position[0],
+                    this.position[1],
+                    this.position[2]
+                );
+            }
 
 			threeObject.rotation.set(
                 THREE.Math.degToRad(this.rotation[0]),
@@ -73,8 +84,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 			threeObject.scale.set(this.size[0], this.size[1], this.size[2]);
 		}
 
-        var camera = this.getCamera();
-        var scene = this.getScene();
         if (this === camera) {
             if (scene && scene.deviceOrientation !== undefined && scene.gyroscope) {
                 var alpha = scene.deviceOrientation.alpha;
@@ -193,6 +202,18 @@ function colorToThreeColor(color) {
     return new THREE.Color(color[0], color[1], color[2], 1);
 }
 
+PEEKS.Scene.prototype.onGetCameraTranslation = function(translation) {
+    var quaternion = this.three.camera.quaternion;
+
+    var vector = new THREE.Vector3(
+        translation[0],
+        translation[1],
+        translation[2]);
+    vector.applyQuaternion(quaternion);
+
+    return [vector.x, vector.y, vector.z];
+}
+
 PEEKS.Scene.prototype.onRender = function() {
     var three = this.three;
 
@@ -206,6 +227,8 @@ PEEKS.Scene.prototype.onRender = function() {
     var width = (this.width) ? this.width : 500;
 	var height = (this.height) ? this.height : 500;
 
+    // console.log(this.position);
+    // console.log(three.scene.position);
     if (this.vrMode) {
         var useStereoEffect = false;
         if (useStereoEffect) {

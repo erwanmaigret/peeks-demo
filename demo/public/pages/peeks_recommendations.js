@@ -119,7 +119,7 @@ PEEKS.registerPage('peeks_recommendations', function() {
     itemCount++;
 
     pane.addTextButton({
-        label: 'Terra Worlds Game',
+        label: 'Terra Worlds',
         position: [0, .6 - itemCount * .2, 0],
 		size: [.9, .15, 1],
 		onClick: 'loadPage',

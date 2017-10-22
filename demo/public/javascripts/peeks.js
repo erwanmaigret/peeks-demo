@@ -1164,6 +1164,14 @@
 				logDebug('onPickNode');
 			},
 
+            onGetCameraTranslation: function(translation) {
+                return [
+                    translation[0],
+                    translation[1],
+                    translation[2]
+                ];
+            },
+
             touchPinch: function(event) {
                 if (event.targetTouches && event.changedTouches) {
                     if (event.targetTouches.length == 2 &&
@@ -1314,44 +1322,48 @@
 				switch (event.keyCode) {
 					case 37: { // Arrow Left
 						if (event.altKey) {
-							animAttribute = 'rotation';
-							animValue = [0, manipFactor * 20, 0];
+                            animAttribute = 'position';
+							animValue = this.onGetCameraTranslation(
+                                [-manipFactor, 0, 0]);
 						} else {
-							animAttribute = 'position';
-							animValue = [-manipFactor, 0, 0];
+                            animAttribute = 'rotation';
+							animValue = [0, manipFactor * 20, 0];
 						}
-		        break;
-		      }
+                        break;
+                    }
 					case 38: { // Arrow Up
 						if (event.altKey) {
 							animAttribute = 'rotation';
 							animValue = [manipFactor * 20, 0, 0];
 						} else {
 							animAttribute = 'position';
-							animValue = [0, 0, -manipFactor];
+							animValue = this.onGetCameraTranslation(
+                                [0, 0, -manipFactor]);
 						}
-		        break;
-		      }
+        		        break;
+        		    }
 					case 39: { // Arrow Right
 						if (event.altKey) {
-							animAttribute = 'rotation';
-							animValue = [0, -manipFactor * 20, 0];
+                            animAttribute = 'position';
+							animValue = this.onGetCameraTranslation(
+                                [manipFactor, 0, 0]);
 						} else {
-							animAttribute = 'position';
-							animValue = [manipFactor, 0, 0];
+                            animAttribute = 'rotation';
+							animValue = [0, -manipFactor * 20, 0];
 						}
-		        break;
-		      }
+        		        break;
+        		    }
 					case 40: { // Arrow Down
 						if (event.altKey) {
 							animAttribute = 'rotation';
 							animValue = [-manipFactor * 20, 0, 0];
 						} else {
 							animAttribute = 'position';
-							animValue = [0, 0, manipFactor];
+							animValue = this.onGetCameraTranslation(
+                                [0, 0, manipFactor]);
 						}
-		        break;
-		      }
+        		        break;
+        		    }
 				}
 
 				var target = this.camera;
