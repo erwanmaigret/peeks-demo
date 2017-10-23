@@ -222,6 +222,9 @@
 							}
 					}
 				}
+                while (this.children.length > 0) {
+                    this.children[0].destroy();
+                }
 			},
 
 			unload: function () {
@@ -230,6 +233,12 @@
 
 			addCanvas: function (params) {
 				var asset = new PEEKS.Canvas();
+				this.applyParams(asset, params);
+                return this.add(asset);
+			},
+
+            addScreen: function (params) {
+				var asset = new PEEKS.Screen();
 				this.applyParams(asset, params);
                 return this.add(asset);
 			},
@@ -963,12 +972,20 @@
 			onRender: function() {
 			},
 
-			getScene: function() {
+            getScene: function() {
 				var scene = this;
 				while (scene && scene.type != 'Scene') {
 					scene = scene.parent;
 				}
 				return scene;
+			},
+
+            getScreen: function() {
+				var screen = this;
+				while (screen && screen.type != 'Screen') {
+					screen = screen.parent;
+				}
+				return screen;
 			},
 
 			getDocument: function() {
@@ -1105,6 +1122,15 @@
         this.ground = this.add(new PEEKS.Asset());
         this.background = this.add(new PEEKS.Asset());
 
+        var userAgent = navigator.userAgent.toLowerCase();
+        this.isPhone =
+            userAgent.search('iphone') !== -1 ||
+            userAgent.search('ipod') !== -1 ||
+            userAgent.search('android') !== -1;
+
+        this.gyroscope = this.isPhone;
+        this.vrMode = this.isPhone;
+
 		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
 		this.pageIndex = 0;
 		this.style = {
@@ -1141,7 +1167,7 @@
                 var pointY = y - rect.top;
                 pointX = pointX / rect.width;
                 pointY = pointY / rect.height;
-                if (this.vrMode) {
+                if (this.isVrMode()) {
                     if (pointX > .5) {
                         pointX -= .5;
                     }
@@ -1149,6 +1175,10 @@
                 }
                 return [pointX * 2 - 1, -pointY * 2 + 1];
 			},
+
+            isVrMode: function() {
+                return this.vrMode;
+            },
 
 			getMouse: function(event) {
 				if (event.touches) {
@@ -1245,7 +1275,7 @@
                 this.mousePinchStartDistance = 0;
 				this.mouseDownTime = this.time;
 
-                if (this.vrMode) {
+                if (this.isVrMode()) {
                     this.onMouseUp(event);
                 }
 			},
@@ -1269,7 +1299,7 @@
                         var mouseDown = this.mouseDown;
                         var mouseUp = this.mouseUp;
                         var delay = this.mouseUpTime - this.mouseDownTime;
-                        if (this.vrMode) {
+                        if (this.isVrMode()) {
                             mouseDown = [0, 0];
                             mouseUp = [0, 0];
                             // VR devices are less responsive on click than
@@ -1292,7 +1322,7 @@
 				var asset = this.onPickNode(mouse);
 				if (asset) {
 					if (asset.onClick) {
-						asset[`animateClick`]();
+						//asset[`animateClick`]();
 						if (typeof asset.onClick === 'string') {
 							var onClick = asset[asset.onClick];
 							if (onClick) {
@@ -1717,27 +1747,26 @@
                         }
 
                         // Update global UI components
-                        if (mainScene.vrReticle) {
-                            mainScene.vrReticle.destroy();
-                            delete mainScene.vrReticle;
-                        }
-                        if (mainScene.vrMode) {
+                        if (mainScene.isVrMode()) {
                             if (mainScene.vrReticle === undefined) {
-                                var canvas = mainScene.addCanvas({
+                                mainScene.vrReticle = mainScene.addCanvas({
                                     // valign: 'bottom',
                                 });
 
-                                canvas.vrFixed = true;
+                                mainScene.vrReticle.vrFixed = true;
 
-                                mainScene.vrReticle = canvas.addRing({
+                                mainScene.vrReticle.addRing({
                                     viewBgColor: [1, 1, 1],
                                     size: .025
                                 });
-                                mainScene.vrReticle = canvas.addRing({
+                                mainScene.vrReticle.addRing({
                                     viewBgColor: [.3, .3, .3],
                                     size: .02
                                 });
                             }
+                        } else if (mainScene.vrReticle) {
+                            mainScene.vrReticle.destroy();
+                            delete mainScene.vrReticle;
                         }
 
     					mainScene.update();
@@ -1771,6 +1800,18 @@
 	Canvas.prototype = Object.assign(Object.create(Asset.prototype),
 		{
 			constructor: Canvas,
+		}
+	);
+
+    function Screen() {
+		Asset.call(this);
+		this.name = "Screen";
+        this.type = "Screen";
+        this.radius = 5;
+	}
+	Screen.prototype = Object.assign(Object.create(Asset.prototype),
+		{
+			constructor: Screen,
 		}
 	);
 
@@ -1912,6 +1953,7 @@
 	exports.Scene = Scene;
 	exports.Camera = Camera;
 	exports.Canvas = Canvas;
+    exports.Screen = Screen;
 	exports.Plane = Plane;
 	exports.Animation = Animation;
 

@@ -100,7 +100,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
         } else if (this.type === 'Canvas') {
             var pivot = this.threeObjectPivot;
             pivot.position.copy(scene.three.camera.position);
-            if (scene.vrMode === true && this.vrFixed !== true) {
+            if (scene.isVrMode() && this.vrFixed !== true) {
                 // Do nothing, let the VR drive the orientation
             } else {
                 pivot.quaternion.copy(scene.three.camera.quaternion);
@@ -128,6 +128,42 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                 THREE.Math.degToRad(this.pivotRotation[1]),
                 THREE.Math.degToRad(this.pivotRotation[2])
             );
+        }
+
+        // Adjust object in Virtual Screen space
+        var screen = this.getScreen();
+        if (screen && screen === this.parent) {
+            var radius = screen.radius;
+
+            var camPos = scene.three.camera.position;
+
+            var alpha = THREE.Math.degToRad(90 - threeObject.position.x * 180);
+            var beta = THREE.Math.degToRad(threeObject.position.y * 90);
+
+            threeObject.rotation.x = beta;
+            threeObject.rotation.y = -Math.PI / 2 + alpha;
+            threeObject.rotation.z = 0;
+
+            var zoom = 1;
+            var zoom = Math.abs(
+                scene.three.camera.quaternion.dot(threeObject.quaternion));
+            if (zoom < .95) {
+                zoom = 0;
+            } else {
+                zoom = (zoom - .95) * 20;
+                zoom = zoom * zoom;
+            }
+
+            threeObject.position.x = camPos.x + radius * Math.cos(alpha);
+            threeObject.position.y = camPos.y + radius * Math.sin(beta);
+            threeObject.position.z = camPos.z + -radius * Math.sin(alpha);
+
+            var scale = .3 + .7 * zoom;
+
+            threeObject.scale.set(
+                threeObject.scale.x * scale,
+                threeObject.scale.y * scale,
+                threeObject.scale.z * scale);
         }
 	}
 }
@@ -214,6 +250,14 @@ PEEKS.Scene.prototype.onGetCameraTranslation = function(translation) {
     return [vector.x, vector.y, vector.z];
 }
 
+PEEKS.Scene.prototype.isVrMode = function() {
+    var state = this.vrMode
+        && this.isPhone
+        && (this.screenOrientation === -90 || this.screenOrientation === 90);
+
+    return state;
+}
+
 PEEKS.Scene.prototype.onRender = function() {
     var three = this.three;
 
@@ -229,7 +273,7 @@ PEEKS.Scene.prototype.onRender = function() {
 
     // console.log(this.position);
     // console.log(three.scene.position);
-    if (this.vrMode) {
+    if (this.isVrMode()) {
         var useStereoEffect = false;
         if (useStereoEffect) {
             // This is for test, but it's not working very well
