@@ -5,7 +5,6 @@ PEEKS.registerPage('terraworlds', function() {
         category: 'outdoor',
     });
 
-    page.setAttr('bgColor', page.getAttr('colorDark'));
     page.setAttr('fontColor', page.getAttr('colorDark'));
 
     var cubeSize = 1;
@@ -14,57 +13,55 @@ PEEKS.registerPage('terraworlds', function() {
     var cubeRepeat = [3, 3];
     var onClick = function()
     {
+        console.log(cubeImage);
         this.addButton({
-            position: [0, 0, -1],
+            position: [0, 0, 1],
             viewBgColor: cubeColor,
             image: cubeImage,
             imageRepeat: cubeRepeat,
             onClick: onClick,
             size: cubeSize,
+            sides: 'front',
         });
         this.addButton({
-            position: [0, -.5, -.5],
+            position: [0, -.5, .5],
             rotation: [90, 0, 0],
             viewBgColor: cubeColor,
             image: cubeImage,
             imageRepeat: cubeRepeat,
             onClick: onClick,
             size: cubeSize,
+            sides: 'front',
         });
         this.addButton({
-            position: [0, .5, -.5],
-            rotation: [90, 0, 0],
+            position: [0, .5, .5],
+            rotation: [-90, 0, 0],
             viewBgColor: cubeColor,
             image: cubeImage,
             imageRepeat: cubeRepeat,
             onClick: onClick,
             size: cubeSize,
+            sides: 'front',
         });
-        /*
         this.addButton({
-            position: [0, 0, 0],
-            viewBgColor: [Math.random(),Math.random(),Math.random()],
-            onClick: onClick,
-            size: cubeSize,
-        });
-        */
-        this.addButton({
-            position: [0.5, 0, -.5],
+            position: [0.5, 0, .5],
             rotation: [0, 90, 0],
             viewBgColor: cubeColor,
             image: cubeImage,
             imageRepeat: cubeRepeat,
             onClick: onClick,
             size: cubeSize,
+            sides: 'front',
         });
         this.addButton({
-            position: [-0.5, 0, -.5],
-            rotation: [0, 90, 0],
+            position: [-0.5, 0, .5],
+            rotation: [0, -90, 0],
             viewBgColor: cubeColor,
             image: cubeImage,
             imageRepeat: cubeRepeat,
             onClick: onClick,
             size: cubeSize,
+            sides: 'front',
         });
     };
 
@@ -73,9 +70,10 @@ PEEKS.registerPage('terraworlds', function() {
 		for (var z = -size; z < size; z++) {
 			page.addButton({
                 position: [x / 2, -1, z / 2],
-				rotation: [90, 0, 0],
+				rotation: [-90, 0, 0],
+                viewBgColor: [.3, .5, .2],
                 //size: .97,
-                sides: 'both',
+                sides: 'front',
                 size: .5,
 				onClick: onClick,
 			}).animate({
@@ -137,6 +135,7 @@ PEEKS.registerPage('terraworlds', function() {
         fontSize: 40,
         onClick: function() {
             cubeImage = 'images/minecraft_wood.jpg';
+            console.log(cubeImage);
             cubeRepeat = [2, 2];
         },
     });

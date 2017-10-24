@@ -264,7 +264,7 @@ PEEKS.Scene.prototype.onRender = function() {
     this.camera.threeSynch(three.camera);
 	this.threeSynch();
 	if (this.page) {
-        var bgColor = this.page.getAttrColor('bgColor', [1, 1, 1]);
+        var bgColor = this.page.getAttrColor('bgColor', [0, 0, 0]);
 		three.renderer.setClearColor(colorToThreeColor(bgColor));
 	}
 

@@ -4,8 +4,6 @@ PEEKS.registerPage('videos', function() {
         title: 'HBO',
     });
 
-    page.setAttr('bgColor', [.8, .8, 1]);
-
     page.addExternalView('https://www.hbo.com/');
 
     page.addPage('peeks_toolbar');

@@ -4,8 +4,6 @@ PEEKS.registerPage('clothes', function() {
         title: 'Etsy',
     });
 
-    page.setAttr('bgColor', [.8, .8, 1]);
-
     page.addExternalView('https://www.etsy.com/');
 
     page.addPage('peeks_toolbar');

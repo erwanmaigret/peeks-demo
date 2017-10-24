@@ -1137,7 +1137,7 @@
             viewBgColor: [1, 1, 1],
             viewBgAlpha: .2,
             buttonBgAlpha: 1,
-            bgColor: [1, 1, 1],
+            bgColor: [0, 0, 0],
             fontSize: 12,
             fontBgColor: [1, 1, 1, 0],
             fontName: 'Futura',
