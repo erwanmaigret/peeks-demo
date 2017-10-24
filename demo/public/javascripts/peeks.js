@@ -1550,12 +1550,14 @@
                         groundFilename = 'images/floor_dot_1.jpg';
                     }
                     if (groundFilename) {
+                        groundFilename = 'images/floor_marble_1.jpg';
                         this.groundImage = this.ground.addImage({
                             image: groundFilename,
                             imageRepeat: [50, 50],
                             position: [0, -1, 0],
                             rotation: [-90, 0, 0],
                             size: 100,
+                            color: [.4, .6, .3],
                         });
                     }
 
