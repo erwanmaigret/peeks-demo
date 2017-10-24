@@ -13,7 +13,6 @@ PEEKS.registerPage('terraworlds', function() {
     var cubeRepeat = [3, 3];
     var onClick = function()
     {
-        console.log(cubeImage);
         this.addButton({
             position: [0, 0, 1],
             viewBgColor: cubeColor,
@@ -135,7 +134,6 @@ PEEKS.registerPage('terraworlds', function() {
         fontSize: 40,
         onClick: function() {
             cubeImage = 'images/minecraft_wood.jpg';
-            console.log(cubeImage);
             cubeRepeat = [2, 2];
         },
     });
