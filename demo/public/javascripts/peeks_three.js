@@ -101,7 +101,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             var pivot = this.threeObjectPivot;
             pivot.position.copy(scene.three.camera.position);
             if (scene.isVrMode() && this.vrFixed !== true) {
-                // Do nothing, let the VR drive the orientation
+                pivot.rotation.z = this.screenOrientation || 0;
             } else {
                 pivot.quaternion.copy(scene.three.camera.quaternion);
             }
