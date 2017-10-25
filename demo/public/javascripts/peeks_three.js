@@ -140,6 +140,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             var alpha = THREE.Math.degToRad(90 - threeObject.position.x * 180);
             var beta = THREE.Math.degToRad(threeObject.position.y * 90);
 
+            threeObject.rotation.order = 'YXZ';
             threeObject.rotation.x = beta;
             threeObject.rotation.y = -Math.PI / 2 + alpha;
             threeObject.rotation.z = 0;
@@ -158,7 +159,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             threeObject.position.y = camPos.y + radius * Math.sin(beta);
             threeObject.position.z = camPos.z + -radius * Math.sin(alpha);
 
-            var scale = .3 + .7 * zoom;
+            var scale = 2 * (.3 + .7 * zoom);
 
             threeObject.scale.set(
                 threeObject.scale.x * scale,
@@ -774,7 +775,7 @@ PEEKS.Scene.prototype.onStart = function() {
     // This should be adaptive based on the device performances
     renderer.setPixelRatio(2);
 
-    this.cameraAngle = 70;
+    this.cameraAngle = 55;
 	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
     var a_camera = document.querySelector('a-camera')
     if (a_camera) {

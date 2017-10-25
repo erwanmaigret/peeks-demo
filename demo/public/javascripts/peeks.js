@@ -452,41 +452,42 @@
             },
 
             addExternalView: function (url) {
-                var page = this.addView();
+                var page = this.addAsset();
                 page.url = url;
+
                 var scene = this.getScene();
                 this.url = url;
 
                 page.progressStart('Loading...');
 
-                var billboard = page.addAsset();
+                var menuScreen = page.addScreen({
+                    radius: 2,
+                });
+
+                var screen = page.addScreen({
+                    radius: 5,
+                });
+
                 var itemCount = 0;
 
                 var imageCount = 0;
                 var addItem = function(label, href) {
-                    if (itemCount >= 36) {
+                    if (itemCount >= 20) {
                         return;
                     }
-                    var x = itemCount - 1;
-                    var y = Math.floor(itemCount);
-                    //var x = itemCount % 3 - 1;
-                    //var y = 3 + Math.floor(itemCount / 3);
-                    if (y % 2 === 0) {
-                        y = -y / 2;
+
+                    var x = Math.floor(itemCount);
+                    if (x % 2 === 0) {
+                        x = -x / 2;
                     } else {
-                        y = (y + 1) / 2;
+                        x = (x + 1) / 2;
                     }
-                    var rotation = [1.5, y, 0];
-                    var pivot = billboard.addAsset({
-                        rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
-                        rotationOrder: 'YXZ',
-                    });
-                    var button = pivot.addTextButton({
+
+                    var button = menuScreen.addTextButton({
                         label: label,
-                        position: [0, 0, -2],
-                        rotation: [0, 0, 0],
-                        size: [.3, .1, 1],
-                        fontSize: 40,
+                        position: [x / 10, .25, 0],
+                        size: [1, .1, 1],
+                        fontSize: (label.length > 20) ? 20 : 40,
                         onClick: function() {
                             if (this.href) {
                                 var parent = page.parent;
@@ -508,42 +509,19 @@
                 var imageY = .25;
 
                 var addImage = function(width, height, url, href) {
-                    if (imageCount >= 36) {
+                    if (imageCount >= 20) {
                         return;
                     }
-                    /*
-                    width = width * .0015;
-                    height = height * .0015;
-                    page.addImage({
-                        image: url,
-                        position: [0, imageY, -5],
-                        size: [width, height, 1],
-                    }).animateInFromFar(imageCount * .1);
 
-                    imageCount++;
-
-                    imageY -= height;
-                    */
-
-                    var x = imageCount - 1;
-                    var y = Math.floor(imageCount);
-                    if (y % 2 === 0) {
-                        y = -y / 2;
+                    var x = Math.floor(imageCount);
+                    if (x % 2 === 0) {
+                        x = -x / 2;
                     } else {
-                        y = (y + 1) / 2;
+                        x = (x + 1) / 2;
                     }
-                    var rotation = [0, y, 0];
-                    var pivot = billboard.addAsset({
-                        rotation: [rotation[0] * 8, rotation[1] * 10, rotation[2] * 10],
-                        rotationOrder: 'YXZ',
-                    });
-                    width = width * .0015;
-                    height = height * .0015;
-                    var button = pivot.addButton({
+                    var button = screen.addButton({
                         image: url,
-                        position: [0, 0, -2],
-                        rotation: [0, 0, 0],
-                        size: [.3, .3, .3],
+                        position: [x / 10, 0, 0],
                         onClick: function() {
                             if (this.href) {
                                 var parent = page.parent;
@@ -558,7 +536,7 @@
                         }
                     });
                     button.href = href;
-                    button.animateInFromFar(imageCount * .1);
+                    //button.animateInFromFar(imageCount * .1);
                     imageCount++;
                 }
 
@@ -925,6 +903,11 @@
                         Math.round(color[2] * 255) + ',' +
                         Math.round(color[3] * 255) + ')';
                     texture.context.fillText(text, xOffset, yOffset);
+
+                    // Always have an outline so text are always readable
+                    texture.context.strokeStyle = 'grey';
+                    texture.context.lineWidth = 2;
+                    texture.context.strokeText(text, xOffset, yOffset);
 
                     texture.textSize = [width, height];
                     texture.size = [canvasWidth, canvasHeight];
@@ -1554,10 +1537,10 @@
                         this.groundImage = this.ground.addImage({
                             image: groundFilename,
                             imageRepeat: [50, 50],
-                            position: [0, -1, 0],
+                            position: [0, -2, 0],
                             rotation: [-90, 0, 0],
                             size: 100,
-                            color: [.4, .6, .3],
+                            color: [.2, .4, .5],
                         });
                     }
 
@@ -1596,7 +1579,7 @@
                         });
                         this.titleText.addTextButton({
                             label: title,
-                            position: [0, .4, 0],
+                            position: [0, .45, 0],
                             size: [.9, .15, 1],
                             fontSize: 40,
                         });

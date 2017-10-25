@@ -75,7 +75,7 @@ PEEKS.registerPage('fashion', function() {
     };
 
     var screen = page.addScreen({
-        radius: 1,
+        radius: 3,
     });
 
     for (var assetI = 0; assetI < assets.length; assetI++) {
