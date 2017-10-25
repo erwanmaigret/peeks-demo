@@ -1,10 +1,12 @@
-var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY)
+var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
+    removeBackground)
 {
 	if (textureUrl != '') {
 		var loader = new THREE.TextureLoader();
 
 		//loader.setCrossOrigin(null);
-
+        var mat = material;
+        var detour = removeBackground;
 		material.map = loader.load(textureUrl,
             function (texture) {
                 var width = texture.image.width;
@@ -12,6 +14,52 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY)
                 if (width !== 0 && height !== 0) {
                     console.log('Loaded texture ' + textureUrl + ' ' +
                         width.toString() + 'x' + height.toString());
+
+                    if (detour) {
+                        var canvas = document.createElement('canvas');
+        				var context = canvas.getContext('2d');
+                        canvas.width = width;
+                        canvas.height = height;
+                        context.clearRect(0, 0, width, height);
+                        context.drawImage(texture.image, 0, 0);
+
+                        var imgd = context.getImageData(0, 0, width, height);
+                        var pix = imgd.data;
+
+                        if (pix[0] === pix[width * 4 - 4] &&
+                            pix[1] === pix[width * 4 - 3] &&
+                            pix[2] === pix[width * 4 - 2] &&
+                            pix[3] === pix[width  * 4 - 1])
+                        {
+                            // Take the corner value of the image and
+                            //  detour it all around
+                            var bgColor = [pix[0], pix[1], pix[2]];
+                            var threshold = .005;
+
+                            // Loop over each pixel and invert the color.
+                            for (var i = 0, n = pix.length; i < n; i += 4) {
+                                if (pix[i+3] < 255) {
+                                    detour = false;
+                                    break;
+                                }
+                                var dr = (pix[i] - bgColor[0]) / 255;
+                                var dg = (pix[i+1] - bgColor[1]) / 255;
+                                var db = (pix[i+2] - bgColor[2]) / 255;
+                                var delta = dr * dr + dg * dg + db * db;
+                                if (delta < threshold) {
+                                    pix[i+3] = 255 * Math.pow(delta / threshold, 2);
+                                }
+                            }
+
+                            if (detour) {
+                                context.putImageData(imgd, 0, 0);
+                                texture = new THREE.Texture(canvas);
+                                texture.needsUpdate = true;
+                                texture.premultiplyAlpha = true;
+                                mat.map = texture;
+                            }
+                        }
+                    }
                 }
             },
             function (xhr) {
@@ -527,7 +575,11 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						});
 						backSide = new THREE.Mesh(geometry, material);
 						backSide.rotation.y = THREE.Math.degToRad(180);
-						loadTexture(material, this.textureBackUrl, this.textureRepeat);
+						loadTexture(material, this.textureBackUrl,
+                            this.textureRepeat,
+                            false, false,
+                            this.imageDetour
+                        );
 					}
 
 					var geometry = new THREE.PlaneGeometry(1, 1);
@@ -541,7 +593,11 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-                    loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
+                    loadTexture(material, this.getAttr('textureUrl'),
+                        this.textureRepeat,
+                        false, false,
+                        this.imageDetour
+                    );
 
 					if (backSide) {
 						this.threeObject.add(backSide);

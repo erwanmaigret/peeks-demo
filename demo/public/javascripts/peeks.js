@@ -521,6 +521,7 @@
                     }
                     var button = screen.addButton({
                         image: url,
+                        imageDetour: true,
                         position: [x / 10, 0, 0],
                         onClick: function() {
                             if (this.href) {
