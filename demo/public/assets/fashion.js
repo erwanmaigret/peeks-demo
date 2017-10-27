@@ -1,4 +1,4 @@
-PEEKS.registerPage('fashion', function() {
+PEEKS.registerPage('2D Assets', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
         category: 'fashion',

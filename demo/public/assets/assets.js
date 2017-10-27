@@ -1,6 +1,5 @@
-PEEKS.registerPage('assets', function() {
+PEEKS.registerPage('3D Assets', function() {
     var page = new PEEKS.Asset({
-        title: 'Assets',
         category: 'fashion',
     });
 

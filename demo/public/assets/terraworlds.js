@@ -1,4 +1,4 @@
-PEEKS.registerPage('terraworlds', function() {
+PEEKS.registerPage('Terra Worlds', function() {
 	var page = new PEEKS.Asset({
         colorDark:   [.2, 0.2 , 0.5],
         colorLight:  [.6, 0.6 , 0.8],

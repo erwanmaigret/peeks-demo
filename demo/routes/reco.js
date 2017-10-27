@@ -2,33 +2,23 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-    var data = {
-        pages: [],
-    };
+    var data = { pages: [] };
 
-    data.pages.push({
-        name: 'Zappos',
-        url: 'https://www.zappos.com',
-    });
+    data.pages.push({ name: 'Zappos', url: 'https://www.zappos.com' });
 
-    data.pages.push({
-        name: 'Etsy',
-        url: 'https://www.etsy.com/',
-    });
+    // css parsing issue:
+    //data.pages.push({ name: 'Frys', url: 'https://www.frys.com/' });
 
-    data.pages.push({
-        name: 'UNIQLO',
-        url: 'https://www.uniqlo.com/',
-    });
+    // css parsing issue:
+    //data.pages.push({ name: 'Victoria Secret', url: 'https://www.victoriassecret.com/' });
 
-    data.pages.push({
-        name: 'HBO',
-        url: 'https://www.hbo.com/',
-    });
-
-    data.pages.push({ name: 'fashion' });
-    data.pages.push({ name: 'assets' });
-    data.pages.push({ name: 'terraworlds' });
+    // CORS issues:
+    data.pages.push({ name: 'Etsy', url: 'https://www.etsy.com/' });
+    data.pages.push({ name: 'UNIQLO', url: 'https://www.uniqlo.com/' });
+    // data.pages.push({name: 'HBO', url: 'https://www.hbo.com/' });
+    data.pages.push({ name: '2D Assets' });
+    data.pages.push({ name: '3D Assets' });
+    data.pages.push({ name: 'Terra Worlds' });
 
     res.send(JSON.stringify(data));
 });
