@@ -28,6 +28,11 @@ var scrapDb = [
     }
 ];
 
+var redirectIp = '35.161.135.124';
+var redirectPrefix = 'http://' + redirectIp + '/?url=';
+// Avoid any redirection:
+redirectPrefix = "";
+
 router.get('/', function(req, res, next) {
     var uri = req.query['uri'];
     if (uri) {
@@ -40,10 +45,10 @@ router.get('/', function(req, res, next) {
                 break;
             }
         }
-        if (uri.indexOf('35.161.135.124') > -1) {
-            //console.log('already proxy present');
+        if (uri.indexOf(redirectIp) > -1) {
+            console.log('already proxy present');
         } else {
-            uri='http://35.161.135.124/?url='+uri+'/';
+            uri=redirectPrefix+uri+'/';
         }
         uriRoot = getRootUrl(uri);
         console.log('uri=='+uri);
@@ -115,7 +120,7 @@ router.get('/', function(req, res, next) {
                                                 }
                                             }
                                             src = removeUrlTrail(src);
-                                            src = 'http://35.161.135.124/?url=' + src;
+                                            src = redirectPrefix + src;
                                             //console.log('adding ' + src);
                                             var node = {
                                                 href: href,
@@ -153,7 +158,7 @@ router.get('/', function(req, res, next) {
                                 // Redirection so that we can get around
                                 //  data loading without worrying about CORS
                                 //  issues.
-                                src = 'http://35.161.135.124/?url=' + src;
+                                src = redirectPrefix + src;
 
                                 data.source.img.push({
                                     src: src,
