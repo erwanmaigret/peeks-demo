@@ -3,6 +3,11 @@ PEEKS.registerPage('peeks_recommendations', function() {
 
 	var canvas = page.addCanvas();
 
+    PEEKS.registerPage({
+        name: 'Zappos',
+        url: 'https://www.zappos.com',
+    });
+
 	var pane = canvas.addView({
 		position: [0, .1],
 		size: [1, .6, 1],
@@ -17,11 +22,11 @@ PEEKS.registerPage('peeks_recommendations', function() {
     var itemCount = 0;
 
     pane.addTextButton({
-        label: 'Bloomingdales',
+        label: 'Zappos',
         position: [0, .6 - itemCount * .2, 0],
 		size: [.9, .15, 1],
         onClick: 'loadPage',
-		onClickArgs: ['bloomingdales'],
+		onClickArgs: ['Zappos'],
         fontSize: fontSize,
 	}).animate({
         duration: animDuration,

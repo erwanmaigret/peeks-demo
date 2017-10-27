@@ -1083,7 +1083,27 @@
 
 	var pages = {};
 	function registerPage(name, ctor) {
-		pages[name] = ctor;
+        if (ctor) {
+            pages[name] = ctor;
+        } else {
+            var params = name;
+            var pageName = params.name;
+            var pageCategory = params.category || 'fashion';
+            var pageUrl = params.url || '';
+
+            registerPage(pageName, function() {
+            	var page = new PEEKS.Asset({
+                    title: pageName,
+                    category: pageCategory || 'fashion',
+                });
+
+                page.addExternalView(pageUrl);
+
+                page.addPage('peeks_toolbar');
+
+                return page;
+            });
+        }
 	}
 
 	function loadPage(name) {
