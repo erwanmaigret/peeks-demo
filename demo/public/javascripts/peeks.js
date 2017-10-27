@@ -569,6 +569,62 @@
                 xhttp.send();
             },
 
+            addRecommendationsView: function () {
+                var canvas = this.addCanvas();
+
+                var pane = canvas.addView({
+                    position: [0, .1],
+                    size: [1, .6, 1],
+                    viewBgColor: [.3, .3, .3],
+                    alpha: 0,
+                });
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = JSON.parse(this.responseText);
+
+                        var itemCount = 0;
+                        if (data && data.pages) {
+                            for (var pageI in data.pages) {
+                                var page = data.pages[pageI];
+
+                                if (pages[page.name] === undefined) {
+                                    PEEKS.registerPage({
+                                        name: page.name,
+                                        url: page.url,
+                                    });
+                                }
+
+                                var fontSize = 50;
+                                var animDuration = .5;
+                                var animDelay = .3;
+                                var animItemDelay = .15;
+
+                                pane.addTextButton({
+                                    label: page.name,
+                                    position: [0, .6 - itemCount * .2, 0],
+                                    size: [.9, .15, 1],
+                                    onClick: 'loadPage',
+                                    onClickArgs: [page.name],
+                                    fontSize: fontSize,
+                                }).animate({
+                                    duration: animDuration,
+                                    delay: animDelay + animItemDelay * itemCount,
+                                    begin: [-90, 0, 0],
+                                    end: [0, 0, 0],
+                                    attribute: 'rotation'
+                                });
+
+                                itemCount++;
+                            }
+                        }
+                    }
+                };
+                xhttp.open("GET", "/reco", true);
+                xhttp.send();
+            },
+
 			addAsset: function (params) {
 				var asset = new PEEKS.Asset();
 				this.initAsset(asset, params);

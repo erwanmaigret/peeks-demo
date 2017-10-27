@@ -3,15 +3,7 @@ extends layout
 block content
     script(src="/javascripts/peeks.js")
 
-    // AFrame
-    //script(src="https://aframe.io/releases/0.6.1/aframe.min.js")
-    //script(src="/javascripts/aframe.js")
-    //script(src="/javascripts/aframe-mouse-cursor-component.min.js")
-    //script(src="/javascripts/aframe-gradientsky.min.js")
-    //script(src="/javascripts/aframe-material.js")
-
     // Use threeJS specialization
-    // This is already included by a-frame
     script(src="/javascripts/three.js")
     script(src="/javascripts/three/loaders/OBJLoader.js")
     script(src="/javascripts/three/renderers/CSS3DRenderer.js")
@@ -19,8 +11,6 @@ block content
     script(src="/javascripts/peeks_three.js")
 
     // Default page
-    script(src="/pages/peeks_background.js")
-    script(src="/pages/peeks_recommendations.js")
     script(src="/pages/peeks_welcome.js")
     script(src="/pages/peeks_history.js")
     script(src="/pages/peeks_search.js")
@@ -28,33 +18,12 @@ block content
     script(src="/pages/peeks_test.js")
 
     // Load some pages
-    script(src="/assets/bloomingdales.js")
     script(src="/assets/fashion.js")
     script(src="/assets/terraworlds.js")
-    script(src="/assets/travel.js")
-    script(src="/assets/housing.js")
-    script(src="/assets/toys.js")
-    script(src="/assets/music.js")
-    script(src="/assets/uniqlo.js")
-    script(src="/assets/videos.js")
-    script(src="/assets/clothes.js")
     script(src="/assets/assets.js")
-
-    //a-scene
-    //    a-entity(laser-controls="hand: right")
-    //    a-entity
-    //        a-camera(look-controls-enabled wasd-controls-enabled mouse-cursor)
-    //    a-keyboard(physical-keyboard="true")
-    //    a-input(position="-0.7 3 -2.5" placeholder="Search" color="black" width="1")
 
     script.
         PEEKS.setLogLevel(1);
         var peeks = new PEEKS.Scene();
-        //peeks.loadPage('bloomingdales');
         peeks.loadPage('peeks_welcome');
-        //peeks.loadPage('peeks_test');
-        //peeks.loadPage('fashion');
         peeks.start(window);
-
-    //audio(autoplay loop)
-    //  source(src="assets/music1.mp3" type="audio/mpeg")

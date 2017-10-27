@@ -28,7 +28,8 @@ var scrapDb = [
     }
 ];
 
-var redirectIp = '35.161.135.124';
+//var redirectIp = '35.161.135.124';
+var redirectIp = '52.25.54.6';
 var redirectPrefix = 'http://' + redirectIp + '/?url=';
 // Avoid any redirection:
 redirectPrefix = "";
