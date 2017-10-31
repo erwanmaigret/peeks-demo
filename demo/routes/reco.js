@@ -4,11 +4,11 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     var data = { pages: [] };
 
+    data.pages.push({ name: 'Hollister', url: 'https://www.hollisterco.com/' });
     data.pages.push({ name: 'Zappos', url: 'https://www.zappos.com' });
     data.pages.push({ name: 'Galeries Lafayette', url: 'https://www.galerieslafayette.com/' });
     //data.pages.push({ name: 'Lowes', url: 'https://www.lowes.com/' });
     //data.pages.push({ name: 'Groupon', url: 'https://www.groupon.fr' });
-    data.pages.push({ name: 'Hollisterco', url: 'https://www.hollisterco.com/' });
 
     // To dig:
     //data.pages.push({ name: 'QoQaCh', url: 'https://www.qoqa.ch/' });
@@ -20,6 +20,7 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Banana Replublic', url: 'http://www.bananarepublic.com' });
     //data.pages.push({ name: 'Boost', url: 'http://www.boots.com/' });
     //data.pages.push({ name: 'Vente Privee', url: 'http://vente-privee.com' });
+    //data.pages.push({ name: 'Target', url: 'https://www.target.com/c/shop-all-categories/-/N-5xsxf' });
 
     // To explore:
     //data.pages.push({ name: 'H&M', url: 'http://www.hm.com/' });

@@ -22,7 +22,7 @@ var scrapDb = [
     {
         domain: 'bloomingdales.com',
         imgExclude: [
-            'spacer.gif',
+            'spacer',
             'footer',
         ]
     }
@@ -39,6 +39,7 @@ router.get('/', function(req, res, next) {
     if (uri) {
         console.log('Loading ' + uri);
         var uriRoot = getRootUrl(uri);
+        console.log(uriRoot);
         var scrapDbNode;
         for (var scrapDbi = 0; scrapDbi < scrapDb.length; scrapDbi++) {
             if (uri.search(scrapDb[scrapDbi].domain) !== -1) {
@@ -49,7 +50,7 @@ router.get('/', function(req, res, next) {
         if (uri.indexOf(redirectIp) > -1) {
             console.log('already proxy present');
         } else {
-            uri=redirectPrefix+uri+'/';
+            uri=redirectPrefix+uri;
         }
         uriRoot = getRootUrl(uri);
         console.log('uri=='+uri);
@@ -103,16 +104,30 @@ router.get('/', function(req, res, next) {
                                     var imgs = elem.getElementsByTagName("IMG");
                                     if (imgs) {
                                         img = imgs[0];
-                                        if (img && img.src && scrapDbNode) {
-                                            for (var i = 0; i < scrapDbNode.imgExclude.length; i++) {
-                                                if (img.src.search(scrapDbNode.imgExclude[i]) !== -1) {
-                                                    img = undefined;
-                                                    break;
+                                        var src;
+                                        if (img) {
+                                            src = img.src;
+                                            if (src === undefined || src === '')
+                                            {
+                                                src = img.getAttribute('data-src');
+                                                if (src && src !== '') {
+                                                    if (src.substr(0, 4) === 'anf/') {
+                                                        // Sometimes these don't expand well
+                                                        // Hardcode until we find the correct fix
+                                                        src = 'https://anf.scene7.com/is/image/' + src;
+                                                    }
+                                                }
+                                            }
+                                            if (src && src !== '' && scrapDbNode) {
+                                                for (var i = 0; i < scrapDbNode.imgExclude.length; i++) {
+                                                    if (src.search(scrapDbNode.imgExclude[i]) !== -1) {
+                                                        img = undefined;
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
-                                        if (img && img.src && img.alt) {
-                                            var src = img.src;
+                                        if (img && src && img.alt) {
                                             if (src && src[0] === '/') {
                                                 if (src[1] === '/') {
                                                     src = 'https:' + src;
@@ -130,7 +145,6 @@ router.get('/', function(req, res, next) {
                                                 width: img.width,
                                                 height: img.height,
                                             };
-                                            //console.log(node);
                                             data.peeks.img.push(node);
                                         }
                                     }
