@@ -299,8 +299,7 @@
 
                 asset.addText({
                     position: [0, 0, .01],
-                }).addAttrAlias('text', 'label')
-                .addAttrAlias('fontColor', 'colorMedium');
+                }).addAttrAlias('text', 'label');
 
                 return asset;
             },
@@ -322,23 +321,23 @@
                 //asset.addAttrAlias('viewBgColor', 'colorWhite');
                 //asset.addAttrAlias('alpha', 'buttonBgAlpha');
                 asset.primitive = Asset.PrimitiveCircle;
+                asset.addAttrAlias('viewBgColor', 'fontColor');
 
                 asset.addText({
                     position: [0, 0, .01],
-                }).addAttrAlias('text', 'label')
-                .addAttrAlias('fontColor', 'colorWhite');
+                }).addAttrAlias('text', 'label');
 
                 return asset;
             },
 
             addIconButton: function (params) {
                 var asset = this.addButton(params);
-                asset.addAttrAlias('viewBgColor', 'colorWhite');
+                asset.addAttrAlias('viewBgColor', 'fontColor');
                 asset.addAttrAlias('alpha', 'buttonBgAlpha');
 
                 asset.addImage({
                     image: params.icon,
-                }).addAttrAlias('color', 'colorMedium');
+                }).addAttrAlias('color', 'fontColor');
 
                 return asset;
             },
@@ -1200,6 +1199,7 @@
             bgColor: [0, 0, 0],
             fontSize: 12,
             fontBgColor: [1, 1, 1, 0],
+            fontColor: [1, 1, 1],
             fontName: 'Futura',
             valign: 'center',
             align: 'center',
@@ -1211,9 +1211,6 @@
             colorGrey:   [  80 / 255,  80 / 255,  80 / 255],
             colorWhite:  [ 255 / 255, 255 / 255, 255 / 255],
 		};
-
-        //this.addAttrAlias('fontColor', 'colorDark');
-        this.addAttrAlias('fontColor', 'colorWhite');
 	}
 	Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		{
@@ -1634,16 +1631,19 @@
                         backgroundFilename = 'images/bg_360_interior1.jpg';
                     } else if (category === 'outdoor') {
                         backgroundFilename = 'images/bg_360_bridge.jpg';
+                    } else if (category === 'white') {
                     } else {
                         backgroundFilename = 'images/bg_360_canyon.jpg';
                     }
-                    this.backgroundImage = this.background.addSphere({
-                        image: backgroundFilename,
-                        position: [0, 0, 0],
-                        rotation: [0, 0, 0],
-                        sides: 'back',
-                        size: 20,
-                    });
+                    if (backgroundFilename) {
+                        this.backgroundImage = this.background.addSphere({
+                            image: backgroundFilename,
+                            position: [0, 0, 0],
+                            rotation: [0, 0, 0],
+                            sides: 'back',
+                            size: 20,
+                        });
+                    }
 
                     if (this.titleText) {
                         this.titleText.destroy();

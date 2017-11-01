@@ -26,7 +26,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
         position: [-.35, height],
 		size: .08,
 		onClick: 'loadNextPage',
-	})
+	});
 
     canvas.addRoundTextButton({
         position: [-.25, height],
@@ -65,7 +65,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
         image: 'ui/icon_peeks.png',
         position: [0, height],
         size: [.2, .1, 1],
-    }).addAttrAlias('color', 'colorMedium');
+    }).addAttrAlias('color', 'fontColor');
 
 	canvas.animate({
 		duration: 1,
