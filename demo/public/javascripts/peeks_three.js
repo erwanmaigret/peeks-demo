@@ -12,8 +12,8 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
                 var width = texture.image.width;
                 var height = texture.image.height;
                 if (width !== 0 && height !== 0) {
-                    console.log('Loaded texture ' + textureUrl + ' ' +
-                        width.toString() + 'x' + height.toString());
+                    //console.log('Loaded texture ' + textureUrl + ' ' +
+                    //    width.toString() + 'x' + height.toString());
 
                     if (detour) {
                         var canvas = document.createElement('canvas');
