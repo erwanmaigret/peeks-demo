@@ -3,7 +3,7 @@ PEEKS.registerPage('Target', function() {
         fontColor: [0, 0, 0],
         bgColor: [1, 1, 1],
         category: 'white',
-        title: 'Target'
+        // title: 'Target'
     });
 
 	var panel = page.addAsset();
@@ -22,10 +22,10 @@ PEEKS.registerPage('Target', function() {
             items: [
                 {   name: "women's clothing", image: '52690603',
                     items: [
-                        { name: "dresses", image: '52922424',
+                        {   name: "dresses", image: '52922424',
                             items: [
-                                { name: "maxi", image: '52833477',
-                                    items: [
+                                {   name: "maxi", image: '52833477',
+                                    highlightItems: [
                                         { name: " ", image: '52833477' },
                                         { name: " ", image: '52654414' },
                                         { name: " ", image: '52722444' },
@@ -91,51 +91,149 @@ PEEKS.registerPage('Target', function() {
         { name: "girls' shoes", image: '53452-160411_1460402148576', },
         { name: "boys' clothing", image: '53452-160411_1460402089694', },
         { name: "boys' shoes", image: '53452-160411_1460402111660', },
+        { name: "Featured",
+            items: [
+                { name: "Thanksgiving", image: 'thanksgiving97188-171025_1508960298143', },
+                { name: "Christmas", image: 'christmas97188-171025_1508962692123', },
+                { name: "Kids' gifting", image: 'KidsGifts-icon98553-171005_1507224706616', },
+                { name: "Gift Ideas", image: '10-22_KidsGifting-CatBrowse-14105040-171024_1508883169598', },
+                { name: "Target Finds", image: 'finds105040-171025_1508959860693', },
+                { name: "Clothing", image: 'clothing97188-171019_1508445409180', },
+                { name: "Shoes", image: 'shoes97188-171025_1508966363467', },
+                { name: "Accessories", image: 'accessories97188-171027_1509114673981', },
+                { name: "Baby", image: 'baby97188-171025_1508965179518', },
+                { name: "Home", image: 'home97188-171019_1508445579038', },
+                { name: "Furniture", image: 'furniture97188-171025_1508965473814', },
+                { name: "Kitchen", image: 'kitchen97188-171019_1508445075384', },
+                { name: "Electronics", image: 'electronics97188-171025_1508966407077', },
+                { name: "Toys", image: 'toys97188-171025_1508966907610', },
+                { name: "Entertainment", image: 'entertainment97188-171019_1508447521853', },
+                { name: "Beauty", image: 'beauty97188-171025_1508965241734', },
+                { name: "Deals", image: 'deals97188-171020_1508510709891', },
+                { name: "Clearance", image: 'clearance97188-171020_1508525411214', },
+            ],
+        },
+        { name: "Promotions",
+            highlightItems: [
+                { name: "Buy 2, get 1 free", image: '2017_NovWk1_HP_storyBlock_Friday_v1_03104302-171018_1508353657352', },
+                { name: "Call of Duty WWII", image: '2017_NovWk1_HP_storyBlock_Friday_v1_05104302-171018_1508346246139', },
+                { name: "Free $10 gift card", image: '2017_NovWk1_HP_6pks_v2_07104303-171019_1508435415282', },
+                { name: "Slumber party", image: '2017_NovWk1_HP_storyBlock_Friday_v1_08104299-171017_1508280336220', },
+                { name: "30% off rugs", image: '2017_NovWk1_HP_6pks_v2_03104303-171018_1508344324158', },
+                { name: "Hearth & Hand™ with Magnolia", image: '2017_NovWk1_HP_storyBlock_Friday_v1_13104299-171017_1508280389874', },
+                { name: "Call of Duty WWII", image: '2017_NovWk1_HP_storyBlock_Friday_v1_05104302-171018_1508346246139', },
+                { name: "Call of Duty WWII", image: '2017_NovWk1_HP_storyBlock_Friday_v1_05104302-171018_1508346246139', },
+            ],
+        },
     ];
 
-    var currentPath = '';
+    var currentPath = '/Featured';
     var currentItems = [];
+    var currentHighlight = siteMap[siteMap.length - 1].highlightItems;
+
+    var onClickRoot = function() {
+        currentPath = '/' + this.path;
+        refresh();
+    };
 
     var onClick = function() {
         currentPath = currentPath + "/" + this.path;
         refresh();
     };
 
+    var menuY = .5;
+    var subMenuY = .3;
+    var highlightsY = 0;
+
     var refresh = function() {
+        //
         // Remove previous items
+        //
+
         var itemCount = currentItems.length;
         for (var itemI = 0; itemI < itemCount; itemI++) {
             currentItems[itemI].destroy();
         }
         currentItems = [];
 
+        //
+        // Update elements
+        //
+
+        // Global navigation items
+        var items = siteMap;
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var button = screen.addText({
+                    position: [itemI * 2 / itemCount, menuY, 0],
+                    fontSize: 80,
+                    text: item.name,
+                    path: item.name,
+                    onClick: onClickRoot,
+                })
+                currentItems.push(button);
+            }
+        }
+
         var paths = currentPath.split('/');
         var items = siteMap;
         for (var pathI = 1; pathI < paths.length; pathI++) {
             for (var itemI = 0; itemI < items.length; itemI++) {
                 if (items[itemI].name === paths[pathI]) {
-                    items = items[itemI].items;
+                    if (items[itemI].highlightItems) {
+                        currentHighlight = items[itemI].highlightItems;
+                    } else {
+                        items = items[itemI].items;
+                    }
                     break;
                 }
             }
         }
 
+        // Current navigation level
         if (items) {
             var itemCount = items.length;
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
-                var button = screen.addButton({
-                    position: [itemI * 2 / itemCount, 0, 0],
-                    image: imagePath + item.image,
+                var asset = screen.addAsset({
+                    position: [itemI * 2 / itemCount, subMenuY, 0],
+                    size: .4,
+                });
+                var button = asset.addButton({
+                    image: item.image ? imagePath + item.image : undefined,
                     path: item.name,
                     onClick: onClick,
                 })
-                button.addText({
+                asset.addText({
                     position: [0, -.6, .1],
                     fontSize: 80,
                     text: item.name,
                 });
-                currentItems.push(button);
+                currentItems.push(asset);
+            }
+        }
+
+        // Highlights
+        items = currentHighlight;
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var asset = screen.addAsset({
+                    position: [itemI * 2 / itemCount, highlightsY, 0],
+                })
+                var button = asset.addButton({
+                    image: item.image ? imagePath + item.image : undefined,
+                    path: item.name,
+                })
+                asset.addText({
+                    position: [0, -.6, .1],
+                    fontSize: 80,
+                    text: item.name,
+                });
+                currentItems.push(asset);
             }
         }
     };
