@@ -1322,7 +1322,7 @@
 			},
 
 			onMouseDown: function (event) {
-				logDebug('onMouseDown');
+				logSuperDebug('onMouseDown');
                 event.preventDefault();
 
 				this.mouseDown = this.getMouse(event);
@@ -1338,7 +1338,7 @@
 			},
 
 			onMouseUp: function (event) {
-				logDebug('onMouseUp');
+				logSuperDebug('onMouseUp');
                 event.preventDefault();
 
 				if (this.mouseDown) {
