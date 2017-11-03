@@ -1,6 +1,7 @@
 PEEKS.registerPage('Target', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
+        fontColorBold: [197/255, 1/255, 0],
         bgColor: [1, 1, 1],
         category: 'white',
         // title: 'Target'
@@ -11,8 +12,6 @@ PEEKS.registerPage('Target', function() {
     var screen = page.addScreen({
         radius: 5,
     });
-
-	page.addPage('peeks_toolbar');
 
     var imagePath = 'https://target.scene7.com/is/image/Target/';
     var siteMap = [
@@ -172,7 +171,7 @@ PEEKS.registerPage('Target', function() {
                     text: item.name,
                     path: item.name,
                     onClick: onClickRoot,
-                })
+                });
                 currentItems.push(button);
             }
         }
@@ -223,11 +222,11 @@ PEEKS.registerPage('Target', function() {
                 var item = items[itemI];
                 var asset = screen.addAsset({
                     position: [itemI * 2 / itemCount, highlightsY, 0],
-                })
+                });
                 var button = asset.addButton({
                     image: item.image ? imagePath + item.image : undefined,
                     path: item.name,
-                })
+                });
                 asset.addText({
                     position: [0, -.6, .1],
                     fontSize: 80,
@@ -239,6 +238,51 @@ PEEKS.registerPage('Target', function() {
     };
 
     refresh();
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+        vrFixed: true,
+    });
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: 1,
+    });
+
+    canvas.addButton({
+        image: 'images/target_icon_logo.png',
+        position: [-.45, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: 'images/target_icon_menu.png',
+        position: [-.35, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: 'images/target_icon_account.png',
+        position: [.35, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: 'images/target_icon_cart.png',
+        position: [.45, -.45],
+        size: .08,
+    });
+
+    canvas.addText({
+        position: [0, -.45],
+        fontSize: 28,
+        text: 'search',
+        fontColor: [.3, .3, .3],
+        size: .08,
+    })
+
 
 	return page;
 });
