@@ -273,7 +273,7 @@
 			},
 
             addSphere: function (params) {
-				var asset = this.addButton(params);
+				var asset = this.addImage(params);
                 asset.primitive = Asset.PrimitiveSphere;
 				return asset;
 			},
@@ -357,6 +357,14 @@
 					if (params.imageRepeat) asset.textureRepeat = params.imageRepeat;
 				}
 				return asset;
+			},
+
+            toString: function () {
+                var string = this.type;
+                if (this.textureUrl) string += ' ' + this.textureUrl;
+                if (this.text) string += ' "' + this.text + '"';
+                if (this.label) string += ' "' + this.label + '"';
+                return string;
 			},
 
 			addText: function (params) {
@@ -1071,7 +1079,25 @@
 				});
 			},
 
-			animateClick: function() {
+            animateFocusStart: function() {
+				this.animate({
+					duration: .3,
+                    begin: [1, 1, 1],
+                    end: [1.1, 1.1, 1.1],
+					attribute: 'size'
+				});
+			},
+
+            animateFocusEnd: function() {
+                this.animate({
+					duration: .3,
+                    begin: [1, 1, 1],
+                    end: [1 / 1.1, 1 / 1.1, 1 / 1.1],
+					attribute: 'size'
+				});
+			},
+
+            animateClick: function() {
 				this.animate({
 					duration: .4,
 					p0: [1, 1, 1],
@@ -1318,7 +1344,20 @@
     						}
     					}
                     }
-				}
+				} else {
+                    var asset = this.onPickNode(this.getMouse(event));
+                    if (this.assetOver) {
+                        if (asset !== this.assetOver) {
+                            this.assetOver.animateFocusEnd();
+                            delete this.assetOver;
+                        }
+                    }
+    				if (asset && asset.onClick && asset !== this.assetOver) {
+                        console.log('over ' + asset);
+                        this.assetOver = asset;
+                        asset.animateFocusStart();
+                    }
+                }
 			},
 
 			onMouseDown: function (event) {
@@ -1715,7 +1754,7 @@
                     window.addEventListener('orientationchange',
                         function() {
                             mainScene.screenOrientation = window.orientation || 0;
-                        },
+                        }
                     );
 
             		window.addEventListener('deviceorientation',
@@ -1723,7 +1762,7 @@
                             if (event.alpha != null) {
                                 mainScene.deviceOrientation = event;
                             }
-                        },
+                        }
                     );
 
                     document.addEventListener('mousemove',

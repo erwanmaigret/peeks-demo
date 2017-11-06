@@ -469,7 +469,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var textureUrl = this.getAttr('textureUrl');
 					var loader = new THREE.OBJLoader( manager );
 					loader.load(this.geometryUrl, function ( object ) {
-//                        console.log( 'Done loading ' +  this.geometryUrl    );
+                        // console.log( 'Done loading ' +  this.geometryUrl    );
 						node.add(object);
 
                         var boundingSphere;
@@ -483,7 +483,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                                     child.position.set(
                                         -boundingSphere.center.x,
                                         -boundingSphere.center.y,
-                                        -boundingSphere.center.z,
+                                        -boundingSphere.center.z
                                     );
                                 }
                             }
