@@ -19,10 +19,12 @@ block content
     script(src="/assets/terraworlds.js")
     script(src="/assets/assets.js")
     script(src="/assets/target.js")
+    script(src="/assets/sportrade.js")
 
     script.
         PEEKS.setLogLevel(1);
         var peeks = new PEEKS.Scene();
-        peeks.loadPage('peeks_welcome');
-        //peeks.loadPage('Target');
+        //peeks.loadPage('peeks_welcome');
+        peeks.loadPage('Target');
+        //peeks.loadPage('SporTrade');
         peeks.start(window);

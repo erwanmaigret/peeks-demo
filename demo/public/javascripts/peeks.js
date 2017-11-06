@@ -1599,22 +1599,28 @@
 
                     var category = this.page.getAttr('category');
                     var groundFilename;
+                    var repeat = 50;
+                    var groundColor = [1, 1, 1];
                     if (category === 'fashion') {
                         groundFilename = 'images/floor_marble_1.jpg';
+                        groundColor = [.2, .4, .5];
                     } else if (category === 'shopping') {
                         groundFilename = 'images/floor_marble_4.jpg';
                     } else if (category === 'entertainment') {
                         groundFilename = 'images/floor_dot_1.jpg';
+                    } else if (category === 'soccer') {
+                        // groundFilename = 'images/floor_grass_1.jpg';
+                        // repeat = 20;
                     }
                     if (groundFilename) {
-                        groundFilename = 'images/floor_marble_1.jpg';
+                        //groundFilename = 'images/floor_marble_1.jpg';
                         this.groundImage = this.ground.addImage({
                             image: groundFilename,
-                            imageRepeat: [50, 50],
+                            imageRepeat: [repeat, repeat],
                             position: [0, -2, 0],
                             rotation: [-90, 0, 0],
                             size: 100,
-                            color: [.2, .4, .5],
+                            color: groundColor,
                         });
                     }
 
@@ -1631,6 +1637,8 @@
                         backgroundFilename = 'images/bg_360_interior1.jpg';
                     } else if (category === 'outdoor') {
                         backgroundFilename = 'images/bg_360_bridge.jpg';
+                    } else if (category === 'soccer') {
+                        backgroundFilename = 'images/bg_360_soccer.jpg';
                     } else if (category === 'white') {
                     } else {
                         backgroundFilename = 'images/bg_360_canyon.jpg';
