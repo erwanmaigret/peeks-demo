@@ -7,8 +7,10 @@ router.get('/', function(req, res, next) {
     data.pages.push({ name: 'Target' });
 
     data.pages.push({ name: 'Hollister', url: 'https://www.hollisterco.com/' });
-    data.pages.push({ name: 'Zappos', url: 'https://www.zappos.com' });
-    data.pages.push({ name: 'Galeries Lafayette', url: 'https://www.galerieslafayette.com/' });
+    // To be refined:
+    //data.pages.push({ name: 'Zappos', url: 'https://www.zappos.com' });
+    //data.pages.push({ name: 'Galeries Lafayette', url: 'https://www.galerieslafayette.com/' });
+
     //data.pages.push({ name: 'Lowes', url: 'https://www.lowes.com/' });
     //data.pages.push({ name: 'Groupon', url: 'https://www.groupon.fr' });
 

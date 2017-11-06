@@ -120,8 +120,6 @@ PEEKS.registerPage('Target', function() {
                 { name: "Slumber party", image: '2017_NovWk1_HP_storyBlock_Friday_v1_08104299-171017_1508280336220', },
                 { name: "30% off rugs", image: '2017_NovWk1_HP_6pks_v2_03104303-171018_1508344324158', },
                 { name: "Hearth & Hand™ with Magnolia", image: '2017_NovWk1_HP_storyBlock_Friday_v1_13104299-171017_1508280389874', },
-                { name: "Call of Duty WWII", image: '2017_NovWk1_HP_storyBlock_Friday_v1_05104302-171018_1508346246139', },
-                { name: "Call of Duty WWII", image: '2017_NovWk1_HP_storyBlock_Friday_v1_05104302-171018_1508346246139', },
             ],
         },
     ];
