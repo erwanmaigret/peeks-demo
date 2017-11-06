@@ -1862,6 +1862,11 @@
 
                         // Update global UI components
                         if (mainScene.isVrMode()) {
+                            if (mainScene.vrReticle !== undefined) {
+                                mainScene.vrReticle.destroy();
+                                delete mainScene.vrReticle;
+                            }
+
                             if (mainScene.vrReticle === undefined) {
                                 mainScene.vrReticle = mainScene.addCanvas({
                                     // valign: 'bottom',
@@ -1877,9 +1882,6 @@
                                     viewBgColor: [.3, .3, .3],
                                     size: .02
                                 });
-
-                                // Also reset the rotation of the camera
-                                //  when getting into VR mode
                             }
 
                             // Update focus all the time when in VR mode
