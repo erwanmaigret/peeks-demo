@@ -1264,7 +1264,9 @@
             },
 
 			getMouse: function(event) {
-				if (event.touches) {
+                if (event === undefined) {
+                    return [0, 0];
+                } else if (event.touches) {
 					if (event.touches.length > 0) {
 						return this.convertMouse(event.touches[0].clientX, event.touches[0].clientY);
 					}
@@ -1318,6 +1320,20 @@
                 }
             },
 
+            onFocusChange: function (event) {
+                var asset = this.onPickNode(this.getMouse(event));
+                if (this.assetOver) {
+                    if (asset !== this.assetOver) {
+                        this.assetOver.animateFocusEnd();
+                        delete this.assetOver;
+                    }
+                }
+                if (asset && asset.onClick && asset !== this.assetOver) {
+                    this.assetOver = asset;
+                    asset.animateFocusStart();
+                }
+            },
+
 			onMouseMove: function (event) {
 				event.preventDefault();
 				// logDebug('onMouseMove');
@@ -1344,19 +1360,8 @@
     						}
     					}
                     }
-				} else {
-                    var asset = this.onPickNode(this.getMouse(event));
-                    if (this.assetOver) {
-                        if (asset !== this.assetOver) {
-                            this.assetOver.animateFocusEnd();
-                            delete this.assetOver;
-                        }
-                    }
-    				if (asset && asset.onClick && asset !== this.assetOver) {
-                        console.log('over ' + asset);
-                        this.assetOver = asset;
-                        asset.animateFocusStart();
-                    }
+				} else if (!this.isVrMode()) {
+                    this.onFocusChange(event);
                 }
 			},
 
@@ -1459,12 +1464,12 @@
                     }
 					case 38: { // Arrow Up
 						if (event.altKey) {
-							animAttribute = 'rotation';
-							animValue = [manipFactor * 20, 0, 0];
-						} else {
-							animAttribute = 'position';
+                            animAttribute = 'position';
 							animValue = this.onGetCameraTranslation(
                                 [0, 0, -manipFactor]);
+						} else {
+                            animAttribute = 'rotation';
+							animValue = [manipFactor * 20, 0, 0];
 						}
         		        break;
         		    }
@@ -1481,12 +1486,12 @@
         		    }
 					case 40: { // Arrow Down
 						if (event.altKey) {
-							animAttribute = 'rotation';
-							animValue = [-manipFactor * 20, 0, 0];
-						} else {
-							animAttribute = 'position';
+                            animAttribute = 'position';
 							animValue = this.onGetCameraTranslation(
                                 [0, 0, manipFactor]);
+						} else {
+                            animAttribute = 'rotation';
+							animValue = [-manipFactor * 20, 0, 0];
 						}
         		        break;
         		    }
@@ -1872,7 +1877,13 @@
                                     viewBgColor: [.3, .3, .3],
                                     size: .02
                                 });
+
+                                // Also reset the rotation of the camera
+                                //  when getting into VR mode
                             }
+
+                            // Update focus all the time when in VR mode
+                            mainScene.onFocusChange();
                         } else if (mainScene.vrReticle) {
                             mainScene.vrReticle.destroy();
                             delete mainScene.vrReticle;

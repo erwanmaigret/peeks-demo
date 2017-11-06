@@ -37,14 +37,13 @@ PEEKS.registerPage('peeks_toolbar', function() {
     });
 
     canvas.addRoundTextButton({
-        position: [.45, height],
+        position: [.35, height],
 		size: .08,
         label: 'AR',
         fontSize: 40,
         onClick: function() { peeks.toggleArMode(); },
     });
 
-    /*
     canvas.addRoundTextButton({
         position: [.45, height],
 		size: .08,
@@ -52,11 +51,10 @@ PEEKS.registerPage('peeks_toolbar', function() {
         fontSize: 40,
         onClick: function() { peeks.toggleVrMode(); },
     });
-    */
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_gyroscope.png',
-		position: [.35, height],
+		position: [.25, height],
 		size: .08,
 		onClick: function() { peeks.toggleGyroscope(); },
 	});

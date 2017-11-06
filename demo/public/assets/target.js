@@ -239,7 +239,7 @@ PEEKS.registerPage('Target', function() {
 
     var canvas = page.addCanvas({
         valign: 'bottom',
-        vrFixed: true,
+        // vrFixed: true,
     });
 
     canvas.addView({
@@ -263,14 +263,22 @@ PEEKS.registerPage('Target', function() {
 
     canvas.addButton({
         image: 'images/target_icon_account.png',
-        position: [.35, -.45],
+        position: [.25, -.45],
         size: .08,
     });
 
     canvas.addButton({
         image: 'images/target_icon_cart.png',
+        position: [.35, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: 'ui/icon_vr.png',
         position: [.45, -.45],
         size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
     });
 
     canvas.addText({

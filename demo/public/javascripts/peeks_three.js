@@ -300,11 +300,10 @@ PEEKS.Scene.prototype.onGetCameraTranslation = function(translation) {
 }
 
 PEEKS.Scene.prototype.isVrMode = function() {
-    var state = this.vrMode
-        && this.isPhone
-        && (this.screenOrientation === -90 || this.screenOrientation === 90);
-
-    return state;
+    return this.vrMode &&
+        (this.isPhone
+            ? (this.screenOrientation === -90 || this.screenOrientation === 90)
+            : true);
 }
 
 PEEKS.Scene.prototype.onRender = function() {
