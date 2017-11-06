@@ -4,6 +4,8 @@ PEEKS.registerPage('Target', function() {
         fontColorBold: [197/255, 1/255, 0],
         bgColor: [1, 1, 1],
         category: 'white',
+        groundImage: '',
+        backgroundImage: '',
         // title: 'Target'
     });
 

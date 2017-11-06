@@ -580,7 +580,7 @@
                 var canvas = this.addCanvas();
 
                 var pane = canvas.addView({
-                    position: [0, .1],
+                    position: [0, 0],
                     size: [1, .6, 1],
                     viewBgColor: [.3, .3, .3],
                     alpha: 0,
@@ -1642,22 +1642,21 @@
                     }
 
                     var category = this.page.getAttr('category');
-                    var groundFilename;
+                    var groundFilename = this.page.getAttr('groundImage');
                     var repeat = 50;
                     var groundColor = [1, 1, 1];
-                    if (category === 'fashion') {
-                        groundFilename = 'images/floor_marble_1.jpg';
-                        groundColor = [.2, .4, .5];
-                    } else if (category === 'shopping') {
-                        groundFilename = 'images/floor_marble_4.jpg';
-                    } else if (category === 'entertainment') {
-                        groundFilename = 'images/floor_dot_1.jpg';
-                    } else if (category === 'soccer') {
-                        // groundFilename = 'images/floor_grass_1.jpg';
-                        // repeat = 20;
+                    if (groundFilename === undefined) {
+                        if (category === 'fashion') {
+                            groundFilename = 'images/floor_marble_1.jpg';
+                            groundColor = [.2, .4, .5];
+                        } else if (category === 'shopping') {
+                            groundFilename = 'images/floor_marble_4.jpg';
+                        } else if (category === 'entertainment') {
+                            groundFilename = 'images/floor_dot_1.jpg';
+                        } else if (category === 'soccer') {
+                        }
                     }
                     if (groundFilename) {
-                        //groundFilename = 'images/floor_marble_1.jpg';
                         this.groundImage = this.ground.addImage({
                             image: groundFilename,
                             imageRepeat: [repeat, repeat],

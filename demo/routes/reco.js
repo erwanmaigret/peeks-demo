@@ -6,8 +6,8 @@ router.get('/', function(req, res, next) {
 
     data.pages.push({ name: 'Target' });
 
-    data.pages.push({ name: 'Hollister', url: 'https://www.hollisterco.com/' });
     // To be refined:
+    //data.pages.push({ name: 'Hollister', url: 'https://www.hollisterco.com/' });
     //data.pages.push({ name: 'Zappos', url: 'https://www.zappos.com' });
     //data.pages.push({ name: 'Galeries Lafayette', url: 'https://www.galerieslafayette.com/' });
 
