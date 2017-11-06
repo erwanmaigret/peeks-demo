@@ -149,6 +149,8 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             var pivot = this.threeObjectPivot;
             pivot.position.copy(scene.three.camera.position);
             if (scene.isVrMode() && this.vrFixed !== true) {
+                pivot.rotation.x = 0;
+                pivot.rotation.y = 0;
                 pivot.rotation.z = this.screenOrientation || 0;
             } else {
                 pivot.quaternion.copy(scene.three.camera.quaternion);
