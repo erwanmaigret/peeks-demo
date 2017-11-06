@@ -162,6 +162,7 @@ PEEKS.registerPage('Target', function() {
         //
 
         var itemCountMax = 18;
+        var itemStep = .055;
 
         // Global navigation items
         var items = siteMap;
@@ -170,7 +171,7 @@ PEEKS.registerPage('Target', function() {
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
                 var button = screen.addText({
-                    position: [(itemI - itemCount / 2) * 2 / itemCountMax, menuY, 0],
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, menuY, 0],
                     fontSize: 80,
                     text: item.name,
                     path: item.name,
@@ -201,7 +202,7 @@ PEEKS.registerPage('Target', function() {
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
                 var asset = screen.addAsset({
-                    position: [(itemI - itemCount / 2) * 2 / itemCountMax, subMenuY, 0],
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, subMenuY, 0],
                     size: .4,
                 });
                 var button = asset.addButton({
@@ -225,7 +226,7 @@ PEEKS.registerPage('Target', function() {
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
                 var asset = screen.addAsset({
-                    position: [(itemI - itemCount / 2) * 2 / itemCountMax, highlightsY, 0],
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
                 });
                 var button = asset.addButton({
                     image: item.image ? imagePath + item.image : undefined,
