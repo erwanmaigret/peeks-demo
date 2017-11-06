@@ -239,7 +239,6 @@ PEEKS.registerPage('Target', function() {
 
     var canvas = page.addCanvas({
         valign: 'bottom',
-        // vrFixed: true,
     });
 
     canvas.addView({
