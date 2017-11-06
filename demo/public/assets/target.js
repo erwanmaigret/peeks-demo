@@ -29,7 +29,7 @@ PEEKS.registerPage('Target', function() {
                             items: [
                                 {   name: "maxi", image: '52833477',
                                     highlightItems: [
-                                        { name: " ", image: '52833477' },
+                                        { name: " ", image: '52833477', imageBack: '52654414' },
                                         { name: " ", image: '52654414' },
                                         { name: " ", image: '52722444' },
                                         { name: " ", image: '52132992' },
@@ -142,6 +142,28 @@ PEEKS.registerPage('Target', function() {
         refresh();
     };
 
+    var onClickProduct = function() {
+        if (this.product === undefined) {
+            this.product = this.parent.addView({
+                position: [0, .7, -.01],
+                size: [.8, .4, 1],
+                viewBgColor: [.9, .9, .9],
+            });
+
+            this.product.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [0, -.3, .1],
+                size: [.4, .15, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 40,
+                fontColor: [1, 1, 1],
+                text: 'add to cart',
+            });
+        }
+        console.log('there');
+    };
+
     var menuY = .5;
     var subMenuY = .3;
     var highlightsY = 0;
@@ -230,7 +252,9 @@ PEEKS.registerPage('Target', function() {
                 });
                 var button = asset.addButton({
                     image: item.image ? imagePath + item.image : undefined,
+                    imageBack: item.imageBack ? imagePath + item.imageBack : undefined,
                     path: item.name,
+                    onClick: onClickProduct,
                 });
                 asset.addText({
                     position: [0, -.6, .1],

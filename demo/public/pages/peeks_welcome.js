@@ -1,4 +1,4 @@
-PEEKS.registerPage('peeks_welcome', function() {
+PEEKS.registerPage('Peeks', function() {
 	var page = new PEEKS.Asset();
 
     page.addRecommendationsView();
