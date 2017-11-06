@@ -4,7 +4,9 @@ PEEKS.registerPage('Target', function() {
         fontColorBold: [197/255, 1/255, 0],
         bgColor: [1, 1, 1],
         category: 'white',
-        groundImage: '',
+        groundImage: 'ui/icon_dot.png',
+        groundImageRepeat: 50,
+        groundImageColor: [141/255, 201/255, 195/255],
         backgroundImage: '',
         // title: 'Target'
     });
@@ -159,6 +161,8 @@ PEEKS.registerPage('Target', function() {
         // Update elements
         //
 
+        var itemCountMax = 18;
+
         // Global navigation items
         var items = siteMap;
         if (items) {
@@ -166,7 +170,7 @@ PEEKS.registerPage('Target', function() {
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
                 var button = screen.addText({
-                    position: [itemI * 2 / itemCount, menuY, 0],
+                    position: [(itemI - itemCount / 2) * 2 / itemCountMax, menuY, 0],
                     fontSize: 80,
                     text: item.name,
                     path: item.name,
@@ -197,7 +201,7 @@ PEEKS.registerPage('Target', function() {
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
                 var asset = screen.addAsset({
-                    position: [itemI * 2 / itemCount, subMenuY, 0],
+                    position: [(itemI - itemCount / 2) * 2 / itemCountMax, subMenuY, 0],
                     size: .4,
                 });
                 var button = asset.addButton({
@@ -221,7 +225,7 @@ PEEKS.registerPage('Target', function() {
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
                 var asset = screen.addAsset({
-                    position: [itemI * 2 / itemCount, highlightsY, 0],
+                    position: [(itemI - itemCount / 2) * 2 / itemCountMax, highlightsY, 0],
                 });
                 var button = asset.addButton({
                     image: item.image ? imagePath + item.image : undefined,

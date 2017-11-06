@@ -1642,7 +1642,7 @@
                     }
 
                     var category = this.page.getAttr('category');
-                    var groundFilename = this.page.getAttr('groundImage');
+                    var groundFilename = this.page.groundImage;
                     var repeat = 50;
                     var groundColor = [1, 1, 1];
                     if (groundFilename === undefined) {
@@ -1654,6 +1654,13 @@
                         } else if (category === 'entertainment') {
                             groundFilename = 'images/floor_dot_1.jpg';
                         } else if (category === 'soccer') {
+                        }
+                    } else {
+                        if (this.page.groundImageRepeat) {
+                            repeat = this.page.groundImageRepeat;
+                        }
+                        if (this.page.groundImageColor) {
+                            groundColor = this.page.groundImageColor;
                         }
                     }
                     if (groundFilename) {
