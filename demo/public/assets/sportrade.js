@@ -1,8 +1,5 @@
 PEEKS.registerPage('SporTrade', function() {
 	var page = new PEEKS.Asset({
-        //fontColor: [0, 0, 0],
-        //fontColorBold: [197/255, 1/255, 0],
-        //bgColor: [1, 1, 1],
         category: 'soccer',
     });
 
@@ -21,9 +18,6 @@ PEEKS.registerPage('SporTrade', function() {
         }
     };
 
-/*
-https://medias.lequipe.fr/logo-football/374/300?20171103151418
-*/
     var bets = [
         { name: 'PSG', logo: '26', total: 2 },
         { name: 'OM', logo: '6' },
@@ -55,13 +49,6 @@ https://medias.lequipe.fr/logo-football/374/300?20171103151418
             position: [itemI * 2 / itemCount, -.1, 0],
             size: 1,
         });
-        /*
-        var button = asset.addButton({
-            image: item.image ? imagePath + item.image : undefined,
-            path: item.name,
-            onClick: onClick,
-        })
-        */
 
         asset.addView({
             position: [0, 0, -.3],
