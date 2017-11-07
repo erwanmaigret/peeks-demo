@@ -1678,20 +1678,22 @@
                         this.backgroundImage.destroy();
                         delete this.backgroundImage;
                     }
-                    var backgroundFilename;
-                    if (category === 'fashion') {
-                        backgroundFilename = 'images/bg_360_place.jpg';
-                    } else if (category === 'shopping') {
-                        backgroundFilename = 'images/bg_360_interior2.jpg';
-                    } else if (category === 'entertainment') {
-                        backgroundFilename = 'images/bg_360_interior1.jpg';
-                    } else if (category === 'outdoor') {
-                        backgroundFilename = 'images/bg_360_bridge.jpg';
-                    } else if (category === 'soccer') {
-                        backgroundFilename = 'images/bg_360_soccer.jpg';
-                    } else if (category === 'white') {
-                    } else {
-                        backgroundFilename = 'images/bg_360_canyon.jpg';
+                    var backgroundFilename = page.backgroundImage;
+                    if (backgroundFilename === undefined) {
+                        if (category === 'fashion') {
+                            backgroundFilename = 'images/bg_360_place.jpg';
+                        } else if (category === 'shopping') {
+                            backgroundFilename = 'images/bg_360_interior2.jpg';
+                        } else if (category === 'entertainment') {
+                            backgroundFilename = 'images/bg_360_interior1.jpg';
+                        } else if (category === 'outdoor') {
+                            backgroundFilename = 'images/bg_360_bridge.jpg';
+                        } else if (category === 'soccer') {
+                            backgroundFilename = 'images/bg_360_soccer.jpg';
+                        } else if (category === 'white') {
+                        } else {
+                            backgroundFilename = 'images/bg_360_canyon.jpg';
+                        }
                     }
                     if (backgroundFilename) {
                         this.backgroundImage = this.background.addSphere({

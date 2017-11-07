@@ -4,10 +4,13 @@ PEEKS.registerPage('Target', function() {
         fontColorBold: [197/255, 1/255, 0],
         bgColor: [1, 1, 1],
         category: 'white',
-        groundImage: 'ui/icon_dot.png',
-        groundImageRepeat: 50,
-        groundImageColor: [141/255, 201/255, 195/255],
-        backgroundImage: '',
+        //groundImage: 'ui/icon_dot.png',
+        //groundImageRepeat: 50,
+        //groundImageColor: [225/255, 255/255, 252/255],
+        //groundImageColor: [141/255, 201/255, 195/255],
+        groundImage: 'ui/gradient_radial.png',
+        groundImageRepeat: 1,
+        backgroundImage: 'ui/gradient.png',
         // title: 'Target'
     });
 
@@ -147,7 +150,7 @@ PEEKS.registerPage('Target', function() {
             this.product = this.parent.addView({
                 position: [0, .7, -.01],
                 size: [.8, .4, 1],
-                viewBgColor: [.9, .9, .9],
+                viewBgColor: [.96, .96, .96],
             });
 
             this.product.addButton({
@@ -161,7 +164,6 @@ PEEKS.registerPage('Target', function() {
                 text: 'add to cart',
             });
         }
-        console.log('there');
     };
 
     var menuY = .5;
