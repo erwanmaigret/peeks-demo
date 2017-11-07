@@ -2,6 +2,7 @@ PEEKS.registerPage('Target', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
         fontColorBold: [197/255, 1/255, 0],
+        fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
         category: 'white',
         //groundImage: 'ui/icon_dot.png',
@@ -131,9 +132,9 @@ PEEKS.registerPage('Target', function() {
         },
     ];
 
-    var currentPath = '/Featured';
+    var currentPath = '';
     var currentItems = [];
-    var currentHighlight = siteMap[siteMap.length - 1].highlightItems;
+    var currentHighlight = [];
 
     var onClickRoot = function() {
         currentPath = '/' + this.path;
@@ -171,6 +172,12 @@ PEEKS.registerPage('Target', function() {
     var highlightsY = 0;
 
     var menuPopup;
+
+    var onHome = function() {
+        currentPath = '';
+        currentHighlight = siteMap[siteMap.length - 1].highlightItems;
+        refresh();
+    };
 
     var onToggleMenu = function() {
         if (menuPopup === undefined) {
@@ -321,7 +328,7 @@ PEEKS.registerPage('Target', function() {
         }
     };
 
-    refresh();
+    onHome();
 
     var canvas = page.addCanvas({
         valign: 'bottom',
@@ -338,6 +345,7 @@ PEEKS.registerPage('Target', function() {
         image: 'images/target_icon_logo.png',
         position: [-.45, -.45],
         size: .08,
+        onClick: onHome,
     });
 
     canvas.addButton({
