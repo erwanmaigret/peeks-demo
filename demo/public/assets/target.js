@@ -2,6 +2,7 @@ PEEKS.registerPage('Target', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
         fontColorBold: [197/255, 1/255, 0],
+        fontOutlineStyle: '',
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
         category: 'white',

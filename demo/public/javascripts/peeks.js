@@ -969,9 +969,12 @@
                     texture.context.fillText(text, xOffset, yOffset);
 
                     // Always have an outline so text are always readable
-                    texture.context.strokeStyle = 'grey';
-                    texture.context.lineWidth = 2;
-                    texture.context.strokeText(text, xOffset, yOffset);
+                    var outlineStyle = this.getAttr('fontOutlineStyle');
+                    if (outlineStyle && outlineStyle !== '') {
+                        texture.context.strokeStyle = outlineStyle;
+                        texture.context.lineWidth = 2;
+                        texture.context.strokeText(text, xOffset, yOffset);
+                    }
 
                     texture.textSize = [width, height];
                     texture.size = [canvasWidth, canvasHeight];
@@ -1227,6 +1230,7 @@
             fontBgColor: [1, 1, 1, 0],
             fontColor: [1, 1, 1],
             fontName: 'Futura',
+            fontOutlineStyle: 'grey',
             valign: 'center',
             align: 'center',
             colorDark:   [   0 / 255, 100 / 255,   0 / 255],
