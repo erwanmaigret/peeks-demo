@@ -1350,13 +1350,13 @@
     					if (mouseMove > .01) {
     						this.mouseDownCanClick = false;
     						if (this.mouseDownCameraRotation) {
-    							this.camera.setRotation(
+    							this.camera.initialRotation = [
     								this.mouseDownCameraRotation[0] -
                                         (this.mouseMove[1] - this.mouseDown[1]) * 45,
     								this.mouseDownCameraRotation[1] +
                                         (this.mouseMove[0] - this.mouseDown[0]) * 45,
     								this.mouseDownCameraRotation[2]
-    							);
+    							];
     						}
     					}
                     }
@@ -1370,7 +1370,7 @@
                 event.preventDefault();
 
 				this.mouseDown = this.getMouse(event);
-				this.mouseDownCameraRotation = this.camera.rotation;
+				this.mouseDownCameraRotation = this.camera.initialRotation.slice();
                 this.mouseDownCanClick = true;
                 this.mouseDownCanMove = true;
                 this.mousePinchStartDistance = 0;
