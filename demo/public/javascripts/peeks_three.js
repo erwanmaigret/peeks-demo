@@ -670,10 +670,23 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     var ratio = image.width / image.height;
                     var sizeRatio = threeObject.scale.x / threeObject.scale.y;
                     if (ratio !== sizeRatio) {
+                        var valign = this.valign;
                         if (ratio < sizeRatio) {
                             threeObject.scale.x = ratio * threeObject.scale.y;
                         } else {
                             threeObject.scale.y = threeObject.scale.x / ratio;
+                            if (valign) {
+                                switch (valign) {
+                                    case 'top': {
+                                        threeObject.position.y += (1 - threeObject.scale.y) / 2;
+                                        break;
+                                    }
+                                    case 'bottom': {
+                                        threeObject.position.y -= (1 - threeObject.scale.y) / 2;
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
