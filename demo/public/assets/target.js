@@ -34,20 +34,20 @@ PEEKS.registerPage('Target', function() {
                             items: [
                                 {   name: "maxi", image: '52833477',
                                     highlightItems: [
-                                        { name: " ", image: '52833477', imageBack: '52654414' },
-                                        { name: " ", image: '52654414' },
-                                        { name: " ", image: '52722444' },
-                                        { name: " ", image: '52132992' },
-                                        { name: " ", image: '52760285' },
-                                        { name: " ", image: '52589309' },
-                                        { name: " ", image: '52090041' },
-                                        { name: " ", image: '52840296' },
-                                        { name: " ", image: '52237779' },
-                                        { name: " ", image: '52363084' },
-                                        { name: " ", image: '52722288' },
-                                        { name: " ", image: '52380730' },
-                                        { name: " ", image: '52090019' },
-                                        { name: " ", image: '52535884' },
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
                                     ]
                                 },
                                 { name: "fit & flare", image: '52841027' },
@@ -148,24 +148,108 @@ PEEKS.registerPage('Target', function() {
         refresh();
     };
 
-    var onClickProduct = function() {
-        if (this.product === undefined) {
-            this.product = this.parent.addView({
-                position: [0, .7, -.01],
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            this.productPane = this.parent.addView({
+                position: [0, .75, -.1],
                 size: [.8, .4, 1],
                 viewBgColor: [.96, .96, .96],
             });
 
-            this.product.addButton({
+            this.productPane.addText({
                 viewBgColor: page.fontColorBold,
-                position: [0, -.3, .1],
-                size: [.4, .15, 1],
+                position: [-.35, .4, .01],
+                size: [.3, .2, 1],
+                fontSize: 52,
+                fontColor: [.3, .3, .3],
+                text: '$49.99',
+            });
+
+            this.productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .3, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'sizes',
+            });
+
+            this.productPane.addButton({
+                position: [-.36, .1, .01],
+                size: [.15, .2, 1],
+                viewBgColor: [1, 1, 1],
             }).addText({
                 position: [0, 0, .01],
-                fontSize: 40,
+                fontSize: 52,
+                fontColor: [.3, .3, .3],
+                text: '6',
+            });
+
+            this.productPane.addButton({
+                position: [-.18, .1, .01],
+                size: [.15, .2, 1],
+                viewBgColor: [1, 1, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [.3, .3, .3],
+                text: '8',
+            });
+
+            this.productPane.addButton({
+                position: [0, .1, .01],
+                size: [.15, .2, 1],
+                viewBgColor: [1, 1, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [.3, .3, .3],
+                text: '10',
+            });
+
+            this.productPane.addButton({
+                position: [.18, .1, .01],
+                size: [.15, .2, 1],
+                viewBgColor: [1, 1, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [.3, .3, .3],
+                text: '12',
+            });
+
+            this.productPane.addButton({
+                position: [.36, .1, .01],
+                size: [.15, .2, 1],
+                viewBgColor: [1, 1, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [.3, .3, .3],
+                text: '14',
+            });
+
+            this.productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [0, -.3, .01],
+                size: [.4, .2, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
                 fontColor: [1, 1, 1],
                 text: 'add to cart',
             });
+
+            this.productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
         }
     };
 
@@ -174,8 +258,12 @@ PEEKS.registerPage('Target', function() {
 
     var menuPopup;
 
-    var onHome = function() {
-        currentPath = '';
+    var onHome = function(path) {
+        if (path) {
+            currentPath = path;
+        } else {
+            currentPath = "";
+        }
         currentHighlight = siteMap[siteMap.length - 1].highlightItems;
         refresh();
     };
@@ -312,24 +400,41 @@ PEEKS.registerPage('Target', function() {
                 var asset = screen.addAsset({
                     position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
                 });
+                var image = item.product ? item.product : item.image;
+                var imageBack = item.product ? item.product + '_Alt01' : undefined;
                 var button = asset.addButton({
-                    image: item.image ? imagePath + item.image : undefined,
-                    imageBack: item.imageBack ? imagePath + item.imageBack : undefined,
+                    image: image ? imagePath + image : undefined,
+                    imageBack: imageBack ? imagePath + imageBack : undefined,
                     path: item.name,
                     valign: 'bottom',
-                    onClick: onClickProduct,
+                    onClick: item.product ? 'animateFlip' : undefined,
                 });
-                asset.addText({
-                    position: [0, -.6, .1],
-                    fontSize: 80,
-                    text: item.name,
-                });
+                var yOffset = -.6
+                if (item.product) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: 'details',
+                        onClick: onToggleProduct,
+                    });
+                    yOffset -= .2;
+                }
+                if (item.name) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 80,
+                        text: item.name,
+                    });
+                    yOffset -= .2;
+                }
                 currentItems.push(asset);
             }
         }
     };
 
-    onHome();
+    // For testing:
+    onHome("/clothing/women's clothing/dresses/maxi");
+    //onHome();
 
     var canvas = page.addCanvas({
         valign: 'bottom',
