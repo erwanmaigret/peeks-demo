@@ -331,12 +331,6 @@ PEEKS.registerPage('Target', function() {
                     if (this.readyState == 4 && this.status == 200) {
                         var data = JSON.parse(this.responseText);
 
-                        console.log(data.product);
-                        console.log(data.product.price);
-                        console.log(data.product.price.listPrice);
-                        console.log(data.product.price.listPrice.formattedPrice);
-                        console.log(data.product.item.product_brand.brand);
-
                         productPane.addText({
                             viewBgColor: page.fontColorBold,
                             position: [0, .4, .01],
