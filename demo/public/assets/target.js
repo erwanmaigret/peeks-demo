@@ -137,6 +137,7 @@ PEEKS.registerPage('Target', function() {
 
     var onClickRoot = function() {
         currentPath = '/' + this.path;
+        onToggleMenu();
         refresh();
     };
 
@@ -166,9 +167,70 @@ PEEKS.registerPage('Target', function() {
         }
     };
 
-    var menuY = .5;
     var subMenuY = .3;
     var highlightsY = 0;
+
+    var menuPopup;
+
+    var onToggleMenu = function() {
+        if (menuPopup === undefined) {
+            menuPopup = page.addAsset();
+
+            sphere = menuPopup.addSphere({
+                //image: backgroundFilename,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0],
+                sides: 'back',
+                size: 4,
+                alpha: .96,
+                onClick: onToggleMenu,
+            });
+
+            menuScreen = menuPopup.addScreen({
+                radius: 3,
+            });
+
+            var itemCountMax = 18;
+            var itemStep = .055;
+
+            var items = siteMap;
+            if (items) {
+                var itemCount = items.length;
+                for (var itemI = 0; itemI < itemCount; itemI++) {
+                    var item = items[itemI];
+                    var xIndex = itemI;
+                    var yOffset = .2;
+                    while (xIndex >= 3) {
+                        yOffset -= .1;
+                        xIndex -= 3;
+                    }
+                    var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                    var asset = menuScreen.addButton({
+                        position: [.5, yOffset, 0],
+                        size: [.5, .2, 1],
+                        path: item.name,
+                        viewBgColor: [.98, .98, .98],
+                        onClick: onClickRoot,
+                    }).animate({
+                        duration: .6,
+                        delay: 0,
+                        begin: [0, 0, 0],
+                        end: [xOffset - .5, 0, 0],
+                        attribute: 'position'
+                    });
+                    var button = asset.addText({
+                        position: [0, 0, .01],
+                        fontSize: 48,
+                        text: item.name,
+                    });
+                    currentItems.push(button);
+                }
+            }
+        } else {
+            menuPopup.destroy();
+            menuPopup = undefined;
+        }
+    };
 
     var refresh = function() {
         //
@@ -187,23 +249,6 @@ PEEKS.registerPage('Target', function() {
 
         var itemCountMax = 18;
         var itemStep = .055;
-
-        // Global navigation items
-        var items = siteMap;
-        if (items) {
-            var itemCount = items.length;
-            for (var itemI = 0; itemI < itemCount; itemI++) {
-                var item = items[itemI];
-                var button = screen.addText({
-                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, menuY, 0],
-                    fontSize: 80,
-                    text: item.name,
-                    path: item.name,
-                    onClick: onClickRoot,
-                });
-                currentItems.push(button);
-            }
-        }
 
         var paths = currentPath.split('/');
         var items = siteMap;
@@ -225,8 +270,15 @@ PEEKS.registerPage('Target', function() {
             var itemCount = items.length;
             for (var itemI = 0; itemI < itemCount; itemI++) {
                 var item = items[itemI];
+                var xIndex = itemI;
+                var yOffset = subMenuY;
+                while (xIndex >= 9) {
+                    yOffset += .2;
+                    xIndex -= 9;
+                }
+                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
                 var asset = screen.addAsset({
-                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, subMenuY, 0],
+                    position: [xOffset, yOffset, 0],
                     size: .4,
                 });
                 var button = asset.addButton({
@@ -256,6 +308,7 @@ PEEKS.registerPage('Target', function() {
                     image: item.image ? imagePath + item.image : undefined,
                     imageBack: item.imageBack ? imagePath + item.imageBack : undefined,
                     path: item.name,
+                    valign: 'bottom',
                     onClick: onClickProduct,
                 });
                 asset.addText({
@@ -291,6 +344,7 @@ PEEKS.registerPage('Target', function() {
         image: 'images/target_icon_menu.png',
         position: [-.35, -.45],
         size: .08,
+        onClick: onToggleMenu,
     });
 
     canvas.addButton({
