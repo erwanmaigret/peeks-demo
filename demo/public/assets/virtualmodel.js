@@ -15,17 +15,20 @@ PEEKS.registerPage('VirtualModel', function() {
 		geometry: 'assets/woman_body.obj',
         texture: 'assets/woman_body.png',
 	});
-    model.blouse = model.addGeometry({
-		geometry: 'assets/woman_j_blouse.obj',
+    model.body = model.addGeometry({
+		geometry: 'assets/woman_body.obj',
+        texture: 'assets/woman_body.png',
 	});
-    model.jacket = model.addGeometry({
-		geometry: 'assets/woman_jacket.obj',
-        texture: 'assets/material_red_satin.jpg',
+    model.underwear_pants = model.addGeometry({
+		geometry: 'assets/woman_underwear_pants.obj',
 	});
-    model.skirt = model.addGeometry({
-		geometry: 'assets/woman_skirt.obj',
-        texture: 'assets/material_red_satin.jpg',
+    model.underwear_lif = model.addGeometry({
+		geometry: 'assets/woman_underwear_lif.obj',
 	});
+    model.underwear_stripes = model.addGeometry({
+		geometry: 'assets/woman_underwear_stripes.obj',
+	});
+
 
 
     var panel = page.addAsset({
@@ -33,15 +36,25 @@ PEEKS.registerPage('VirtualModel', function() {
     });
 
     var onSetClothMaterial = function() {
-        model.skirt.destroy();
+        if (model.skirt) {
+            model.skirt.destroy();
+        }
         model.skirt = model.addGeometry({
     		geometry: 'assets/woman_skirt.obj',
             texture: this.getTexture(),
     	});
-        model.jacket.destroy();
+        if (model.jacket) {
+            model.jacket.destroy();
+        }
         model.jacket = model.addGeometry({
     		geometry: 'assets/woman_jacket.obj',
             texture: this.getTexture(),
+    	});
+        if (model.blouse) {
+            model.blouse.destroy();
+        }
+        model.blouse = model.addGeometry({
+    		geometry: 'assets/woman_j_blouse.obj',
     	});
     };
 
