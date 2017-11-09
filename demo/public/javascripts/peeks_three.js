@@ -506,11 +506,11 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 								if ( child instanceof THREE.Mesh ) {
                                     if (child.material) {
     									child.material.map = object.texture;
-                                        /*
-                                        child.material.emissive.r = .2;
-        								child.material.emissive.g = .2;
-            					        child.material.emissive.b = .2;
-                                        */
+                                        child.material.reflectivity = .2;
+                                        child.material.shininess = 10;
+                                        child.material.emissive.r = .05;
+        								child.material.emissive.g = .05;
+            					        child.material.emissive.b = .05;
                                         child.material.side = THREE.DoubleSide;
                                         child.material.shading = THREE.SmoothShading;
                                     }

@@ -35,14 +35,27 @@ PEEKS.registerPage('VirtualModel', function() {
         position: [2, 1, -5],
     });
 
+    var pants = true;
     var onSetClothMaterial = function() {
+        pants = !pants;
+        if (model.pants) {
+            model.pants.destroy();
+        }
+        if (pants) {
+            model.pants = model.addGeometry({
+        		geometry: 'assets/woman_pants.obj',
+                texture: this.getTexture(),
+        	});
+        }
         if (model.skirt) {
             model.skirt.destroy();
         }
-        model.skirt = model.addGeometry({
-    		geometry: 'assets/woman_skirt.obj',
-            texture: this.getTexture(),
-    	});
+        if (!pants) {
+            model.skirt = model.addGeometry({
+        		geometry: 'assets/woman_skirt.obj',
+                texture: this.getTexture(),
+        	});
+        }
         if (model.jacket) {
             model.jacket.destroy();
         }
