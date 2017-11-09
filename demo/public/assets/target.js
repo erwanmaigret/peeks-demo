@@ -262,28 +262,28 @@ PEEKS.registerPage('Target', function() {
         { name: "Promotions",
             highlightItems: [
                 {
-                    name: "Our Black Friday deals are here",
+                    name: "Our Black Friday deals",
                     description: "Get a sneak peek now.",
                     image: '2017_NovWk2_HP_StoryBlocks_v1_21103877-171101_1509556671597',
                 },
                 {
-                    name: "20% off trees, wreaths & lights*",
-                    description: "Get your Christmas decor now. Yule be happy you did.",
+                    name: "20% off trees, wreaths & lights",
+                    description: "Get your Christmas decor now.",
                     image: '2017_NovWk2_HP_StoryBlocks_v1_03103877-171026_1509030239564',
                 },
                 {
-                    name: "20% off shoes*",
-                    description: "Through Wednesday, save on styles & sizes for the family.",
+                    name: "20% off shoes",
+                    description: "Save on styles & sizes for the family.",
                     image: '2017_NovWk2_HP_StoryBlocks_v1_05103877-171025_1508964273152',
                 },
                 {
                     name: "Xbox One X is here",
-                    description: "The world’s most powerful console yet, offering true 4K gaming.",
+                    description: "The world’s most powerful console yet.",
                     image: '2017_NovWk2_HP_StoryBlocks_v1_08103877-171024_1508869525494',
                 },
                 {
                     name: "Gather & gobble",
-                    description: "Find all you need for your Thanksgiving feast & get tips from our entertaining expert, Camille Styles.",
+                    description: "Find all you need for your Thanksgiving feast.",
                     image: 'C-000437-01-046_THR_CROP_2544_MetalGarland103876-171030_1509398096992',
                 },
                 {
@@ -572,19 +572,36 @@ PEEKS.registerPage('Target', function() {
                 if (item.name) {
                     asset.addText({
                         position: [0, yOffset, .1],
-                        fontSize: 48,
+                        fontSize: 64,
+                        fontColor: page.fontColorBold,
                         text: item.name,
                     });
-                    yOffset -= .2;
+                    yOffset -= .1;
+                }
+                if (item.description) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: item.description,
+                    });
+                    yOffset -= .1;
                 }
                 currentItems.push(asset);
             }
         }
     };
 
+    /*
+    var asset = screen.addButton({
+        position: [0, 1, 0],
+        size: 4,
+        image: 'images/target_logo.png',
+    });
+    */
+
     // For testing:
-    onHome("/clothing/women's clothing/dresses/maxi");
-    //onHome();
+    //onHome("/clothing/women's clothing/dresses/maxi");
+    onHome();
 
     var canvas = page.addCanvas({
         valign: 'bottom',
@@ -594,7 +611,7 @@ PEEKS.registerPage('Target', function() {
         position: [0, -.45],
         size: [1, .12, 1],
         viewBgColor: [1, 1, 1],
-        alpha: 1,
+        alpha: .9,
     });
 
     canvas.addButton({

@@ -55,6 +55,7 @@ router.get('/', function(req, res, next) {
     data.pages.push({ name: '3D Assets' });
     data.pages.push({ name: 'Terra Worlds' });
     data.pages.push({ name: 'SporTrade' });
+    data.pages.push({ name: 'VirtualModel' });
 
     res.send(JSON.stringify(data));
 });

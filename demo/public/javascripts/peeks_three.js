@@ -467,28 +467,31 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     console.log( 'loading ' +  this.geometryUrl    );
                     var peeksObject = this;
 					var node = this.threeObject;
-					var textureUrl = this.getAttr('textureUrl');
+                    var textureUrl = this.getAttr('textureUrl');
+                    var autofit = this.getAttr('autofit');
 					var loader = new THREE.OBJLoader( manager );
 					loader.load(this.geometryUrl, function ( object ) {
                         // console.log( 'Done loading ' +  this.geometryUrl    );
 						node.add(object);
 
-                        var boundingSphere;
-                        object.traverse( function ( child ) {
-                            if ( child instanceof THREE.Mesh ) {
-                                if (child.geometry) {
-                                    child.geometry.computeBoundingSphere();
-                                    if (boundingSphere === undefined) {
-                                        boundingSphere = child.geometry.boundingSphere;
+                        if (autofit) {
+                            var boundingSphere;
+                            object.traverse( function ( child ) {
+                                if ( child instanceof THREE.Mesh ) {
+                                    if (child.geometry) {
+                                        child.geometry.computeBoundingSphere();
+                                        if (boundingSphere === undefined) {
+                                            boundingSphere = child.geometry.boundingSphere;
+                                        }
+                                        child.position.set(
+                                            -boundingSphere.center.x,
+                                            -boundingSphere.center.y,
+                                            -boundingSphere.center.z
+                                        );
                                     }
-                                    child.position.set(
-                                        -boundingSphere.center.x,
-                                        -boundingSphere.center.y,
-                                        -boundingSphere.center.z
-                                    );
                                 }
-                            }
-                        });
+                            });
+                        }
 
 						if (textureUrl != '') {
 							var url = textureUrl;

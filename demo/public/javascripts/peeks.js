@@ -986,7 +986,11 @@
 				}
 			},
 
-			setTexture: function(url) {
+			getTexture: function() {
+				return this.textureUrl;
+			},
+
+            setTexture: function(url) {
 				this.textureUrl = url;
                 return this;
 			},
