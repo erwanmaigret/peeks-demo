@@ -644,7 +644,7 @@
 					if (params.geometry) asset.setGeometry(params.geometry);
 					if (params.texture) asset.setTexture(params.texture);
 					this.initAsset(asset, params);
-					}
+				}
 				return this.add(asset);
 			},
 

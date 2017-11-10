@@ -374,6 +374,83 @@ PEEKS.Scene.prototype.onRender = function() {
     }
 },
 
+PEEKS.Asset.prototype.threeSynchMaterial = function() {
+    var asset = this;
+    var threeObject = asset.threeObject;
+    if (threeObject && threeObject.children.length == 1) {
+        // Geometries are attached to the 1st child node
+        var geometry = threeObject.children[0];
+        geometry.traverse(
+            function (child) {
+                if (child instanceof THREE.Mesh) {
+                    if (child.geometry && child.material) {
+                        var mat = child.material;
+                        var refMat = asset.material || {};
+
+                        mat.map = geometry.texture;
+
+                        mat.reflectivity =
+                            refMat.reflectivity !== undefined
+                            ? refMat.reflectivity
+                            : .2;
+
+                        mat.shininess =
+                            refMat.shininess !== undefined
+                            ? refMat.shininess
+                            : 10;
+
+                        mat.emissive =
+                            refMat.emissive !== undefined
+                            ? new THREE.Color(
+                                refMat.emissive[0],
+                                refMat.emissive[1],
+                                refMat.emissive[2])
+                            : new THREE.Color(.05, .05, .05);
+
+                        mat.specular =
+                            refMat.specular !== undefined
+                            ? new THREE.Color(
+                                refMat.specular[0],
+                                refMat.specular[1],
+                                refMat.specular[2])
+                            : new THREE.Color(.05, .05, .05);
+
+                        // map.specularMap =
+                        // map.bumpMap =
+                        // map.aoMap =
+                        // map.normalMap =
+
+                        if (refMat.normalMap) {
+							var loader = new THREE.TextureLoader();
+							if (/^data:/.test(refMat.normalMap)) {
+								loader.setCrossOrigin(refMat.normalMap);
+							} else {
+								loader.setCrossOrigin('');
+							}
+							mat.normalMap = loader.load(refMat.normalMap);
+                        }
+
+                        if (refMat.bumpMap) {
+							var loader = new THREE.TextureLoader();
+							if (/^data:/.test(refMat.bumpMap)) {
+								loader.setCrossOrigin(refMat.bumpMap);
+							} else {
+								loader.setCrossOrigin('');
+							}
+							mat.bumpMap = loader.load(refMat.bumpMap);
+                        }
+
+                        mat.side = THREE.FrontSide;
+                        mat.shading = THREE.SmoothShading;
+
+                        child.geometry.computeFaceNormals();
+                    }
+                }
+            }
+        );
+    }
+},
+
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {
 		if (this.primitive) {
@@ -467,6 +544,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     console.log( 'loading ' +  this.geometryUrl    );
                     var peeksObject = this;
 					var node = this.threeObject;
+                    this.threeObject.peeksAsset = peeksObject;
                     var textureUrl = this.getAttr('textureUrl');
                     var autofit = this.getAttr('autofit');
 					var loader = new THREE.OBJLoader( manager );
@@ -502,23 +580,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 								loader.setCrossOrigin('');
 							}
 							object.texture = loader.load(url);
-							object.traverse( function ( child ) {
-								if ( child instanceof THREE.Mesh ) {
-                                    if (child.material) {
-    									child.material.map = object.texture;
-                                        child.material.reflectivity = .2;
-                                        child.material.shininess = 10;
-                                        child.material.emissive.r = .05;
-        								child.material.emissive.g = .05;
-            					        child.material.emissive.b = .05;
-                                        child.material.side = THREE.DoubleSide;
-                                        child.material.shading = THREE.SmoothShading;
-                                    }
-                                    if (child.geometry) {
-                                        child.geometry.computeFaceNormals();
-                                    }
-								}
-							});
+
+                            object.parent.peeksAsset.threeSynchMaterial();
 						}
 					}, onProgress, onError );
 				} else if (this.getAttr('text')) {
