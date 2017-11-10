@@ -5,10 +5,14 @@ PEEKS.registerPage('VirtualModel', function() {
 
     page.addPage('peeks_toolbar');
 
-    var model = page.addAsset({
+    var femaleHigh = page.addAsset({
+        position: [-.5, 0, 0],
+    });
+
+    var model = femaleHigh.addAsset({
         position: [0, -1.2, -3],
         onClick: 'animateRotate90',
-        size: .015,
+        size: .013,
     });
 
     model.body = model.addGeometry({
@@ -24,8 +28,8 @@ PEEKS.registerPage('VirtualModel', function() {
         texture: 'assets/material_suede.jpg',
 	});
 
-    var panel = page.addAsset({
-        position: [1, 1, -5],
+    var panel = femaleHigh.addAsset({
+        position: [.5, 1, -5],
     });
 
     var pants = true;
@@ -136,6 +140,53 @@ PEEKS.registerPage('VirtualModel', function() {
         },
         onClick: onSetClothMaterial,
     });
+
+    var woman2 = page.addAsset({
+        position: [1, 0, 0],
+    });
+
+    var model2 = woman2.addAsset({
+        position: [0, -1.2, -3],
+        onClick: 'animateRotate90',
+        size: .013,
+    });
+
+    model2.addGeometry({
+		geometry: 'assets/woman2_arms.obj',
+        texture: 'assets/woman2_Body-D.jpg',
+        material: {
+            normalMap: 'assets/woman2_Body-N.jpg',
+        },
+	});
+    model2.addGeometry({
+		geometry: 'assets/woman2_hair.obj',
+        texture: 'assets/woman2_Hair-D.jpg',
+        material: {
+            normalMap: 'assets/woman2_Hair-N.jpg',
+        },
+	});
+    model2.addGeometry({
+		geometry: 'assets/woman2_clothes.obj',
+        texture: 'assets/woman2_Body-D.jpg',
+        material: {
+            normalMap: 'assets/woman2_Body-N.jpg',
+        },
+	});
+    model2.addGeometry({
+		geometry: 'assets/woman2_eyes.obj',
+        texture: 'assets/woman2_Head-D.jpg',
+        material: {
+            normalMap: 'assets/woman2_Head-N.jpg',
+        },
+	});
+    model2.addGeometry({
+		geometry: 'assets/woman2_head.obj',
+        texture: 'assets/woman2_Head-D.jpg',
+        material: {
+            normalMap: 'assets/woman2_Head-N.jpg',
+        },
+	});
+
 
     onSetClothMaterial(defaultMaterial);
 

@@ -389,6 +389,8 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
 
                         mat.map = geometry.texture;
 
+                        mat.transparent = true;
+
                         mat.reflectivity =
                             refMat.reflectivity !== undefined
                             ? refMat.reflectivity
@@ -533,7 +535,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var onProgress = function ( xhr ) {
 						if ( xhr.lengthComputable ) {
 							var percentComplete = xhr.loaded / xhr.total * 100;
-							console.log( Math.round(percentComplete, 2) + '% downloaded' );
 						}
 					};
 
@@ -541,7 +542,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                         console.log( 'Obj loading error' );
 					};
 
-                    console.log( 'loading ' +  this.geometryUrl    );
                     var peeksObject = this;
 					var node = this.threeObject;
                     this.threeObject.peeksAsset = peeksObject;
