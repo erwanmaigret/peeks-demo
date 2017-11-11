@@ -25,6 +25,56 @@ block content
     script.
         PEEKS.setLogLevel(1);
         var peeks = new PEEKS.Scene();
-        peeks.loadPage(document.title);
-        //peeks.loadPage('SporTrade');
+
+        var url = document.URL;
+        var paramsI = url.search("\\?");
+        if (paramsI !== -1) {
+            var items = [];
+
+            var paramStr = url.substring(paramsI + 1);
+            var params = paramStr.split('&');
+            for (var paramI = 0; paramI < params.length; paramI++) {
+                var param = params[paramI].split('=');
+                items.push([param[0], param[1]]);
+            }
+
+            PEEKS.registerPage('Christmas', function() {
+            	var page = new PEEKS.Asset();
+
+                var canvas = page.addCanvas();
+
+                var pane = canvas.addView({
+                    position: [0, 0],
+                    size: [1, .6, 1],
+                    viewBgColor: [.3, .3, .3],
+                    alpha: 0,
+                });
+
+                var itemCount = 0;
+                for (var itemI = 0; itemI < items.length; itemI++) {
+                    var fontSize = 50;
+                    var urlTarget = items[itemI][1];
+                    pane.addTextButton({
+                        label: items[itemI][0].replace('_', ' '),
+                        position: [0, .6 - itemCount * .2, 0],
+                        size: [.9, .15, 1],
+                        fontSize: fontSize,
+                        urlTarget: items[itemI][1],
+                        onClick: function() {
+                            window.open(this.urlTarget,'_blank');
+                        }
+                    });
+
+                    itemCount++;
+                }
+
+            	page.addPage('peeks_toolbar');
+            	return page;
+            });
+
+            peeks.loadPage('Christmas');
+        } else {
+            peeks.loadPage(document.title);
+            //peeks.loadPage('SporTrade');
+        }
         peeks.start(window);
