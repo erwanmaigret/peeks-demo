@@ -81,7 +81,5 @@ PEEKS.registerPage('SporTrade', function() {
         });
     }
 
-	page.addPage('peeks_toolbar');
-
 	return page;
 });
