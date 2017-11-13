@@ -13,85 +13,195 @@ PEEKS.registerPage('VirtualModel', function() {
         position: [0, -1.2, -3],
         onClick: 'animateRotate90',
         size: .013,
+        onFocus: '',
     });
-
-    model.body = model.addGeometry({
-		geometry: 'assets/woman_pose1_body.obj',
-        texture: 'assets/woman_body.png',
-        material: {
-            emissive: [.1, .05, .05],
-            shininess: 20,
-        },
-	});
-    model.body = model.addGeometry({
-		geometry: 'assets/woman_pose1_highHeels.obj',
-        texture: 'assets/material_suede.jpg',
-	});
 
     var panel = femaleHigh.addAsset({
         position: [.5, 1, -5],
     });
+    var panel2 = femaleHigh.addAsset({
+        position: [-1.5, 1, -5],
+    });
 
-    var pants = true;
+    var outfit = "pants";
+    var size = "M";
+    var skin = [1, 1, 1];
+    var modelName = "woman";
+    var pose = "pose1";
+    var fabric = undefined;
+
+    var getGeometryUrl = function (part) {
+        return "assets/" + modelName + "_" + pose + "_" + size + "_" + part + ".obj";
+    };
+
     var onSetClothMaterial = function(caller) {
         if (caller === undefined) {
             caller = this;
         }
+        if (caller.material !== undefined) {
+            fabric = caller.material;
+        }
+        if (caller.vm !== undefined) {
+            if (caller.vm.size !== undefined) {
+                size = caller.vm.size;
+            }
+            if (caller.vm.outfit !== undefined) {
+                outfit = caller.vm.outfit;
+            }
+            if (caller.vm.skin !== undefined) {
+                skin = caller.vm.skin;
+            }
+        }
 
-        pants = !pants;
+        if (model.body) {
+            model.body.destroy();
+        }
+        if (model.shoes) {
+            model.shoes.destroy();
+        }
         if (model.pants) {
             model.pants.destroy();
-        }
-        if (pants) {
-            model.pants = model.addGeometry({
-        		geometry: 'assets/woman_pose1_pants.obj',
-                texture: caller.material.map,
-                material: {
-                    emissive: caller.material.emissive,
-                    shininess: caller.material.shininess,
-                    normalMap: caller.material.normalMap,
-                },
-        	});
         }
         if (model.skirt) {
             model.skirt.destroy();
         }
-        if (!pants) {
-            model.skirt = model.addGeometry({
-        		geometry: 'assets/woman_pose1_skirt.obj',
-                texture: caller.material.map,
-                material: {
-                    emissive: caller.material.emissive,
-                    shininess: caller.material.shininess,
-                    normalMap: caller.material.normalMap,
-                },
-        	});
-        }
         if (model.jacket) {
             model.jacket.destroy();
         }
-        model.jacket = model.addGeometry({
-    		geometry: 'assets/woman_pose1_jacket.obj',
-            texture: caller.material.map,
-            material: {
-                emissive: caller.material.emissive,
-                shininess: caller.material.shininess,
-                normalMap: caller.material.normalMap,
-            },
-    	});
         if (model.blouse) {
             model.blouse.destroy();
         }
-        model.blouse = model.addGeometry({
-    		geometry: 'assets/woman_pose1_j_blouse.obj',
-            texture: 'assets/material_white.jpg',
+        if (model.underwear) {
+            model.underwear.destroy();
+        }
+
+        model.body = model.addGeometry({
+            geometry: getGeometryUrl("body"),
+            texture: 'assets/woman_body.png',
+            color: skin,
             material: {
-                emissive: [.05, .05, .1],
-                shininess: 10,
-                normalMap: 'assets/material_velvet_normal.jpg',
+                emissive: [.1, .05, .05],
+                shininess: 20,
             },
-    	});
+        });
+        model.shoes = model.addGeometry({
+            geometry: getGeometryUrl("highHeels"),
+            texture: 'assets/material_suede.jpg',
+        });
+
+        if (outfit === 'pants') {
+            model.pants = model.addGeometry({
+        		geometry: getGeometryUrl("pants"),
+                texture: fabric.map,
+                material: {
+                    emissive: fabric.emissive,
+                    shininess: fabric.shininess,
+                    normalMap: fabric.normalMap,
+                },
+        	});
+        }
+        if (outfit === 'skirt') {
+            model.skirt = model.addGeometry({
+        		geometry: getGeometryUrl("skirt"),
+                texture: fabric.map,
+                material: {
+                    emissive: fabric.emissive,
+                    shininess: fabric.shininess,
+                    normalMap: fabric.normalMap,
+                },
+        	});
+        }
+
+        if (outfit === 'pants' || outfit === 'skirt') {
+            model.jacket = model.addGeometry({
+        		geometry: getGeometryUrl("jacket"),
+                texture: fabric.map,
+                material: {
+                    emissive: fabric.emissive,
+                    shininess: fabric.shininess,
+                    normalMap: fabric.normalMap,
+                },
+            });
+            model.blouse = model.addGeometry({
+        		geometry: getGeometryUrl("j_blouse"),
+                texture: 'assets/material_white.jpg',
+                material: {
+                    emissive: [.05, .05, .1],
+                    shininess: 10,
+                    normalMap: 'assets/material_velvet_normal.jpg',
+                },
+            });
+        }
+
+        if (outfit === 'underwear') {
+            model.underwear = model.addGeometry({
+        		geometry: getGeometryUrl("underwear"),
+                texture: fabric.map,
+                material: {
+                    emissive: fabric.emissive,
+                    shininess: fabric.shininess,
+                    normalMap: fabric.normalMap,
+                },
+            });
+        }
     };
+
+    panel2.addRoundTextButton({
+        position: [0, 0, 0],
+		size: .3,
+        label: 'M',
+        fontSize: 120,
+        vm: {
+            size: 'M'
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    panel2.addRoundTextButton({
+        position: [0, .4, 0],
+        size: .3,
+        label: 'L',
+        fontSize: 120,
+        vm: {
+            size: 'L'
+        },
+        onClick: onSetClothMaterial,
+    });
+
+
+    panel2.addTextButton({
+        position: [0, -1, 0],
+		size: .3,
+        label: 'Underwear',
+        fontSize: 120,
+        vm: {
+            outfit: 'underwear'
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    panel2.addTextButton({
+        position: [0, -1.4, 0],
+		size: .3,
+        label: 'Pants',
+        fontSize: 120,
+        vm: {
+            outfit: 'pants'
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    panel2.addTextButton({
+        position: [0, -1.8, 0],
+		size: .3,
+        label: 'Skirt',
+        fontSize: 120,
+        vm: {
+            outfit: 'skirt'
+        },
+        onClick: onSetClothMaterial,
+    });
+
 
     var defaultMaterial = panel.addButton({
         texture: 'assets/material_red_satin.jpg',
@@ -140,6 +250,49 @@ PEEKS.registerPage('VirtualModel', function() {
         },
         onClick: onSetClothMaterial,
     });
+    panel.addButton({
+        texture: 'assets/material_white.jpg',
+        position: [0, -.9, 0],
+        size: .2,
+        material: {
+            emissive: [.1,.0,.0],
+            shininess: 2,
+            normalMap: 'assets/material_suede_normal.jpg',
+            map: 'assets/material_white.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    panel.addButton({
+        texture: 'assets/woman_body.png',
+        position: [0, -1.5, 0],
+        color: [1, 1, 1],
+        size: .2,
+        vm: {
+            skin: [1, 1, 1],
+        },
+        onClick: onSetClothMaterial,
+    });
+    panel.addButton({
+        texture: 'assets/woman_body.png',
+        position: [0, -1.8, 0],
+        color: [1, 1, 0.6],
+        size: .2,
+        vm: {
+            skin: [1, 1, .6],
+        },
+        onClick: onSetClothMaterial,
+    });
+    panel.addButton({
+        texture: 'assets/woman_body.png',
+        position: [0, -2.1, 0],
+        color: [.45, .45, .45],
+        size: .2,
+        vm: {
+            skin: [.45, .45, .45],
+        },
+        onClick: onSetClothMaterial,
+    });
 
     var woman2 = page.addAsset({
         position: [1, 0, 0],
@@ -148,6 +301,7 @@ PEEKS.registerPage('VirtualModel', function() {
     var model2 = woman2.addAsset({
         position: [0, -1.2, -3],
         onClick: 'animateRotate90',
+        onFocus: '',
         size: .013,
     });
 

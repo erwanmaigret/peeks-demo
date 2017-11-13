@@ -1332,13 +1332,21 @@
                 var asset = this.onPickNode(this.getMouse(event));
                 if (this.assetOver) {
                     if (asset !== this.assetOver) {
-                        this.assetOver.animateFocusEnd();
+                        if (this.assetOver.onFocus !== undefined) {
+                            // should apply this custom focus method yet TBD
+                        } else {
+                            this.assetOver.animateFocusEnd();
+                        }
                         delete this.assetOver;
                     }
                 }
                 if (asset && asset.onClick && asset !== this.assetOver) {
                     this.assetOver = asset;
-                    asset.animateFocusStart();
+                    if (asset.onFocus !== undefined) {
+                        // should apply this custom focus method yet TBD
+                    } else {
+                        asset.animateFocusStart();
+                    }
                 }
             },
 

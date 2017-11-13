@@ -445,6 +445,10 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         mat.side = THREE.FrontSide;
                         mat.shading = THREE.SmoothShading;
 
+                        if (asset.color !== undefined) {
+                            mat.color = asset.color;
+                        }
+
                         child.geometry.computeFaceNormals();
                     }
                 }
