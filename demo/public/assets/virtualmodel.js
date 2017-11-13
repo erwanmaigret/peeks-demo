@@ -1,26 +1,26 @@
 PEEKS.registerPage('VirtualModel', function() {
     var page = new PEEKS.Asset({
-        category: 'fashion',
+        category: 'white',
     });
 
     page.addPage('peeks_toolbar');
 
     var femaleHigh = page.addAsset({
-        position: [-.5, 0, 0],
+        position: [0, 0, 0],
     });
 
     var model = femaleHigh.addAsset({
-        position: [0, -1.2, -3],
+        position: [0, -1, -2.7],
         onClick: 'animateRotate90',
         size: .013,
         onFocus: '',
     });
 
     var panel = femaleHigh.addAsset({
-        position: [.5, 1, -5],
+        position: [1, 1, -5],
     });
     var panel2 = femaleHigh.addAsset({
-        position: [-1.5, 1, -5],
+        position: [-1, 1, -5],
     });
 
     var outfit = "pants";
@@ -128,7 +128,7 @@ PEEKS.registerPage('VirtualModel', function() {
                 material: {
                     emissive: [.05, .05, .1],
                     shininess: 10,
-                    normalMap: 'assets/material_velvet_normal.jpg',
+                    normalMap: 'assets/material_suede_normal.jpg',
                 },
             });
         }
@@ -136,7 +136,12 @@ PEEKS.registerPage('VirtualModel', function() {
         if (outfit === 'underwear') {
             model.underwear = model.addGeometry({
         		geometry: getGeometryUrl("underwear"),
-                texture: fabric.map,
+                texture: fabric.map === 'assets/material_dark.jpg'
+                    ? 'assets/woman_underwear_transparency.png'
+                    : fabric.map,
+                alpha: fabric.map === 'assets/material_dark.jpg'
+                    ? .7
+                    : 1,
                 material: {
                     emissive: fabric.emissive,
                     shininess: fabric.shininess,
@@ -257,17 +262,29 @@ PEEKS.registerPage('VirtualModel', function() {
         material: {
             emissive: [.1,.0,.0],
             shininess: 2,
-            normalMap: 'assets/material_suede_normal.jpg',
+            normalMap: 'assets/material_velvet_normal.jpg',
             map: 'assets/material_white.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    panel.addButton({
+        texture: 'assets/material_dark.jpg',
+        position: [0, -1.2, 0],
+        size: .2,
+        material: {
+            emissive: [.0,.0,.1],
+            shininess: 5,
+            map: 'assets/material_dark.jpg',
         },
         onClick: onSetClothMaterial,
     });
 
     panel.addButton({
         texture: 'assets/woman_body.png',
-        position: [0, -1.5, 0],
+        position: [0, -1.8, 0],
         color: [1, 1, 1],
         size: .2,
+        textureRepeat: [.15, .15],
         vm: {
             skin: [1, 1, 1],
         },
@@ -275,25 +292,28 @@ PEEKS.registerPage('VirtualModel', function() {
     });
     panel.addButton({
         texture: 'assets/woman_body.png',
-        position: [0, -1.8, 0],
+        position: [0, -2.1, 0],
         color: [1, 1, 0.6],
         size: .2,
+        textureRepeat: [.15, .15],
         vm: {
-            skin: [1, 1, .6],
+            skin: [1, 1, .75],
         },
         onClick: onSetClothMaterial,
     });
     panel.addButton({
         texture: 'assets/woman_body.png',
-        position: [0, -2.1, 0],
+        position: [0, -2.4, 0],
         color: [.45, .45, .45],
         size: .2,
+        textureRepeat: [.15, .15],
         vm: {
             skin: [.45, .45, .45],
         },
         onClick: onSetClothMaterial,
     });
 
+    /*
     var woman2 = page.addAsset({
         position: [1, 0, 0],
     });
@@ -340,7 +360,7 @@ PEEKS.registerPage('VirtualModel', function() {
             normalMap: 'assets/woman2_Head-N.jpg',
         },
 	});
-
+    */
 
     onSetClothMaterial(defaultMaterial);
 

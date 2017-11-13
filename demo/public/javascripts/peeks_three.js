@@ -391,6 +391,11 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
 
                         mat.transparent = true;
 
+                        mat.opacity =
+                            asset.alpha !== undefined
+                            ? asset.alpha
+                            : 1;
+
                         mat.reflectivity =
                             refMat.reflectivity !== undefined
                             ? refMat.reflectivity
