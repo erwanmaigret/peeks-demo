@@ -6,6 +6,13 @@ router.get('/', function(req, res, next) {
 
     data.pages.push({ name: 'Target' });
 
+    // LVMH
+    data.pages.push({ name: 'Mario Bertulli', url: 'https://www.mariobertulli.fr' });
+    //data.pages.push({ name: 'Rimowa', url: 'https://www.rimowa.com/' });
+    //data.pages.push({ name: 'Loro Piana', url: 'https://www.loropiana.com/en/' });
+    data.pages.push({ name: 'Nicholas Kirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
+    //data.pages.push({ name: 'Edun', url: 'https://edun.com/pages/spring-2017' });
+
     // To be refined:
     //data.pages.push({ name: 'Hollister', url: 'https://www.hollisterco.com/' });
     //data.pages.push({ name: 'Zappos', url: 'https://www.zappos.com' });
@@ -52,9 +59,9 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Barbara', url: 'http://www.barbara.fr/' });
 
     data.pages.push({ name: '2D Assets' });
-    data.pages.push({ name: '3D Assets' });
-    data.pages.push({ name: 'Terra Worlds' });
-    data.pages.push({ name: 'SporTrade' });
+    //data.pages.push({ name: '3D Assets' });
+    //data.pages.push({ name: 'Terra Worlds' });
+    //data.pages.push({ name: 'SporTrade' });
     data.pages.push({ name: 'VirtualModel' });
 
     res.send(JSON.stringify(data));

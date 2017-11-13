@@ -7,12 +7,14 @@ PEEKS.registerPage('peeks_toolbar', function() {
 
     var height = -.44;
 
+    /*
     canvas.addView({
 		position: [0, height],
 		size: [1, .12, 1],
         viewBgColor: [.3, .3, .3],
 		alpha: 0,
 	});
+    */
 
     canvas.addRoundIconButton({
 		icon: 'ui/icon_previous.png',

@@ -31,6 +31,7 @@ var scrapDb = [
 //var redirectIp = '35.161.135.124';
 var redirectIp = '52.25.54.6';
 var redirectPrefix = 'http://' + redirectIp + '/?url=';
+var redirectPrefixImg = redirectPrefix;
 // Avoid any redirection:
 redirectPrefix = "";
 
@@ -136,7 +137,7 @@ router.get('/', function(req, res, next) {
                                                 }
                                             }
                                             src = removeUrlTrail(src);
-                                            src = redirectPrefix + src;
+                                            src = redirectPrefixImg + src;
                                             //console.log('adding ' + src);
                                             var node = {
                                                 href: href,
@@ -173,7 +174,7 @@ router.get('/', function(req, res, next) {
                                 // Redirection so that we can get around
                                 //  data loading without worrying about CORS
                                 //  issues.
-                                src = redirectPrefix + src;
+                                src = redirectPrefixImg + src;
 
                                 data.source.img.push({
                                     src: src,
