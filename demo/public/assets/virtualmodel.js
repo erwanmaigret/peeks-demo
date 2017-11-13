@@ -10,7 +10,7 @@ PEEKS.registerPage('VirtualModel', function() {
     });
 
     var model = femaleHigh.addAsset({
-        position: [0, -1, -2.7],
+        position: [0, -1, -2.9],
         onClick: 'animateRotate90',
         size: .013,
         onFocus: '',
