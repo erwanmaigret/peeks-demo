@@ -74,6 +74,15 @@ PEEKS.registerPage('VirtualModel', function() {
         if (model.underwear) {
             model.underwear.destroy();
         }
+        if (model.sclera) {
+            model.sclera.destroy();
+        }
+        if (model.iris) {
+            model.iris.destroy();
+        }
+        if (model.cornea) {
+            model.cornea.destroy();
+        }
 
         model.body = model.addGeometry({
             geometry: getGeometryUrl("body"),
@@ -149,6 +158,17 @@ PEEKS.registerPage('VirtualModel', function() {
                 },
             });
         }
+        model.iris = model.addGeometry({
+            geometry: getGeometryUrl("iris"),
+            texture: 'assets/woman_iris.png',
+        });
+        model.sclera = model.addGeometry({
+            geometry: getGeometryUrl("sclera"),
+            texture: 'assets/woman_sclera.png',
+            material: {
+                alphaMap: 'assets/woman_sclera_alpha.png'
+            }
+        });
     };
 
     panel2.addRoundTextButton({
@@ -224,8 +244,8 @@ PEEKS.registerPage('VirtualModel', function() {
         texture: 'assets/material_red_velvet.jpg',
         size: .2,
         material: {
-            emissive: [.1,.1,.1],
-            shininess: 15,
+            emissive: [.1,0,0],
+            shininess: 2,
             normalMap: 'assets/material_velvet_normal.jpg',
             map: 'assets/material_red_velvet.jpg',
         },

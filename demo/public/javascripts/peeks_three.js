@@ -437,6 +437,16 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
 							mat.normalMap = loader.load(refMat.normalMap);
                         }
 
+                        if (refMat.alphaMap) {
+							var loader = new THREE.TextureLoader();
+							if (/^data:/.test(refMat.alphaMap)) {
+								loader.setCrossOrigin(refMat.alphaMap);
+							} else {
+								loader.setCrossOrigin('');
+							}
+							mat.alphaMap = loader.load(refMat.alphaMap);
+                        }
+
                         if (refMat.bumpMap) {
 							var loader = new THREE.TextureLoader();
 							if (/^data:/.test(refMat.bumpMap)) {
