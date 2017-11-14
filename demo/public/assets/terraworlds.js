@@ -1,8 +1,8 @@
-PEEKS.registerPage('Terra Worlds', function() {
+PEEKS.registerPage('terraworlds', function() {
 	var page = new PEEKS.Asset({
-        colorDark:   [.2, 0.2 , 0.5],
-        colorLight:  [.6, 0.6 , 0.8],
-        category: 'outdoor',
+//        colorDark:   [.2, 0.2 , 0.5],
+//        colorLight:  [.6, 0.6 , 0.8],
+        category: 'white',
     });
 
     page.setAttr('fontColor', page.getAttr('colorDark'));
@@ -88,6 +88,7 @@ PEEKS.registerPage('Terra Worlds', function() {
 		}
 	}
 
+    /*
 	page.addGeometry({
 		geometry: 'assets/vr_controller_vive_1_5.obj',
 		texture: 'assets/vr_controller_vive_1_5.png',
@@ -120,6 +121,7 @@ PEEKS.registerPage('Terra Worlds', function() {
 		attribute: 'rotation',
 		loop: true
 	});
+    */
 
 	page.addPage('peeks_toolbar');
 

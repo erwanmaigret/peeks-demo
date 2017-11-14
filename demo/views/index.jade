@@ -70,7 +70,13 @@ block content
 
             peeks.loadPage('Christmas');
         } else {
-            //peeks.loadPage(document.title);
-            peeks.loadPage('Terra Worlds');
+            var page = document.title;
+            if (page === 'Peeks') {
+                var urlSplit = url.split('.');
+                if (urlSplit.length > 2) {
+                    page = urlSplit[1];
+                }
+            }
+            peeks.loadPage(page);
         }
         peeks.start(window);

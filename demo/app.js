@@ -10,7 +10,6 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var scrap = require('./routes/scrap');
 var reco = require('./routes/reco');
-var target = require('./routes/target');
 
 var app = express();
 
@@ -32,6 +31,9 @@ app.use('/users', users);
 app.use('/scrap', scrap);
 app.use('/reco', reco);
 app.use('/target', require('./routes/target'));
+app.use('/terraworlds', require('./routes/terraworlds'));
+app.use('/sportrade', require('./routes/sportrade'));
+app.use('/wgtiootb', require('./routes/demo'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

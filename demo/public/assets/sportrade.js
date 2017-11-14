@@ -1,4 +1,4 @@
-PEEKS.registerPage('SporTrade', function() {
+PEEKS.registerPage('sportrade', function() {
 	var page = new PEEKS.Asset({
         category: 'soccer',
     });
