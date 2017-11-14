@@ -1696,6 +1696,10 @@
                         delete this.groundImage;
                     }
 
+                    if (this.page.gyroscope === 'off') {
+                        this.gyroscope = false;
+                    }
+
                     var category = this.page.getAttr('category');
                     var groundFilename = this.page.groundImage;
                     var repeat = 50;

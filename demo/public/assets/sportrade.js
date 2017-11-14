@@ -1,6 +1,7 @@
 PEEKS.registerPage('sportrade', function() {
 	var page = new PEEKS.Asset({
         category: 'soccer',
+        gyroscope: 'off',
     });
 
     var screen = page.addScreen({
