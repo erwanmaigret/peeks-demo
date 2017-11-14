@@ -127,43 +127,39 @@ PEEKS.registerPage('Terra Worlds', function() {
         valign: 'top',
     });
 
-    canvas.addRoundTextButton({
-        position: [.15, .45],
+    canvas.addButton({
+        position: [.1, .45],
 		size: .08,
-        label: 'W',
-        fontSize: 40,
+        image: 'images/minecraft_wood.jpg',
         onClick: function() {
             cubeImage = 'images/minecraft_wood.jpg';
             cubeRepeat = [2, 2];
         },
     });
 
-    canvas.addRoundTextButton({
-        position: [-.15, .45],
+    canvas.addButton({
+        position: [-.1, .45],
 		size: .08,
-        label: 'C',
-        fontSize: 40,
+        image: 'images/minecraft_craftingtable.jpg',
         onClick: function() {
             cubeImage = 'images/minecraft_craftingtable.jpg';
             cubeRepeat = [1, 1];
         },
     });
 
-    canvas.addRoundTextButton({
-        position: [0, .45],
+    canvas.addButton({
+        position: [.3, .45],
 		size: .08,
-        label: 'S',
-        fontSize: 40,
+        image: 'images/minecraft_stone.jpg',
         onClick: function() {
             cubeImage = 'images/minecraft_stone.jpg';
             cubeRepeat = [3, 3];
         },
     });
-    canvas.addRoundTextButton({
+    canvas.addButton({
         position: [-.3, .45],
         size: .08,
-        label: 'G',
-        fontSize: 40,
+        image: 'images/minecraft_dirt.jpg',
         onClick: function() {
             cubeImage = 'images/minecraft_dirt.jpg';
             cubeRepeat = [1, 1];
@@ -172,9 +168,10 @@ PEEKS.registerPage('Terra Worlds', function() {
 
     page.onLoad = function () {
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(function (position) {
-                console.log("Latitude: " + position.coords.latitude);
-                console.log("longitude: " + position.coords.longitude);
+            navigator.geolocation.watchPosition(
+                function (position) {
+                    console.log("Latitude: " + position.coords.latitude);
+                    console.log("longitude: " + position.coords.longitude);
                 }
             );
         } else {

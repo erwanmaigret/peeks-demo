@@ -1740,7 +1740,7 @@
                         delete this.titleText;
                     }
                     var title = this.page.getAttr('title');
-                    if (title !== '') {
+                    if (title !== undefined && title != '') {
                         this.titleText = page.addCanvas({
                             valign: 'top',
                         });
