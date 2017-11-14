@@ -1087,11 +1087,17 @@
 			},
 
             animateFocusStart: function() {
-				this.animate({
+                this.animate({
 					duration: .3,
                     begin: [1, 1, 1],
                     end: [1.1, 1.1, 1.1],
 					attribute: 'size'
+				});
+                this.animate({
+					duration: .3,
+                    begin: [0, 0, 0],
+                    end: [0, 0, 0.001],
+					attribute: 'position'
 				});
 			},
 
@@ -1101,6 +1107,12 @@
                     begin: [1, 1, 1],
                     end: [1 / 1.1, 1 / 1.1, 1 / 1.1],
 					attribute: 'size'
+				});
+                this.animate({
+					duration: .3,
+                    begin: [0, 0, 0],
+                    end: [0, 0, -0.001],
+					attribute: 'position'
 				});
 			},
 
@@ -1283,6 +1295,10 @@
 
             isVrMode: function() {
                 return this.vrMode;
+            },
+
+            isGyroMode: function() {
+                return this.isVrMode() || this.gyroscope;
             },
 
 			getMouse: function(event) {
