@@ -1329,10 +1329,16 @@
                             this.mousePinchStartPosition = this.camera.position.slice();
                         } else {
                             distance = this.mousePinchStartDistance - distance;
+
+                            this.camera.setPosition(this.mousePinchStartPosition);
+
+                            var offset =
+                                this.onGetCameraTranslation([0, 0, distance * 2]);
+
                             this.camera.setPosition([
-                                this.mousePinchStartPosition[0],
-                                this.mousePinchStartPosition[1],
-                                this.mousePinchStartPosition[2] + distance * 2
+                                this.mousePinchStartPosition[0] + offset[0],
+                                this.mousePinchStartPosition[1] + offset[1],
+                                this.mousePinchStartPosition[2] + offset[2]
                             ]);
                         }
 
