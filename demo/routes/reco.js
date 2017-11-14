@@ -7,11 +7,18 @@ router.get('/', function(req, res, next) {
     data.pages.push({ name: 'Target' });
 
     // LVMH
-    data.pages.push({ name: 'Mario Bertulli', url: 'https://www.mariobertulli.fr' });
+    data.pages.push({ name: 'Nicholas Kirkwood', page: 'nicholaskirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
+    //data.pages.push({ name: 'Kenzo', url: 'https://www.kenzo.com/en/home' });
+    //data.pages.push({ name: 'Mario Bertulli', url: 'https://www.mariobertulli.fr' });
+    //data.pages.push({ name: 'Edun', url: 'https://edun.com/pages/spring-2017' });
+    //data.pages.push({ name: 'Fendi', url: 'https://www.fendi.com/fr-en' });
+    //data.pages.push({ name: 'Christain Dior', url: 'https://www.dior.com/home/fr_fr' });
+    // Restricted
+    //data.pages.push({ name: 'Thomas Pink', url: 'https://www.thomaspink.com/category/womens/collection' });
+    // Restricted
+    //data.pages.push({ name: 'Marc Jacobs', url: 'https://www.marcjacobs.com/clothing/' });
     //data.pages.push({ name: 'Rimowa', url: 'https://www.rimowa.com/' });
     //data.pages.push({ name: 'Loro Piana', url: 'https://www.loropiana.com/en/' });
-    data.pages.push({ name: 'Nicholas Kirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
-    //data.pages.push({ name: 'Edun', url: 'https://edun.com/pages/spring-2017' });
 
     // To be refined:
     //data.pages.push({ name: 'Hollister', url: 'https://www.hollisterco.com/' });

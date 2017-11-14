@@ -613,7 +613,7 @@
                                     position: [0, .6 - itemCount * .2, 0],
                                     size: [.9, .15, 1],
                                     onClick: 'loadPage',
-                                    onClickArgs: [page.name],
+                                    onClickArgs: [page.page || page.name],
                                     fontSize: fontSize,
                                 }).animate({
                                     duration: animDuration,
@@ -1707,7 +1707,7 @@
                     if (groundFilename === undefined) {
                         if (category === 'fashion') {
                             groundFilename = 'images/floor_marble_1.jpg';
-                            groundColor = [.2, .4, .5];
+                            //groundColor = [.4, .4, .4];
                         } else if (category === 'shopping') {
                             groundFilename = 'images/floor_marble_4.jpg';
                         } else if (category === 'entertainment') {
