@@ -169,5 +169,24 @@ PEEKS.registerPage('Terra Worlds', function() {
             cubeRepeat = [1, 1];
         },
     });
+
+    page.onLoad = function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(function (position) {
+                console.log("Latitude: " + position.coords.latitude);
+                console.log("longitude: " + position.coords.longitude);
+                }
+            );
+        } else {
+            console.log("No geolocation");
+        }
+    };
+
+    page.onUnload = function () {
+    };
+
+    page.onUpdate = function () {
+    };
+
 	return page;
 });
