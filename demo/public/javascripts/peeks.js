@@ -1206,6 +1206,13 @@
         }
 	}
 
+    window.dataLayer = window.dataLayer || [];
+    function analytics() {
+        dataLayer.push(arguments);
+    }
+    analytics('js', new Date());
+    analytics('config', 'UA-109650112-1');
+
 	function loadPage(name) {
 		if (pages[name]) {
 			var page = pages[name]();
@@ -1314,6 +1321,7 @@
 			},
 
 			onPickNode: function(mouse) {
+                analytics('event', 'scene.onPickNode');
 				logDebug('onPickNode');
 			},
 
@@ -1470,6 +1478,7 @@
 			},
 
 			onClick: function (mouse) {
+                analytics('event', 'scene.onClick');
 				logDebug('onClick');
 
 				var asset = this.onPickNode(mouse);
@@ -1496,9 +1505,11 @@
 			},
 
 			onKeyDown: function (event) {
+                analytics('event', 'scene.onKeyDown');
+                logDebug('onKeyDown');
+
 				event.preventDefault();
 
-				logDebug('onKeyDown');
 				var manipFactor = event.shiftKey ? .1 : 1;
 				var animAttribute;
 				var animValue;
@@ -1563,13 +1574,13 @@
 			},
 
 			onKeyUp: function (event) {
-				event.preventDefault();
+                analytics('event', 'scene.onKeyUp');
 				logDebug('onKeyUp');
+                event.preventDefault();
 			},
 
 			onMouseWheel: function (event) {
 				event.preventDefault();
-				logDebug('onMouseWheel');
 			},
 
             onStart: function () {
@@ -1589,10 +1600,12 @@
 			},
 
             toggleGyroscope: function() {
+                analytics('event', 'scene.toggleGyroscope');
 				this.gyroscope = !this.gyroscope;
 			},
 
             toggleArMode: function() {
+                analytics('event', 'scene.toggleArMode');
 				this.setArMode(!this.arMode);
 			},
 
@@ -1627,7 +1640,10 @@
 				}
 				this.arMode = state;
                 if (this.arMode) {
+                    analytics('event', 'scene.setArModeOn');
                     this.setVrMode(false);
+                } else {
+                    analytics('event', 'scene.setArModeOff');
                 }
                 this.gyroscope = this.arMode;
 			},
@@ -1645,7 +1661,10 @@
                 }
 				this.vrMode = state;
                 if (this.vrMode) {
+                    analytics('event', 'scene.setVrModeOn');
                     this.setArMode(false);
+                } else {
+                    analytics('event', 'scene.setVrModeOff');
                 }
                 this.gyroscope = this.vrMode;
 			},
@@ -1661,6 +1680,7 @@
 							logError("Unloading current page");
 							this.page.destroy();
 						}
+                        analytics('event', 'scene.loadPage', {'name': name} );
 						logDebug("Registering " + name);
 						var page = loadPage(name);
 						this.add(page);
@@ -1786,18 +1806,21 @@
 			},
 
 			loadPreviousPage: function() {
+                analytics('event', 'scene.loadPreviousPage');
 				if (this.pageIndex > 0) {
 					this.loadPage(this.pageIndex - 1);
 				}
 			},
 
 			loadNextPage: function() {
+                analytics('event', 'scene.loadNextPage');
 				if (this.pageIndex < (this.pagesHistory.length - 1)) {
 					this.loadPage(this.pageIndex + 1);
 				}
 			},
 
             loadHomePage: function() {
+                analytics('event', 'scene.loadHomePage');
                 this.loadPage('Peeks');
 			},
 
@@ -1812,12 +1835,13 @@
 			},
 
 			start: function (window, animate) {
+                analytics('event', 'scene.start');
+                logDebug('Scene.start');
+
 				this.resetCamera(animate);
 				this.window = window;
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
-
-				logDebug('Scene.start');
 
 				this.onStart();
 
