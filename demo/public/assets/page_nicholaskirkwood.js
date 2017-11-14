@@ -40,7 +40,7 @@ PEEKS.registerPage('nicholaskirkwood', function() {
                 },
                 {
                     name: 'BULGARI X NICHOLAS KIRKWOOD',
-                    image: '2017/11/2017/08/thumbnail_Product-banner-mobile-1.jpg',
+                    image: '2016/10/IMG_4125836x648.jpg',
                 },
                 {
                     name: '#MYKIRKWOODS',
