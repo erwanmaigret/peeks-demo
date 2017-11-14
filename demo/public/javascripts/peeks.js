@@ -1199,11 +1199,25 @@
 			var page = pages[name]();
 			page.name = name;
 
+            if (page.onLoad) {
+                logDebug('Calling onLoad on page ' + name);
+                page.onLoad();
+            }
+
 			return page;
 		} else {
 			logError("Can't load unregistered page " + name);
 		}
 	}
+
+    function isPhone() {
+        var userAgent = navigator.userAgent.toLowerCase();
+        var value =
+            userAgent.search('iphone') !== -1 ||
+            userAgent.search('ipod') !== -1 ||
+            userAgent.search('android') !== -1;
+        return value;
+    }
 
 	function Scene() {
 		Asset.call(this);
@@ -1223,8 +1237,8 @@
         this.gyroscope = this.isPhone;
         this.vrMode = this.isPhone;
 
-		this.pagesHistory = ['peeks_welcome']; // Make this the default first page
-		this.pageIndex = 0;
+		this.pagesHistory = []; // Make this the default first page
+		this.pageIndex = -1;
 		this.style = {
             viewBgColor: [1, 1, 1],
             viewBgAlpha: .2,
@@ -1645,9 +1659,9 @@
 							this.page.destroy();
 						}
 						var page = loadPage(name);
-						this.add(page);
-						this.page = page;
-						this.pageIndex = pageIndex;
+    						this.add(page);
+    						this.page = page;
+    						this.pageIndex = pageIndex;
 					}
 				}
 
@@ -1752,6 +1766,10 @@
 				if (this.pageIndex < (this.pagesHistory.length - 1)) {
 					this.loadPage(this.pageIndex + 1);
 				}
+			},
+
+            loadHomePage: function() {
+                this.loadPage('Peeks');
 			},
 
 			resetCamera: function (animate) {
@@ -2106,6 +2124,91 @@
 	exports.setLogLevel = setLogLevel;
 	exports.registerPage = registerPage;
 	exports.loadPage = loadPage;
+    exports.isPhone = isPhone;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));
+
+PEEKS.registerPage('peeks_toolbar', function() {
+	var page = new PEEKS.Asset();
+
+	var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    var height = -.44;
+
+    /*
+    canvas.addView({
+		position: [0, height],
+		size: [1, .12, 1],
+        viewBgColor: [.3, .3, .3],
+		alpha: 0,
+	});
+    */
+
+    canvas.addRoundIconButton({
+		icon: 'ui/icon_previous.png',
+		position: [-.45, height],
+		size: .08,
+		onClick: 'loadPreviousPage',
+	})
+
+    canvas.addRoundIconButton({
+		icon: 'ui/icon_next.png',
+        position: [-.35, height],
+		size: .08,
+		onClick: 'loadNextPage',
+	});
+
+    canvas.addRoundTextButton({
+        position: [.45, height],
+		size: .08,
+        label: 'AR',
+        fontSize: 40,
+        onClick: function() { peeks.toggleArMode(); },
+    });
+
+    if (PEEKS.isPhone()) {
+        canvas.addRoundIconButton({
+    		icon: 'ui/icon_gyroscope.png',
+    		position: [.35, height],
+    		size: .08,
+    		onClick: function() { peeks.toggleGyroscope(); },
+    	});
+    } else {
+        canvas.addRoundTextButton({
+            position: [.35, height],
+    		size: .08,
+            label: 'VR',
+            fontSize: 40,
+            onClick: function() { peeks.toggleVrMode(); },
+        });
+    }
+
+    canvas.addButton({
+        image: 'ui/icon_peeks.png',
+        position: [0, height],
+        size: [.2, .1, 1],
+        onClick: 'loadHomePage',
+    }).addAttrAlias('color', 'fontColor');
+
+	canvas.animate({
+		duration: 1,
+		delay: .2,
+		begin: [0, -.3, 0],
+		end: [0, 0, 0],
+		attribute: 'position'
+	});
+
+	return page;
+});
+
+PEEKS.registerPage('Peeks', function() {
+	var page = new PEEKS.Asset();
+
+    page.addRecommendationsView();
+
+	page.addPage('peeks_toolbar');
+	return page;
+});

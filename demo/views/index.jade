@@ -10,10 +10,6 @@ block content
     script(src="/javascripts/three/effects/StereoEffect.js")
     script(src="/javascripts/peeks_three.js")
 
-    // Default page
-    script(src="/pages/peeks_welcome.js")
-    script(src="/pages/peeks_toolbar.js")
-
     // Load some pages
     script(src="/assets/fashion.js")
     script(src="/assets/terraworlds.js")
@@ -74,6 +70,7 @@ block content
 
             peeks.loadPage('Christmas');
         } else {
-            peeks.loadPage(document.title);
+            //peeks.loadPage(document.title);
+            peeks.loadPage('Terra Worlds');
         }
         peeks.start(window);
