@@ -1616,6 +1616,23 @@
                 }
 			},
 
+            showKeyboard: function() {
+                analytics('event', 'scene.showKeyboard');
+
+                if (this.keyboard === undefined) {
+                    this.keyboard = this.addCanvas();
+                }
+			},
+
+            hideKeyboard: function() {
+                analytics('event', 'scene.hideKeyboard');
+
+                if (this.keyboard) {
+                    this.keyboard.destroy();
+                    this.keyboard = undefined;
+                }
+			},
+
 			setArMode: function(state) {
 				if (state === undefined) {
 					state = true;
@@ -1822,6 +1839,12 @@
             loadHomePage: function() {
                 analytics('event', 'scene.loadHomePage');
                 this.loadPage('Peeks');
+			},
+
+            searchPage: function() {
+                analytics('event', 'scene.searchPage');
+
+                this.showKeyboard();
 			},
 
 			resetCamera: function (animate) {
@@ -2219,7 +2242,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
 		size: .08,
         label: 'AR',
         fontSize: 40,
-        onClick: function() { peeks.toggleArMode(); },
+        onClick: function() { this.getScene().toggleArMode(); },
     });
 
     if (PEEKS.isPhone()) {
@@ -2227,7 +2250,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
     		icon: 'ui/icon_gyroscope.png',
     		position: [.35, height],
     		size: .08,
-    		onClick: function() { peeks.toggleGyroscope(); },
+    		onClick: function() { this.getScene().toggleGyroscope(); },
     	});
     } else {
         canvas.addRoundTextButton({
@@ -2235,16 +2258,26 @@ PEEKS.registerPage('peeks_toolbar', function() {
     		size: .08,
             label: 'VR',
             fontSize: 40,
-            onClick: function() { peeks.toggleVrMode(); },
+            onClick: function() { this.getScene().toggleVrMode(); },
         });
     }
 
+/*
     canvas.addButton({
         image: 'ui/icon_peeks.png',
         position: [0, height],
         size: [.2, .1, 1],
         onClick: 'loadHomePage',
     }).addAttrAlias('color', 'fontColor');
+*/
+
+    canvas.addTextButton({
+        position: [0, height],
+        fontSize: 40,
+        text: 'search',
+        size: .08,
+        onClick: 'searchPage',
+    })
 
 	canvas.animate({
 		duration: 1,
