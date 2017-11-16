@@ -728,6 +728,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			threeObject.material.color.g = color[1];
 			threeObject.material.color.b = color[2];
 		}
+        // Comment this out to vizualize all layers for debug
         threeObject.material.opacity = this.getAttr('alpha', 1);
         var sides = this.getAttr('sides');
         switch (sides) {

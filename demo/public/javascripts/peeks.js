@@ -901,12 +901,6 @@
 				var document = this.getDocument();
 				if (document) {
                     var size = 2 * this.getAttr('fontSize');
-                    var fontScale = this.getPropagatedSize();
-                    if (fontScale[0] > fontScale[1]) {
-                        size /= fontScale[0];
-                    } else {
-                        size /= fontScale[1];
-                    }
                     var text = this.getAttr('text');
                     var color = this.getAttrRgba('fontColor');
                     var texture = {};
@@ -929,7 +923,6 @@
 					texture.canvas.width = canvasWidth;
 					texture.canvas.height = canvasHeight;
                     texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
-
                     var yOffset = (canvasHeight - height) / 2 + (height / 2);
                     var xOffset;
                     switch (this.textAlign) {
@@ -976,10 +969,18 @@
                         texture.context.strokeText(text, xOffset, yOffset);
                     }
 
-                    texture.textSize = [width, height];
-                    texture.size = [canvasWidth, canvasHeight];
-                    texture.relativeTop = measure.relativeTop;
-                    texture.relativeBot = measure.relativeBot;
+                    var fontScale = this.getPropagatedSize();
+                    var scale = 1;
+                    if (fontScale[0] > fontScale[1]) {
+                        scale = 1 / fontScale[0];
+                    } else {
+                        scale = 1 / fontScale[1];
+                    }
+
+                    texture.textSize = [width * scale, height * scale];
+                    texture.size = [canvasWidth * scale, canvasHeight * scale];
+                    texture.relativeTop = measure.relativeTop * scale;
+                    texture.relativeBot = measure.relativeBot * scale;
 					return texture;
 				} else {
 					this.logError("Can't draw text in empty texture");
@@ -1621,6 +1622,36 @@
 
                 if (this.keyboard === undefined) {
                     this.keyboard = this.addCanvas();
+
+                    var bg = this.keyboard.addView({
+                        position: [0, 0],
+                        size: [1, .3, 1],
+                        viewBgColor: [0, 0, 0],
+                    });
+
+                    var fontSize = 28;
+
+                    var keys = [
+                        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'back'],
+                        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'enter'],
+                        ['#+=', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '@', '!'],
+                        ['', '', '', '', 'Ctrl', 'Alt', 'Space', 'Alt', '', '', '', ''],
+                    ];
+                    for (var y = 0; y < keys.length; y++) {
+                        var row = keys[y];
+                        for (var x = 0; x < row.length; x++) {
+                            bg.addTextButton({
+                                position: [
+                                    (x + .5) / row.length - .5,
+                                    .5 - (y + .5) / keys.length
+                                ],
+                                fontSize: fontSize,
+                                text: row[x],
+                                size: [1 / row.length, 1 / keys.length, 1],
+                            });
+                        }
+                    }
                 }
 			},
 
