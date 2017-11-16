@@ -1649,6 +1649,17 @@
                     };
 
                     var onEnter = function () {
+                        this.getScene().hideKeyboard();
+                    };
+
+                    var onShift = function () {
+                        for (var widgetI = 0;
+                            widgetI < bg.keyWidgets.length;
+                            widgetI++)
+                        {
+                            bg.keyWidgets[widgetI].animateFlip();
+                            console.log('here!');
+                        }
                     };
 
                     var onAdd = function (key) {
@@ -1661,20 +1672,84 @@
 
                     var keys = [
                         [],
-                        [{text: '1'}, '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-                        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+                        [
+                            '',
+                            { text: '1', textBack: '!'},
+                            { text: '2', textBack: '@'},
+                            { text: '3', textBack: '#'},
+                            { text: '4', textBack: '$'},
+                            { text: '5', textBack: '%'},
+                            { text: '6', textBack: '^'},
+                            { text: '7', textBack: '&'},
+                            { text: '8', textBack: '*'},
+                            { text: '9', textBack: '('},
+                            { text: '0', textBack: ')'},
+                            '',
+                            '',
+                            '',
+                        ],
+                        [
+                            '',
+                            { text: 'Q', textBack: 'q'},
+                            { text: 'W', textBack: 'w'},
+                            { text: 'E', textBack: 'e'},
+                            { text: 'R', textBack: 'r'},
+                            { text: 'T', textBack: 't'},
+                            { text: 'Y', textBack: 'y'},
+                            { text: 'U', textBack: 'u'},
+                            { text: 'I', textBack: 'i'},
+                            { text: 'O', textBack: 'o'},
+                            { text: 'P', textBack: 'p'},
                             { label: 'back', onClick: onBack },
+                            '',
+                            '',
                         ],
-                        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
+                        [
+                            '',
+                            { text: 'A', textBack: 'a'},
+                            { text: 'S', textBack: 's'},
+                            { text: 'D', textBack: 'd'},
+                            { text: 'F', textBack: 'f'},
+                            { text: 'G', textBack: 'g'},
+                            { text: 'H', textBack: 'h'},
+                            { text: 'J', textBack: 'j'},
+                            { text: 'K', textBack: 'k'},
+                            { text: 'L', textBack: 'l'},
+                            { text: ';', textBack: ':'},
+                            { text: "'", textBack: '"'},
                             { label: 'enter', onClick: onEnter },
+                            '',
                         ],
-                        ['',  'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '@', '!'],
-                        ['', '', '', '', 'ctrl', '',
+                        [
+                            '',
+                            { text: 'Z', textBack: 'z'},
+                            { text: 'X', textBack: 'x'},
+                            { text: 'C', textBack: 'c'},
+                            { text: 'V', textBack: 'v'},
+                            { text: 'B', textBack: 'b'},
+                            { text: 'N', textBack: 'n'},
+                            { text: 'M', textBack: 'm'},
+                            { text: ',', textBack: '<'},
+                            { text: '.', textBack: '>'},
+                            { text: '/', textBack: '?'},
+                            '',
+                            '',
+                            '',
+                        ],
+                        [
+                            '', '', '',
+                            { label: 'SHIFT', onClick: onShift },
+                            '',
                             { label: 'SPACE', text: ' ', },
-                            '', 'alt', '', '',
-                            { text: 'v', onClick: 'hideKeyboard' }
+                            '',
+                            { text: 'v', onClick: 'hideKeyboard' },
+                            '', '', '',
                         ],
                     ];
+
+                    bg.keyWidgets = [];
+
+                    var fontColor = [.8, .8, .8];
 
                     for (var y = 0; y < keys.length; y++) {
                         var row = keys[y];
@@ -1682,6 +1757,7 @@
                             var entry = row[x];
                             var text = undefined;
                             var label = undefined;
+                            var textBack = undefined;
                             var onClick = undefined;
                             if (typeof(entry) === 'string') {
                                 text = entry;
@@ -1689,6 +1765,7 @@
                             } else {
                                 text = entry.text;
                                 label = entry.label || text;
+                                textBack = entry.textBack;
                                 onClick = entry.onClick;
                             }
 
@@ -1698,18 +1775,30 @@
                             {
                                 onClick = onAdd;
                             }
-                            bg.addTextButton({
+                            var shift = (y % 2) === 0 ? .5 : 0;
+                            var widget = bg.addTextButton({
                                 position: [
-                                    (x + .5) / row.length - .5,
+                                    (x + .5 + shift) / row.length - .5,
                                     .5 - (y + .5) / keys.length
                                 ],
                                 fontSize: fontSize,
-                                fontColor: [.8, .8, .8],
+                                fontColor: fontColor,
                                 input: text,
                                 text: label,
-                                size: [1 / row.length, 1 / keys.length, 1],
+                                size: [1 / row.length, .9 * 1 / keys.length, 1],
                                 onClick: onClick,
                             });
+                            if (entry.textBack) {
+                                widget.addTextButton({
+                                    rotation: [0, 180, 0],
+                                    fontSize: fontSize,
+                                    fontColor: fontColor,
+                                    input: entry.textBack,
+                                    text: entry.textBack,
+                                    onClick: onClick,
+                                });
+                                bg.keyWidgets.push(widget);
+                            }
                         }
                     }
                     onRefresh();
