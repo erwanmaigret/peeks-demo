@@ -304,18 +304,6 @@
                 return asset;
             },
 
-            addTextButtonThin: function (params) {
-                var asset = this.addButton(params);
-                asset.addAttrAlias('viewBgColor', 'colorWhite');
-                asset.addAttrAlias('alpha', 'buttonBgAlpha');
-
-                asset.addText({
-                    position: [0, 0, .01],
-                }).addAttrAlias('text', 'label');
-
-                return asset;
-            },
-
             addRoundTextButton: function (params) {
                 var asset = this.addButton(params);
                 //asset.addAttrAlias('viewBgColor', 'colorWhite');
@@ -1621,37 +1609,116 @@
                 analytics('event', 'scene.showKeyboard');
 
                 if (this.keyboard === undefined) {
-                    this.keyboard = this.addCanvas();
+                    this.keyboard = this.addCanvas({
+                        valign: 'bottom',
+                    });
 
                     var bg = this.keyboard.addView({
-                        position: [0, 0],
+                        position: [0, -.35],
                         size: [1, .3, 1],
                         viewBgColor: [0, 0, 0],
                     });
 
                     var fontSize = 28;
 
+                    bg.textInput = '';
+
+                    var onRefresh = function () {
+                        if (bg.textEntry !== undefined) {
+                            bg.textEntry.destroy();
+                        }
+                        bg.textEntry = bg.addText({
+                            position: [
+                                0,
+                                .5 - (0 + .5) / keys.length
+                            ],
+                            fontSize: fontSize,
+                            fontOutlineStyle: '',
+                            fontColor: bg.textInput === '' ? [.4, .4, .4] : [1, 1, 1],
+                            text: bg.textInput !== '' ? bg.textInput : '<type some text>',
+                            size: [1, 1 / keys.length, 1],
+                        });
+                    };
+
+                    var onBack = function () {
+                        if (bg.textInput.length > 0) {
+                            bg.textInput = bg.textInput.substring(
+                                0, bg.textInput.length - 1);
+                        }
+                        onRefresh();
+                    };
+
+                    var onEnter = function () {
+                    };
+
+                    var onAdd = function (key) {
+                        if (key === undefined && this !== undefined) {
+                            key = this.input;
+                        }
+                        bg.textInput = bg.textInput + key;
+                        onRefresh();
+                    };
+
                     var keys = [
-                        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-                        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'back'],
-                        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'enter'],
-                        ['#+=', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '@', '!'],
-                        ['', '', '', '', 'Ctrl', 'Alt', 'Space', 'Alt', '', '', '', ''],
+                        [],
+                        [{text: '1'}, '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+                            { label: 'back', onClick: onBack },
+                        ],
+                        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
+                            { label: 'enter', onClick: onEnter },
+                        ],
+                        ['',  'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '@', '!'],
+                        ['', '', '', '', 'ctrl', '',
+                            { label: 'SPACE', text: ' ', },
+                            '', 'alt', '', '',
+                            { text: 'v', onClick: 'hideKeyboard' }
+                        ],
                     ];
+
                     for (var y = 0; y < keys.length; y++) {
                         var row = keys[y];
                         for (var x = 0; x < row.length; x++) {
+                            var entry = row[x];
+                            var text = undefined;
+                            var label = undefined;
+                            var onClick = undefined;
+                            if (typeof(entry) === 'string') {
+                                text = entry;
+                                label = entry;
+                            } else {
+                                text = entry.text;
+                                label = entry.label || text;
+                                onClick = entry.onClick;
+                            }
+
+                            if (onClick === undefined &&
+                                text !== undefined &&
+                                text.length === 1)
+                            {
+                                onClick = onAdd;
+                            }
                             bg.addTextButton({
                                 position: [
                                     (x + .5) / row.length - .5,
                                     .5 - (y + .5) / keys.length
                                 ],
                                 fontSize: fontSize,
-                                text: row[x],
+                                fontColor: [.8, .8, .8],
+                                input: text,
+                                text: label,
                                 size: [1 / row.length, 1 / keys.length, 1],
+                                onClick: onClick,
                             });
                         }
                     }
+                    onRefresh();
+                    bg.animate({
+                        duration: .5,
+                        begin: [0, -.3, 0],
+                        end: [0, 0, 0],
+                        attribute: 'position'
+                    })
                 }
 			},
 
@@ -1718,6 +1785,7 @@
 			},
 
 			loadPage: function(page) {
+                this.hideKeyboard();
 				if (typeof page === 'string') {
 					var name = page;
                     if (pages[name] === undefined) {
