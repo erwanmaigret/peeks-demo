@@ -31,6 +31,7 @@ app.use('/users', users);
 app.use('/scrap', scrap);
 app.use('/reco', reco);
 app.use('/target', require('./routes/target'));
+app.use('/fortinet', require('./routes/fortinet'));
 app.use('/terraworlds', require('./routes/terraworlds'));
 app.use('/sportrade', require('./routes/sportrade'));
 app.use('/wgtiootb', require('./routes/demo'));

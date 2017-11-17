@@ -5,6 +5,7 @@ router.get('/', function(req, res, next) {
     var data = { pages: [] };
 
     data.pages.push({ name: 'Target' });
+    data.pages.push({ name: 'Fortinet' });
 
     // LVMH
     data.pages.push({ name: 'Nicholas Kirkwood', page: 'nicholaskirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
@@ -65,11 +66,11 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Amazon', url: 'https://www.amazon.com/' });
     //data.pages.push({ name: 'Barbara', url: 'http://www.barbara.fr/' });
 
-    data.pages.push({ name: '2D Assets' });
-    //data.pages.push({ name: '3D Assets' });
-    //data.pages.push({ name: 'Terra Worlds' });
-    //data.pages.push({ name: 'SporTrade' });
     data.pages.push({ name: 'VirtualModel' });
+    data.pages.push({ name: '2D Assets' });
+    data.pages.push({ name: 'terraworlds' });
+    data.pages.push({ name: 'sportrade' });
+    //data.pages.push({ name: '3D Assets' });
 
     res.send(JSON.stringify(data));
 });
