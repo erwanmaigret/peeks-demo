@@ -669,12 +669,18 @@
                         }
                     } else {
                         var value = {
-                            path: path,
-                            name: item.name || path.split('/').pop(),
-                            description: item.description,
-                            image: item.icon,
-                            items: deep ? this.querySiteMapItemAssets(path) : undefined,
+                        };
+
+                        for (var itemElement in item) {
+                            value[itemElement] = item[itemElement];
                         }
+
+                        value.path = path;
+                        value.name = item.name || path.split('/').pop();
+                        value.description = item.description;
+                        value.image = item.icon;
+                        value.items = deep ? this.querySiteMapItemAssets(path) : undefined;
+
                         return value;
                     }
                 }

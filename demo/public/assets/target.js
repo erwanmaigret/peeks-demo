@@ -28,22 +28,22 @@ PEEKS.registerPage('Target', function() {
     page.addSiteMapItem("clothing/women's clothing", { icon: '52690603'} );
     page.addSiteMapItem("clothing/women's clothing/dresses", { icon: '52922424'} );
     page.addSiteMapItem("clothing/women's clothing/dresses/maxi", { icon: '52833477'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/1", { icon: '52840296'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/2", { icon: '52760285'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/3", { icon: '52833477'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/4", { icon: '52654414'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/5", { icon: '52722444'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/6", { icon: '52132992'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/7", { icon: '52760285'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/8", { icon: '52589309'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/9", { icon: '52090041'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/10", { icon: '52840296'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/11", { icon: '52237779'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/12", { icon: '52363084'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/13", { icon: '52722288'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/14", { icon: '52380730'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/15", { icon: '52090019'} );
-    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/16", { icon: '52535884'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/1", { icon: '52840296', isProduct: true } );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/2", { icon: '52760285', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/3", { icon: '52833477', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/4", { icon: '52654414', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/5", { icon: '52722444', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/6", { icon: '52132992', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/7", { icon: '52760285', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/8", { icon: '52589309', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/9", { icon: '52090041', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/10", { icon: '52840296', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/11", { icon: '52237779', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/12", { icon: '52363084', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/13", { icon: '52722288', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/14", { icon: '52380730', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/15", { icon: '52090019', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/16", { icon: '52535884', isProduct: true} );
     page.addSiteMapItem("clothing/women's clothing/dresses/fit & flare", { icon: '52841027'} );
     page.addSiteMapItem("clothing/women's clothing/dresses/shirt", { icon: '52568060'} );
     page.addSiteMapItem("clothing/women's clothing/dresses/t-shirt", { icon: '52939367'} );
@@ -626,42 +626,43 @@ PEEKS.registerPage('Target', function() {
                 var asset = screen.addAsset({
                     position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
                 });
-                var image = item.product ? item.product : item.image;
-                var imageBack = item.product ? item.product + '_Alt01' : undefined;
+                var image = item.image;
+                var imageBack = item.isProduct ? item.image + '_Alt01' : undefined;
                 var button = asset.addButton({
                     image: image ? imagePath + image : undefined,
                     imageBack: imageBack ? imagePath + imageBack : undefined,
                     path: item.path,
                     valign: 'bottom',
-                    onClick: item.product ? 'animateFlip' : undefined,
+                    onClick: item.isProduct ? 'animateFlip' : undefined,
                 });
                 var yOffset = -.6
-                if (item.product) {
+                if (item.isProduct) {
                     asset.addText({
                         position: [0, yOffset, .1],
                         fontSize: 40,
                         text: 'details',
-                        product: item.product ? item.product : undefined,
+                        product: item.icon,
                         onClick: onToggleProduct,
                     });
                     yOffset -= .2;
-                }
-                if (item.name) {
-                    asset.addText({
-                        position: [0, yOffset, .1],
-                        fontSize: 64,
-                        fontColor: page.fontColorBold,
-                        text: item.name,
-                    });
-                    yOffset -= .1;
-                }
-                if (item.description) {
-                    asset.addText({
-                        position: [0, yOffset, .1],
-                        fontSize: 40,
-                        text: item.description,
-                    });
-                    yOffset -= .1;
+                } else {
+                    if (item.name) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 64,
+                            fontColor: page.fontColorBold,
+                            text: item.name,
+                        });
+                        yOffset -= .1;
+                    }
+                    if (item.description) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 40,
+                            text: item.description,
+                        });
+                        yOffset -= .1;
+                    }
                 }
                 currentItems.push(asset);
             }
