@@ -113,7 +113,7 @@ PEEKS.registerPage('Target', function() {
     page.addSiteMapItem("Featured/Clearance", { icon: 'clearance97188-171020_1508525411214'} );
 
     var imagePath = 'https://target.scene7.com/is/image/Target/';
-    var siteMap = [
+    var siteMapOld = [
         {
             name: 'clothing',
             image: '53451-160411_1460383116963',
@@ -402,7 +402,11 @@ PEEKS.registerPage('Target', function() {
     };
 
     var onClick = function() {
-        page.setSiteMapMenuPath(this.path);
+        if (page.siteMapPathIsLeaf(this.path)) {
+            page.setSiteMapPath(this.path);
+        } else {
+            page.setSiteMapMenuPath(this.path);
+        }
         refresh();
     };
 

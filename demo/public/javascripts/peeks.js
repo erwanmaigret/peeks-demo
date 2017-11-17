@@ -651,6 +651,15 @@
                 this.getSiteMap().items[path] = content || {};
 			},
 
+            siteMapPathIsLeaf: function(path) {
+                var items = this.querySiteMapItemAssets(path);
+                if (items.length === 0) {
+                    return true;
+                } else {
+                    return this.querySiteMapItemAssets(items[0].path).length === 0;
+                }
+            },
+
             querySiteMapItem: function (path, item, deep) {
                 if (this.siteMap !== undefined) {
                     if (item === undefined) {
@@ -676,7 +685,6 @@
             },
 
             querySiteMapAssets: function () {
-                console.log(this.getSiteMapPath());
                 return this.querySiteMapItemAssets(this.getSiteMapPath());
             },
 
