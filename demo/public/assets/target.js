@@ -395,12 +395,6 @@ PEEKS.registerPage('Target', function() {
 
     var currentItems = [];
 
-    var onClickRoot = function() {
-        page.setSiteMapMenuPath(this.path);
-        onToggleMenu();
-        refresh();
-    };
-
     page.onUpdateSiteMapPath = function() {
         refresh();
     };
@@ -510,65 +504,6 @@ PEEKS.registerPage('Target', function() {
         page.setSiteMapMenuPath('');
         page.setSiteMapPath('Promotions');
         refresh();
-    };
-
-    var onToggleMenu = function() {
-        if (menuPopup === undefined) {
-            menuPopup = page.addAsset();
-
-            sphere = menuPopup.addSphere({
-                position: [0, 0, 0],
-                rotation: [0, 0, 0],
-                sides: 'back',
-                size: 4,
-                alpha: .96,
-                onClick: onToggleMenu,
-            });
-
-            menuScreen = menuPopup.addScreen({
-                radius: 3,
-            });
-
-            var itemCountMax = 18;
-            var itemStep = .055;
-
-            var items = page.querySiteMapItemAssets();
-            if (items) {
-                var itemCount = items.length;
-                for (var itemI = 0; itemI < itemCount; itemI++) {
-                    var item = items[itemI];
-                    var xIndex = itemI;
-                    var yOffset = .2;
-                    while (xIndex >= 3) {
-                        yOffset -= .1;
-                        xIndex -= 3;
-                    }
-                    var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
-                    var asset = menuScreen.addButton({
-                        position: [.5, yOffset, 0],
-                        size: [.5, .2, 1],
-                        path: item.path,
-                        viewBgColor: [.98, .98, .98],
-                        onClick: onClickRoot,
-                    }).animate({
-                        duration: .6,
-                        delay: 0,
-                        begin: [0, 0, 0],
-                        end: [xOffset - .5, 0, 0],
-                        attribute: 'position'
-                    });
-                    var button = asset.addText({
-                        position: [0, 0, .01],
-                        fontSize: 48,
-                        text: item.name,
-                    });
-                    currentItems.push(button);
-                }
-            }
-        } else {
-            menuPopup.destroy();
-            menuPopup = undefined;
-        }
     };
 
     var refresh = function() {
@@ -696,7 +631,7 @@ PEEKS.registerPage('Target', function() {
         image: 'images/target_icon_menu.png',
         position: [-.35, -.45],
         size: .08,
-        onClick: onToggleMenu,
+        onClick: 'onShowSiteMapMenu',
     });
 
     canvas.addButton({

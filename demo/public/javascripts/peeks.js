@@ -686,21 +686,24 @@
                 }
             },
 
-            querySiteMapMenuAssets: function () {
-                return this.querySiteMapItemAssets(this.getSiteMapMenuPath());
+            querySiteMapMenuAssets: function (filter) {
+                return this.querySiteMapItemAssets(this.getSiteMapMenuPath(), filter);
             },
 
             querySiteMapAssets: function () {
                 return this.querySiteMapItemAssets(this.getSiteMapPath());
             },
 
-            querySiteMapItemAssets: function (path) {
+            querySiteMapItemAssets: function (path, filter) {
                 var assets = [];
                 var pathPrefix =
                     path !== undefined && path !== ''
                     ? path + '/'
                     : '';
                 for (var key in this.siteMap.items) {
+                    if (filter && filter !== '' && key.split('/').pop().toLowerCase().search(filter.toLowerCase()) === -1) {
+                        continue;
+                    }
                     if (pathPrefix + key.split('/').pop() === key) {
                         assets.push(this.querySiteMapItem(key, this.siteMap.items[key]));
                     }
@@ -1700,15 +1703,19 @@
                 }
 			},
 
-            showSiteMapMenu: function() {
-                analytics('event', 'scene.showSiteMapMenu');
-                if (this.page && this.page.siteMapMenu === undefined) {
-                    this.page.siteMapMenu = this.page.addAsset();
-                }
-                this.refreshSiteMapMenu();
+            onShowSiteMapMenu: function() {
+                this.showSiteMapMenu();
             },
 
-            refreshSiteMapMenu: function() {
+            showSiteMapMenu: function(filter) {
+                if (this.page && this.page.siteMapMenu === undefined) {
+                    analytics('event', 'scene.showSiteMapMenu');
+                    this.page.siteMapMenu = this.page.addAsset();
+                }
+                this.refreshSiteMapMenu(filter);
+            },
+
+            refreshSiteMapMenu: function(filter) {
                 if (this.page && this.page.siteMapMenu) {
                     var page = this.page;
 
@@ -1719,10 +1726,24 @@
                     };
 
                     var onClickSiteMapItem = function() {
-                        page.setSiteMapMenuPath(this.path);
+                        if (page.siteMapPathIsLeaf(this.path)) {
+                            page.setSiteMapPath(this.path);
+                        } else {
+                            page.setSiteMapMenuPath(this.path);
+                        }
                         analytics('event', 'scene.onClickSiteMapMenuItem');
                         onClose();
                     };
+
+                    var animateIn = true;
+                    if (this.page.siteMapMenu.items) {
+                        for (var itemI = 0; itemI < this.page.siteMapMenu.items.length; itemI++) {
+                            this.page.siteMapMenu.items[itemI].destroy();
+                        }
+                        animateIn = false;
+                    }
+
+                    this.page.siteMapMenu.items = [];
 
                     var sphere = page.siteMapMenu.addSphere({
                         position: [0, 0, 0],
@@ -1732,15 +1753,17 @@
                         alpha: .96,
                         onClick: onClose,
                     });
+                    this.page.siteMapMenu.items.push(sphere);
 
                     var menuScreen = page.siteMapMenu.addScreen({
                         radius: 3,
                     });
+                    this.page.siteMapMenu.items.push(menuScreen);
 
                     var itemCountMax = 18;
                     var itemStep = .055;
 
-                    var items = this.page.querySiteMapMenuAssets();
+                    var items = this.page.querySiteMapMenuAssets(filter);
                     if (items) {
                         var itemCount = items.length;
                         for (var itemI = 0; itemI < itemCount; itemI++) {
@@ -1753,23 +1776,28 @@
                             }
                             var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
                             var asset = menuScreen.addButton({
-                                position: [.5, yOffset, 0],
+                                position: [animateIn ? .5 : xOffset, yOffset, 0],
                                 size: [.5, .2, 1],
                                 path: item.path,
                                 viewBgColor: [.98, .98, .98],
                                 onClick: onClickSiteMapItem,
-                            }).animate({
-                                duration: .6,
-                                delay: 0,
-                                begin: [0, 0, 0],
-                                end: [xOffset - .5, 0, 0],
-                                attribute: 'position'
                             });
+
                             var button = asset.addText({
                                 position: [0, 0, .01],
                                 fontSize: 48,
                                 text: item.name,
                             });
+
+                            if (animateIn) {
+                                asset.animate({
+                                    duration: .6,
+                                    delay: 0,
+                                    begin: [0, 0, 0],
+                                    end: [xOffset - .5, 0, 0],
+                                    attribute: 'position'
+                                });
+                            }
                         }
                     }
                 }
@@ -1787,8 +1815,6 @@
                 analytics('event', 'scene.showKeyboard');
 
                 if (this.keyboard === undefined) {
-                    this.showSiteMapMenu();
-
                     this.keyboard = this.addAsset();
 
                     var canvas = this.keyboard.addCanvas({
@@ -1820,6 +1846,7 @@
                             text: bg.textInput !== '' ? bg.textInput : '<type some text>',
                             size: [1, 1 / keys.length, 1],
                         });
+                        bg.getScene().showSiteMapMenu(bg.textInput);
                     };
 
                     var onBack = function () {
