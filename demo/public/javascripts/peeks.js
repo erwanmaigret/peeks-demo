@@ -2139,6 +2139,7 @@
                     var groundFilename = this.page.groundImage;
                     var repeat = 50;
                     var groundColor = [1, 1, 1];
+                    var groundAlpha = 1;
                     if (groundFilename === undefined) {
                         if (category === 'fashion') {
                             groundFilename = 'images/floor_marble_1.jpg';
@@ -2156,6 +2157,9 @@
                         if (this.page.groundImageColor) {
                             groundColor = this.page.groundImageColor;
                         }
+                        if (this.page.groundImageAlpha) {
+                            groundAlpha = this.page.groundImageAlpha;
+                        }
                     }
                     if (groundFilename) {
                         this.groundImage = this.ground.addImage({
@@ -2165,6 +2169,7 @@
                             rotation: [-90, 0, 0],
                             size: 100,
                             color: groundColor,
+                            alpha: groundAlpha,
                         });
                     }
 
@@ -2185,6 +2190,7 @@
                         } else if (category === 'soccer') {
                             backgroundFilename = 'images/bg_360_soccer.jpg';
                         } else if (category === 'white') {
+                        } else if (category === '') {
                         } else {
                             backgroundFilename = 'images/bg_360_canyon.jpg';
                         }
