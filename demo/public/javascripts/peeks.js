@@ -1104,7 +1104,10 @@
 				this.onRender();
 			},
 
-			onRender: function() {
+            onRender: function() {
+			},
+
+            onUpdateSiteMapPath: function() {
 			},
 
             getScene: function() {
@@ -1697,15 +1700,102 @@
                 }
 			},
 
+            showSiteMapMenu: function() {
+                analytics('event', 'scene.showSiteMapMenu');
+                if (this.page && this.page.siteMapMenu === undefined) {
+                    this.page.siteMapMenu = this.page.addAsset();
+                }
+                this.refreshSiteMapMenu();
+            },
+
+            refreshSiteMapMenu: function() {
+                if (this.page && this.page.siteMapMenu) {
+                    var page = this.page;
+
+                    var onClose = function() {
+                        page.getScene().hideKeyboard();
+                        page.getScene().hideSiteMapMenu();
+                        page.onUpdateSiteMapPath();
+                    };
+
+                    var onClickSiteMapItem = function() {
+                        page.setSiteMapMenuPath(this.path);
+                        analytics('event', 'scene.onClickSiteMapMenuItem');
+                        onClose();
+                    };
+
+                    var sphere = page.siteMapMenu.addSphere({
+                        position: [0, 0, 0],
+                        rotation: [0, 0, 0],
+                        sides: 'back',
+                        size: 4,
+                        alpha: .96,
+                        onClick: onClose,
+                    });
+
+                    var menuScreen = page.siteMapMenu.addScreen({
+                        radius: 3,
+                    });
+
+                    var itemCountMax = 18;
+                    var itemStep = .055;
+
+                    var items = this.page.querySiteMapMenuAssets();
+                    if (items) {
+                        var itemCount = items.length;
+                        for (var itemI = 0; itemI < itemCount; itemI++) {
+                            var item = items[itemI];
+                            var xIndex = itemI;
+                            var yOffset = .2;
+                            while (xIndex >= 3) {
+                                yOffset -= .1;
+                                xIndex -= 3;
+                            }
+                            var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                            var asset = menuScreen.addButton({
+                                position: [.5, yOffset, 0],
+                                size: [.5, .2, 1],
+                                path: item.path,
+                                viewBgColor: [.98, .98, .98],
+                                onClick: onClickSiteMapItem,
+                            }).animate({
+                                duration: .6,
+                                delay: 0,
+                                begin: [0, 0, 0],
+                                end: [xOffset - .5, 0, 0],
+                                attribute: 'position'
+                            });
+                            var button = asset.addText({
+                                position: [0, 0, .01],
+                                fontSize: 48,
+                                text: item.name,
+                            });
+                        }
+                    }
+                }
+            },
+
+            hideSiteMapMenu: function() {
+                if (this.page && this.page.siteMapMenu) {
+                    analytics('event', 'scene.hideSiteMapMenu');
+                    this.page.siteMapMenu.destroy();
+                    this.page.siteMapMenu = undefined;
+                }
+            },
+
             showKeyboard: function() {
                 analytics('event', 'scene.showKeyboard');
 
                 if (this.keyboard === undefined) {
-                    this.keyboard = this.addCanvas({
+                    this.showSiteMapMenu();
+
+                    this.keyboard = this.addAsset();
+
+                    var canvas = this.keyboard.addCanvas({
                         valign: 'bottom',
                     });
 
-                    var bg = this.keyboard.addView({
+                    var bg = canvas.addView({
                         position: [0, -.35],
                         size: [1, .3, 1],
                         viewBgColor: [0, 0, 0],
@@ -1750,7 +1840,6 @@
                             widgetI++)
                         {
                             bg.keyWidgets[widgetI].animateFlip();
-                            console.log('here!');
                         }
                     };
 
@@ -1904,12 +1993,14 @@
 			},
 
             hideKeyboard: function() {
-                analytics('event', 'scene.hideKeyboard');
-
                 if (this.keyboard) {
+                    analytics('event', 'scene.hideKeyboard');
                     this.keyboard.destroy();
                     this.keyboard = undefined;
                 }
+
+                // In case:
+                this.hideSiteMapMenu();
 			},
 
 			setArMode: function(state) {

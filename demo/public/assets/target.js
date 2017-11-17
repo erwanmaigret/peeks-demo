@@ -401,6 +401,10 @@ PEEKS.registerPage('Target', function() {
         refresh();
     };
 
+    page.onUpdateSiteMapPath = function() {
+        refresh();
+    };
+
     var onClick = function() {
         if (page.siteMapPathIsLeaf(this.path)) {
             page.setSiteMapPath(this.path);
@@ -513,7 +517,6 @@ PEEKS.registerPage('Target', function() {
             menuPopup = page.addAsset();
 
             sphere = menuPopup.addSphere({
-                //image: backgroundFilename,
                 position: [0, 0, 0],
                 rotation: [0, 0, 0],
                 sides: 'back',
@@ -722,6 +725,7 @@ PEEKS.registerPage('Target', function() {
         text: 'search',
         fontColor: [.3, .3, .3],
         size: .08,
+        onClick: 'searchPage',
     })
 
 
