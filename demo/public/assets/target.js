@@ -22,6 +22,96 @@ PEEKS.registerPage('Target', function() {
         radius: 5,
     });
 
+    page.setAssetPath('https://target.scene7.com/is/image/Target/');
+
+    page.addSiteMapItem('clothing', { icon: '53451-160411_1460383116963'} );
+    page.addSiteMapItem("clothing/women's clothing", { icon: '52690603'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses", { icon: '52922424'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi", { icon: '52833477'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/1", { icon: '52840296'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/2", { icon: '52760285'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/3", { icon: '52833477'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/4", { icon: '52654414'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/5", { icon: '52722444'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/6", { icon: '52132992'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/7", { icon: '52760285'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/8", { icon: '52589309'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/9", { icon: '52090041'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/10", { icon: '52840296'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/11", { icon: '52237779'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/12", { icon: '52363084'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/13", { icon: '52722288'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/14", { icon: '52380730'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/15", { icon: '52090019'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/16", { icon: '52535884'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/fit & flare", { icon: '52841027'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/shirt", { icon: '52568060'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/t-shirt", { icon: '52939367'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/shift", { icon: '52514130'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/jumpsuits & rompers", { icon: '52722404'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/floral", { icon: '51962176'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/ruffle detail", { icon: '52050580'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/midi", { icon: '51980268'} );
+    page.addSiteMapItem("clothing/women's clothing/juniors", { icon: '52760000'} );
+    page.addSiteMapItem("clothing/women's clothing/maternity", { icon: '52648512'} );
+    page.addSiteMapItem("clothing/women's clothing/plus size clothing", { icon: '52845920'} );
+    page.addSiteMapItem("clothing/women's clothing/new arrivals", { icon: '52509758'} );
+    page.addSiteMapItem("clothing/women's clothing/activewear", { icon: '52044488'} );
+    page.addSiteMapItem("clothing/women's clothing/athleisure", { icon: '51014419'} );
+    page.addSiteMapItem("clothing/women's clothing/coats & jackets", { icon: '52922427'} );
+    page.addSiteMapItem("clothing/women's clothing/jumpsuits & rompers", { icon: '52722404'} );
+    page.addSiteMapItem("clothing/women's clothing/leggings", { icon: '51002014'} );
+    page.addSiteMapItem("clothing/women's clothing/pajamas & robes", { icon: '52809347'} );
+    page.addSiteMapItem("clothing/women's clothing/pants", { icon: '52922490'} );
+    page.addSiteMapItem("clothing/men's clothing", { icon: '52507016'} );
+    page.addSiteMapItem("clothing/girl's clothing", { icon: '52595777'} );
+    page.addSiteMapItem("clothing/boys's clothing", { icon: '52373399'} );
+    page.addSiteMapItem("clothing/toddler clothing", { icon: '52706606'} );
+    page.addSiteMapItem("clothing/baby clothing", { icon: '52376100'} );
+    page.addSiteMapItem("clothing/school uniforms", { icon: '52383471'} );
+    page.addSiteMapItem("clothing/adaptive clothing", { icon: '52724490'} );
+    page.addSiteMapItem("clothing/family outfits", { icon: '52804140'} );
+    page.addSiteMapItem("shoes", { icon: '53451-160411_1460383139759'} );
+    page.addSiteMapItem("accessories", { icon: '53451-160411_1460383161792'} );
+    page.addSiteMapItem("home", { icon: '61480-160630_1467310167162'} );
+    page.addSiteMapItem("furniture", { icon: '53476-160411_1460402362708'} );
+    page.addSiteMapItem("patio & garden", { icon: '53476-160411_1460402380575'} );
+    page.addSiteMapItem("luggage", { icon: '57687-160505_1462459899971'} );
+    page.addSiteMapItem("all baby", { icon: '53452-160411_1460402021722'} );
+    page.addSiteMapItem("baby clothing", { icon: '53452-160411_1460402035275'} );
+    page.addSiteMapItem("baby shoes", { icon: '53452-160411_1460402051043'} );
+    page.addSiteMapItem("girls' clothing", { icon: '53452-160411_1460402129559'} );
+    page.addSiteMapItem("girls' shoes", { icon: '53452-160411_1460402148576'} );
+    page.addSiteMapItem("boys' clothing", { icon: '53452-160411_1460402089694'} );
+    page.addSiteMapItem("boys' shoes", { icon: '53452-160411_1460402111660'} );
+    page.addSiteMapItem('Promotions');
+    page.addSiteMapItem("Promotions/Our Black Friday deals", { description: "Get a sneak peek now", icon: '2017_NovWk2_HP_StoryBlocks_v1_21103877-171101_1509556671597'} );
+    page.addSiteMapItem("Promotions/20% off trees, wreaths & lights", { description: "Get your Christmas decor now", icon: '2017_NovWk2_HP_StoryBlocks_v1_03103877-171026_1509030239564'} );
+    page.addSiteMapItem("Promotions/20% off shoes", { description: "Save on styles & sizes for the family", icon: '2017_NovWk2_HP_StoryBlocks_v1_05103877-171025_1508964273152'} );
+    page.addSiteMapItem("Promotions/Xbox One X is here", { description: "The world’s most powerful console yet", icon: '2017_NovWk2_HP_StoryBlocks_v1_08103877-171024_1508869525494'} );
+    page.addSiteMapItem("Promotions/Gather & gobble", { description: "Find all you need for your Thanksgiving feast", icon: 'C-000437-01-046_THR_CROP_2544_MetalGarland103876-171030_1509398096992'} );
+    page.addSiteMapItem("Promotions/Friendsgiving edition", { icon: 'TF_friendsgiving_HP103876-171027_1509126668125'} );
+    page.addSiteMapItem("Promotions/PJs for the whole crew", { icon: '2017_NovWk2_HP_StoryBlocks_v1_03103876-171019_1508446147822'} );
+    page.addSiteMapItem("Featured");
+    page.addSiteMapItem("Featured/Thanksgiving", { icon: 'thanksgiving97188-171025_1508960298143'} );
+    page.addSiteMapItem("Featured/Christmas", { icon: 'christmas97188-171025_1508962692123'} );
+    page.addSiteMapItem("Featured/Kids' gifting", { icon: 'KidsGifts-icon98553-171005_1507224706616'} );
+    page.addSiteMapItem("Featured/Gift Ideas", { icon: '10-22_KidsGifting-CatBrowse-14105040-171024_1508883169598'} );
+    page.addSiteMapItem("Featured/Target Finds", { icon: 'finds105040-171025_1508959860693'} );
+    page.addSiteMapItem("Featured/Clothing", { icon: 'clothing97188-171019_1508445409180'} );
+    page.addSiteMapItem("Featured/Shoes", { icon: 'shoes97188-171025_1508966363467'} );
+    page.addSiteMapItem("Featured/Accessories", { icon: 'accessories97188-171027_1509114673981'} );
+    page.addSiteMapItem("Featured/Baby", { icon: 'baby97188-171025_1508965179518'} );
+    page.addSiteMapItem("Featured/Home", { icon: 'home97188-171019_1508445579038'} );
+    page.addSiteMapItem("Featured/Furniture", { icon: 'furniture97188-171025_1508965473814'} );
+    page.addSiteMapItem("Featured/Kitchen", { icon: 'kitchen97188-171019_1508445075384'} );
+    page.addSiteMapItem("Featured/Electronics", { icon: 'electronics97188-171025_1508966407077'} );
+    page.addSiteMapItem("Featured/Toys", { icon: 'toys97188-171025_1508966907610'} );
+    page.addSiteMapItem("Featured/Entertainment", { icon: 'entertainment97188-171019_1508447521853'} );
+    page.addSiteMapItem("Featured/Beauty", { icon: 'beauty97188-171025_1508965241734'} );
+    page.addSiteMapItem("Featured/Deals", { icon: 'deals97188-171020_1508510709891'} );
+    page.addSiteMapItem("Featured/Clearance", { icon: 'clearance97188-171020_1508525411214'} );
+
     var imagePath = 'https://target.scene7.com/is/image/Target/';
     var siteMap = [
         {
@@ -300,18 +390,19 @@ PEEKS.registerPage('Target', function() {
         },
     ];
 
-    var currentPath = '';
+    page.setSiteMapMenuPath('');
+    page.setSiteMapPath('Promotions');
+
     var currentItems = [];
-    var currentHighlight = [];
 
     var onClickRoot = function() {
-        currentPath = '/' + this.path;
+        page.setSiteMapMenuPath(this.path);
         onToggleMenu();
         refresh();
     };
 
     var onClick = function() {
-        currentPath = currentPath + "/" + this.path;
+        page.setSiteMapMenuPath(this.path);
         refresh();
     };
 
@@ -408,12 +499,8 @@ PEEKS.registerPage('Target', function() {
     var menuPopup;
 
     var onHome = function(path) {
-        if (path) {
-            currentPath = path;
-        } else {
-            currentPath = "";
-        }
-        currentHighlight = siteMap[siteMap.length - 1].highlightItems;
+        page.setSiteMapMenuPath('');
+        page.setSiteMapPath('Promotions');
         refresh();
     };
 
@@ -438,7 +525,7 @@ PEEKS.registerPage('Target', function() {
             var itemCountMax = 18;
             var itemStep = .055;
 
-            var items = siteMap;
+            var items = page.querySiteMapItemAssets();
             if (items) {
                 var itemCount = items.length;
                 for (var itemI = 0; itemI < itemCount; itemI++) {
@@ -453,7 +540,7 @@ PEEKS.registerPage('Target', function() {
                     var asset = menuScreen.addButton({
                         position: [.5, yOffset, 0],
                         size: [.5, .2, 1],
-                        path: item.name,
+                        path: item.path,
                         viewBgColor: [.98, .98, .98],
                         onClick: onClickRoot,
                     }).animate({
@@ -495,20 +582,7 @@ PEEKS.registerPage('Target', function() {
         var itemCountMax = 18;
         var itemStep = .055;
 
-        var paths = currentPath.split('/');
-        var items = siteMap;
-        for (var pathI = 1; pathI < paths.length; pathI++) {
-            for (var itemI = 0; itemI < items.length; itemI++) {
-                if (items[itemI].name === paths[pathI]) {
-                    if (items[itemI].highlightItems) {
-                        currentHighlight = items[itemI].highlightItems;
-                    } else {
-                        items = items[itemI].items;
-                    }
-                    break;
-                }
-            }
-        }
+        var items = page.querySiteMapMenuAssets();
 
         // Current navigation level
         if (items) {
@@ -528,7 +602,7 @@ PEEKS.registerPage('Target', function() {
                 });
                 var button = asset.addButton({
                     image: item.image ? imagePath + item.image : undefined,
-                    path: item.name,
+                    path: item.path,
                     onClick: onClick,
                 })
                 asset.addText({
@@ -540,8 +614,7 @@ PEEKS.registerPage('Target', function() {
             }
         }
 
-        // Highlights
-        items = currentHighlight;
+        items = page.querySiteMapAssets();
         if (items) {
             var itemCount = items.length;
             for (var itemI = 0; itemI < itemCount; itemI++) {
@@ -554,7 +627,7 @@ PEEKS.registerPage('Target', function() {
                 var button = asset.addButton({
                     image: image ? imagePath + image : undefined,
                     imageBack: imageBack ? imagePath + imageBack : undefined,
-                    path: item.name,
+                    path: item.path,
                     valign: 'bottom',
                     onClick: item.product ? 'animateFlip' : undefined,
                 });
@@ -591,16 +664,6 @@ PEEKS.registerPage('Target', function() {
         }
     };
 
-    /*
-    var asset = screen.addButton({
-        position: [0, 1, 0],
-        size: 4,
-        image: 'images/target_logo.png',
-    });
-    */
-
-    // For testing:
-    //onHome("/clothing/women's clothing/dresses/maxi");
     onHome();
 
     var canvas = page.addCanvas({

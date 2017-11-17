@@ -620,6 +620,84 @@
                 xhttp.send();
             },
 
+            getSiteMap: function() {
+                if (this.siteMap === undefined) {
+                    this.siteMap = {
+                        menuPath: '',
+                        path: '',
+                        items: {},
+                    }
+                }
+                return this.siteMap;
+			},
+
+            setSiteMapMenuPath: function(path) {
+                this.getSiteMap().menuPath = path;
+            },
+
+            getSiteMapMenuPath: function(path) {
+                return this.getSiteMap().menuPath;
+            },
+
+            setSiteMapPath: function(path) {
+                this.getSiteMap().path = path;
+            },
+
+            getSiteMapPath: function(path) {
+                return this.getSiteMap().path;
+            },
+
+            addSiteMapItem: function(path, content) {
+                this.getSiteMap().items[path] = content || {};
+			},
+
+            querySiteMapItem: function (path, item, deep) {
+                if (this.siteMap !== undefined) {
+                    if (item === undefined) {
+                        item = this.siteMap.items[path];
+                        if (item !== undefined) {
+                            return this.querySiteMapItem(path, item, true);
+                        }
+                    } else {
+                        var value = {
+                            path: path,
+                            name: item.name || path.split('/').pop(),
+                            description: item.description,
+                            image: item.icon,
+                            items: deep ? this.querySiteMapItemAssets(path) : undefined,
+                        }
+                        return value;
+                    }
+                }
+            },
+
+            querySiteMapMenuAssets: function () {
+                return this.querySiteMapItemAssets(this.getSiteMapMenuPath());
+            },
+
+            querySiteMapAssets: function () {
+                console.log(this.getSiteMapPath());
+                return this.querySiteMapItemAssets(this.getSiteMapPath());
+            },
+
+            querySiteMapItemAssets: function (path) {
+                var assets = [];
+                var pathPrefix =
+                    path !== undefined && path !== ''
+                    ? path + '/'
+                    : '';
+                for (var key in this.siteMap.items) {
+                    if (pathPrefix + key.split('/').pop() === key) {
+                        assets.push(this.querySiteMapItem(key, this.siteMap.items[key]));
+                    }
+                }
+                return assets;
+            },
+
+            setAssetPath: function(path) {
+                this.assetPath = path;
+			},
+
 			addAsset: function (params) {
 				var asset = new PEEKS.Asset();
 				this.initAsset(asset, params);
