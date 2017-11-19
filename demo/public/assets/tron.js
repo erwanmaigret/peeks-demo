@@ -19,7 +19,7 @@ PEEKS.registerPage('tron', function() {
         fontSize: 40,
         text: 'go',
         onClick: function() {
-            page.getCamera().speed = 1;
+            page.getCamera().speed = 10;
             this.destroy();
         }
     });
@@ -57,8 +57,8 @@ PEEKS.registerPage('tron', function() {
             }
             moto.trail.ribbons = page.addAsset();
             moto.trail.ribbons.addRibbon({position: [0, .2, 0], points: moto.trail.points });
-            moto.trail.ribbons.addRibbon({position: [0, .1, 0], points: moto.trail.points });
-            moto.trail.ribbons.addRibbon({position: [0, 0, 0], points: moto.trail.points });
+            moto.trail.ribbons.addRibbon({position: [0, .25, 0], points: moto.trail.points });
+            moto.trail.ribbons.addRibbon({position: [0, .3, 0], points: moto.trail.points });
         }
 
         if (moto.trail.points.length >= 2) {
