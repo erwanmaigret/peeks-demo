@@ -1096,11 +1096,35 @@
 					time = (Date.now() - startTime) / 1000;
 				}
 
+                this.timeLast = this.time;
 				this.time = time;
 				this.resetToInitial();
 				for (var childI = 0; childI < this.children.length; childI++) {
 					this.children[childI].update(time);
 				}
+
+                if (this.speed !== undefined && this.speed !== 0 && this.timeLast !== undefined) {
+                    if (this.speedOffset === undefined) {
+                        this.speedOffset = [0, 0, 0];
+                    }
+
+                    var camera = this.getCamera();
+                    if (this === camera) {
+                        var zOffset = -this.speed * (time - this.timeLast);
+                        var offset = this.getScene().onGetCameraTranslation([0, 0, zOffset]);
+                        this.speedOffset = [
+                            this.speedOffset[0] + offset[0],
+                            this.speedOffset[1] + offset[1],
+                            this.speedOffset[2] + offset[2]
+                        ];
+                    }
+                }
+
+                if (this.speedOffset !== undefined) {
+                    this.position[0] += this.speedOffset[0];
+                    this.position[1] += this.speedOffset[1];
+                    this.position[2] += this.speedOffset[2];
+                }
 			},
 
 			render: function() {
@@ -1600,6 +1624,8 @@
 				var manipFactor = event.shiftKey ? .1 : 1;
 				var animAttribute;
 				var animValue;
+                var alt = event.altKey;
+                var isVehicle = this.page && this.page.navigation === 'vehicle';
 				switch (event.keyCode) {
 					case 37: { // Arrow Left
 						if (event.altKey) {
@@ -1613,7 +1639,9 @@
                         break;
                     }
 					case 38: { // Arrow Up
-						if (event.altKey) {
+                        var isPosition = event.altKey;
+                        if (isVehicle) isPosition = !isPosition;
+						if (isPosition) {
                             animAttribute = 'position';
 							animValue = this.onGetCameraTranslation(
                                 [0, 0, -manipFactor]);
@@ -1635,7 +1663,9 @@
         		        break;
         		    }
 					case 40: { // Arrow Down
-						if (event.altKey) {
+                        var isPosition = event.altKey;
+                        if (isVehicle) isPosition = !isPosition;
+						if (isPosition) {
                             animAttribute = 'position';
 							animValue = this.onGetCameraTranslation(
                                 [0, 0, manipFactor]);
