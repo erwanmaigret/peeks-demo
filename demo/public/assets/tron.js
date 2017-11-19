@@ -39,21 +39,32 @@ PEEKS.registerPage('tron', function() {
             });
             moto.trail = {
                 lastPosition: p1.slice(),
+                points: [],
             };
         }
 
         var p0 = moto.trail.lastPosition;
-        var distance = Math.sqrt(
-            (p0[0] - p1[0]) * (p0[0] - p1[0]) +
-            (p0[2] - p1[2]) * (p0[2] - p1[2])
-        );
-
-        if (distance > 1) {
+        var offsetV2 = [p1[0] - p0[0], p1[2] - p0[2]];
+        var distance = Math.sqrt(offsetV2[0] * offsetV2[0] + offsetV2[1] * offsetV2[1]);
+        if (distance > .02) {
             moto.trail.lastPosition = p1.slice();
+            moto.trail.points.push(p1.slice());
+            if (moto.trail.ribbons !== undefined) {
+                moto.trail.ribbons.destroy();
+            }
             var position = this.getScene().computeOffsetFromCamera(offsetFromCamera);
-            page.addRing({
-                position: position,
-                size: .1,
+            moto.trail.ribbons = page.addAsset();
+            moto.trail.ribbons.addRibbon({
+                position: [0, .2, 0],
+                points: moto.trail.points,
+            });
+            moto.trail.ribbons.addRibbon({
+                position: [0, .1, 0],
+                points: moto.trail.points,
+            });
+            moto.trail.ribbons.addRibbon({
+                position: [0, 0, 0],
+                points: moto.trail.points,
             });
         }
     };

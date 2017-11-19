@@ -123,12 +123,21 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                 );
             }
 
-			threeObject.rotation.set(
-                THREE.Math.degToRad(this.rotation[0]),
-                THREE.Math.degToRad(this.rotation[1]),
-                THREE.Math.degToRad(this.rotation[2])
-            );
-			threeObject.rotation.order = this.rotationOrder;
+            if (this.quaternion) {
+                threeObject.quaternion.copy(new THREE.Quaternion(
+                    this.quaternion[0],
+                    this.quaternion[1],
+                    this.quaternion[2],
+                    this.quaternion[3]
+                ));
+            } else {
+    			threeObject.rotation.set(
+                    THREE.Math.degToRad(this.rotation[0]),
+                    THREE.Math.degToRad(this.rotation[1]),
+                    THREE.Math.degToRad(this.rotation[2])
+                );
+    			threeObject.rotation.order = this.rotationOrder;
+            }
 
 			threeObject.scale.set(this.size[0], this.size[1], this.size[2]);
 		}
@@ -288,6 +297,11 @@ PEEKS.Asset.prototype.threeGetVisibility = function() {
 
 function colorToThreeColor(color) {
     return new THREE.Color(color[0], color[1], color[2], 1);
+}
+
+PEEKS.Scene.prototype.onGetCameraQuaternion = function() {
+    var q = this.three.camera.quaternion;
+    return [q.x, q.y, q.z, q.w];
 }
 
 PEEKS.Scene.prototype.onGetCameraTranslation = function(translation) {
@@ -459,7 +473,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         }
 
                         mat.side = THREE.FrontSide;
-                        mat.shading = THREE.SmoothShading;
 
                         if (asset.color !== undefined) {
                             mat.color = asset.color;
@@ -495,6 +508,23 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     //shading: THREE.SmoothShading,
                     depthTest: isScreenSpace ? false : true,
                 });
+                this.threeObject = new THREE.Mesh(geometry, material);
+            } else if (this.primitive === PEEKS.Asset.PrimitiveRibbon) {
+                var points = [];
+                if (this.points) {
+                    for (var pointI = 0; pointI < this.points.length; pointI++) {
+                        points.push(new THREE.Vector3(
+                            this.points[pointI][0],
+                            this.points[pointI][1],
+                            this.points[pointI][2]));
+                    }
+                }
+
+                var geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+                var material = new THREE.LineBasicMaterial();
+
+                this.threeObject = new THREE.Line( geometry, material );
             } else if (this.primitive === PEEKS.Asset.PrimitiveSphere) {
                 var geometry = new THREE.SphereGeometry(1, 32, 32);
                 var material = new THREE.MeshBasicMaterial({

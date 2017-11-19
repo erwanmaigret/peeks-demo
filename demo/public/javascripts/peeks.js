@@ -272,6 +272,12 @@
 				return asset;
 			},
 
+            addRibbon: function (params) {
+				var asset = this.addAsset(params);
+                asset.primitive = Asset.PrimitiveRibbon;
+				return asset;
+			},
+
             addSphere: function (params) {
 				var asset = this.addImage(params);
                 asset.primitive = Asset.PrimitiveSphere;
@@ -784,6 +790,7 @@
     Asset.PrimitiveCircle = 5;
     Asset.PrimitiveSphere = 6;
     Asset.PrimitiveCurvedPanel = 7;
+    Asset.PrimitiveRibbon = 8;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -1448,6 +1455,10 @@
                     this.camera.position[1] + offset[1],
                     this.camera.position[2] + offset[2]
                 ];
+            },
+
+            onGetCameraQuaternion: function() {
+                return [0, 0, 0, 1];
             },
 
             onGetCameraTranslation: function(translation) {
