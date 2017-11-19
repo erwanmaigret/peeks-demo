@@ -2,6 +2,7 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
     removeBackground)
 {
 	if (textureUrl != '') {
+        console.log(textureUrl);
 		var loader = new THREE.TextureLoader();
 
 		//loader.setCrossOrigin(null);

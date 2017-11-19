@@ -6,14 +6,9 @@ PEEKS.registerPage('Fortinet', function() {
         fontName: 'Helvetica Neue',
         bgColor: [0, 0, 0],
         category: '',
-        groundImage: 'images/floor_network.jpg',
+        groundImage: '/images/floor_network.jpg',
         groundImageRepeat: 200,
         groundImageAlpha: 1,
-        //groundImageRepeat: 50,
-        //groundImageColor: [225/255, 255/255, 252/255],
-        //groundImageColor: [141/255, 201/255, 195/255],
-        //backgroundImage: 'ui/gradient.png',
-        // title: 'Target'
     });
 
 	var panel = page.addAsset();
@@ -90,8 +85,8 @@ PEEKS.registerPage('Fortinet', function() {
             position: position,
         });
         asset.addGeometry({
-            geometry: 'assets/network_raid-nas.obj',
-            texture: 'assets/network_raid-nas.jpg',
+            geometry: '/assets/network_raid-nas.obj',
+            texture: '/assets/network_raid-nas.jpg',
             position: [0, 0, 0],
             rotation: [0, 0, 0],
             size: .05,

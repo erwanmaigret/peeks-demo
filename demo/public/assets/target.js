@@ -6,14 +6,9 @@ PEEKS.registerPage('Target', function() {
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
         category: 'white',
-        //groundImage: 'ui/icon_dot.png',
-        //groundImageRepeat: 50,
-        //groundImageColor: [225/255, 255/255, 252/255],
-        //groundImageColor: [141/255, 201/255, 195/255],
-        groundImage: 'ui/gradient_radial.png',
+        groundImage: '/ui/gradient_radial.png',
         groundImageRepeat: 1,
-        backgroundImage: 'ui/gradient.png',
-        // title: 'Target'
+        backgroundImage: '/ui/gradient.png',
     });
 
 	var panel = page.addAsset();
@@ -621,33 +616,33 @@ PEEKS.registerPage('Target', function() {
     });
 
     canvas.addButton({
-        image: 'images/target_icon_logo.png',
+        image: '/images/target_icon_logo.png',
         position: [-.45, -.45],
         size: .08,
         onClick: onHome,
     });
 
     canvas.addButton({
-        image: 'images/target_icon_menu.png',
+        image: '/images/target_icon_menu.png',
         position: [-.35, -.45],
         size: .08,
         onClick: 'onShowSiteMapMenu',
     });
 
     canvas.addButton({
-        image: 'images/target_icon_account.png',
+        image: '/images/target_icon_account.png',
         position: [.25, -.45],
         size: .08,
     });
 
     canvas.addButton({
-        image: 'images/target_icon_cart.png',
+        image: '/images/target_icon_cart.png',
         position: [.35, -.45],
         size: .08,
     });
 
     canvas.addButton({
-        image: 'ui/icon_vr.png',
+        image: '/ui/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,

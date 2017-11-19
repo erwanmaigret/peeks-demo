@@ -7,27 +7,27 @@ PEEKS.registerPage('3D Assets', function() {
 
     page.addCurvedPanel({
         size: 5,
-        texture: 'images/logo_lacoste.png',
+        texture: '/images/logo_lacoste.png',
         rotation: [20, 0, 0],
     });
 
     page.addCurvedPanel({
         size: 5,
-        texture: 'images/logo_converse.png',
+        texture: '/images/logo_converse.png',
         position: [0, 1],
         rotation: [0, 30, 0],
     });
 
     page.addCurvedPanel({
         size: 5,
-        texture: 'images/logo_converse.png',
+        texture: '/images/logo_converse.png',
         position: [0, 1],
         rotation: [0, -30, 0],
     });
 
     page.addGeometry({
-		geometry: 'assets/converse.obj',
-		texture: 'assets/converse.jpg',
+		geometry: '/assets/converse.obj',
+		texture: '/assets/converse.jpg',
 		position: [-1, 0, -3],
 		rotation: [0, 0, 0],
 		size: .05,
@@ -38,15 +38,15 @@ PEEKS.registerPage('3D Assets', function() {
         position: [0, .5, -3],
         onClick: 'animateRotate90',
     }).addGeometry({
-		geometry: 'assets/lacoste_polo_shirt.obj',
-		texture: 'assets/lacoste_polo_shirt.jpg',
+		geometry: '/assets/lacoste_polo_shirt.obj',
+		texture: '/assets/lacoste_polo_shirt.jpg',
         rotation: [-90, 0, 0],
 		size: .02,
 	});
 
     page.addGeometry({
-        geometry: 'assets/black_leather_shoes.obj',
-        texture: 'assets/black_leather_shoes.png',
+        geometry: '/assets/black_leather_shoes.obj',
+        texture: '/assets/black_leather_shoes.png',
         position: [1.5, 0, -3],
         rotation: [0, 200, 0],
         size: .1,

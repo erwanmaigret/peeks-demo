@@ -25,7 +25,7 @@ function createVirtualModal(page, position) {
     var fabric = undefined;
 
     var getGeometryUrl = function (part) {
-        return "assets/" + modelName + "_" + pose + "_" + size + "_" + part + ".obj";
+        return "/assets/" + modelName + "_" + pose + "_" + size + "_" + part + ".obj";
     };
 
     var onSetClothMaterial = function(caller) {
@@ -80,7 +80,7 @@ function createVirtualModal(page, position) {
 
         model.body = model.addGeometry({
             geometry: getGeometryUrl("body"),
-            texture: 'assets/woman_body.png',
+            texture: '/assets/woman_body.png',
             color: skin,
             material: {
                 emissive: [.1, .05, .05],
@@ -89,7 +89,7 @@ function createVirtualModal(page, position) {
         });
         model.shoes = model.addGeometry({
             geometry: getGeometryUrl("highHeels"),
-            texture: 'assets/material_suede.jpg',
+            texture: '/assets/material_suede.jpg',
         });
 
         if (outfit === 'pants') {
@@ -127,11 +127,11 @@ function createVirtualModal(page, position) {
             });
             model.blouse = model.addGeometry({
         		geometry: getGeometryUrl("j_blouse"),
-                texture: 'assets/material_white.jpg',
+                texture: '/assets/material_white.jpg',
                 material: {
                     emissive: [.05, .05, .1],
                     shininess: 10,
-                    normalMap: 'assets/material_suede_normal.jpg',
+                    normalMap: '/assets/material_suede_normal.jpg',
                 },
             });
         }
@@ -139,10 +139,10 @@ function createVirtualModal(page, position) {
         if (outfit === 'underwear') {
             model.underwear = model.addGeometry({
         		geometry: getGeometryUrl("underwear"),
-                texture: fabric.map === 'assets/material_dark.jpg'
-                    ? 'assets/woman_underwear_transparency.png'
+                texture: fabric.map === '/assets/material_dark.jpg'
+                    ? '/assets/woman_underwear_transparency.png'
                     : fabric.map,
-                alpha: fabric.map === 'assets/material_dark.jpg'
+                alpha: fabric.map === '/assets/material_dark.jpg'
                     ? .7
                     : 1,
                 material: {
@@ -154,13 +154,13 @@ function createVirtualModal(page, position) {
         }
         model.iris = model.addGeometry({
             geometry: getGeometryUrl("iris"),
-            texture: 'assets/woman_iris.png',
+            texture: '/assets/woman_iris.png',
         });
         model.sclera = model.addGeometry({
             geometry: getGeometryUrl("sclera"),
-            texture: 'assets/woman_sclera.png',
+            texture: '/assets/woman_sclera.png',
             material: {
-                alphaMap: 'assets/woman_sclera_alpha.png'
+                alphaMap: '/assets/woman_sclera_alpha.png'
             }
         });
     };
@@ -223,78 +223,78 @@ function createVirtualModal(page, position) {
 
 
     var defaultMaterial = panel.addButton({
-        texture: 'assets/material_red_satin.jpg',
+        texture: '/assets/material_red_satin.jpg',
         position: [0, .15, 0],
         size: .1,
         material: {
             emissive: [.1,.1,.1],
             shininess: 10,
             normalMap: undefined,
-            map: 'assets/material_red_satin.jpg',
+            map: '/assets/material_red_satin.jpg',
         },
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/material_red_velvet.jpg',
+        texture: '/assets/material_red_velvet.jpg',
         size: .1,
         material: {
             emissive: [.1,0,0],
             shininess: 2,
-            normalMap: 'assets/material_velvet_normal.jpg',
-            map: 'assets/material_red_velvet.jpg',
+            normalMap: '/assets/material_velvet_normal.jpg',
+            map: '/assets/material_red_velvet.jpg',
         },
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/material_suede.jpg',
+        texture: '/assets/material_suede.jpg',
         position: [0, -.15, 0],
         size: .1,
         material: {
             emissive: [.1,.1,.1],
             shininess: 5,
-            normalMap: 'assets/material_suede_normal.jpg',
-            map: 'assets/material_suede.jpg',
+            normalMap: '/assets/material_suede_normal.jpg',
+            map: '/assets/material_suede.jpg',
         },
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/material_blue_satin.jpg',
+        texture: '/assets/material_blue_satin.jpg',
         position: [0, -.3, 0],
         size: .1,
         material: {
             emissive: [.05,.05,.1],
             shininess: 5,
-            normalMap: 'assets/material_suede_normal.jpg',
-            map: 'assets/material_blue_satin.jpg',
+            normalMap: '/assets/material_suede_normal.jpg',
+            map: '/assets/material_blue_satin.jpg',
         },
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/material_white.jpg',
+        texture: '/assets/material_white.jpg',
         position: [0, -.45, 0],
         size: .1,
         material: {
             emissive: [.1,.0,.0],
             shininess: 2,
-            normalMap: 'assets/material_velvet_normal.jpg',
-            map: 'assets/material_white.jpg',
+            normalMap: '/assets/material_velvet_normal.jpg',
+            map: '/assets/material_white.jpg',
         },
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/material_dark.jpg',
+        texture: '/assets/material_dark.jpg',
         position: [0, -.6, 0],
         size: .1,
         material: {
             emissive: [.0,.0,.1],
             shininess: 5,
-            map: 'assets/material_dark.jpg',
+            map: '/assets/material_dark.jpg',
         },
         onClick: onSetClothMaterial,
     });
 
     panel.addButton({
-        texture: 'assets/woman_body.png',
+        texture: '/assets/woman_body.png',
         position: [0, -.9, 0],
         color: [1, 1, 1],
         size: .1,
@@ -305,7 +305,7 @@ function createVirtualModal(page, position) {
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/woman_body.png',
+        texture: '/assets/woman_body.png',
         position: [0, -1.05, 0],
         color: [1, 1, 0.6],
         size: .1,
@@ -316,7 +316,7 @@ function createVirtualModal(page, position) {
         onClick: onSetClothMaterial,
     });
     panel.addButton({
-        texture: 'assets/woman_body.png',
+        texture: '/assets/woman_body.png',
         position: [0, -1.2, 0],
         color: [.45, .45, .45],
         size: .1,

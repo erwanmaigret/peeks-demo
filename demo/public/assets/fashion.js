@@ -84,8 +84,8 @@ PEEKS.registerPage('2D Assets', function() {
         });
 
         panel.addButton({
-            image: 'images/' + assets[assetI][0],
-            imageBack: 'images/' + assets[assetI][1],
+            image: '/images/' + assets[assetI][0],
+            imageBack: '/images/' + assets[assetI][1],
             //position: [-1 + assetI * 2 / assets.length, 0, 0],
             onClick: showInfo,
         });

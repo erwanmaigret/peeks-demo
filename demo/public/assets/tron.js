@@ -1,5 +1,5 @@
 PEEKS.registerPage('tron', function() {
-    var gridImage = 'images/floor_network.jpg';
+    var gridImage = '/images/floor_network.jpg';
     var gridRepeat = 200;
 
 	var page = new PEEKS.Asset({
@@ -32,7 +32,7 @@ PEEKS.registerPage('tron', function() {
 
         if (moto == undefined) {
             moto = page.addGeometry({
-                geometry: 'assets/tron_moto.obj',
+                geometry: '/assets/tron_moto.obj',
                 size: .02,
                 rotation: [0, 180, 0],
                 position: p1,

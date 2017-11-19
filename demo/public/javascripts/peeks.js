@@ -721,6 +721,18 @@
                 this.assetPath = path;
 			},
 
+            getAssetPath: function(url) {
+                if (url) {
+                    if (url.search('://') !== -1 || url.substr(0, 1) === '/') {
+                        return url;
+                    } else {
+                        return this.assetPath + url;
+                    }
+                } else {
+                    return this.assetPath;
+                }
+			},
+
 			addAsset: function (params) {
 				var asset = new PEEKS.Asset();
 				this.initAsset(asset, params);
@@ -2201,12 +2213,12 @@
                     var groundAlpha = 1;
                     if (groundFilename === undefined) {
                         if (category === 'fashion') {
-                            groundFilename = 'images/floor_marble_1.jpg';
+                            groundFilename = '/images/floor_marble_1.jpg';
                             //groundColor = [.4, .4, .4];
                         } else if (category === 'shopping') {
-                            groundFilename = 'images/floor_marble_4.jpg';
+                            groundFilename = '/images/floor_marble_4.jpg';
                         } else if (category === 'entertainment') {
-                            groundFilename = 'images/floor_dot_1.jpg';
+                            groundFilename = '/images/floor_dot_1.jpg';
                         } else if (category === 'soccer') {
                         }
                     } else {
@@ -2239,19 +2251,19 @@
                     var backgroundFilename = page.backgroundImage;
                     if (backgroundFilename === undefined) {
                         if (category === 'fashion') {
-                            backgroundFilename = 'images/bg_360_place.jpg';
+                            backgroundFilename = '/images/bg_360_place.jpg';
                         } else if (category === 'shopping') {
-                            backgroundFilename = 'images/bg_360_interior2.jpg';
+                            backgroundFilename = '/images/bg_360_interior2.jpg';
                         } else if (category === 'entertainment') {
-                            backgroundFilename = 'images/bg_360_interior1.jpg';
+                            backgroundFilename = '/images/bg_360_interior1.jpg';
                         } else if (category === 'outdoor') {
-                            backgroundFilename = 'images/bg_360_bridge.jpg';
+                            backgroundFilename = '/images/bg_360_bridge.jpg';
                         } else if (category === 'soccer') {
-                            backgroundFilename = 'images/bg_360_soccer.jpg';
+                            backgroundFilename = '/images/bg_360_soccer.jpg';
                         } else if (category === 'white') {
                         } else if (category === '') {
                         } else {
-                            backgroundFilename = 'images/bg_360_canyon.jpg';
+                            backgroundFilename = '/images/bg_360_canyon.jpg';
                         }
                     }
                     if (backgroundFilename) {
@@ -2687,14 +2699,14 @@ PEEKS.registerPage('peeks_toolbar', function() {
     */
 
     canvas.addRoundIconButton({
-		icon: 'ui/icon_previous.png',
+		icon: '/ui/icon_previous.png',
 		position: [-.45, height],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
-		icon: 'ui/icon_next.png',
+		icon: '/ui/icon_next.png',
         position: [-.35, height],
 		size: .08,
 		onClick: 'loadNextPage',
@@ -2710,7 +2722,7 @@ PEEKS.registerPage('peeks_toolbar', function() {
 
     if (PEEKS.isPhone()) {
         canvas.addRoundIconButton({
-    		icon: 'ui/icon_gyroscope.png',
+    		icon: '/ui/icon_gyroscope.png',
     		position: [.35, height],
     		size: .08,
     		onClick: function() { this.getScene().toggleGyroscope(); },
@@ -2724,15 +2736,6 @@ PEEKS.registerPage('peeks_toolbar', function() {
             onClick: function() { this.getScene().toggleVrMode(); },
         });
     }
-
-/*
-    canvas.addButton({
-        image: 'ui/icon_peeks.png',
-        position: [0, height],
-        size: [.2, .1, 1],
-        onClick: 'loadHomePage',
-    }).addAttrAlias('color', 'fontColor');
-*/
 
     canvas.addTextButton({
         position: [0, height],
@@ -2781,7 +2784,7 @@ PEEKS.registerPage('Peeks', function() {
     });
 
     canvas.addButton({
-        image: 'ui/icon_peeks.png',
+        image: '/ui/icon_peeks.png',
         position: [0, 0],
         size: [.4, .2, 1],
     }).addAttrAlias('color', 'colorMedium');
