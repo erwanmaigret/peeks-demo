@@ -332,7 +332,7 @@ function createVirtualModal(page, position) {
     return femaleHigh;
 }
 
-PEEKS.registerPage('VirtualModel', function() {
+PEEKS.registerPage('virtualmodel', function() {
     var page = new PEEKS.Asset({
         category: 'white',
     });
