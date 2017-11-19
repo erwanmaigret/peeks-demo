@@ -224,7 +224,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             threeObject.rotation.y = -Math.PI / 2 + alpha;
             threeObject.rotation.z = 0;
 
-            var zoom = 1;
             var zoom = Math.abs(
                 scene.three.camera.quaternion.dot(threeObject.quaternion));
             if (zoom < .95) {
@@ -880,10 +879,13 @@ PEEKS.Scene.prototype.onStart = function() {
         console.log(a_scene);
         scene = a_scene.object3D;
     }
-	var ambient = new THREE.AmbientLight( 0x101030 );
+	var ambient = new THREE.AmbientLight( 0x101010 );
 	scene.add(ambient);
-	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight.position.set( 0, 0, 1 );
+	var directionalLight = new THREE.DirectionalLight( 0xdddddd );
+	directionalLight.position.set(0, 0, -1);
+	scene.add( directionalLight );
+    var directionalLight = new THREE.DirectionalLight( 0xdddddd );
+	directionalLight.position.set(0, 0, 1);
 	scene.add( directionalLight );
 
     var addCssLayer = false;
