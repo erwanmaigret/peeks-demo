@@ -2,10 +2,7 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
     removeBackground)
 {
 	if (textureUrl != '') {
-        console.log(textureUrl);
 		var loader = new THREE.TextureLoader();
-
-		//loader.setCrossOrigin(null);
         var mat = material;
         var detour = removeBackground;
 		material.map = loader.load(textureUrl,
