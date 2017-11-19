@@ -124,7 +124,7 @@ PEEKS.registerPage('sportrade', function() {
                 asset.addView({
                     position: [0, -1, -.3],
                     size: [1.4, 2, 1],
-                    alpha: .3,
+                    alpha: .6,
                     viewBgColor: [0, 0, 0],
                 });
 
