@@ -1091,10 +1091,15 @@
 				this.geometryUrl = url;
 			},
 
+            onUpdate: function() {
+            },
+
 			update: function(time) {
 				if (time == undefined) {
 					time = (Date.now() - startTime) / 1000;
 				}
+
+                this.onUpdate(time);
 
                 this.timeLast = this.time;
 				this.time = time;
@@ -1435,6 +1440,15 @@
                 analytics('event', 'scene.onPickNode');
 				logDebug('onPickNode');
 			},
+
+            computeOffsetFromCamera: function(offset) {
+                var offset = this.onGetCameraTranslation(offset);
+                return [
+                    this.camera.position[0] + offset[0],
+                    this.camera.position[1] + offset[1],
+                    this.camera.position[2] + offset[2]
+                ];
+            },
 
             onGetCameraTranslation: function(translation) {
                 return [

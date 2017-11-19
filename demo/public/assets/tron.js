@@ -1,24 +1,17 @@
 PEEKS.registerPage('tron', function() {
+    var gridImage = 'images/floor_network.jpg';
+    var gridRepeat = 200;
+
 	var page = new PEEKS.Asset({
         fontColor: [1, 1, 1],
-        fontColorBold: [197/255, 1/255, 0],
         fontOutlineStyle: '',
         fontName: 'Helvetica Neue',
         bgColor: [0, 0, 0],
         category: '',
-        groundImage: 'images/floor_network.jpg',
-        groundImageRepeat: 200,
-        groundImageAlpha: 1,
+        groundImage: gridImage,
+        groundImageRepeat: gridRepeat,
         navigation: 'vehicle',
-        cameraSpeed: 1,
-        //groundImageRepeat: 50,
-        //groundImageColor: [225/255, 255/255, 252/255],
-        //groundImageColor: [141/255, 201/255, 195/255],
-        //backgroundImage: 'ui/gradient.png',
-        // title: 'Target'
     });
-
-	var panel = page.addAsset();
 
     var canvas = page.addCanvas();
 
@@ -30,6 +23,40 @@ PEEKS.registerPage('tron', function() {
             this.destroy();
         }
     });
+
+    var moto;
+    var offsetFromCamera = [0, -1, -4];
+
+    page.onUpdate = function() {
+        var p1 = this.getScene().computeOffsetFromCamera(offsetFromCamera);
+
+        if (moto == undefined) {
+            moto = this.getScene().getCamera().addGeometry({
+                geometry: 'assets/tron_moto.obj',
+                size: .02,
+                rotation: [0, 180, 0],
+                position: offsetFromCamera,
+            });
+            moto.trail = {
+                lastPosition: p1.slice(),
+            };
+        }
+
+        var p0 = moto.trail.lastPosition;
+        var distance = Math.sqrt(
+            (p0[0] - p1[0]) * (p0[0] - p1[0]) +
+            (p0[2] - p1[2]) * (p0[2] - p1[2])
+        );
+
+        if (distance > 1) {
+            moto.trail.lastPosition = p1.slice();
+            var position = this.getScene().computeOffsetFromCamera(offsetFromCamera);
+            page.addRing({
+                position: position,
+                size: .1,
+            });
+        }
+    };
 
 	return page;
 });
