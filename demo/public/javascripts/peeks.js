@@ -1457,6 +1457,10 @@
                 ];
             },
 
+            getCameraQuaternion: function() {
+                return this.onGetCameraQuaternion();
+            },
+
             onGetCameraQuaternion: function() {
                 return [0, 0, 0, 1];
             },

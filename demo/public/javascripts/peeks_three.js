@@ -88,7 +88,7 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
 	}
 }
 
-var setObjectQuaternion = function(quaternion, alpha, beta, gamma, orient) {
+PEEKS.ThreeSetObjectQuaternion = function(quaternion, alpha, beta, gamma, orient) {
     var zee = new THREE.Vector3( 0, 0, 1 );
     var euler = new THREE.Euler();
     var q0 = new THREE.Quaternion();
@@ -97,6 +97,27 @@ var setObjectQuaternion = function(quaternion, alpha, beta, gamma, orient) {
     quaternion.setFromEuler( euler ); // orient the device
     quaternion.multiply( q1 ); // camera looks out the back of the device, not the top
     quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
+}
+
+PEEKS.ThreeTextureLoader = function(path) {
+    if (path) {
+        var loader = new THREE.TextureLoader();
+        if (/^data:/.test(path)) {
+            loader.setCrossOrigin(path);
+        } else {
+            loader.setCrossOrigin('');
+        }
+        return loader.load(path);
+    }
+}
+
+PEEKS.ThreeColor = function(value, defaultValue) {
+    value = value || defaultValue || [0, 0, 0];
+    return new THREE.Color(value[0], value[1], value[2], 1);
+}
+
+PEEKS.ThreeFloat = function(value, defaultValue) {
+    return value || defaultValue || 0;
 }
 
 PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
@@ -149,7 +170,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                 var gamma = scene.deviceOrientation.gamma;
                 var orient = scene.screenOrientation || 0;
                 threeObject.rotation.order = 'YXZ';
-                setObjectQuaternion(threeObject.quaternion,
+                PEEKS.ThreeSetObjectQuaternion(threeObject.quaternion,
                     THREE.Math.degToRad(alpha),
                     THREE.Math.degToRad(beta),
                     THREE.Math.degToRad(gamma),
@@ -393,7 +414,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
     var threeObject = asset.threeObject;
     if (threeObject && threeObject.children.length == 1) {
-        // Geometries are attached to the 1st child node
         var geometry = threeObject.children[0];
         geometry.traverse(
             function (child) {
@@ -401,83 +421,18 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                     if (child.geometry && child.material) {
                         var mat = child.material;
                         var refMat = asset.material || {};
-
                         mat.map = geometry.texture;
-
                         mat.transparent = true;
-
-                        mat.opacity =
-                            asset.alpha !== undefined
-                            ? asset.alpha
-                            : 1;
-
-                        mat.reflectivity =
-                            refMat.reflectivity !== undefined
-                            ? refMat.reflectivity
-                            : .2;
-
-                        mat.shininess =
-                            refMat.shininess !== undefined
-                            ? refMat.shininess
-                            : 10;
-
-                        mat.emissive =
-                            refMat.emissive !== undefined
-                            ? new THREE.Color(
-                                refMat.emissive[0],
-                                refMat.emissive[1],
-                                refMat.emissive[2])
-                            : new THREE.Color(.05, .05, .05);
-
-                        mat.specular =
-                            refMat.specular !== undefined
-                            ? new THREE.Color(
-                                refMat.specular[0],
-                                refMat.specular[1],
-                                refMat.specular[2])
-                            : new THREE.Color(.05, .05, .05);
-
-                        // map.specularMap =
-                        // map.bumpMap =
-                        // map.aoMap =
-                        // map.normalMap =
-
-                        if (refMat.normalMap) {
-							var loader = new THREE.TextureLoader();
-							if (/^data:/.test(refMat.normalMap)) {
-								loader.setCrossOrigin(refMat.normalMap);
-							} else {
-								loader.setCrossOrigin('');
-							}
-							mat.normalMap = loader.load(refMat.normalMap);
-                        }
-
-                        if (refMat.alphaMap) {
-							var loader = new THREE.TextureLoader();
-							if (/^data:/.test(refMat.alphaMap)) {
-								loader.setCrossOrigin(refMat.alphaMap);
-							} else {
-								loader.setCrossOrigin('');
-							}
-							mat.alphaMap = loader.load(refMat.alphaMap);
-                        }
-
-                        if (refMat.bumpMap) {
-							var loader = new THREE.TextureLoader();
-							if (/^data:/.test(refMat.bumpMap)) {
-								loader.setCrossOrigin(refMat.bumpMap);
-							} else {
-								loader.setCrossOrigin('');
-							}
-							mat.bumpMap = loader.load(refMat.bumpMap);
-                        }
-
+                        mat.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
+                        mat.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
+                        mat.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
+                        mat.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                        mat.specular = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                        mat.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
+                        mat.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
+                        mat.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
+                        mat.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         mat.side = THREE.FrontSide;
-
-                        if (asset.color !== undefined) {
-                            mat.color = asset.color;
-                        }
-
                         child.geometry.computeFaceNormals();
                     }
                 }
