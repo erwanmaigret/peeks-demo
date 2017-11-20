@@ -1738,7 +1738,19 @@
 			},
 
 			onMouseWheel: function (event) {
+                logDebug('onMouseWheel');
 				event.preventDefault();
+                var position = this.camera.position;
+                var offset = this.onGetCameraTranslation([
+                    event.deltaX * .01,
+                    0,
+                    event.deltaY * .01]
+                );
+                this.camera.setPosition([
+                    position[0] + offset[0],
+                    position[1] + offset[1],
+                    position[2] + offset[2]
+                ]);
 			},
 
             onStart: function () {
