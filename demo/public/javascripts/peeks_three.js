@@ -420,7 +420,8 @@ PEEKS.Scene.prototype.onRender = function() {
 PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
     var threeObject = asset.threeObject;
-    if (threeObject && threeObject.children.length == 1) {
+    if (threeObject && threeObject.children.length > 0) {
+        //console.log("synching " + asset.name || "");
         var geometry = threeObject.children[0];
         geometry.traverse(
             function (child) {
@@ -596,10 +597,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     var textureUrl = this.getAttr('textureUrl');
                     var autofit = this.getAttr('autofit');
 					var loader = new THREE.OBJLoader( manager );
-					loader.load(this.geometryUrl, function ( object ) {
-                        // console.log( 'Done loading ' +  this.geometryUrl    );
-						node.add(object);
-
+                    loader.load(this.geometryUrl, function ( object ) {
+                        node.add(object);
                         if (autofit) {
                             var boundingSphere;
                             object.traverse( function ( child ) {

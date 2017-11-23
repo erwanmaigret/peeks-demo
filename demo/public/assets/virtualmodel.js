@@ -24,18 +24,23 @@ function createVirtualModal(page, position) {
 
     var outfit = "pants";
     var size = "M";
+    var sizeDefault = "M";
     var skin = [1, 1, 1];
     var modelName = "woman";
     var pose = "pose1";
+    var poseDefault = "pose1";
     var fabric = undefined;
 
-    var getGeometryUrl = function (part) {
+    var getGeometryUrl = function (part, pose, size) {
         return "/assets/" + modelName + "_" + pose + "_" + size + "_" + part + ".obj";
     };
 
     var updateGeometry = function(node, mesh, properties, visible) {
         if (node === undefined) {
-            node = model.addMesh({ geometry: getGeometryUrl(mesh) });
+            node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault, sizeDefault) });
+        }
+        if (pose !== poseDefault || size !== sizeDefault) {
+            node.setShape(pose + '_' + size, getGeometryUrl(mesh, pose, size));
         }
         node.setProperties(properties);
         node.setVisible(visible !== undefined ? visible : true);

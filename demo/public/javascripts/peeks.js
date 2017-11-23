@@ -745,6 +745,7 @@
 			addMesh: function (params) {
 				var asset = new PEEKS.Plane();
 				if (params) {
+                    asset.name = params.geometry;
 					if (params.geometry) asset.setGeometry(params.geometry);
 					if (params.texture) asset.setTexture(params.texture);
 					this.initAsset(asset, params);
@@ -752,7 +753,17 @@
 				return this.add(asset);
 			},
 
-            addShape: function (name, path) {
+            setShape: function (name, path) {
+                if (this.shapes === undefined) {
+                    this.shapes = {};
+                }
+                if (this.shapes[name] === undefined) {
+                    var shape = this.addMesh({ geometry: path });
+                    shape.name = name;
+                    shape.hide();
+                    this.shapes[name] = shape;
+                    console.log('Added shape ' + name + ' ' + path);
+                }
 			},
 
             setProperties: function (params) {
