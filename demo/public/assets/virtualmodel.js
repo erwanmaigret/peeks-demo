@@ -39,6 +39,7 @@ function createVirtualModal(page, position) {
         if (node === undefined) {
             node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault, sizeDefault) });
         }
+        node.clearShapeWeights();
         if (pose !== poseDefault || size !== sizeDefault) {
             node.setShape(pose + '_' + size, getGeometryUrl(mesh, pose, size), 1);
         }

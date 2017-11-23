@@ -754,6 +754,14 @@
 				return this.add(asset);
 			},
 
+            clearShapeWeights: function() {
+                for (var shape in this.shapes) {
+                    if (this.shapes.hasOwnProperty(shape)) {
+                        this.shapes[shape].weight = 0;
+                    }
+                }
+            },
+
             setShape: function (name, path, weight) {
                 if (this.shapes === undefined) {
                     this.shapes = {};
@@ -762,9 +770,10 @@
                     var shape = this.addMesh({ geometry: path });
                     shape.name = name;
                     shape.hide();
-                    shape.weight = weight || 0;
+                    shape.weightCurrent = 0;
                     this.shapes[name] = shape;
                 }
+                this.shapes[name].weight = weight || 0;
 			},
 
             setProperties: function (params) {

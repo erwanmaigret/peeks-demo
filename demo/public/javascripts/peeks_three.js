@@ -364,8 +364,6 @@ PEEKS.Scene.prototype.onRender = function() {
     var width = (this.width) ? this.width : 500;
 	var height = (this.height) ? this.height : 500;
 
-    // console.log(this.position);
-    // console.log(three.scene.position);
     if (this.isVrMode()) {
         var useStereoEffect = false;
         if (useStereoEffect) {
@@ -417,11 +415,49 @@ PEEKS.Scene.prototype.onRender = function() {
     }
 },
 
+PEEKS.Asset.prototype.threeSynchGeometry = function() {
+    var asset = this;
+    var threeObject = asset.threeObject;
+    if (threeObject && threeObject.children.length > 0) {
+        var geometry = threeObject.children[0];
+        for (meshI = 0; meshI < geometry.children.length; meshI++) {
+            var mesh = geometry.children[meshI];
+            if (mesh.geometry.positionInitial === undefined) {
+                mesh.geometry.positionInitial = mesh.geometry.attributes.position.array.slice();
+            } else {
+                mesh.geometry.attributes.position.array = mesh.geometry.positionInitial.slice();
+                mesh.geometry.attributes.position.needsUpdate = true;
+            }
+            var vtx = mesh.geometry.attributes.position.array;
+            var vtxRef = mesh.geometry.positionInitial;
+            for (var shapeName in asset.shapes) {
+                if (asset.shapes.hasOwnProperty(shapeName)) {
+                    //console.log("synching " + this.name + " -> " + shape);
+                    var shape = asset.shapes[shapeName];
+                    var weight = shape.weight;
+                    if (weight !== 0 &&
+                        shape.threeObject &&
+                        shape.threeObject.children.length > 0)
+                    {
+                        var shapeGeometry = shape.threeObject.children[0];
+                        if (meshI < shapeGeometry.children.length) {
+                            var shapeMesh = shapeGeometry.children[meshI];
+                            var shapeVtx = shapeMesh.geometry.attributes.position.array;
+                            for (var vtxI = 0; vtxI < vtx.length; vtxI++) {
+                                vtx[vtxI] += (shapeVtx[vtxI] - vtxRef[vtxI]) * weight;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+},
+
 PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
     var threeObject = asset.threeObject;
     if (threeObject && threeObject.children.length > 0) {
-        //console.log("synching " + asset.name || "");
         var geometry = threeObject.children[0];
         geometry.traverse(
             function (child) {
@@ -721,6 +757,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
             if (this.materialNeedsUpdate) {
                 this.materialNeedsUpdate = false;
                 this.threeSynchMaterial();
+            }
+
+            if (this.shapes) {
+                this.threeSynchGeometry();
             }
         }
     }
