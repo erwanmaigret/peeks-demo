@@ -56,7 +56,10 @@
 	        } else {
 	            return [arguments[0], arguments[0], arguments[0]];
 	        }
-	    } else {
+	    } else if (arguments.length === 2) {
+            // use the first value if defined or the 2nd (default) otherwise
+            return arguments[0] || arguments[1];
+        } else {
 	      return [0, 0, 0];
 	    }
 	};
@@ -2680,6 +2683,7 @@
 	exports.registerPage = registerPage;
 	exports.loadPage = loadPage;
     exports.isPhone = isPhone;
+    exports.v3 = utils.v3;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));

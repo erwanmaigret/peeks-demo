@@ -433,15 +433,22 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         mat.side = THREE.FrontSide;
                         child.geometry.computeFaceNormals();
 
-                        var shader = THREE.FresnelShader;
-				        var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-                        uniforms[ "map" ].value = geometry.texture;
-                        var material = new THREE.ShaderMaterial( {
-            				uniforms: uniforms,
-            				vertexShader: shader.vertexShader,
-            				fragmentShader: shader.fragmentShader,
-            			} );
-                        child.material = material;
+                        if (refMat.type === 'fabric') {
+                            var shader = THREE.FresnelShader;
+    				        var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+                            uniforms[ "uAlbedoMap" ].value = geometry.texture;
+                            uniforms[ "uFresnelBias" ].value = PEEKS.ThreeFloat(refMat.fresnelBias , uniforms[ "uFresnelBias" ].value);
+                            uniforms[ "uFresnelPower" ].value = PEEKS.ThreeFloat(refMat.fresnelPower , uniforms[ "uFresnelPower" ].value);
+                            uniforms[ "uFresnelScale" ].value = PEEKS.ThreeFloat(refMat.fresnelScale , uniforms[ "uFresnelScale" ].value);
+                            uniforms[ "uFresnelColor" ].value = PEEKS.v3(refMat.fresnelColor, uniforms[ "uFresnelColor" ].value);
+
+                            var material = new THREE.ShaderMaterial( {
+                				uniforms: uniforms,
+                				vertexShader: shader.vertexShader,
+                				fragmentShader: shader.fragmentShader,
+                			} );
+                            child.material = material;
+                        }
                     }
                 }
             }
@@ -964,22 +971,18 @@ PEEKS.Scene.prototype.onStart = function() {
 THREE.FresnelShader = {
 
 	uniforms: {
-
-		"mRefractionRatio": { value: 1.02 },
-		"mFresnelBias": { value: 0.1 },
-		"mFresnelPower": { value: 2.0 },
-		"mFresnelScale": { value: 1.0 },
-        "tCube": { value: null },
-        "map": { value: null }
-
+        "uAlbedoMap": { value: null },
+		"uFresnelBias": { value: 0.1 },
+		"uFresnelPower": { value: 2.0 },
+		"uFresnelScale": { value: 1.0 },
+        "uFresnelColor": { value: [1.0, 1.0, 1.0] },
 	},
 
 	vertexShader: [
         "varying vec2 vTextureUv;",
-		"uniform float mRefractionRatio;",
-		"uniform float mFresnelBias;",
-		"uniform float mFresnelScale;",
-		"uniform float mFresnelPower;",
+		"uniform float uFresnelBias;",
+		"uniform float uFresnelScale;",
+        "uniform float uFresnelPower;",
 
 		"varying float vReflectionFactor;",
 
@@ -991,7 +994,7 @@ THREE.FresnelShader = {
 
 			"vec3 I = worldPosition.xyz - cameraPosition;",
 
-			"vReflectionFactor = mFresnelBias + mFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), mFresnelPower );",
+			"vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
 
 			"gl_Position = projectionMatrix * mvPosition;",
             "vTextureUv = uv;",
@@ -1007,9 +1010,8 @@ THREE.FresnelShader = {
         	"vec3 indirectSpecular;",
         "};",
         "varying vec2 vTextureUv;",
-        "uniform sampler2D map;",
-
-		"uniform samplerCube tCube;",
+        "uniform sampler2D uAlbedoMap;",
+        "uniform vec3 uFresnelColor;",
 
 		"varying float vReflectionFactor;",
 
@@ -1017,7 +1019,7 @@ THREE.FresnelShader = {
             "float opacity = 1.0;",
             "vec3 diffuse = vec3(1.0, 1.0, 1.0);",
             "vec4 diffuseColor = vec4( diffuse, opacity );",
-            "vec4 texelColor = texture2D( map, vTextureUv );",
+            "vec4 texelColor = texture2D( uAlbedoMap, vTextureUv );",
 	        "texelColor = mapTexelToLinear( texelColor );",
 	        "diffuseColor *= texelColor;",
             "float specularStrength = 1.0;",
@@ -1027,7 +1029,7 @@ THREE.FresnelShader = {
             "vec3 outgoingLight = reflectedLight.indirectDiffuse;",
             "gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
             "gl_FragColor = linearToOutputTexel( gl_FragColor );",
-			"gl_FragColor = mix( gl_FragColor, vec4( 1.0 ), clamp( vReflectionFactor, 0.0, 1.0 ) );",
+			"gl_FragColor = mix( gl_FragColor, vec4( uFresnelColor, 1.0 ), clamp( vReflectionFactor, 0.0, 1.0 ) );",
 		"}"
 
 	].join( "\n" )

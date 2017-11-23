@@ -97,6 +97,8 @@ function createVirtualModal(page, position) {
         		geometry: getGeometryUrl("pants"),
                 texture: fabric.map,
                 material: {
+                    type: 'fabric',
+                    fresnelScale: 0.8,
                     emissive: fabric.emissive,
                     shininess: fabric.shininess,
                     normalMap: fabric.normalMap,
