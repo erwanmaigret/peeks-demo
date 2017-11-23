@@ -433,21 +433,18 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         mat.side = THREE.FrontSide;
                         child.geometry.computeFaceNormals();
 
-                        if (refMat.type === 'fabric') {
-                            var shader = THREE.ShaderPeeks[ "fabric" ];
+                        if (refMat.type !== undefined) {
+                            var shader = THREE.ShaderPeeks["fabric"];
             				var fragmentShader = shader.fragmentShader;
             				var vertexShader = shader.vertexShader;
             				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
             				//uniforms[ "enableBump" ].value = true;
             				uniforms[ "enableSpecular" ].value = true;
-            				//uniforms[ "tBeckmann" ].value = composerBeckmann.renderTarget1.texture;
-            				//uniforms[ "tDiffuse" ].value = mapColor;
-            				//uniforms[ "bumpMap" ].value = mapHeight;
                             uniforms[ "tBeckmann" ].value = geometry.texture;
                             uniforms[ "tDiffuse" ].value = geometry.texture;
                             //uniforms[ "bumpMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
-//            				uniforms[ "bumpMap" ].value = 1.0;
-            				uniforms[ "diffuse" ].value.setHex( 0xa0a0a0 );
+                            //uniforms[ "normalMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
+            				uniforms[ "diffuse" ].value.setHex( 0xffffff );
             				uniforms[ "specular" ].value.setHex( 0xa0a0a0 );
             				uniforms[ "uRoughness" ].value = 0.2;
             				uniforms[ "uSpecularBrightness" ].value = 0.5;
@@ -455,6 +452,15 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             				var material = new THREE.ShaderMaterial( { fragmentShader: fragmentShader, vertexShader: vertexShader, uniforms: uniforms, lights: true } );
             				material.extensions.derivatives = true;
                             child.material = material;
+
+                            if (refMat.type === "velvet") {
+                                uniforms["uFresnelBias"].value = 0.01;
+                                uniforms["uFresnelPower"].value = 2.0;
+                                uniforms["uFresnelScale"].value = 0.4;
+                                uniforms["uFresnelColor"].value = [1.0, 1.0, 1.0];
+                            } else {
+                                uniforms["uFresnelScale"].value = 0.0;
+                            }
                         }
                     }
                 }
@@ -1124,8 +1130,8 @@ THREE.ShaderPeeks = {
 				"gl_Position = projectionMatrix * mvPosition;",
     			"vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
     			"vec3 I = worldPosition.xyz - cameraPosition;",
-                //"vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
-                "vReflectionFactor = 0.01 + 1.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 2.0 );",
+                "vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
+                //"vReflectionFactor = 0.01 + 1.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 2.0 );",
                 "vDiffuseFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
                 "vSpecularFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
 			"}"
