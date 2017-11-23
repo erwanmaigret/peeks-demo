@@ -752,6 +752,11 @@
 				return this.add(asset);
 			},
 
+            setProperties: function (params) {
+                this.applyParams(this, params);
+                this.materialNeedsUpdate = true;
+            },
+
 			animate: function (params) {
 				var anim = this.add(new PEEKS.Animation(params));
                 return this;

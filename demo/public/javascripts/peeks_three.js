@@ -97,15 +97,25 @@ PEEKS.ThreeSetObjectQuaternion = function(quaternion, alpha, beta, gamma, orient
     quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
 }
 
-PEEKS.ThreeTextureLoader = function(path) {
+var texturesCache = {
+};
+
+var textureLoader = function(path) {
     if (path) {
+        if (texturesCache[path]) {
+            return texturesCache[path];
+        }
+
         var loader = new THREE.TextureLoader();
         if (/^data:/.test(path)) {
             loader.setCrossOrigin(path);
         } else {
             loader.setCrossOrigin('');
         }
-        return loader.load(path);
+        var texture = loader.load(path);
+        texture.name = path;
+        texturesCache[path] = texture;
+        return texture;
     }
 }
 
@@ -412,27 +422,11 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var threeObject = asset.threeObject;
     if (threeObject && threeObject.children.length == 1) {
         var geometry = threeObject.children[0];
-
         geometry.traverse(
             function (child) {
                 if (child instanceof THREE.Mesh) {
                     if (child.geometry && child.material) {
-                        var mat = child.material;
                         var refMat = asset.material || {};
-                        mat.map = geometry.texture;
-                        mat.transparent = true;
-                        mat.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
-                        mat.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
-                        mat.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
-                        mat.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
-                        mat.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
-                        mat.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
-                        mat.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
-                        mat.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
-                        mat.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
-                        mat.side = THREE.FrontSide;
-                        child.geometry.computeFaceNormals();
-
                         if (refMat.type !== undefined) {
                             var shader = THREE.ShaderPeeks["fabric"];
             				var fragmentShader = shader.fragmentShader;
@@ -440,10 +434,8 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
             				//uniforms[ "enableBump" ].value = true;
             				uniforms[ "enableSpecular" ].value = true;
-                            uniforms[ "tBeckmann" ].value = PEEKS.ThreeTextureLoader(refMat.specularMap);
-                            uniforms[ "tDiffuse" ].value = geometry.texture;
-                            //uniforms[ "bumpMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
-                            //uniforms[ "normalMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
+                            uniforms[ "tBeckmann" ].value = textureLoader(refMat.specularMap);
+                            uniforms[ "tDiffuse" ].value = textureLoader(asset.textureUrl);
             				uniforms[ "diffuse" ].value.setHex( 0xffffff );
             				uniforms[ "specular" ].value.setHex( 0xa0a0a0 );
             				uniforms[ "uRoughness" ].value = 0.2;
@@ -452,7 +444,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             				var material = new THREE.ShaderMaterial( { fragmentShader: fragmentShader, vertexShader: vertexShader, uniforms: uniforms, lights: true } );
             				material.extensions.derivatives = true;
                             child.material = material;
-
                             if (refMat.type === "velvet") {
                                 uniforms["uFresnelBias"].value = 0.01;
                                 uniforms["uFresnelPower"].value = 2.0;
@@ -461,6 +452,30 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                             } else {
                                 uniforms["uFresnelScale"].value = 0.0;
                             }
+                        } else {
+                            var mat = child.material;
+                            if (mat.type !== 'MeshPhongMaterial') {
+                                mat = new THREE.MeshPhongMaterial({
+                                    color: 0xffffff,
+                                    transparent: true,
+                                    side: THREE.FrontSide,
+                                    depthTest: true,
+                                });
+                                child.material = mat;
+                            }
+                            mat.map = textureLoader(asset.textureUrl);
+                            mat.transparent = true;
+                            mat.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
+                            mat.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
+                            mat.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
+                            mat.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                            mat.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
+                            mat.normalMap = textureLoader(refMat.normalMap);
+                            mat.alphaMap = textureLoader(refMat.alphaMap);
+                            mat.bumpMap = textureLoader(refMat.bumpMap);
+                            mat.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
+                            mat.side = THREE.FrontSide;
+                            child.material = mat;
                         }
                     }
                 }
@@ -604,18 +619,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             });
                         }
 
-						if (textureUrl != '') {
-							var url = textureUrl;
-							var loader = new THREE.TextureLoader();
-							if (/^data:/.test(textureUrl)) {
-								loader.setCrossOrigin(url);
-							} else {
-								loader.setCrossOrigin('');
-							}
-							object.texture = loader.load(url);
-
-                            object.parent.peeksAsset.threeSynchMaterial();
-						}
+                        object.parent.peeksAsset.threeSynchMaterial();
 					}, onProgress, onError );
 				} else if (this.getAttr('text')) {
                     this.threeObject = new THREE.Object3D();
@@ -713,7 +717,16 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		this.threeObjectPivot.add(this.threeObject);
 
 		this.threeObject.peeksAsset = this;
-	}
+	} else {
+        if (this.primitive === PEEKS.Asset.PrimitivePlane) {
+            if (this.geometryUrl) {
+                if (this.materialNeedsUpdate) {
+                    this.materialNeedsUpdate = false;
+                    this.threeSynchMaterial();
+                }
+            }
+        }
+    }
 
 	this.threeSynchVideoTexture();
 
