@@ -1119,7 +1119,7 @@ THREE.ShaderPeeks = {
     		"uniform float uFresnelScale;",
             "uniform float uFresnelPower;",
             "varying float vReflectionFactor;",
-            "varying float vDiffuseFactor;",
+            //"varying float vDiffuseFactor;",
             //"varying float vSpecularFactor;",
 			"void main() {",
 				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
@@ -1132,7 +1132,7 @@ THREE.ShaderPeeks = {
     			"vec3 I = worldPosition.xyz - cameraPosition;",
                 "vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
                 //"vReflectionFactor = 0.01 + 1.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 2.0 );",
-                "vDiffuseFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
+                //"vDiffuseFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
                 //"vSpecularFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
 			"}"
 		].join( "\n" )
