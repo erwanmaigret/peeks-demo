@@ -754,10 +754,26 @@
 				return this.add(asset);
 			},
 
-            clearShapeWeights: function() {
-                for (var shape in this.shapes) {
-                    if (this.shapes.hasOwnProperty(shape)) {
-                        this.shapes[shape].weight = 0;
+            initShapeWeights: function() {
+                for (var name in this.shapes) {
+                    if (this.shapes.hasOwnProperty(name)) {
+                        this.shapes[name].weightSet = false;
+                    }
+                }
+            },
+
+            validateShapeWeights: function() {
+                for (var name in this.shapes) {
+                    if (this.shapes.hasOwnProperty(name)) {
+                        var shape = this.shapes[name];
+                        if (!shape.weightSet) {
+                            if (shape.weightEnd !== 0) {
+                                shape.weightSetTime = this.time || 0;
+                                shape.weightStart = shape.weightEval;
+                                shape.weightEnd = 0;
+                                shape.weight = 0;
+                            }
+                        }
                     }
                 }
             },
@@ -775,11 +791,13 @@
                     this.shapes[name] = shape;
                 }
                 var weight = weight || 0;
-                if (this.shapes[name].weight !== weight) {
+                if (this.shapes[name].weightEnd !== weight) {
                     this.shapes[name].weightSetTime = this.time || 0;
                     this.shapes[name].weightStart = this.weight;
+                    this.shapes[name].weightEnd = weight;
                 }
                 this.shapes[name].weight = weight;
+                this.shapes[name].weightSet = true;
 			},
 
             setProperties: function (params) {
@@ -1196,7 +1214,7 @@
                             if (shape.weight !== shape.weightEval) {
                                 var duration = this.time - shape.weightSetTime;
                                 var blend = (duration > .5) ? 1 : duration / .5;
-                                shape.weightEval = blend * shape.weight + (1 - blend) * shape.weightStart;
+                                shape.weightEval = blend * shape.weightEnd + (1 - blend) * shape.weightStart;
                             }
                         }
                     }
