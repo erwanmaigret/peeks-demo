@@ -434,33 +434,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         child.geometry.computeFaceNormals();
 
                         if (refMat.type === 'fabric') {
-                            var shader = THREE.FresnelShader;
-    				        var uniforms = THREE.UniformsUtils.merge([
-                                THREE.UniformsLib["lights"],
-                                shader.uniforms,
-                                {
-//                                    diffuseMaterial: {type: "c", value: new THREE.Color(1,0,0)},
-//                                    specularMaterial: {type: "c", value: new THREE.Color(0.7,0.7,0.7)},
-//                                    ambientMaterial:{type:"c", value: new THREE.Color(0.8,0.2,0.2)},
-                                    shininessMaterial: {type:"f", value: 16.0}
-                                }
-                            ]);
-                            uniforms[ "uAlbedoMap" ].value = geometry.texture;
-                            uniforms[ "uFresnelBias" ].value = PEEKS.ThreeFloat(refMat.fresnelBias , uniforms[ "uFresnelBias" ].value);
-                            uniforms[ "uFresnelPower" ].value = PEEKS.ThreeFloat(refMat.fresnelPower , uniforms[ "uFresnelPower" ].value);
-                            uniforms[ "uFresnelScale" ].value = PEEKS.ThreeFloat(refMat.fresnelScale , uniforms[ "uFresnelScale" ].value);
-                            uniforms[ "uFresnelColor" ].value = PEEKS.v3(refMat.fresnelColor, uniforms[ "uFresnelColor" ].value);
-
-                            var material = new THREE.ShaderMaterial( {
-                				uniforms: uniforms,
-                				vertexShader: shader.vertexShader,
-                				fragmentShader: shader.fragmentShader,
-                                lights:true,
-                			} );
-                            child.material = material;
-
-
-
                             var shader = THREE.ShaderPeeks[ "velvet" ];
             				var fragmentShader = shader.fragmentShader;
             				var vertexShader = shader.vertexShader;
@@ -1002,114 +975,6 @@ PEEKS.Scene.prototype.onStart = function() {
     this.onResize();
 }
 
-THREE.FresnelShader = {
-
-	uniforms: {
-        "uAlbedoMap": { value: null },
-		"uFresnelBias": { value: 0.1 },
-		"uFresnelPower": { value: 2.0 },
-		"uFresnelScale": { value: 1.0 },
-        "uFresnelColor": { value: [1.0, 1.0, 1.0] },
-	},
-
-	vertexShader: [
-        //                                    diffuseMaterial: {type: "c", value: new THREE.Color(1,0,0)},
-        //                                    specularMaterial: {type: "c", value: new THREE.Color(0.7,0.7,0.7)},
-        //                                    ambientMaterial:{type:"c", value: new THREE.Color(0.8,0.2,0.2)},
-        " vec3 diffuseMaterial = vec3(1.0,0.0,0.0);",
-        " vec3 specularMaterial = vec3(0.7,0.7,0.7);",
-        "vec3 ambientMaterial = vec3(0.8,0.2,0.2);",
-        "float shininessMaterial = 16.0;",
-        "uniform vec3 ambientLight;",
-        "uniform vec3 directionalLightColor[NUM_DIR_LIGHTS];",
-        "uniform vec3 directionalLightDirection[NUM_DIR_LIGHTS];",
-        "uniform vec3 ambientLightColor[1];",
-        "",
-        "varying vec3 fragColor;",
-        "",
-        "vec3 phong(vec3 p, vec3 n, vec3 v){",
-        "",
-        "vec3 fromLight = normalize(directionalLightDirection[0]);",
-        "vec3 toLight = -fromLight;",
-        "",
-        "vec3 reflectLight = reflect(toLight,n);",
-        "",
-        "float ndots = dot(n, toLight);",
-        "float vdotr = abs(dot(v,reflectLight));",
-        //"float vdotr = max(0.0,dot(v,reflectLight));",
-        "",
-        "vec3 ambi = ambientMaterial * ambientLightColor[0];",
-        "vec3 diff = diffuseMaterial * directionalLightColor[0] * ndots;",
-        "vec3 spec = specularMaterial * directionalLightColor[0] * pow(vdotr,shininessMaterial);",
-        "",
-        "return ambi + diff + spec ;",
-        "//return ambi + diff;",
-        "//return spec;",
-        "}",
-
-        "varying vec2 vTextureUv;",
-		"uniform float uFresnelBias;",
-		"uniform float uFresnelScale;",
-        "uniform float uFresnelPower;",
-
-		"varying float vReflectionFactor;",
-
-		"void main() {",
-            "gl_PointSize = 3.0;",
-             "vec4 ecPosition=modelViewMatrix*vec4(position,1.0);",
-             "vec3 ecNormal= normalize(normalMatrix*normal);",
-             "bool useOrtho = projectionMatrix[2][3] == 0.0;",
-             "vec3 viewDir=useOrtho ? vec3(0,0,1) : normalize(-ecPosition.xyz);",
-             "fragColor=phong(ecPosition.xyz, ecNormal, viewDir);",
-
-			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
-			"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
-
-			"vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
-
-			"vec3 I = worldPosition.xyz - cameraPosition;",
-
-			"vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
-
-			"gl_Position = projectionMatrix * mvPosition;",
-            "vTextureUv = uv;",
-		"}"
-
-	].join( "\n" ),
-
-	fragmentShader: [
-        "struct ReflectedLight {",
-        	"vec3 directDiffuse;",
-        	"vec3 directSpecular;",
-        	"vec3 indirectDiffuse;",
-        	"vec3 indirectSpecular;",
-        "};",
-        "varying vec2 vTextureUv;",
-        "uniform sampler2D uAlbedoMap;",
-        "uniform vec3 uFresnelColor;",
-		"varying float vReflectionFactor;",
-        "varying vec3 fragColor;",
-		"void main() {",
-            "float opacity = 1.0;",
-            "vec3 diffuse = vec3(1.0, 1.0, 1.0);",
-            "vec4 diffuseColor = vec4( diffuse, opacity );",
-            "vec4 texelColor = texture2D( uAlbedoMap, vTextureUv );",
-	        "texelColor = mapTexelToLinear( texelColor );",
-	        "diffuseColor *= texelColor;",
-            "float specularStrength = 1.0;",
-            "ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );",
-            "reflectedLight.indirectDiffuse += vec3( 1.0 );",
-            "reflectedLight.indirectDiffuse *= diffuseColor.rgb;",
-            "vec3 outgoingLight = reflectedLight.indirectDiffuse;",
-            "gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
-            "gl_FragColor = linearToOutputTexel( gl_FragColor );",
-			"gl_FragColor = mix( gl_FragColor, vec4( uFresnelColor, 1.0 ), clamp( vReflectionFactor, 0.0, 1.0 ) );",
-		"}"
-
-	].join( "\n" )
-
-};
-
 THREE.ShaderPeeks = {
     'velvet' : {
 		uniforms: THREE.UniformsUtils.merge( [
@@ -1156,7 +1021,6 @@ THREE.ShaderPeeks = {
 			THREE.ShaderChunk[ "bsdfs" ],
 			THREE.ShaderChunk[ "packing" ],
 			THREE.ShaderChunk[ "lights_pars" ],
-			THREE.ShaderChunk[ "shadowmap_pars_fragment" ],
 			THREE.ShaderChunk[ "bumpmap_pars_fragment" ],
 
 			// Fresnel term
@@ -1228,7 +1092,6 @@ THREE.ShaderPeeks = {
 			"varying vec3 vViewPosition;",
 			THREE.ShaderChunk[ "common" ],
 			THREE.ShaderChunk[ "lights_pars" ],
-			THREE.ShaderChunk[ "shadowmap_pars_vertex" ],
             "uniform float uFresnelBias;",
     		"uniform float uFresnelScale;",
             "uniform float uFresnelPower;",
@@ -1240,7 +1103,6 @@ THREE.ShaderPeeks = {
 				"vNormal = normalize( normalMatrix * normal );",
 				"vUv = uv * offsetRepeat.zw + offsetRepeat.xy;",
 				"gl_Position = projectionMatrix * mvPosition;",
-				THREE.ShaderChunk[ "shadowmap_vertex" ],
     			"vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
     			"vec3 I = worldPosition.xyz - cameraPosition;",
     			"vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
