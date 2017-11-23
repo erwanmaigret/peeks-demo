@@ -25,7 +25,7 @@ PEEKS.registerPage('3D Assets', function() {
         rotation: [0, -30, 0],
     });
 
-    page.addGeometry({
+    page.addMesh({
 		geometry: '/assets/converse.obj',
 		texture: '/assets/converse.jpg',
 		position: [-1, 0, -3],
@@ -37,14 +37,14 @@ PEEKS.registerPage('3D Assets', function() {
     page.addAsset({
         position: [0, .5, -3],
         onClick: 'animateRotate90',
-    }).addGeometry({
+    }).addMesh({
 		geometry: '/assets/lacoste_polo_shirt.obj',
 		texture: '/assets/lacoste_polo_shirt.jpg',
         rotation: [-90, 0, 0],
 		size: .02,
 	});
 
-    page.addGeometry({
+    page.addMesh({
         geometry: '/assets/black_leather_shoes.obj',
         texture: '/assets/black_leather_shoes.png',
         position: [1.5, 0, -3],

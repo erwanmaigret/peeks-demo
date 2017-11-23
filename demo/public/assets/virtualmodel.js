@@ -35,7 +35,7 @@ function createVirtualModal(page, position) {
 
     var updateGeometry = function(node, mesh, properties, visible) {
         if (node === undefined) {
-            node = model.addGeometry({ geometry: getGeometryUrl(mesh) });
+            node = model.addMesh({ geometry: getGeometryUrl(mesh) });
         }
         node.setProperties(properties);
         node.setVisible(visible !== undefined ? visible : true);

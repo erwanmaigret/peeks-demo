@@ -742,7 +742,7 @@
 				return this.add(asset);
 			},
 
-			addGeometry: function (params) {
+			addMesh: function (params) {
 				var asset = new PEEKS.Plane();
 				if (params) {
 					if (params.geometry) asset.setGeometry(params.geometry);
@@ -750,6 +750,9 @@
 					this.initAsset(asset, params);
 				}
 				return this.add(asset);
+			},
+
+            addShape: function (name, path) {
 			},
 
             setProperties: function (params) {

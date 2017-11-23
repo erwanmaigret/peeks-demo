@@ -31,7 +31,7 @@ PEEKS.registerPage('tron', function() {
         var p1 = this.getScene().computeOffsetFromCamera(offsetFromCamera);
 
         if (moto == undefined) {
-            moto = page.addGeometry({
+            moto = page.addMesh({
                 geometry: '/assets/tron_moto.obj',
                 size: .02,
                 rotation: [0, 180, 0],

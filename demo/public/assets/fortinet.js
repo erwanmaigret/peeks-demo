@@ -84,7 +84,7 @@ PEEKS.registerPage('Fortinet', function() {
         var asset = page.addAsset({
             position: position,
         });
-        asset.addGeometry({
+        asset.addMesh({
             geometry: '/assets/network_raid-nas.obj',
             texture: '/assets/network_raid-nas.jpg',
             position: [0, 0, 0],
