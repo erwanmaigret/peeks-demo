@@ -572,55 +572,55 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     depthTest: isScreenSpace ? false : true,
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
-            } else if (this.primitive === PEEKS.Asset.PrimitivePlane) {
-				if (this.geometryUrl) {
-					this.threeObject = new THREE.Object3D();
+            } else if (this.primitive === PEEKS.Asset.PrimitiveMesh) {
+                this.threeObject = new THREE.Object3D();
 
-					var manager = new THREE.LoadingManager();
-						manager.onProgress = function ( item, loaded, total ) {
-						// console.log( item, loaded, total );
-					};
+                var manager = new THREE.LoadingManager();
+                    manager.onProgress = function ( item, loaded, total ) {
+                    // console.log( item, loaded, total );
+                };
 
-					var onProgress = function ( xhr ) {
-						if ( xhr.lengthComputable ) {
-							var percentComplete = xhr.loaded / xhr.total * 100;
-						}
-					};
+                var onProgress = function ( xhr ) {
+                    if ( xhr.lengthComputable ) {
+                        var percentComplete = xhr.loaded / xhr.total * 100;
+                    }
+                };
 
-					var onError = function ( xhr ) {
-                        console.log( 'Obj loading error' );
-					};
+                var onError = function ( xhr ) {
+                    console.log( 'Obj loading error' );
+                };
 
-                    var peeksObject = this;
-					var node = this.threeObject;
-                    this.threeObject.peeksAsset = peeksObject;
-                    var textureUrl = this.getAttr('textureUrl');
-                    var autofit = this.getAttr('autofit');
-					var loader = new THREE.OBJLoader( manager );
-                    loader.load(this.geometryUrl, function ( object ) {
-                        node.add(object);
-                        if (autofit) {
-                            var boundingSphere;
-                            object.traverse( function ( child ) {
-                                if ( child instanceof THREE.Mesh ) {
-                                    if (child.geometry) {
-                                        child.geometry.computeBoundingSphere();
-                                        if (boundingSphere === undefined) {
-                                            boundingSphere = child.geometry.boundingSphere;
-                                        }
-                                        child.position.set(
-                                            -boundingSphere.center.x,
-                                            -boundingSphere.center.y,
-                                            -boundingSphere.center.z
-                                        );
+                var peeksObject = this;
+                var node = this.threeObject;
+                this.threeObject.peeksAsset = peeksObject;
+                var textureUrl = this.getAttr('textureUrl');
+                var autofit = this.getAttr('autofit');
+                var loader = new THREE.OBJLoader( manager );
+                loader.load(this.geometryUrl, function ( object ) {
+                    node.add(object);
+                    if (autofit) {
+                        var boundingSphere;
+                        object.traverse( function ( child ) {
+                            if ( child instanceof THREE.Mesh ) {
+                                if (child.geometry) {
+                                    child.geometry.computeBoundingSphere();
+                                    if (boundingSphere === undefined) {
+                                        boundingSphere = child.geometry.boundingSphere;
                                     }
+                                    child.position.set(
+                                        -boundingSphere.center.x,
+                                        -boundingSphere.center.y,
+                                        -boundingSphere.center.z
+                                    );
                                 }
-                            });
-                        }
+                            }
+                        });
+                    }
 
-                        object.parent.peeksAsset.threeSynchMaterial();
-					}, onProgress, onError );
-				} else if (this.getAttr('text')) {
+                    object.parent.peeksAsset.threeSynchMaterial();
+                }, onProgress, onError );
+            } else if (this.primitive === PEEKS.Asset.PrimitivePlane) {
+                if (this.getAttr('text')) {
                     this.threeObject = new THREE.Object3D();
 
 					var geometry = new THREE.PlaneGeometry(1, 1);
@@ -717,12 +717,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
 		this.threeObject.peeksAsset = this;
 	} else {
-        if (this.primitive === PEEKS.Asset.PrimitivePlane) {
-            if (this.geometryUrl) {
-                if (this.materialNeedsUpdate) {
-                    this.materialNeedsUpdate = false;
-                    this.threeSynchMaterial();
-                }
+        if (this.primitive === PEEKS.Asset.PrimitiveMesh) {
+            if (this.materialNeedsUpdate) {
+                this.materialNeedsUpdate = false;
+                this.threeSynchMaterial();
             }
         }
     }

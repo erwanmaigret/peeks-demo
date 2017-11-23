@@ -40,7 +40,7 @@ function createVirtualModal(page, position) {
             node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault, sizeDefault) });
         }
         if (pose !== poseDefault || size !== sizeDefault) {
-            node.setShape(pose + '_' + size, getGeometryUrl(mesh, pose, size));
+            node.setShape(pose + '_' + size, getGeometryUrl(mesh, pose, size), 1);
         }
         node.setProperties(properties);
         node.setVisible(visible !== undefined ? visible : true);

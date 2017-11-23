@@ -744,6 +744,7 @@
 
 			addMesh: function (params) {
 				var asset = new PEEKS.Plane();
+                asset.primitive = Asset.PrimitiveMesh;
 				if (params) {
                     asset.name = params.geometry;
 					if (params.geometry) asset.setGeometry(params.geometry);
@@ -753,7 +754,7 @@
 				return this.add(asset);
 			},
 
-            setShape: function (name, path) {
+            setShape: function (name, path, weight) {
                 if (this.shapes === undefined) {
                     this.shapes = {};
                 }
@@ -761,8 +762,8 @@
                     var shape = this.addMesh({ geometry: path });
                     shape.name = name;
                     shape.hide();
+                    shape.weight = weight || 0;
                     this.shapes[name] = shape;
-                    console.log('Added shape ' + name + ' ' + path);
                 }
 			},
 
@@ -825,6 +826,7 @@
     Asset.PrimitiveSphere = 6;
     Asset.PrimitiveCurvedPanel = 7;
     Asset.PrimitiveRibbon = 8;
+    Asset.PrimitiveMesh = 9;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
