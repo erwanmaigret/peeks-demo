@@ -1018,7 +1018,7 @@ THREE.ShaderPeeks = {
 			"uniform float uSpecularBrightness;",
 			"uniform vec3 uWrapRGB;",
 			"uniform sampler2D tDiffuse;",
-			"uniform sampler2D tBeckmann;",
+            "uniform sampler2D tBeckmann;",
 			"varying vec3 vNormal;",
 			"varying vec2 vUv;",
 			"varying vec3 vViewPosition;",
@@ -1120,7 +1120,7 @@ THREE.ShaderPeeks = {
             "uniform float uFresnelPower;",
             "varying float vReflectionFactor;",
             "varying float vDiffuseFactor;",
-            "varying float vSpecularFactor;",
+            //"varying float vSpecularFactor;",
 			"void main() {",
 				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 				"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
@@ -1133,7 +1133,7 @@ THREE.ShaderPeeks = {
                 "vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
                 //"vReflectionFactor = 0.01 + 1.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 2.0 );",
                 "vDiffuseFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
-                "vSpecularFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
+                //"vSpecularFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
 			"}"
 		].join( "\n" )
 
