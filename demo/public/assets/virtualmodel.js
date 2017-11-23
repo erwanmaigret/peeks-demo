@@ -10,6 +10,11 @@ function createVirtualModal(page, position) {
         onFocus: '',
     });
 
+    model.mannequin = {
+    };
+
+    var mannequin = model.mannequin;
+
     var panel = femaleHigh.addAsset({
         position: [.5, 1, -3],
     });
@@ -26,6 +31,15 @@ function createVirtualModal(page, position) {
 
     var getGeometryUrl = function (part) {
         return "/assets/" + modelName + "_" + pose + "_" + size + "_" + part + ".obj";
+    };
+
+    var updateGeometry = function(node, mesh, properties, visible) {
+        if (node === undefined) {
+            node = model.addGeometry({ geometry: getGeometryUrl(mesh) });
+        }
+        node.setProperties(properties);
+        node.setVisible(visible !== undefined ? visible : true);
+        return node;
     };
 
     var onSetClothMaterial = function(caller) {
@@ -47,39 +61,7 @@ function createVirtualModal(page, position) {
             }
         }
 
-        if (model.body) {
-            model.body.destroy();
-        }
-        if (model.shoes) {
-            model.shoes.destroy();
-        }
-        if (model.pants) {
-            model.pants.destroy();
-        }
-        if (model.skirt) {
-            model.skirt.destroy();
-        }
-        if (model.jacket) {
-            model.jacket.destroy();
-        }
-        if (model.blouse) {
-            model.blouse.destroy();
-        }
-        if (model.underwear) {
-            model.underwear.destroy();
-        }
-        if (model.sclera) {
-            model.sclera.destroy();
-        }
-        if (model.iris) {
-            model.iris.destroy();
-        }
-        if (model.cornea) {
-            model.cornea.destroy();
-        }
-
-        model.body = model.addGeometry({
-            geometry: getGeometryUrl("body"),
+        mannequin.body = updateGeometry(mannequin.body, "body", {
             texture: '/assets/woman_body.png',
             color: skin,
             material: {
@@ -87,67 +69,63 @@ function createVirtualModal(page, position) {
                 shininess: 20,
             },
         });
-        model.shoes = model.addGeometry({
-            geometry: getGeometryUrl("highHeels"),
+
+        mannequin.shoes = updateGeometry(mannequin.shoes, "highHeels", {
             texture: '/assets/material_suede.jpg',
-            material: {
-                type: "velvet",
-            }
+            material: { type: "velvet" },
         });
 
-        if (outfit === 'pants') {
-            model.pants = model.addGeometry({
-        		geometry: getGeometryUrl("pants"),
-                texture: fabric.map,
-                material: fabric,
-        	});
-        }
-        if (outfit === 'skirt') {
-            model.skirt = model.addGeometry({
-        		geometry: getGeometryUrl("skirt"),
-                texture: fabric.map,
-                material: fabric,
-        	});
-        }
+        mannequin.body = updateGeometry(mannequin.body, "body", {
+            texture: '/assets/woman_body.png',
+            color: skin,
+            material: {
+                emissive: [.1, .05, .05],
+                shininess: 20,
+            },
+        });
 
-        if (outfit === 'pants' || outfit === 'skirt') {
-            model.jacket = model.addGeometry({
-        		geometry: getGeometryUrl("jacket"),
-                texture: fabric.map,
-                material: fabric,
-            });
-            model.blouse = model.addGeometry({
-        		geometry: getGeometryUrl("j_blouse"),
-                texture: '/assets/material_white.jpg',
-                material: {
-                    type: 'velvet',
-                    emissive: [.05, .05, .1],
-                    shininess: 10,
-                    normalMap: '/assets/material_suede_normal.jpg',
-                },
-            });
-        }
+        mannequin.pants = updateGeometry(mannequin.pants, "pants", {
+            texture: fabric.map,
+            material: fabric,
+        }, outfit === 'pants');
 
-        if (outfit === 'underwear') {
-            model.underwear = model.addGeometry({
-        		geometry: getGeometryUrl("underwear"),
-                texture: fabric.map === '/assets/material_dark.jpg'
-                    ? '/assets/woman_underwear_transparency.png'
-                    : fabric.map,
-                alpha: fabric.map === '/assets/material_dark.jpg'
-                    ? .7
-                    : 1,
-                material: fabric.map === '/assets/material_dark.jpg'
-                    ? undefined
-                    : fabric,
-            });
-        }
-        model.iris = model.addGeometry({
-            geometry: getGeometryUrl("iris"),
+        mannequin.skirt = updateGeometry(mannequin.skirt, "skirt", {
+            texture: fabric.map,
+            material: fabric,
+        }, outfit === 'skirt');
+
+        mannequin.jacket = updateGeometry(mannequin.jacket, "jacket", {
+            texture: fabric.map,
+            material: fabric,
+        }, outfit === 'pants' || outfit === 'skirt');
+
+        mannequin.blouse = updateGeometry(mannequin.blouse, "j_blouse", {
+            texture: '/assets/material_white.jpg',
+            material: {
+                type: 'velvet',
+                emissive: [.05, .05, .1],
+                shininess: 10,
+                normalMap: '/assets/material_suede_normal.jpg',
+            },
+        }, outfit === 'pants' || outfit === 'skirt');
+
+        mannequin.underwear = updateGeometry(mannequin.underwear, "underwear", {
+            texture: fabric.map === '/assets/material_dark.jpg'
+                ? '/assets/woman_underwear_transparency.png'
+                : fabric.map,
+            alpha: fabric.map === '/assets/material_dark.jpg'
+                ? .7
+                : 1,
+            material: fabric.map === '/assets/material_dark.jpg'
+                ? undefined
+                : fabric,
+        }, outfit === 'underwear');
+
+        mannequin.iris = updateGeometry(mannequin.iris, "iris", {
             texture: '/assets/woman_iris.png',
         });
-        model.sclera = model.addGeometry({
-            geometry: getGeometryUrl("sclera"),
+
+        mannequin.sclera = updateGeometry(mannequin.sclera, "sclera", {
             texture: '/assets/woman_sclera.png',
             material: {
                 alphaMap: '/assets/woman_sclera_alpha.png'
@@ -332,13 +310,7 @@ PEEKS.registerPage('virtualmodel', function() {
         category: 'white',
     });
 
-    page.addPage('peeks_toolbar');
-
-    var vm;
-
-    vm = createVirtualModal(page, [0, 0, 0]);
-    //vm = createVirtualModal(page, [2, 0, 0]);
-    //vm = createVirtualModal(page, [-2, 0, 0]);
+    createVirtualModal(page, [0, 0, 0]);
 
 	return page;
 });

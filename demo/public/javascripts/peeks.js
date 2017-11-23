@@ -1199,7 +1199,11 @@
 				}
 			},
 
-			show: function() {
+            setVisible: function(visible) {
+				this.visible = visible;
+			},
+
+            show: function() {
 				this.visible = true;
 			},
 
