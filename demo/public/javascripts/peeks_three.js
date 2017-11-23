@@ -461,20 +461,19 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
 
 
 
-                            var shader = THREE.ShaderPeeks[ "fabric" ];
+                            var shader = THREE.ShaderPeeks[ "velvet" ];
             				var fragmentShader = shader.fragmentShader;
             				var vertexShader = shader.vertexShader;
             				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-            				uniforms[ "enableBump" ].value = true;
+            				//uniforms[ "enableBump" ].value = true;
             				uniforms[ "enableSpecular" ].value = true;
             				//uniforms[ "tBeckmann" ].value = composerBeckmann.renderTarget1.texture;
             				//uniforms[ "tDiffuse" ].value = mapColor;
             				//uniforms[ "bumpMap" ].value = mapHeight;
-            				//uniforms[ "specularMap" ].value = mapSpecular;
                             uniforms[ "tBeckmann" ].value = geometry.texture;
-                            uniforms[ "tDiffuse" ].value = new THREE.Color(1,0,0);
-            				uniforms[ "bumpMap" ].value = 1.0;
-            				uniforms[ "specularMap" ].value = geometry.texture;
+                            uniforms[ "tDiffuse" ].value = geometry.texture;
+                            //uniforms[ "bumpMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
+//            				uniforms[ "bumpMap" ].value = 1.0;
             				uniforms[ "diffuse" ].value.setHex( 0xa0a0a0 );
             				uniforms[ "specular" ].value.setHex( 0xa0a0a0 );
             				uniforms[ "uRoughness" ].value = 0.2;
@@ -1088,7 +1087,6 @@ THREE.FresnelShader = {
         "varying vec2 vTextureUv;",
         "uniform sampler2D uAlbedoMap;",
         "uniform vec3 uFresnelColor;",
-
 		"varying float vReflectionFactor;",
         "varying vec3 fragColor;",
 		"void main() {",
@@ -1112,14 +1110,8 @@ THREE.FresnelShader = {
 
 };
 
-/**
- * @author alteredq / http://alteredqualia.com/
- *
- */
-
-
 THREE.ShaderPeeks = {
-	'fabric' : {
+    'velvet' : {
 		uniforms: THREE.UniformsUtils.merge( [
 			THREE.UniformsLib[ "lights" ],
 			{
@@ -1134,9 +1126,13 @@ THREE.ShaderPeeks = {
 				"uSpecularBrightness": { value: 0.75 },
 				"bumpMap": { value: null },
 				"bumpScale": { value: 1 },
-				"specularMap": { value: null },
 				"offsetRepeat": { value: new THREE.Vector4( 0, 0, 1, 1 ) },
-				"uWrapRGB": { value: new THREE.Vector3( 0.75, 0.375, 0.1875 ) }
+				"uWrapRGB": { value: new THREE.Vector3( 0.75, 0.375, 0.1875 ) },
+
+                "uFresnelBias": { value: 0.1 },
+        		"uFresnelPower": { value: 2.0 },
+        		"uFresnelScale": { value: 1.0 },
+                "uFresnelColor": { value: [1.0, 1.0, 1.0] },
 			}
 		] ),
 
@@ -1152,7 +1148,6 @@ THREE.ShaderPeeks = {
 			"uniform vec3 uWrapRGB;",
 			"uniform sampler2D tDiffuse;",
 			"uniform sampler2D tBeckmann;",
-			"uniform sampler2D specularMap;",
 			"varying vec3 vNormal;",
 			"varying vec2 vUv;",
 			"varying vec3 vViewPosition;",
@@ -1187,6 +1182,9 @@ THREE.ShaderPeeks = {
 				"return result;",
 			"}",
 
+            "uniform vec3 uFresnelColor;",
+    		"varying float vReflectionFactor;",
+
 			"void main() {",
                 "vec3 outgoingLight = vec3( 0.0 );",
                 "vec4 diffuseColor = vec4( diffuse, opacity );",
@@ -1196,13 +1194,7 @@ THREE.ShaderPeeks = {
 				"vec3 normal = normalize( vNormal );",
 				"vec3 viewerDirection = normalize( vViewPosition );",
 
-				"float specularStrength;",
-				"if ( enableSpecular ) {",
-					"vec4 texelSpecular = texture2D( specularMap, vUv );",
-					"specularStrength = texelSpecular.r;",
-				"} else {",
-					"specularStrength = 1.0;",
-				"}",
+				"float specularStrength = 1.0;",
 
 				"#ifdef USE_BUMPMAP",
 					"if ( enableBump ) normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );",
@@ -1211,21 +1203,6 @@ THREE.ShaderPeeks = {
 				"vec3 totalSpecularLight = vec3( 0.0 );",
 				"vec3 totalDiffuseLight = vec3( 0.0 );",
 
-				"#if NUM_POINT_LIGHTS > 0",
-					"for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {",
-						"vec3 lVector = pointLights[ i ].position + vViewPosition.xyz;",
-						"float attenuation = calcLightAttenuation( length( lVector ), pointLights[ i ].distance, pointLights[ i ].decay );",
-						"lVector = normalize( lVector );",
-						"float pointDiffuseWeightFull = max( dot( normal, lVector ), 0.0 );",
-						"float pointDiffuseWeightHalf = max( 0.5 * dot( normal, lVector ) + 0.5, 0.0 );",
-						"vec3 pointDiffuseWeight = mix( vec3 ( pointDiffuseWeightFull ), vec3( pointDiffuseWeightHalf ), uWrapRGB );",
-						"float pointSpecularWeight = KS_Skin_Specular( normal, lVector, viewerDirection, uRoughness, uSpecularBrightness );",
-						"totalDiffuseLight += pointLight[ i ].color * ( pointDiffuseWeight * attenuation );",
-						"totalSpecularLight += pointLight[ i ].color * specular * ( pointSpecularWeight * specularStrength * attenuation );",
-					"}",
-				"#endif",
-
-				// directional lights
 				"#if NUM_DIR_LIGHTS > 0",
 					"for( int i = 0; i < NUM_DIR_LIGHTS; i++ ) {",
 						"vec3 dirVector = directionalLights[ i ].direction;",
@@ -1238,25 +1215,9 @@ THREE.ShaderPeeks = {
 					"}",
 				"#endif",
 
-				// hemisphere lights
-				"#if NUM_HEMI_LIGHTS > 0",
-					"for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {",
-						"vec3 lVector = hemisphereLightDirection[ i ];",
-						"float dotProduct = dot( normal, lVector );",
-						"float hemiDiffuseWeight = 0.5 * dotProduct + 0.5;",
-						"totalDiffuseLight += mix( hemisphereLightGroundColor[ i ], hemisphereLightSkyColor[ i ], hemiDiffuseWeight );",
-						// specular (sky light)
-						"float hemiSpecularWeight = 0.0;",
-						"hemiSpecularWeight += KS_Skin_Specular( normal, lVector, viewerDirection, uRoughness, uSpecularBrightness );",
-						// specular (ground light)
-						"vec3 lVectorGround = -lVector;",
-						"hemiSpecularWeight += KS_Skin_Specular( normal, lVectorGround, viewerDirection, uRoughness, uSpecularBrightness );",
-						"vec3 hemiSpecularColor = mix( hemisphereLightGroundColor[ i ], hemisphereLightSkyColor[ i ], hemiDiffuseWeight );",
-						"totalSpecularLight += hemiSpecularColor * specular * ( hemiSpecularWeight * specularStrength );",
-					"}",
-				"#endif",
 				"outgoingLight += diffuseColor.xyz * ( totalDiffuseLight + ambientLightColor * diffuse ) + totalSpecularLight;",
                 "gl_FragColor = vec4(outgoingLight.r, outgoingLight.g, outgoingLight.b, 1.0);",
+                "gl_FragColor = mix( gl_FragColor, vec4( uFresnelColor, 1.0 ), clamp( vReflectionFactor, 0.0, 1.0 ) );",
 			"}"
 		].join( "\n" ),
 
@@ -1268,6 +1229,10 @@ THREE.ShaderPeeks = {
 			THREE.ShaderChunk[ "common" ],
 			THREE.ShaderChunk[ "lights_pars" ],
 			THREE.ShaderChunk[ "shadowmap_pars_vertex" ],
+            "uniform float uFresnelBias;",
+    		"uniform float uFresnelScale;",
+            "uniform float uFresnelPower;",
+    		"varying float vReflectionFactor;",
 			"void main() {",
 				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 				"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
@@ -1276,6 +1241,9 @@ THREE.ShaderPeeks = {
 				"vUv = uv * offsetRepeat.zw + offsetRepeat.xy;",
 				"gl_Position = projectionMatrix * mvPosition;",
 				THREE.ShaderChunk[ "shadowmap_vertex" ],
+    			"vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
+    			"vec3 I = worldPosition.xyz - cameraPosition;",
+    			"vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
 			"}"
 		].join( "\n" )
 
