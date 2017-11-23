@@ -90,30 +90,23 @@ function createVirtualModal(page, position) {
         model.shoes = model.addGeometry({
             geometry: getGeometryUrl("highHeels"),
             texture: '/assets/material_suede.jpg',
+            material: {
+                type: "velvet",
+            }
         });
 
         if (outfit === 'pants') {
             model.pants = model.addGeometry({
         		geometry: getGeometryUrl("pants"),
                 texture: fabric.map,
-                material: {
-                    type: 'velvet',
-                    fresnelScale: 1.0,
-                    emissive: fabric.emissive,
-                    shininess: fabric.shininess,
-                    normalMap: fabric.normalMap,
-                },
+                material: fabric,
         	});
         }
         if (outfit === 'skirt') {
             model.skirt = model.addGeometry({
         		geometry: getGeometryUrl("skirt"),
                 texture: fabric.map,
-                material: {
-                    emissive: fabric.emissive,
-                    shininess: fabric.shininess,
-                    normalMap: fabric.normalMap,
-                },
+                material: fabric,
         	});
         }
 
@@ -121,16 +114,13 @@ function createVirtualModal(page, position) {
             model.jacket = model.addGeometry({
         		geometry: getGeometryUrl("jacket"),
                 texture: fabric.map,
-                material: {
-                    emissive: fabric.emissive,
-                    shininess: fabric.shininess,
-                    normalMap: fabric.normalMap,
-                },
+                material: fabric,
             });
             model.blouse = model.addGeometry({
         		geometry: getGeometryUrl("j_blouse"),
                 texture: '/assets/material_white.jpg',
                 material: {
+                    type: 'velvet',
                     emissive: [.05, .05, .1],
                     shininess: 10,
                     normalMap: '/assets/material_suede_normal.jpg',
@@ -147,11 +137,9 @@ function createVirtualModal(page, position) {
                 alpha: fabric.map === '/assets/material_dark.jpg'
                     ? .7
                     : 1,
-                material: {
-                    emissive: fabric.emissive,
-                    shininess: fabric.shininess,
-                    normalMap: fabric.normalMap,
-                },
+                material: fabric.map === '/assets/material_dark.jpg'
+                    ? undefined
+                    : fabric,
             });
         }
         model.iris = model.addGeometry({
@@ -229,6 +217,7 @@ function createVirtualModal(page, position) {
         position: [0, .15, 0],
         size: .1,
         material: {
+            type: 'velvet',
             emissive: [.1,.1,.1],
             shininess: 10,
             normalMap: undefined,
@@ -252,10 +241,12 @@ function createVirtualModal(page, position) {
         position: [0, -.15, 0],
         size: .1,
         material: {
+            type: 'velvet',
             emissive: [.1,.1,.1],
             shininess: 5,
             normalMap: '/assets/material_suede_normal.jpg',
             map: '/assets/material_suede.jpg',
+            specularMap: '/assets/material_red_satin.jpg',
         },
         onClick: onSetClothMaterial,
     });
@@ -264,6 +255,7 @@ function createVirtualModal(page, position) {
         position: [0, -.3, 0],
         size: .1,
         material: {
+            type: 'velvet',
             emissive: [.05,.05,.1],
             shininess: 5,
             normalMap: '/assets/material_suede_normal.jpg',
@@ -288,6 +280,7 @@ function createVirtualModal(page, position) {
         position: [0, -.6, 0],
         size: .1,
         material: {
+            type: 'velvet',
             emissive: [.0,.0,.1],
             shininess: 5,
             map: '/assets/material_dark.jpg',

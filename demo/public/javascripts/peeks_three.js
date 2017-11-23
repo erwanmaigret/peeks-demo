@@ -440,7 +440,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
             				//uniforms[ "enableBump" ].value = true;
             				uniforms[ "enableSpecular" ].value = true;
-                            uniforms[ "tBeckmann" ].value = geometry.texture;
+                            uniforms[ "tBeckmann" ].value = PEEKS.ThreeTextureLoader(refMat.specularMap);
                             uniforms[ "tDiffuse" ].value = geometry.texture;
                             //uniforms[ "bumpMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
                             //uniforms[ "normalMap" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
@@ -1084,7 +1084,7 @@ THREE.ShaderPeeks = {
                         "totalDiffuseLight += directionalLights[ i ].color * dirDiffuseWeight;",
 
                         "float dirSpecularWeight = KS_Skin_Specular( normal, dirVector, viewerDirection, uRoughness, uSpecularBrightness );",
-                        //"totalSpecularLight += directionalLights[ i ].color * ( dirSpecularWeight * specularStrength );",
+                        "totalSpecularLight += directionalLights[ i ].color * ( dirSpecularWeight * specularStrength );",
 
                         /*
                         "vec3 lightVector = normalize(uLightPosition - vVertex);",
