@@ -412,6 +412,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var threeObject = asset.threeObject;
     if (threeObject && threeObject.children.length == 1) {
         var geometry = threeObject.children[0];
+
         geometry.traverse(
             function (child) {
                 if (child instanceof THREE.Mesh) {
@@ -424,13 +425,23 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         mat.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
                         mat.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
                         mat.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
-                        mat.specular = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                        mat.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
                         mat.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
                         mat.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
                         mat.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
                         mat.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         mat.side = THREE.FrontSide;
                         child.geometry.computeFaceNormals();
+
+                        var shader = THREE.FresnelShader;
+				        var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+                        uniforms[ "map" ].value = geometry.texture;
+                        var material = new THREE.ShaderMaterial( {
+            				uniforms: uniforms,
+            				vertexShader: shader.vertexShader,
+            				fragmentShader: shader.fragmentShader,
+            			} );
+                        child.material = material;
                     }
                 }
             }
@@ -915,7 +926,7 @@ PEEKS.Scene.prototype.onStart = function() {
 
     // Always work retina-style with 4 fragments per pixel
     // This should be adaptive based on the device performances
-    renderer.setPixelRatio(2);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     this.cameraAngle = 55;
 	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
@@ -949,3 +960,76 @@ PEEKS.Scene.prototype.onStart = function() {
 
     this.onResize();
 }
+
+THREE.FresnelShader = {
+
+	uniforms: {
+
+		"mRefractionRatio": { value: 1.02 },
+		"mFresnelBias": { value: 0.1 },
+		"mFresnelPower": { value: 2.0 },
+		"mFresnelScale": { value: 1.0 },
+        "tCube": { value: null },
+        "map": { value: null }
+
+	},
+
+	vertexShader: [
+        "varying vec2 vTextureUv;",
+		"uniform float mRefractionRatio;",
+		"uniform float mFresnelBias;",
+		"uniform float mFresnelScale;",
+		"uniform float mFresnelPower;",
+
+		"varying float vReflectionFactor;",
+
+		"void main() {",
+			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+			"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
+
+			"vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
+
+			"vec3 I = worldPosition.xyz - cameraPosition;",
+
+			"vReflectionFactor = mFresnelBias + mFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), mFresnelPower );",
+
+			"gl_Position = projectionMatrix * mvPosition;",
+            "vTextureUv = uv;",
+		"}"
+
+	].join( "\n" ),
+
+	fragmentShader: [
+        "struct ReflectedLight {",
+        	"vec3 directDiffuse;",
+        	"vec3 directSpecular;",
+        	"vec3 indirectDiffuse;",
+        	"vec3 indirectSpecular;",
+        "};",
+        "varying vec2 vTextureUv;",
+        "uniform sampler2D map;",
+
+		"uniform samplerCube tCube;",
+
+		"varying float vReflectionFactor;",
+
+		"void main() {",
+            "float opacity = 1.0;",
+            "vec3 diffuse = vec3(1.0, 1.0, 1.0);",
+            "vec4 diffuseColor = vec4( diffuse, opacity );",
+            "vec4 texelColor = texture2D( map, vTextureUv );",
+	        "texelColor = mapTexelToLinear( texelColor );",
+	        "diffuseColor *= texelColor;",
+            "float specularStrength = 1.0;",
+            "ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );",
+            "reflectedLight.indirectDiffuse += vec3( 1.0 );",
+            "reflectedLight.indirectDiffuse *= diffuseColor.rgb;",
+            "vec3 outgoingLight = reflectedLight.indirectDiffuse;",
+            "gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
+            "gl_FragColor = linearToOutputTexel( gl_FragColor );",
+			"gl_FragColor = mix( gl_FragColor, vec4( 1.0 ), clamp( vReflectionFactor, 0.0, 1.0 ) );",
+		"}"
+
+	].join( "\n" )
+
+};
