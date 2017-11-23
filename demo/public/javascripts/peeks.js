@@ -1671,8 +1671,7 @@
 					case 37: { // Arrow Left
 						if (event.altKey) {
                             animAttribute = 'position';
-							animValue = this.onGetCameraTranslation(
-                                [-manipFactor, 0, 0]);
+							animValue = this.onGetCameraTranslation([-manipFactor, 0, 0]);
 						} else {
                             animAttribute = 'rotation';
 							animValue = [0, manipFactor * 20, 0];
@@ -1684,8 +1683,7 @@
                         if (isVehicle) isPosition = !isPosition;
 						if (isPosition) {
                             animAttribute = 'position';
-							animValue = this.onGetCameraTranslation(
-                                [0, 0, -manipFactor]);
+							animValue = this.onGetCameraTranslation([0, 0, -manipFactor]);
 						} else {
                             animAttribute = 'rotation';
 							animValue = [manipFactor * 20, 0, 0];
@@ -1695,8 +1693,7 @@
 					case 39: { // Arrow Right
 						if (event.altKey) {
                             animAttribute = 'position';
-							animValue = this.onGetCameraTranslation(
-                                [manipFactor, 0, 0]);
+							animValue = this.onGetCameraTranslation([manipFactor, 0, 0]);
 						} else {
                             animAttribute = 'rotation';
 							animValue = [0, -manipFactor * 20, 0];
@@ -1708,8 +1705,7 @@
                         if (isVehicle) isPosition = !isPosition;
 						if (isPosition) {
                             animAttribute = 'position';
-							animValue = this.onGetCameraTranslation(
-                                [0, 0, manipFactor]);
+							animValue = this.onGetCameraTranslation([0, 0, manipFactor]);
 						} else {
                             animAttribute = 'rotation';
 							animValue = [-manipFactor * 20, 0, 0];
@@ -1741,11 +1737,7 @@
                 logDebug('onMouseWheel');
 				event.preventDefault();
                 var position = this.camera.position;
-                var offset = this.onGetCameraTranslation([
-                    event.deltaX * .01,
-                    0,
-                    event.deltaY * .01]
-                );
+                var offset = this.onGetCameraTranslation([0, 0, event.deltaY * .01]);
                 this.camera.setPosition([
                     position[0] + offset[0],
                     position[1] + offset[1],
