@@ -1050,7 +1050,12 @@ THREE.ShaderPeeks = {
             "varying float vReflectionFactor;",
             "varying float vSpecularFactor;",
 
-			"void main() {",
+            "#if NUM_DIR_LIGHTS > 0",
+            "uniform vec3 directionalLightColor[NUM_DIR_LIGHTS];",
+            "uniform vec3 directionalLightDirection[NUM_DIR_LIGHTS];",
+            "#endif",
+
+            "void main() {",
                 "vec3 outgoingLight = vec3( 0.0 );",
                 "vec4 diffuseColor = vec4( diffuse, opacity );",
 				"vec4 colDiffuse = texture2D( tDiffuse, vUv );",
@@ -1069,19 +1074,30 @@ THREE.ShaderPeeks = {
 						"vec3 dirVector = directionalLights[ i ].direction;",
 						"float dirDiffuseWeightFull = max( dot( normal, dirVector ), 0.0 );",
 						"float dirDiffuseWeightHalf = max( 0.5 * dot( normal, dirVector ) + 0.5, 0.0 );",
-						"vec3 dirDiffuseWeight = mix( vec3 ( dirDiffuseWeightFull ), vec3( dirDiffuseWeightHalf ), uWrapRGB );",
-						"float dirSpecularWeight = KS_Skin_Specular( normal, dirVector, viewerDirection, uRoughness, uSpecularBrightness );",
+						"vec3 dirDiffuseWeight = mix( vec3 ( dirDiffuseWeightFull ), vec3( dirDiffuseWeightHalf ), 0.5 );",
                         "totalDiffuseLight += directionalLights[ i ].color * dirDiffuseWeight;",
-						"totalSpecularLight += directionalLights[ i ].color * ( dirSpecularWeight * specularStrength );",
+
+                        "float dirSpecularWeight = KS_Skin_Specular( normal, dirVector, viewerDirection, uRoughness, uSpecularBrightness );",
+                        //"totalSpecularLight += directionalLights[ i ].color * ( dirSpecularWeight * specularStrength );",
+
+                        /*
+                        "vec3 lightVector = normalize(uLightPosition - vVertex);",
+                        "float lightDiffuseFactor = clamp(dot(normal, lightVector), 0.0, 1.0);",
+                        "vec3 light" + lightId + "Reflection = normalize(reflect(-light" + lightId + "Vector, normal));\n",
+                        "float light" + lightId + "SpecularFactor = dot(normalize(vec3(0.0, 0.0, 1000.0) - vVertex), light" + lightId + "Reflection);\n",
+                        "light" + lightId + "SpecularFactor = pow(light" + lightId + "SpecularFactor, uCosinePower) * uReflectivity;\n",
+                        "light" + lightId + "SpecularFactor = clamp(light" + lightId + "SpecularFactor, 0.0, 1.0);\n",
+                        "lightDiffuse += uLight" + lightId + "Color.rgb * light" + lightId + "DiffuseFactor;\n",
+                        "lightSpecular += light" + lightId + "SpecularFactor * uLight" + lightId + "Color;\n",
+                        "lightSpecularAlpha += light" + lightId + "SpecularFactor;\n",
+                        */
 					"}",
 				"#endif",
 
 				"outgoingLight += diffuseColor.rgb * ( totalDiffuseLight + ambientLightColor * diffuse ) + totalSpecularLight;",
-                "outgoingLight = colDiffuse.rgb,",
 
                 "gl_FragColor = vec4(outgoingLight, 1.0);",
-                "gl_FragColor = texture2D( tDiffuse, vUv );",
-                "gl_FragColor.rgb = gl_FragColor.rgb * (1.0 - clamp( vSpecularFactor, 0.0, 1.0 ));",
+                // "gl_FragColor.rgb = gl_FragColor.rgb * (1.0 - clamp( vSpecularFactor, 0.0, 0.7 ));",
                 "gl_FragColor = mix( gl_FragColor, vec4( uFresnelColor, 1.0 ), clamp( vReflectionFactor, 0.0, 1.0 ) );",
 			"}"
 		].join( "\n" ),
@@ -1097,6 +1113,7 @@ THREE.ShaderPeeks = {
     		"uniform float uFresnelScale;",
             "uniform float uFresnelPower;",
             "varying float vReflectionFactor;",
+            "varying float vDiffuseFactor;",
             "varying float vSpecularFactor;",
 			"void main() {",
 				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
@@ -1109,7 +1126,8 @@ THREE.ShaderPeeks = {
     			"vec3 I = worldPosition.xyz - cameraPosition;",
                 //"vReflectionFactor = uFresnelBias + uFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), uFresnelPower );",
                 "vReflectionFactor = 0.01 + 1.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 2.0 );",
-                "vSpecularFactor = 0.2 + 1.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 0.6 );",
+                "vDiffuseFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
+                "vSpecularFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
 			"}"
 		].join( "\n" )
 
