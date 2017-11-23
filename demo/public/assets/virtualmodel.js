@@ -98,7 +98,7 @@ function createVirtualModal(page, position) {
                 texture: fabric.map,
                 material: {
                     type: 'fabric',
-                    fresnelScale: 0.8,
+                    fresnelScale: 1.0,
                     emissive: fabric.emissive,
                     shininess: fabric.shininess,
                     normalMap: fabric.normalMap,
