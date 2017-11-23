@@ -771,9 +771,15 @@
                     shape.name = name;
                     shape.hide();
                     shape.weightCurrent = 0;
+                    this.weight = 0;
                     this.shapes[name] = shape;
                 }
-                this.shapes[name].weight = weight || 0;
+                var weight = weight || 0;
+                if (this.shapes[name].weight !== weight) {
+                    this.shapes[name].weightSetTime = this.time || 0;
+                    this.shapes[name].weightStart = this.weight;
+                }
+                this.shapes[name].weight = weight;
 			},
 
             setProperties: function (params) {
@@ -1181,6 +1187,19 @@
                     this.position[0] += this.speedOffset[0];
                     this.position[1] += this.speedOffset[1];
                     this.position[2] += this.speedOffset[2];
+                }
+
+                if (this.shapes) {
+                    for (var shapeName in this.shapes) {
+                        if (this.shapes.hasOwnProperty(shapeName)) {
+                            var shape = this.shapes[shapeName];
+                            if (shape.weight !== shape.weightEval) {
+                                var duration = this.time - shape.weightSetTime;
+                                var blend = (duration > .5) ? 1 : duration / .5;
+                                shape.weightEval = blend * shape.weight + (1 - blend) * shape.weightStart;
+                            }
+                        }
+                    }
                 }
 			},
 

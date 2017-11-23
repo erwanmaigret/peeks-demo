@@ -434,7 +434,7 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
                 if (asset.shapes.hasOwnProperty(shapeName)) {
                     //console.log("synching " + this.name + " -> " + shape);
                     var shape = asset.shapes[shapeName];
-                    var weight = shape.weight;
+                    var weight = shape.weightEval;
                     if (weight !== 0 &&
                         shape.threeObject &&
                         shape.threeObject.children.length > 0)
