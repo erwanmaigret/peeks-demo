@@ -68,15 +68,6 @@ function createVirtualModal(page, position) {
             }
         }
 
-        mannequin.body = updateGeometry(mannequin.body, "body", {
-            texture: '/assets/woman_body.png',
-            color: skin,
-            material: {
-                emissive: [.1, .05, .05],
-                shininess: 20,
-            },
-        });
-
         mannequin.shoes = updateGeometry(mannequin.shoes, "highHeels", {
             texture: '/assets/material_suede.jpg',
             material: { type: "velvet" },

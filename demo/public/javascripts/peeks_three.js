@@ -454,6 +454,15 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
     }
 },
 
+PEEKS.ThreeShaderAttr = function(material, name, value) {
+    if (typeof value === 'string') {
+        // This is a texture resource to load
+        value = textureLoader(value);
+    }
+    material[name] = value;
+    material.uniforms[name].value = value;
+},
+
 PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
     var threeObject = asset.threeObject;
@@ -464,7 +473,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                 if (child instanceof THREE.Mesh) {
                     if (child.geometry && child.material) {
                         var refMat = asset.material || {};
-                        if (refMat.type !== undefined) {
+                        if (refMat.type === 'velvet') {
                             var shader = THREE.ShaderPeeks["fabric"];
             				var fragmentShader = shader.fragmentShader;
             				var vertexShader = shader.vertexShader;
@@ -489,30 +498,111 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                             } else {
                                 uniforms["uFresnelScale"].value = 0.0;
                             }
+                        } else if (refMat.type === 'phong') {
+                            var shader = THREE.ShaderPeeks["phong"];
+            				var fragmentShader = shader.fragmentShader;
+            				var vertexShader = shader.vertexShader;
+            				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+            				var material = new THREE.ShaderMaterial( {
+                                fragmentShader: fragmentShader,
+                                vertexShader: vertexShader,
+                                uniforms: uniforms,
+                                lights: true,
+                            } );
+                            child.material = material;
+
+                            /*
+                            Internal defaults:
+
+                            material.type = 'MeshPhongMaterial';
+                            material.color = new THREE.Color( 0xff0000 ); // diffuse
+                            material.specular = new THREE.Color( 0x0000ff );
+                            material.shininess = 30;
+
+                            material.lightMap = null;
+                            material.lightMapIntensity = 1.0;
+
+                            material.aoMap = null;
+                            material.aoMapIntensity = 1.0;
+
+                            material.emissive = new THREE.Color( 0x000000 );
+                            material.emissiveIntensity = 1.0;
+                            material.emissiveMap = null;
+
+                            material.bumpMap = null;
+                            material.bumpScale = 1;
+
+                            material.normalMap = null;
+                            material.normalScale = new THREE.Vector2( 1, 1 );
+
+                            material.displacementMap = null;
+                            material.displacementScale = 1;
+                            material.displacementBias = 0;
+
+                            material.specularMap = null;
+
+                            material.alphaMap = null;
+
+                            material.envMap = null;
+                            material.combine = THREE.MultiplyOperation;
+                            material.reflectivity = 1;
+                            material.refractionRatio = 0.98;
+
+                            material.wireframe = false;
+                            material.wireframeLinewidth = 1;
+                            material.wireframeLinecap = 'round';
+                            material.wireframeLinejoin = 'round';
+
+                            material.skinning = false;
+                            material.morphTargets = false;
+                            material.morphNormals = false;
+                            */
+
+                            material.extensions.derivatives = true;
+                            material.extensions.fragDepth = true;
+                			material.extensions.drawBuffers = true;
+                            material.extensions.shaderTextureLOD = true;
+
+                            // Defaults:
+                            material.color = 0xffffff;
+                            material.transparent = true;
+                            material.side = THREE.FrontSide;
+                            material.depthTest = true;
+
+                            PEEKS.ThreeShaderAttr(material, 'map', asset.textureUrl);
+                            PEEKS.ThreeShaderAttr(material, 'normalMap', refMat.normalMap);
+                            PEEKS.ThreeShaderAttr(material, 'alphaMap', refMat.alphaMap);
+                            PEEKS.ThreeShaderAttr(material, 'bumpMap', refMat.bumpMap);
+                            PEEKS.ThreeShaderAttr(material, 'opacity', PEEKS.ThreeFloat(asset.alpha, 1));
+                            PEEKS.ThreeShaderAttr(material, 'reflectivity', PEEKS.ThreeFloat(refMat.reflectivity , .2));
+                            PEEKS.ThreeShaderAttr(material, 'shininess', PEEKS.ThreeFloat(refMat.shininess , 10));
+                            PEEKS.ThreeShaderAttr(material, 'emissive', PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]));
+                            PEEKS.ThreeShaderAttr(material, 'specular', PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]));
+                            // PEEKS.ThreeShaderAttr(material, 'color', PEEKS.ThreeColor(refMat.color, [1, 1, 1]));
+                            // PEEKS.ThreeShaderAttr(material, 'side', THREE.FrontSide);
                         } else {
-                            var mat = child.material;
-                            if (mat.type !== 'MeshPhongMaterial') {
-                                mat = new THREE.MeshPhongMaterial({
+                            var material = child.material;
+                            if (material.type !== 'MeshPhongMaterial') {
+                                material = new THREE.MeshPhongMaterial({
                                     color: 0xffffff,
                                     transparent: true,
                                     side: THREE.FrontSide,
                                     depthTest: true,
                                 });
-                                child.material = mat;
+                                child.material = material;
                             }
-                            mat.map = textureLoader(asset.textureUrl);
-                            mat.transparent = true;
-                            mat.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
-                            mat.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
-                            mat.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
-                            mat.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
-                            mat.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
-                            mat.normalMap = textureLoader(refMat.normalMap);
-                            mat.alphaMap = textureLoader(refMat.alphaMap);
-                            mat.bumpMap = textureLoader(refMat.bumpMap);
-                            mat.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
-                            mat.side = THREE.FrontSide;
-                            child.material = mat;
+                            material.map = textureLoader(asset.textureUrl);
+                            material.transparent = true;
+                            material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
+                            material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
+                            material.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
+                            material.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                            material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
+                            material.normalMap = textureLoader(refMat.normalMap);
+                            material.alphaMap = textureLoader(refMat.alphaMap);
+                            material.bumpMap = textureLoader(refMat.bumpMap);
+                            material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
+                            material.side = THREE.FrontSide;
                         }
                     }
                 }
@@ -1185,6 +1275,131 @@ THREE.ShaderPeeks = {
                 //"vDiffuseFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
                 //"vSpecularFactor = 0.2 + 2.0 * pow( 1.0 + dot( normalize( I ), worldNormal ), 1.0 );",
 			"}"
+		].join( "\n" )
+
+	},
+
+    'phong' : {
+		uniforms: THREE.UniformsUtils.merge( [
+            THREE.UniformsLib.common,
+            THREE.UniformsLib.specularmap,
+            THREE.UniformsLib.envmap,
+            THREE.UniformsLib.aomap,
+            THREE.UniformsLib.lightmap,
+            THREE.UniformsLib.emissivemap,
+            THREE.UniformsLib.bumpmap,
+            THREE.UniformsLib.normalmap,
+            THREE.UniformsLib.displacementmap,
+            THREE.UniformsLib.gradientmap,
+            THREE.UniformsLib.fog,
+            THREE.UniformsLib.lights,
+            {
+                emissive: { value: new THREE.Color( 0x000000 ) },
+                specular: { value: new THREE.Color( 0x111111 ) },
+                shininess: { value: 30 }
+            }
+		] ),
+
+		fragmentShader: [
+            // "#define PHONG",
+            "uniform vec3 diffuse;",
+            "uniform vec3 emissive;",
+            "uniform vec3 specular;",
+            "uniform float shininess;",
+            "uniform float opacity;",
+            THREE.ShaderChunk[ "common" ],
+            THREE.ShaderChunk[ "packing" ],
+            THREE.ShaderChunk[ "dithering_pars_fragment" ],
+            THREE.ShaderChunk[ "color_pars_fragment" ],
+            THREE.ShaderChunk[ "uv_pars_fragment" ],
+            THREE.ShaderChunk[ "uv2_pars_fragment" ],
+            THREE.ShaderChunk[ "map_pars_fragment" ],
+            THREE.ShaderChunk[ "alphamap_pars_fragment" ],
+            THREE.ShaderChunk[ "aomap_pars_fragment" ],
+            THREE.ShaderChunk[ "lightmap_pars_fragment" ],
+            THREE.ShaderChunk[ "emissivemap_pars_fragment" ],
+            THREE.ShaderChunk[ "envmap_pars_fragment" ],
+            THREE.ShaderChunk[ "gradientmap_pars_fragment" ],
+            THREE.ShaderChunk[ "fog_pars_fragment" ],
+            THREE.ShaderChunk[ "bsdfs" ],
+            THREE.ShaderChunk[ "lights_pars" ],
+            THREE.ShaderChunk[ "lights_phong_pars_fragment" ],
+            THREE.ShaderChunk[ "shadowmap_pars_fragment" ],
+            THREE.ShaderChunk[ "bumpmap_pars_fragment" ],
+            THREE.ShaderChunk[ "normalmap_pars_fragment" ],
+            THREE.ShaderChunk[ "specularmap_pars_fragment" ],
+            THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
+            THREE.ShaderChunk[ "clipping_planes_pars_fragment" ],
+            "void main() {",
+                THREE.ShaderChunk[ "clipping_planes_fragment" ],
+                "vec4 diffuseColor = vec4( diffuse, opacity );",
+                "ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );",
+                "vec3 totalEmissiveRadiance = emissive;",
+                THREE.ShaderChunk[ "logdepthbuf_fragment" ],
+                THREE.ShaderChunk[ "map_fragment" ],
+                THREE.ShaderChunk[ "color_fragment" ],
+                THREE.ShaderChunk[ "alphamap_fragment" ],
+                THREE.ShaderChunk[ "alphatest_fragment" ],
+                THREE.ShaderChunk[ "specularmap_fragment" ],
+                THREE.ShaderChunk[ "normal_fragment" ],
+                THREE.ShaderChunk[ "emissivemap_fragment" ],
+                THREE.ShaderChunk[ "lights_phong_fragment" ],
+                THREE.ShaderChunk[ "lights_template" ],
+                THREE.ShaderChunk[ "aomap_fragment" ],
+                "vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;",
+                THREE.ShaderChunk[ "envmap_fragment" ],
+                "gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
+                THREE.ShaderChunk[ "tonemapping_fragment" ],
+                THREE.ShaderChunk[ "encodings_fragment" ],
+                THREE.ShaderChunk[ "fog_fragment" ],
+                THREE.ShaderChunk[ "premultiplied_alpha_fragment" ],
+                THREE.ShaderChunk[ "dithering_fragment" ],
+            "}"
+		].join( "\n" ),
+
+		vertexShader: [
+            // "#define PHONG",
+            "varying vec3 vViewPosition;",
+            "#ifndef FLAT_SHADED",
+            "varying vec3 vNormal;",
+            "#endif",
+            THREE.ShaderChunk[ "common" ],
+            THREE.ShaderChunk[ "uv_pars_vertex" ],
+            THREE.ShaderChunk[ "uv2_pars_vertex" ],
+            THREE.ShaderChunk[ "displacementmap_pars_vertex" ],
+            THREE.ShaderChunk[ "envmap_pars_vertex" ],
+            THREE.ShaderChunk[ "color_pars_vertex" ],
+            THREE.ShaderChunk[ "fog_pars_vertex" ],
+            THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
+            THREE.ShaderChunk[ "skinning_pars_vertex" ],
+            THREE.ShaderChunk[ "shadowmap_pars_vertex" ],
+            THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
+            THREE.ShaderChunk[ "clipping_planes_pars_vertex" ],
+            "void main() {",
+                THREE.ShaderChunk[ "uv_vertex" ],
+                THREE.ShaderChunk[ "uv2_vertex" ],
+                THREE.ShaderChunk[ "color_vertex" ],
+                THREE.ShaderChunk[ "beginnormal_vertex" ],
+                THREE.ShaderChunk[ "morphnormal_vertex" ],
+                THREE.ShaderChunk[ "skinbase_vertex" ],
+                THREE.ShaderChunk[ "skinnormal_vertex" ],
+                THREE.ShaderChunk[ "defaultnormal_vertex" ],
+                "#ifndef FLAT_SHADED",
+                "vNormal = normalize( transformedNormal );",
+                "#endif",
+                THREE.ShaderChunk[ "begin_vertex" ],
+                THREE.ShaderChunk[ "morphtarget_vertex" ],
+                THREE.ShaderChunk[ "skinning_vertex" ],
+                THREE.ShaderChunk[ "displacementmap_vertex" ],
+                THREE.ShaderChunk[ "project_vertex" ],
+                THREE.ShaderChunk[ "logdepthbuf_vertex" ],
+                THREE.ShaderChunk[ "clipping_planes_vertex" ],
+                "vViewPosition = - mvPosition.xyz;",
+                THREE.ShaderChunk[ "worldpos_vertex" ],
+                THREE.ShaderChunk[ "envmap_vertex" ],
+                THREE.ShaderChunk[ "shadowmap_vertex" ],
+                THREE.ShaderChunk[ "fog_vertex" ],
+            "}"
 		].join( "\n" )
 
 	},
