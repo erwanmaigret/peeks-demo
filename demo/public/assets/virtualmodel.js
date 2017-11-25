@@ -18,9 +18,6 @@ function createVirtualModal(page, position) {
     var panel = femaleHigh.addAsset({
         position: [.5, 1, -3],
     });
-    var panel2 = femaleHigh.addAsset({
-        position: [-.5, 1, -3],
-    });
 
     var outfit = "pants";
     var size = "M";
@@ -131,63 +128,6 @@ function createVirtualModal(page, position) {
         });
     };
 
-    panel2.addRoundTextButton({
-        position: [0, 0, 0],
-		size: .15,
-        label: 'M',
-        fontSize: 60,
-        vm: {
-            size: 'M'
-        },
-        onClick: onSetClothMaterial,
-    });
-
-    panel2.addRoundTextButton({
-        position: [0, .2, 0],
-        size: .15,
-        label: 'L',
-        fontSize: 60,
-        vm: {
-            size: 'L'
-        },
-        onClick: onSetClothMaterial,
-    });
-
-
-    panel2.addTextButton({
-        position: [0, -.5, 0],
-		size: .15,
-        label: 'Underwear',
-        fontSize: 60,
-        vm: {
-            outfit: 'underwear'
-        },
-        onClick: onSetClothMaterial,
-    });
-
-    panel2.addTextButton({
-        position: [0, -.7, 0],
-		size: .15,
-        label: 'Pants',
-        fontSize: 60,
-        vm: {
-            outfit: 'pants'
-        },
-        onClick: onSetClothMaterial,
-    });
-
-    panel2.addTextButton({
-        position: [0, -.9, 0],
-		size: .15,
-        label: 'Skirt',
-        fontSize: 60,
-        vm: {
-            outfit: 'skirt'
-        },
-        onClick: onSetClothMaterial,
-    });
-
-
     var defaultMaterial = panel.addButton({
         texture: '/assets/material_red_satin.jpg',
         position: [0, .15, 0],
@@ -297,6 +237,143 @@ function createVirtualModal(page, position) {
         },
         onClick: onSetClothMaterial,
     });
+
+    var canvas = page.addCanvas({valign: 'top'});
+
+    var addSizes = function(parent, x, y) {
+        var fontSize = 30;
+        parent.addTextButton({
+            position: [x - .1, y, 0],
+            size: .1,
+            label: 'XS',
+            fontSize: fontSize,
+            vm: {
+                size: 'M'
+            },
+            onClick: onSetClothMaterial,
+        });
+        parent.addTextButton({
+            position: [x - .05, y, 0],
+            size: .1,
+            label: 'S',
+            fontSize: fontSize,
+            vm: {
+                size: 'M'
+            },
+            onClick: onSetClothMaterial,
+        });
+        parent.addTextButton({
+            position: [x, y, 0],
+            size: .1,
+            label: 'M',
+            fontSize: fontSize,
+            vm: {
+                size: 'M'
+            },
+            onClick: onSetClothMaterial,
+        });
+        parent.addTextButton({
+            position: [x + .05, y, 0],
+            size: .1,
+            label: 'L',
+            fontSize: fontSize,
+            vm: {
+                size: 'L'
+            },
+            onClick: onSetClothMaterial,
+        });
+        parent.addTextButton({
+            position: [x + .1, y, 0],
+            size: .1,
+            label: 'XL',
+            fontSize: fontSize,
+            vm: {
+                size: 'L'
+            },
+            onClick: onSetClothMaterial,
+        });
+    }
+
+    var y = .45;
+
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Chest',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y);
+    y-= .08;
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Waist',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y);
+    y-= .08;
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Hips',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y);
+    y-= .08;
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Shoulders',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y);
+
+    y-= .2;
+
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Outfit',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .08;
+    canvas.addTextButton({
+        position: [-.35, y, 0],
+		size: .15,
+        label: 'Underwear',
+        fontSize: 35,
+        vm: {
+            outfit: 'underwear'
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addTextButton({
+        position: [-.35, y, 0],
+		size: .15,
+        label: 'Pants',
+        fontSize: 35,
+        vm: {
+            outfit: 'pants'
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addTextButton({
+        position: [-.35, y, 0],
+		size: .15,
+        label: 'Skirt',
+        fontSize: 35,
+        vm: {
+            outfit: 'skirt'
+        },
+        onClick: onSetClothMaterial,
+    });
+
 
     onSetClothMaterial(defaultMaterial);
 
