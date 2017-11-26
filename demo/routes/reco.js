@@ -66,7 +66,7 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Amazon', url: 'https://www.amazon.com/' });
     //data.pages.push({ name: 'Barbara', url: 'http://www.barbara.fr/' });
 
-    data.pages.push({ name: 'virtualmodel' });
+    data.pages.push({ name: 'mannequin' });
     data.pages.push({ name: '2D Assets' });
     data.pages.push({ name: 'terraworlds' });
     data.pages.push({ name: 'sportrade' });

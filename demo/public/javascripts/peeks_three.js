@@ -422,29 +422,33 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
         var geometry = threeObject.children[0];
         for (meshI = 0; meshI < geometry.children.length; meshI++) {
             var mesh = geometry.children[meshI];
-            if (mesh.geometry.positionInitial === undefined) {
-                mesh.geometry.positionInitial = mesh.geometry.attributes.position.array.slice();
-            } else {
-                mesh.geometry.attributes.position.array = mesh.geometry.positionInitial.slice();
-                mesh.geometry.attributes.position.needsUpdate = true;
-            }
-            var vtx = mesh.geometry.attributes.position.array;
-            var vtxRef = mesh.geometry.positionInitial;
-            for (var shapeName in asset.shapes) {
-                if (asset.shapes.hasOwnProperty(shapeName)) {
-                    //console.log("synching " + this.name + " -> " + shape);
-                    var shape = asset.shapes[shapeName];
-                    var weight = shape.weightEval;
-                    if (weight !== 0 &&
-                        shape.threeObject &&
-                        shape.threeObject.children.length > 0)
-                    {
-                        var shapeGeometry = shape.threeObject.children[0];
-                        if (meshI < shapeGeometry.children.length) {
-                            var shapeMesh = shapeGeometry.children[meshI];
-                            var shapeVtx = shapeMesh.geometry.attributes.position.array;
-                            for (var vtxI = 0; vtxI < vtx.length; vtxI++) {
-                                vtx[vtxI] += (shapeVtx[vtxI] - vtxRef[vtxI]) * weight;
+            if (mesh.geometry !== undefined) {
+                if (mesh.geometry.positionInitial === undefined) {
+                    mesh.geometry.positionInitial = mesh.geometry.attributes.position.array.slice();
+                } else {
+                    mesh.geometry.attributes.position.array = mesh.geometry.positionInitial.slice();
+                    mesh.geometry.attributes.position.needsUpdate = true;
+                }
+                var vtx = mesh.geometry.attributes.position.array;
+                var vtxRef = mesh.geometry.positionInitial;
+                for (var shapeName in asset.shapes) {
+                    if (asset.shapes.hasOwnProperty(shapeName)) {
+                        //console.log("synching " + this.name + " -> " + shape);
+                        var shape = asset.shapes[shapeName];
+                        var weight = shape.weightEval;
+                        if (weight !== 0 &&
+                            shape.threeObject &&
+                            shape.threeObject.children.length > 0)
+                        {
+                            var shapeGeometry = shape.threeObject.children[0];
+                            if (meshI < shapeGeometry.children.length) {
+                                var shapeMesh = shapeGeometry.children[meshI];
+                                if (shapeMesh.geometry !== undefined) {
+                                    var shapeVtx = shapeMesh.geometry.attributes.position.array;
+                                    for (var vtxI = 0; vtxI < vtx.length; vtxI++) {
+                                        vtx[vtxI] += (shapeVtx[vtxI] - vtxRef[vtxI]) * weight;
+                                    }
+                                }
                             }
                         }
                     }
@@ -674,13 +678,18 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
                 loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat, true);
-            } else if (this.primitive === PEEKS.Asset.PrimitiveDisk) {
+            } else if (this.primitive === PEEKS.Asset.PrimitiveDisc) {
                 var geometry = new THREE.CircleGeometry(.5, 32);
                 var material = new THREE.MeshBasicMaterial({
                     color: 0xffffff,
                     transparent: true,
                     depthTest: isScreenSpace ? false : true,
                 });
+                loadTexture(material, this.getAttr('textureUrl'),
+                    this.textureRepeat,
+                    false, false,
+                    this.imageDetour
+                );
                 this.threeObject = new THREE.Mesh(geometry, material);
             } else if (this.primitive === PEEKS.Asset.PrimitiveRing) {
                 var geometry = new THREE.RingGeometry(0.4, 0.5, 32);
@@ -742,6 +751,14 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             }
                         });
                     }
+
+                    object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {
+                            if (child.geometry) {
+                                child.geometry.computeFaceNormals();
+                            }
+                        }
+                    });
 
                     object.parent.peeksAsset.threeSynchMaterial();
                 }, onProgress, onError );

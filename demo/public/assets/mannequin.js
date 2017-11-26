@@ -1,4 +1,4 @@
-function createVirtualModal(page, position) {
+function createMannequin(page, position) {
     var femaleHigh = page.addAsset({
         position: position,
     });
@@ -22,6 +22,9 @@ function createVirtualModal(page, position) {
     var outfit = "pants";
     var size = "M";
     var sizeDefault = "M";
+    var chestSize = "M";
+    var breastSize = "M";
+    var hipsSize = "M";
     var skin = [1, 1, 1];
     var modelName = "woman";
     var pose = "pose1";
@@ -29,16 +32,53 @@ function createVirtualModal(page, position) {
     var fabric = undefined;
 
     var getGeometryUrl = function (part, pose, size) {
-        return "/assets/" + modelName + "_" + pose + "_" + size + "_" + part + ".obj";
+        return "/assets/" + modelName + "_" + pose + "_" + part +
+            (size ? size : "") +
+            ".obj";
     };
 
     var updateGeometry = function(node, mesh, properties, visible) {
         if (node === undefined) {
-            node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault, sizeDefault) });
+            node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault) });
         }
         node.initShapeWeights();
-        if (pose !== poseDefault || size !== sizeDefault) {
-            node.setShape(pose + '_' + size, getGeometryUrl(mesh, pose, size), 1);
+        var hipsWeight =
+            (hipsSize === 'XS') ? -1
+            : (hipsSize === 'S') ? -.5
+            : (hipsSize === 'M') ? 0
+            : (hipsSize === 'L') ? .5
+            : (hipsSize === 'XL') ? 1
+            : 0;
+        var breastWeight =
+            (breastSize === 'XS') ? -1
+            : (breastSize === 'S') ? -.5
+            : (breastSize === 'M') ? 0
+            : (breastSize === 'L') ? .5
+            : (breastSize === 'XL') ? 1
+            : 0;
+        var chestWeight =
+            (chestSize === 'XS') ? -1
+            : (chestSize === 'S') ? -.5
+            : (chestSize === 'M') ? 0
+            : (chestSize === 'L') ? .5
+            : (chestSize === 'XL') ? 1
+            : 0;
+        if (mesh === 'jacket' ||
+            mesh === 'j_blouse' ||
+            mesh === 'pants' ||
+            mesh === 'skirt' ||
+            mesh === 'underwear' ||
+            mesh === 'body')
+        {
+            if (hipsWeight !== 0) {
+                node.setShape(pose + '_hips_1_1', getGeometryUrl(mesh, pose, '_hips_1_1'), hipsWeight);
+            }
+            if (breastWeight !== 0) {
+                node.setShape(pose + '_breast_1_1', getGeometryUrl(mesh, pose, '_spine1_1_1'), breastWeight);
+            }
+            if (chestWeight !== 0) {
+                node.setShape(pose + '_chest_1_1', getGeometryUrl(mesh, pose, '_spine2_1_1'), chestWeight);
+            }
         }
         node.validateShapeWeights();
         node.setProperties(properties);
@@ -56,6 +96,15 @@ function createVirtualModal(page, position) {
         if (caller.vm !== undefined) {
             if (caller.vm.size !== undefined) {
                 size = caller.vm.size;
+            }
+            if (caller.vm.breastSize !== undefined) {
+                breastSize = caller.vm.breastSize;
+            }
+            if (caller.vm.chestSize !== undefined) {
+                chestSize = caller.vm.chestSize;
+            }
+            if (caller.vm.hipsSize !== undefined) {
+                hipsSize = caller.vm.hipsSize;
             }
             if (caller.vm.outfit !== undefined) {
                 outfit = caller.vm.outfit;
@@ -128,10 +177,23 @@ function createVirtualModal(page, position) {
         });
     };
 
-    var defaultMaterial = panel.addButton({
+    var canvas = page.addCanvas({valign: 'top'});
+    var y = .45;
+    canvas.addText({
+        position: [.35, y, 0],
+        text: 'Fabric',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [.35, y - .03, 0],
+        size: [.2, .001, 1],
+    });
+    y-= .08;
+    var defaultMaterial = canvas.addDisc({
         texture: '/assets/material_red_satin.jpg',
-        position: [0, .15, 0],
-        size: .1,
+        position: [.3, y, 0],
+        size: .05,
         material: {
             type: 'velvet',
             emissive: [.1,.1,.1],
@@ -141,9 +203,10 @@ function createVirtualModal(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    canvas.addDisc({
         texture: '/assets/material_red_velvet.jpg',
-        size: .1,
+        position: [.4, y, 0],
+        size: .05,
         material: {
             emissive: [.1,0,0],
             shininess: 2,
@@ -152,10 +215,11 @@ function createVirtualModal(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    y-= .08;
+    canvas.addDisc({
         texture: '/assets/material_suede.jpg',
-        position: [0, -.15, 0],
-        size: .1,
+        position: [.3, y, 0],
+        size: .05,
         material: {
             type: 'velvet',
             emissive: [.1,.1,.1],
@@ -166,10 +230,10 @@ function createVirtualModal(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    canvas.addDisc({
         texture: '/assets/material_blue_satin.jpg',
-        position: [0, -.3, 0],
-        size: .1,
+        position: [.4, y, 0],
+        size: .05,
         material: {
             type: 'velvet',
             emissive: [.05,.05,.1],
@@ -179,10 +243,11 @@ function createVirtualModal(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    y-= .08;
+    canvas.addDisc({
         texture: '/assets/material_white.jpg',
-        position: [0, -.45, 0],
-        size: .1,
+        position: [.3, y, 0],
+        size: .05,
         material: {
             emissive: [.1,.0,.0],
             shininess: 2,
@@ -191,10 +256,10 @@ function createVirtualModal(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    canvas.addDisc({
         texture: '/assets/material_dark.jpg',
-        position: [0, -.6, 0],
-        size: .1,
+        position: [.4, y, 0],
+        size: .05,
         material: {
             type: 'velvet',
             emissive: [.0,.0,.1],
@@ -204,106 +269,143 @@ function createVirtualModal(page, position) {
         onClick: onSetClothMaterial,
     });
 
-    panel.addButton({
+    y-= .2;
+    canvas.addText({
+        position: [.35, y, 0],
+        text: 'Skin',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [.35, y - .03, 0],
+        size: [.2, .001, 1],
+    });
+    y-= .08;
+    canvas.addDisc({
         texture: '/assets/woman_body.png',
-        position: [0, -.9, 0],
+        position: [.3, y, 0],
+        size: .05,
+        color: [1.1, 1.1, 1.4],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [1.1, 1.1, 1.4],
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.4, y, 0],
+        size: .05,
         color: [1, 1, 1],
-        size: .1,
         textureRepeat: [.15, .15],
         vm: {
             skin: [1, 1, 1],
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    y-= .08;
+    canvas.addDisc({
         texture: '/assets/woman_body.png',
-        position: [0, -1.05, 0],
-        color: [1, 1, 0.6],
-        size: .1,
+        position: [.3, y, 0],
+        size: .05,
+        color: [1, 1, 0.7],
         textureRepeat: [.15, .15],
         vm: {
-            skin: [1, 1, .75],
+            skin: [1, 1, 0.7],
         },
         onClick: onSetClothMaterial,
     });
-    panel.addButton({
+    canvas.addDisc({
         texture: '/assets/woman_body.png',
-        position: [0, -1.2, 0],
-        color: [.45, .45, .45],
-        size: .1,
+        position: [.4, y, 0],
+        size: .05,
+        color: [.7, .7, .6],
         textureRepeat: [.15, .15],
         vm: {
-            skin: [.45, .45, .45],
+            skin: [.7, .7, .6],
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.3, y, 0],
+        size: .05,
+        color: [.5, .5, .5],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [.5, .5, .5],
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.4, y, 0],
+        size: .05,
+        color: [.3, .3, .3],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [.3, .3, .3],
         },
         onClick: onSetClothMaterial,
     });
 
-    var canvas = page.addCanvas({valign: 'top'});
-
-    var addSizes = function(parent, x, y) {
+    var addSizes = function(parent, x, y, part) {
         var fontSize = 30;
         parent.addTextButton({
             position: [x - .1, y, 0],
             size: .1,
             label: 'XS',
             fontSize: fontSize,
-            vm: {
-                size: 'M'
-            },
+            vm: {},
             onClick: onSetClothMaterial,
-        });
+        }).vm[part + "Size"] = 'XS';
         parent.addTextButton({
             position: [x - .05, y, 0],
             size: .1,
             label: 'S',
             fontSize: fontSize,
-            vm: {
-                size: 'M'
-            },
+            vm: {},
             onClick: onSetClothMaterial,
-        });
+        }).vm[part + "Size"] = 'S';
         parent.addTextButton({
             position: [x, y, 0],
             size: .1,
             label: 'M',
             fontSize: fontSize,
-            vm: {
-                size: 'M'
-            },
+            vm: {},
             onClick: onSetClothMaterial,
-        });
+        }).vm[part + "Size"] = 'M';
         parent.addTextButton({
             position: [x + .05, y, 0],
             size: .1,
             label: 'L',
             fontSize: fontSize,
-            vm: {
-                size: 'L'
-            },
+            vm: {},
             onClick: onSetClothMaterial,
-        });
+        }).vm[part + "Size"] = 'L';
         parent.addTextButton({
             position: [x + .1, y, 0],
             size: .1,
             label: 'XL',
             fontSize: fontSize,
             vm: {
-                size: 'L'
+                size: 'L',
             },
             onClick: onSetClothMaterial,
-        });
+        }).vm[part + "Size"] = 'XL';
     }
 
     var y = .45;
 
     canvas.addText({
         position: [-.35, y, 0],
-        text: 'Chest',
+        text: 'Breast',
         fontSize: 30,
         fontOutlineStyle: '',
     });
     y-= .05;
-    addSizes(canvas, -.35, y);
+    addSizes(canvas, -.35, y, 'chest');
     y-= .08;
     canvas.addText({
         position: [-.35, y, 0],
@@ -312,7 +414,7 @@ function createVirtualModal(page, position) {
         fontOutlineStyle: '',
     });
     y-= .05;
-    addSizes(canvas, -.35, y);
+    addSizes(canvas, -.35, y, 'breast');
     y-= .08;
     canvas.addText({
         position: [-.35, y, 0],
@@ -321,16 +423,7 @@ function createVirtualModal(page, position) {
         fontOutlineStyle: '',
     });
     y-= .05;
-    addSizes(canvas, -.35, y);
-    y-= .08;
-    canvas.addText({
-        position: [-.35, y, 0],
-        text: 'Shoulders',
-        fontSize: 30,
-        fontOutlineStyle: '',
-    });
-    y-= .05;
-    addSizes(canvas, -.35, y);
+    addSizes(canvas, -.35, y, 'hips');
 
     y-= .2;
 
@@ -339,6 +432,10 @@ function createVirtualModal(page, position) {
         text: 'Outfit',
         fontSize: 30,
         fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [-.35, y - .03, 0],
+        size: [.2, .001, 1],
     });
     y-= .08;
     canvas.addTextButton({
@@ -380,12 +477,12 @@ function createVirtualModal(page, position) {
     return femaleHigh;
 }
 
-PEEKS.registerPage('virtualmodel', function() {
+PEEKS.registerPage('mannequin', function() {
     var page = new PEEKS.Asset({
         category: 'white',
     });
 
-    createVirtualModal(page, [0, 0, 0]);
+    createMannequin(page, [0, 0, 0]);
 
 	return page;
 });

@@ -35,7 +35,7 @@ app.use('/fortinet', require('./routes/fortinet'));
 app.use('/tron', require('./routes/tron'));
 app.use('/terraworlds', require('./routes/terraworlds'));
 app.use('/sportrade', require('./routes/sportrade'));
-app.use('/virtualmodel', require('./routes/virtualmodel'));
+app.use('/mannequin', require('./routes/mannequin'));
 app.use('/wgtiootb', require('./routes/demo'));
 
 // catch 404 and forward to error handler

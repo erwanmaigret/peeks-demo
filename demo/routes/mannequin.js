@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'virtualmodel' });
+    res.render('index', { title: 'mannequin' });
 });
 
 module.exports = router;

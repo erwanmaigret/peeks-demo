@@ -300,6 +300,18 @@
 				return asset;
 			},
 
+            addDisc: function (params) {
+                var asset = this.addView(params);
+                asset.primitive = Asset.PrimitiveDisc;
+				return asset;
+			},
+
+            addSquare: function (params) {
+                var asset = this.addAsset(params);
+                asset.addView({position: [0, 0, 0]});
+				return asset;
+			},
+
             addTextButton: function (params) {
                 var asset = this.addButton(params);
                 asset.addAttrAlias('viewBgColor', 'colorWhite');
@@ -853,7 +865,7 @@
 	Asset.PrimitiveNone = 0;
     Asset.PrimitivePlane = 1;
     Asset.PrimitiveCube = 2;
-    Asset.PrimitiveDisk = 3;
+    Asset.PrimitiveDisc = 3;
     Asset.PrimitiveRing = 4;
     Asset.PrimitiveCircle = 5;
     Asset.PrimitiveSphere = 6;
