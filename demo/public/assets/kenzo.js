@@ -1,7 +1,7 @@
-PEEKS.registerPage('nicholaskirkwood', function() {
+PEEKS.registerPage('kenzo', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
-        fontColorBold: [100/255, 100/255, 100/255],
+        fontColorBold: [0/255, 0/255, 0/255],
         fontOutlineStyle: '',
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
@@ -350,29 +350,11 @@ PEEKS.registerPage('nicholaskirkwood', function() {
     });
 
     canvas.addButton({
-        image: '/images/target_icon_logo.png',
+        image: '/ui/icon_menu.png',
         position: [-.45, -.45],
-        size: .08,
-        onClick: onHome,
-    });
-
-    canvas.addButton({
-        image: '/images/target_icon_menu.png',
-        position: [-.35, -.45],
-        size: .08,
+        size: .07,
+        color: page.fontColorBold,
         onClick: onToggleMenu,
-    });
-
-    canvas.addButton({
-        image: '/images/target_icon_account.png',
-        position: [.25, -.45],
-        size: .08,
-    });
-
-    canvas.addButton({
-        image: '/images/target_icon_cart.png',
-        position: [.35, -.45],
-        size: .08,
     });
 
     canvas.addButton({
@@ -390,7 +372,6 @@ PEEKS.registerPage('nicholaskirkwood', function() {
         fontColor: [.3, .3, .3],
         size: .08,
     })
-
 
 	return page;
 });

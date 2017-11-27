@@ -5,11 +5,11 @@ router.get('/', function(req, res, next) {
     var data = { pages: [] };
 
     data.pages.push({ name: 'Target' });
-    data.pages.push({ name: 'Fortinet' });
+    //data.pages.push({ name: 'Fortinet' });
 
     // LVMH
-    data.pages.push({ name: 'Nicholas Kirkwood', page: 'nicholaskirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
-    //data.pages.push({ name: 'Kenzo', url: 'https://www.kenzo.com/en/home' });
+    data.pages.push({ name: 'Nicholas Kirkwood', page: 'kirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
+    data.pages.push({ name: 'Kenzo', page: 'kenzo', url: 'https://www.kenzo.com/en/home' });
     //data.pages.push({ name: 'Mario Bertulli', url: 'https://www.mariobertulli.fr' });
     //data.pages.push({ name: 'Edun', url: 'https://edun.com/pages/spring-2017' });
     //data.pages.push({ name: 'Fendi', url: 'https://www.fendi.com/fr-en' });

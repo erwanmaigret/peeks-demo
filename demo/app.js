@@ -36,6 +36,8 @@ app.use('/tron', require('./routes/tron'));
 app.use('/terraworlds', require('./routes/terraworlds'));
 app.use('/sportrade', require('./routes/sportrade'));
 app.use('/mannequin', require('./routes/mannequin'));
+app.use('/kirkwood', require('./routes/kirkwood'));
+app.use('/kenzo', require('./routes/kenzo'));
 app.use('/wgtiootb', require('./routes/demo'));
 
 // catch 404 and forward to error handler
