@@ -8,8 +8,9 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Fortinet' });
 
     // LVMH
-    data.pages.push({ name: 'Nicholas Kirkwood', page: 'kirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
-    data.pages.push({ name: 'Kenzo', page: 'kenzo', url: 'https://www.kenzo.com/en/home' });
+    data.pages.push({ name: 'Louis Vuitton', page: 'louisvuitton', url: 'http://us.louisvuitton.com/' });
+    //data.pages.push({ name: 'Nicholas Kirkwood', page: 'kirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
+    //data.pages.push({ name: 'Kenzo', page: 'kenzo', url: 'https://www.kenzo.com/en/home' });
     //data.pages.push({ name: 'Mario Bertulli', url: 'https://www.mariobertulli.fr' });
     //data.pages.push({ name: 'Edun', url: 'https://edun.com/pages/spring-2017' });
     //data.pages.push({ name: 'Fendi', url: 'https://www.fendi.com/fr-en' });
@@ -66,10 +67,10 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Amazon', url: 'https://www.amazon.com/' });
     //data.pages.push({ name: 'Barbara', url: 'http://www.barbara.fr/' });
 
-    data.pages.push({ name: 'mannequin' });
+    data.pages.push({ name: 'Mannequin', page: 'mannequin' });
     data.pages.push({ name: '2D Assets' });
-    data.pages.push({ name: 'terraworlds' });
-    data.pages.push({ name: 'sportrade' });
+    data.pages.push({ name: 'Terra Worlds', page: 'terraworlds' });
+    data.pages.push({ name: 'SporTrade', page: 'sportrade' });
     //data.pages.push({ name: '3D Assets' });
 
     res.send(JSON.stringify(data));
