@@ -480,6 +480,7 @@ function createMannequin(page, position) {
 PEEKS.registerPage('mannequin', function() {
     var page = new PEEKS.Asset({
         category: 'white',
+        gyroscope: 'off',
     });
 
     createMannequin(page, [0, 0, 0]);
