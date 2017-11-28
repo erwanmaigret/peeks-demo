@@ -17,19 +17,120 @@ PEEKS.registerPage('louisvuitton', function() {
         radius: 5,
     });
 
-    page.setAssetPath('https://target.scene7.com/is/image/Target/');
+    var imagePath = 'http://us.louisvuitton.com/images/is/image/lv/1/';
 
-    page.addSiteMapItem('clothing', { icon: '53451-160411_1460383116963'} );
-    page.addSiteMapItem("clothing/women's clothing", { icon: '52690603'} );
-    page.addSiteMapItem("boys' shoes", { icon: '53452-160411_1460402111660'} );
-    page.addSiteMapItem('Promotions');
-    page.addSiteMapItem("Promotions/Our Black Friday deals", { description: "Get a sneak peek now", icon: '2017_NovWk2_HP_StoryBlocks_v1_21103877-171101_1509556671597'} );
-    page.addSiteMapItem("Promotions/20% off trees, wreaths & lights", { description: "Get your Christmas decor now", icon: '2017_NovWk2_HP_StoryBlocks_v1_03103877-171026_1509030239564'} );
+    page.setAssetPath(imagePath);
 
-    var imagePath = 'https://target.scene7.com/is/image/Target/';
-
-    page.setSiteMapMenuPath('');
-    page.setSiteMapPath('Promotions');
+    page.addSiteMapItem('LV NOW');
+    page.addSiteMapItem('WORLD OF LOUIS VUITTON');
+    page.addSiteMapItem('WOMEN');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/HOME DECOR');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/TIMELESS PIECES');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/FASHION FORWARD');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/ULTIMATE LUXURY');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/PERSONALIZATION');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Boucher');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Da Vinci');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Fragonard');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Gauguin');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Manet');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Monet');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Rubens');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Turner');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Van Gogh');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/ALL MASTERS');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/SPRING-SUMMER 2018');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/CRUISE 2018 SHOW');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/Fall-Winter 2017 Show');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/FASHION SHOW SELECTION');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/NICOLAS GHESQUIERE');
+    page.addSiteMapItem('WOMEN/HANDBAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/NEW THIS SEASON');
+    page.addSiteMapItem('WOMEN/HANDBAGS/ALL HANDBAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/NEVERFULL ALMA & SPEEDY');
+    page.addSiteMapItem('WOMEN/HANDBAGS/ICONS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/TOP HANDLES');
+    page.addSiteMapItem('WOMEN/HANDBAGS/SHOULDER BAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/CROSS BODY BAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/TOTES');
+    page.addSiteMapItem('WOMEN/HANDBAGS/BACKPACKS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/HOBOS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/CLUTCHES & EVENING');
+    page.addSiteMapItem('WOMEN/HANDBAGS/MINI BAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/FASHION SHOWS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/ALL COLLECTIONS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/WALLETS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/KEY & CARD HOLDERS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/TECHNICAL CASES');
+    page.addSiteMapItem('WOMEN/TRAVEL');
+    page.addSiteMapItem('WOMEN/TRAVEL/ALL COLLECTIONS');
+    page.addSiteMapItem('WOMEN/TRAVEL/Horizon Collection');
+    page.addSiteMapItem('WOMEN/TRAVEL/ROLLING LUGGAGE');
+    page.addSiteMapItem('WOMEN/TRAVEL/SOFTSIDED LUGGAGE');
+    page.addSiteMapItem('WOMEN/TRAVEL/HARDSIDED LUGGAGE');
+    page.addSiteMapItem('WOMEN/TRAVEL/TRAVEL ACCESSORIES');
+    page.addSiteMapItem('WOMEN/ACCESSORIES');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/SCARVES, SHAWLS & MORE');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/FASHION JEWELRY');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/LEATHER BRACELETS');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/BELTS');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/SUNGLASSES');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/KEY HOLDERS, BAG CHARMS & MORE');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/HOME DECOR');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/View by Look');
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/View by Look/1", { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Leathers');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Furs');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Jackets and Coats');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Dresses');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Tops');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Skirts');
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/1", { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/2", { icon: 'PP_VP_AS/louis-vuitton--FESK90GBS702_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/3", { icon: 'PP_VP_AS/louis-vuitton--FESK91GFA006_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/4", { icon: 'PP_VP_AS/louis-vuitton--FESK91XHE900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/4", { icon: 'PP_VP_AS/louis-vuitton--FDJB05DRH900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/5", { icon: 'PP_VP_AS/louis-vuitton--FEJB01FGK650_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/6", { icon: 'PP_VP_AS/louis-vuitton--FESK13FUQ506_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/7", { icon: 'PP_VP_AS/louis-vuitton--FESK11XHE900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/8", { icon: 'PP_VP_AS/louis-vuitton--FDSK26DRX900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/9", { icon: 'PP_VP_AS/louis-vuitton--FDSK26DZH811_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/10", { icon: 'PP_VP_AS/louis-vuitton--FDSK34DRT651_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/11", { icon: 'PP_VP_AS/louis-vuitton--FDSK34DTL900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/12", { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Pants');
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Swimwear');
+    page.addSiteMapItem('WOMEN/SHOES');
+    page.addSiteMapItem('WOMEN/SHOES/ALL COLLECTIONS');
+    page.addSiteMapItem('WOMEN/SHOES/BOOTS & BOOTIES');
+    page.addSiteMapItem('WOMEN/SHOES/PUMPS');
+    page.addSiteMapItem('WOMEN/SHOES/FLATS');
+    page.addSiteMapItem('WOMEN/SHOES/SNEAKERS');
+    page.addSiteMapItem('WOMEN/SHOES/SANDALS');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/LOUIS VUITTON FOR UNICEF');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/HIGH JEWELRY');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/FINE JEWELRY');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/TIMEPIECES');
+    page.addSiteMapItem('WOMEN/FRAGRANCES');
+    page.addSiteMapItem('WOMEN/FRAGRANCES/DISCOVER THE COLLECTION');
+    page.addSiteMapItem('WOMEN/FRAGRANCES/UNIVERSE');
+    page.addSiteMapItem('WOMEN/FRAGRANCES/SAVOIR-FAIRE');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING/AGENDAS & COVERS');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING/WRITING');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING/WOMEN/BOOKS');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/My LV World Tour');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/MON MONOGRAM');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/HOTSTAMPING');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/My LV Tambour');
+    page.addSiteMapItem('MEN');
 
     var currentItems = [];
 
@@ -140,7 +241,7 @@ PEEKS.registerPage('louisvuitton', function() {
 
     var onHome = function(path) {
         page.setSiteMapMenuPath('');
-        page.setSiteMapPath('Promotions');
+        page.setSiteMapPath('WOMEN/READY-TO-WEAR/Skirts');
         refresh();
     };
 
@@ -197,6 +298,8 @@ PEEKS.registerPage('louisvuitton', function() {
         }
 
         items = page.querySiteMapAssets();
+        console.log(items);
+
         if (items) {
             var itemCount = items.length;
             for (var itemI = 0; itemI < itemCount; itemI++) {
@@ -205,7 +308,7 @@ PEEKS.registerPage('louisvuitton', function() {
                     position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
                 });
                 var image = item.image;
-                var imageBack = item.isProduct ? item.image + '_Alt01' : undefined;
+                var imageBack = item.isProduct ? item.image.replace('_PM2_Front', '_PM1_Other') : undefined;
                 var button = asset.addButton({
                     image: image ? imagePath + image : undefined,
                     imageBack: imageBack ? imagePath + imageBack : undefined,

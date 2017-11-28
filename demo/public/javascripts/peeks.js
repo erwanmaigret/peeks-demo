@@ -1941,6 +1941,7 @@
                                 size: [.5, .2, 1],
                                 path: item.path,
                                 viewBgColor: [.98, .98, .98],
+                                alpha: 0,
                                 onClick: onClickSiteMapItem,
                             });
 
