@@ -395,6 +395,48 @@ PEEKS.registerPage('louisvuitton', function() {
         onClick: 'searchPage',
     })
 
+    screen.addAsset({position: [-.05, 0]}).addMesh({
+        geometry: '/assets/baloon_1.obj',
+        position: [0, 0, 0],
+        size: .01,
+        rotation: [90, 0, 0],
+    });
+
+    screen.addAsset({position: [-.1, 0]}).addMesh({
+        geometry: '/assets/baloon_2.obj',
+        position: [0, 0, 0],
+        size: .01,
+        rotation: [90, 0, 0],
+    });
+
+    screen.addAsset({position: [.05, 0]}).addMesh({
+        geometry: '/assets/baloon_3.obj',
+        position: [0, 0, 0],
+        size: .01,
+        rotation: [90, 0, 0],
+    });
+
+    screen.addAsset({position: [.15, 0]}).addMesh({
+        geometry: '/assets/baloon_4.obj',
+        position: [0, 0, 0],
+        size: .01,
+        rotation: [90, 0, 0],
+    });
+
+    screen.addAsset({position: [.05, .1]}).addMesh({
+        geometry: '/assets/lv_logo.obj',
+        position: [0, -.2, 0],
+        size: .02,
+        rotation: [0, -15, 0],
+    });
+
+    screen.addAsset({position: [-.05, .1]}).addMesh({
+        geometry: '/assets/lv_shopping_bag.obj',
+        texture: '/assets/lv_shopping_bag.jpg',
+        position: [0, 0, 0],
+        size: 1,
+        rotation: [0, -30, 0],
+    });
 
 	return page;
 });
