@@ -350,7 +350,7 @@ PEEKS.registerPage('louisvuitton', function() {
         }
     };
 
-    onHome();
+//    onHome();
 
     var canvas = page.addCanvas({
         valign: 'bottom',
@@ -399,6 +399,7 @@ PEEKS.registerPage('louisvuitton', function() {
         geometry: '/assets/baloon_1.obj',
         position: [0, 0, 0],
         size: .01,
+        color: [1, 1, .5],
         rotation: [90, 0, 0],
     });
 
@@ -406,20 +407,23 @@ PEEKS.registerPage('louisvuitton', function() {
         geometry: '/assets/baloon_2.obj',
         position: [0, 0, 0],
         size: .01,
-        rotation: [90, 0, 0],
+        color: [.5, .5, 1],
+        rotation: [-90, 0, 0],
     });
 
     screen.addAsset({position: [.05, 0]}).addMesh({
         geometry: '/assets/baloon_3.obj',
         position: [0, 0, 0],
         size: .01,
-        rotation: [90, 0, 0],
+        color: [.5, 1, .5],
+        rotation: [90, 90, 0],
     });
 
     screen.addAsset({position: [.15, 0]}).addMesh({
         geometry: '/assets/baloon_4.obj',
         position: [0, 0, 0],
         size: .01,
+        color: [1, .5, .5],
         rotation: [90, 0, 0],
     });
 
@@ -427,6 +431,7 @@ PEEKS.registerPage('louisvuitton', function() {
         geometry: '/assets/lv_logo.obj',
         position: [0, -.2, 0],
         size: .02,
+        color: [1, 1, .5],
         rotation: [0, -15, 0],
     });
 
@@ -436,6 +441,67 @@ PEEKS.registerPage('louisvuitton', function() {
         position: [0, 0, 0],
         size: 1,
         rotation: [0, -30, 0],
+    });
+
+    var entranceOpen = function () {
+        doorLeft.animate({
+            duration: 10,
+            delay: 0,
+            begin: [0, 0, 0],
+            end: [-10, 0, 0],
+            attribute: 'position'
+        });
+        doorRight.animate({
+            duration: 10,
+            delay: 0,
+            begin: [0, 0, 0],
+            end: [10, 0, 0],
+            attribute: 'position'
+        });
+    }
+    var entrance = page.addAsset({
+        size: 1,
+        position: [0, 0, -3],
+    });
+    var doorLeft = entrance.addAsset({
+        position: [-2, 0, 0],
+    });
+    var doorLeftPane = doorLeft.addView({
+        position: [1, 0, 0],
+        viewBgColor: [0, 0, 0],
+        size: [2, 4, 2],
+    });
+    entrance.addMesh({
+        geometry: '/assets/lv_logo.obj',
+        position: [0, -.5, 0],
+        size: .03,
+        color: [1, 1, 1],
+        rotation: [0, 0, 0],
+        onClick: entranceOpen
+    });
+
+    doorLeft.addTextButton({
+        position: [1, 0, .01],
+        fontSize: 400,
+        text: 'L',
+        fontColor: [1, 1, 1],
+        size: .2,
+        onClick: entranceOpen
+    });
+    var doorRight = entrance.addAsset({
+        position: [2, 0, 0],
+    });
+    var doorRightPane = doorRight.addView({
+        position: [-1, 0, 0],
+        viewBgColor: [.18, .18, .18],
+        size: [2, 4, 2],
+    });
+    doorRight.addTextButton({
+        position: [-1, 0, .01],
+        fontSize: 400,
+        text: 'V',
+        size: .2,
+        onClick: entranceOpen
     });
 
 	return page;
