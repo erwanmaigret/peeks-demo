@@ -427,14 +427,6 @@ PEEKS.registerPage('louisvuitton', function() {
         rotation: [90, 0, 0],
     });
 
-    screen.addAsset({position: [.05, .1]}).addMesh({
-        geometry: '/assets/lv_logo.obj',
-        position: [0, -.2, 0],
-        size: .02,
-        color: [1, 1, .5],
-        rotation: [0, -15, 0],
-    });
-
     screen.addAsset({position: [-.05, .1]}).addMesh({
         geometry: '/assets/lv_shopping_bag.obj',
         texture: '/assets/lv_shopping_bag.jpg',
@@ -444,6 +436,7 @@ PEEKS.registerPage('louisvuitton', function() {
     });
 
     var entranceOpen = function () {
+        this.onClick = undefined;
         doorLeft.animate({
             duration: 10,
             delay: 0,
@@ -471,37 +464,29 @@ PEEKS.registerPage('louisvuitton', function() {
         viewBgColor: [0, 0, 0],
         size: [2, 4, 2],
     });
-    entrance.addMesh({
+    page.addMesh({
         geometry: '/assets/lv_logo.obj',
-        position: [0, -.5, 0],
-        size: .03,
+        position: [0, -.5, -2],
+        size: .025,
         color: [1, 1, 1],
         rotation: [0, 0, 0],
-        onClick: entranceOpen
+        onClick: entranceOpen,
+        onFocus: function() {},
+    }).animate({
+        duration: 3,
+        delay: 2,
+        begin: [0, 90, 0],
+        end: [0, 0, 0],
+        attribute: 'rotation'
     });
 
-    doorLeft.addTextButton({
-        position: [1, 0, .01],
-        fontSize: 400,
-        text: 'L',
-        fontColor: [1, 1, 1],
-        size: .2,
-        onClick: entranceOpen
-    });
     var doorRight = entrance.addAsset({
         position: [2, 0, 0],
     });
     var doorRightPane = doorRight.addView({
         position: [-1, 0, 0],
-        viewBgColor: [.18, .18, .18],
+        viewBgColor: [0, 0, 0],
         size: [2, 4, 2],
-    });
-    doorRight.addTextButton({
-        position: [-1, 0, .01],
-        fontSize: 400,
-        text: 'V',
-        size: .2,
-        onClick: entranceOpen
     });
 
 	return page;
