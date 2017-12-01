@@ -397,7 +397,7 @@ PEEKS.registerPage('louisvuitton', function() {
 
     var balloons = [];
 
-    var createBalloon = function(name, x) {
+    var createBalloon = function(name, x, z) {
         var rotation = [0, 0, 0];
         if (name === '1') {
             rotation = [90, 0, 0];
@@ -410,8 +410,8 @@ PEEKS.registerPage('louisvuitton', function() {
         }
         return page.addMesh({
             geometry: '/assets/balloon_' + name + '.obj',
-            position: [x, 0, -5],
-            size: .01,
+            position: [x, 0, z],
+            size: .02,
             color: PEEKS.color.hsl(Math.random(), 1, .6),
             rotation: rotation,
             material: {
@@ -423,19 +423,19 @@ PEEKS.registerPage('louisvuitton', function() {
     }
 
     var createBalloons = function() {
-        balloons.push(createBalloon('1', -3));
-        balloons.push(createBalloon('2', -2.5));
-        balloons.push(createBalloon('3', -2));
-        balloons.push(createBalloon('4', -1.5));
-        balloons.push(createBalloon('1', -1));
-        balloons.push(createBalloon('2', -0.5));
-        balloons.push(createBalloon('3', 0));
-        balloons.push(createBalloon('4', .5));
-        balloons.push(createBalloon('1', 1));
-        balloons.push(createBalloon('2', 1.5));
-        balloons.push(createBalloon('3', 2));
-        balloons.push(createBalloon('4', 2.5));
-        balloons.push(createBalloon('1', 3));
+        balloons.push(createBalloon('1', -3, -6));
+        balloons.push(createBalloon('2', -2.5, -7));
+        balloons.push(createBalloon('3', -2, -6));
+        balloons.push(createBalloon('4', -1.5, -7));
+        balloons.push(createBalloon('1', -1, -6));
+        balloons.push(createBalloon('2', -0.5, -7));
+        balloons.push(createBalloon('3', 0, -6));
+        balloons.push(createBalloon('4', .5, -7));
+        balloons.push(createBalloon('1', 1, -6));
+        balloons.push(createBalloon('2', 1.5, -7));
+        balloons.push(createBalloon('3', 2, -6));
+        balloons.push(createBalloon('4', 2.5, -7));
+        balloons.push(createBalloon('1', 3, -6));
     }
 
     var playBalloons = false;
@@ -459,8 +459,8 @@ PEEKS.registerPage('louisvuitton', function() {
         balloon.animate({
             duration: 4 + Math.random() * 4,
             delay: Math.random() * 6,
-            begin: [0,-4, 0],
-            end: [0, 4, 0],
+            begin: [0,-6, 0],
+            end: [0, 6, 0],
             attribute: 'position',
             onEnd: rewindAnimation,
         });
@@ -476,12 +476,12 @@ PEEKS.registerPage('louisvuitton', function() {
 
     createBalloons();
 
-    screen.addAsset({position: [-.05, .1]}).addMesh({
+    var shoppingBag = page.addMesh({
         geometry: '/assets/lv_shopping_bag.obj',
         texture: '/assets/lv_shopping_bag.jpg',
-        position: [0, 0, 0],
-        size: 1,
-        rotation: [0, -30, 0],
+        position: [2, -2, -5],
+        size: 2,
+        rotation: [0, -50, 0],
     });
 
     var entranceOpen = function () {
@@ -501,6 +501,39 @@ PEEKS.registerPage('louisvuitton', function() {
             attribute: 'position'
         });
         releaseBalloons();
+        var positionSrc = this.position;
+        var positionTarget = shoppingBag.position;
+        var rotationSrc = this.rotation;
+        var rotationTarget = shoppingBag.rotation;
+        this.animate({
+            duration: 2,
+            delay: 2,
+            begin: [0, 0, 0],
+            end: [
+                positionTarget[0] - positionSrc[0],
+                positionTarget[1] - positionSrc[1] + 1,
+                positionTarget[2] - positionSrc[2]
+            ],
+            attribute: 'position',
+        });
+        this.animate({
+            duration: 2,
+            delay: 1,
+            begin: [0, 0, 0],
+            end: [
+                rotationTarget[0],
+                rotationTarget[1],
+                rotationTarget[2]
+            ],
+            attribute: 'rotation',
+        });
+        this.animate({
+            duration: .7,
+            delay: 3.5,
+            begin: [0, 0, 0],
+            end: [0, -1, 0],
+            attribute: 'position',
+        });
     }
     var entrance = page.addAsset({
         size: 1,
@@ -518,7 +551,11 @@ PEEKS.registerPage('louisvuitton', function() {
         geometry: '/assets/lv_logo.obj',
         position: [0, -.5, -2],
         size: .025,
-        color: [1, 1, 1],
+        color: [1, 1, .7],
+        material: {
+            shininess: 50,
+            reflectivity: 2,
+        },
         rotation: [0, 0, 0],
         onClick: entranceOpen,
         onFocus: function() {},
