@@ -436,24 +436,36 @@ PEEKS.registerPage('louisvuitton', function() {
         balloons.push(createBalloon('4'));
     }
 
+    var playBalloons = false;
+
+    var rewindAnimation = function() {
+        if (playBalloons) {
+            this.clearAnimations();
+            releaseBalloon(this);
+        } else {
+            this.destroy();
+        }
+    }
+
     var releaseBalloon = function(balloon) {
         balloon.animate({
-            duration: 4 + Math.random() * 4,
+            duration: 4 + Math.random() * 10,
             begin: [0, 0, 0],
             end: [0, 180, 0],
             attribute: 'rotation',
         });
         balloon.animate({
             duration: 4 + Math.random() * 4,
-            delay: Math.random() * 2,
+            delay: Math.random() * 6,
             begin: [0,-4, 0],
             end: [0, 4, 0],
             attribute: 'position',
-            onEnd: 'destroy',
+            onEnd: rewindAnimation,
         });
     }
 
     var releaseBalloons = function() {
+        playBalloons = true;
         for (var balloonI = 0; balloonI < balloons.length; balloonI++) {
             releaseBalloon(balloons[balloonI]);
         }

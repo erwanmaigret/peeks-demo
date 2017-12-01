@@ -828,6 +828,12 @@
 			animate: function (params) {
 				var anim = this.add(new PEEKS.Animation(params));
                 this.initAsset(anim, params);
+                if (this.time !== 0) {
+                    // Evaluate right away in case the animation
+                    //  is created during an animation loop so it takes
+                    //  effect immediatelly
+                    anim.update(this.time);
+                }
                 return this;
 			},
 
@@ -1392,7 +1398,7 @@
                 });
             },
 
-            clearAnimation: function() {
+            clearAnimations: function() {
                 for (var childI = this.children.length - 1; childI >= 0;
                     childI--)
                 {
