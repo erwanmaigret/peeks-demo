@@ -410,28 +410,54 @@ PEEKS.registerPage('louisvuitton', function() {
         }
         return page.addMesh({
             geometry: '/assets/balloon_' + name + '.obj',
-            position: [-3 + Math.random() * 6, 0, -5],
+            position: [-2 + Math.random() * 4, 0, -5],
             size: .01,
-            color: [1, 1, .5],
+            color: [
+                .5 + Math.random() * .5,
+                .5 + Math.random() * .5,
+                .5 + Math.random() * .5],
             rotation: rotation,
+            material: {
+                normalMap: '/assets/balloon.jpg',
+                shininess: 50,
+                reflectivity: 3,
+            }
         });
     }
 
     var createBalloons = function() {
         balloons.push(createBalloon('1'));
+        balloons.push(createBalloon('2'));
+        balloons.push(createBalloon('3'));
+        balloons.push(createBalloon('4'));
+        balloons.push(createBalloon('1'));
+        balloons.push(createBalloon('2'));
+        balloons.push(createBalloon('3'));
+        balloons.push(createBalloon('4'));
+    }
+
+    var releaseBalloon = function(balloon) {
+        balloon.animate({
+            duration: 4 + Math.random() * 4,
+            begin: [0, 0, 0],
+            end: [0, 180, 0],
+            attribute: 'rotation',
+        });
+        balloon.animate({
+            duration: 4 + Math.random() * 4,
+            delay: Math.random() * 2,
+            begin: [0,-4, 0],
+            end: [0, 4, 0],
+            attribute: 'position',
+            onEnd: 'destroy',
+        });
     }
 
     var releaseBalloons = function() {
         for (var balloonI = 0; balloonI < balloons.length; balloonI++) {
-            balloons[balloonI].animate({
-                duration: 10,
-                delay: 0,
-                begin: [0,-2, 0],
-                end: [0, 2, 0],
-                attribute: 'position',
-                //            onEnd: 'destroy',
-            });
+            releaseBalloon(balloons[balloonI]);
         }
+        balloons = [];
     }
 
     createBalloons();

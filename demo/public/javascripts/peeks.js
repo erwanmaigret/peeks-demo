@@ -881,6 +881,7 @@
     Asset.PrimitiveCurvedPanel = 7;
     Asset.PrimitiveRibbon = 8;
     Asset.PrimitiveMesh = 9;
+    Asset.PrimitiveAnimation = 10;
 
 	Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		{
@@ -1389,7 +1390,20 @@
                     end: [0, 0, 0],
                     attribute: 'position'
                 });
-            }
+            },
+
+            clearAnimation: function() {
+                for (var childI = this.children.length - 1; childI >= 0;
+                    childI--)
+                {
+                    if (this.children[childI].primitive ===
+                        Asset.PrimitiveAnimation)
+                    {
+                        this.children.splice(childI, 1);
+                        break;
+                    }
+                }
+            },
 		}
 	);
 
@@ -2643,6 +2657,7 @@
 
 	function Animation(data) {
 		Asset.call( this );
+        this.primitive = Asset.PrimitiveAnimation;
 		this.duration = 10;
 		this.delay = 0;
 		this.attribute = 'position';
