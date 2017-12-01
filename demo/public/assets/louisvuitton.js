@@ -298,7 +298,6 @@ PEEKS.registerPage('louisvuitton', function() {
         }
 
         items = page.querySiteMapAssets();
-        console.log(items);
 
         if (items) {
             var itemCount = items.length;
@@ -517,7 +516,7 @@ PEEKS.registerPage('louisvuitton', function() {
             attribute: 'position',
         });
         this.animate({
-            duration: 2,
+            duration: 2.5,
             delay: 1,
             begin: [0, 0, 0],
             end: [
@@ -528,8 +527,8 @@ PEEKS.registerPage('louisvuitton', function() {
             attribute: 'rotation',
         });
         this.animate({
-            duration: .7,
-            delay: 3.5,
+            duration: .5,
+            delay: 3.6,
             begin: [0, 0, 0],
             end: [0, -1, 0],
             attribute: 'position',
@@ -560,7 +559,7 @@ PEEKS.registerPage('louisvuitton', function() {
         onClick: entranceOpen,
         onFocus: function() {},
     }).animate({
-        duration: 3,
+        duration: 2,
         delay: 2,
         begin: [0, 90, 0],
         end: [0, 0, 0],
