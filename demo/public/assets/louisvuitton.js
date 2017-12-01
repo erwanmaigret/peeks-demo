@@ -397,7 +397,7 @@ PEEKS.registerPage('louisvuitton', function() {
 
     var balloons = [];
 
-    var createBalloon = function(name) {
+    var createBalloon = function(name, x) {
         var rotation = [0, 0, 0];
         if (name === '1') {
             rotation = [90, 0, 0];
@@ -410,12 +410,9 @@ PEEKS.registerPage('louisvuitton', function() {
         }
         return page.addMesh({
             geometry: '/assets/balloon_' + name + '.obj',
-            position: [-2 + Math.random() * 4, 0, -5],
+            position: [x, 0, -5],
             size: .01,
-            color: [
-                .5 + Math.random() * .5,
-                .5 + Math.random() * .5,
-                .5 + Math.random() * .5],
+            color: PEEKS.color.hsl(Math.random(), 1, .6),
             rotation: rotation,
             material: {
                 normalMap: '/assets/balloon.jpg',
@@ -426,14 +423,19 @@ PEEKS.registerPage('louisvuitton', function() {
     }
 
     var createBalloons = function() {
-        balloons.push(createBalloon('1'));
-        balloons.push(createBalloon('2'));
-        balloons.push(createBalloon('3'));
-        balloons.push(createBalloon('4'));
-        balloons.push(createBalloon('1'));
-        balloons.push(createBalloon('2'));
-        balloons.push(createBalloon('3'));
-        balloons.push(createBalloon('4'));
+        balloons.push(createBalloon('1', -3));
+        balloons.push(createBalloon('2', -2.5));
+        balloons.push(createBalloon('3', -2));
+        balloons.push(createBalloon('4', -1.5));
+        balloons.push(createBalloon('1', -1));
+        balloons.push(createBalloon('2', -0.5));
+        balloons.push(createBalloon('3', 0));
+        balloons.push(createBalloon('4', .5));
+        balloons.push(createBalloon('1', 1));
+        balloons.push(createBalloon('2', 1.5));
+        balloons.push(createBalloon('3', 2));
+        balloons.push(createBalloon('4', 2.5));
+        balloons.push(createBalloon('1', 3));
     }
 
     var playBalloons = false;
@@ -451,7 +453,7 @@ PEEKS.registerPage('louisvuitton', function() {
         balloon.animate({
             duration: 4 + Math.random() * 10,
             begin: [0, 0, 0],
-            end: [0, 180, 0],
+            end: [10, 90, 0],
             attribute: 'rotation',
         });
         balloon.animate({

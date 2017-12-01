@@ -131,6 +131,43 @@
         }
 	};
 
+    utils.math = {
+        euclideanModulo: function (n, m) {
+            return ((n % m) + m) % m;
+        },
+        clamp: function (value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        },
+    };
+
+    utils.color.hsl = function (h, s, l) {
+        function hue2rgb( p, q, t ) {
+            if ( t < 0 ) t += 1;
+            if ( t > 1 ) t -= 1;
+            if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+            if ( t < 1 / 2 ) return q;
+            if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
+            return p;
+        }
+
+        // h,s,l ranges are in 0.0 - 1.0
+        h = utils.math.euclideanModulo( h, 1 );
+        s = utils.math.clamp( s, 0, 1 );
+        l = utils.math.clamp( l, 0, 1 );
+
+        if ( s === 0 ) {
+            return [l, l, l];
+        } else {
+            var p = l <= 0.5 ? l * ( 1 + s ) : l + s - ( l * s );
+            var q = ( 2 * l ) - p;
+            return [
+                hue2rgb( q, p, h + 1 / 3 ),
+                hue2rgb( q, p, h ),
+                hue2rgb( q, p, h - 1 / 3 )
+            ];
+        }
+    };
+
     utils.rgba = function() {
 	    if (arguments.length === 3) {
 	        return utils.v4(arguments[0], arguments[1], arguments[2], 1);
@@ -2828,6 +2865,8 @@
 	exports.loadPage = loadPage;
     exports.isPhone = isPhone;
     exports.v3 = utils.v3;
+    exports.color = utils.color;
+    exports.math = utils.math;
 
     exports.setAnimationSpeed = setAnimationSpeed;
 
