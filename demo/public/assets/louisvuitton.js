@@ -453,7 +453,7 @@ PEEKS.registerPage('louisvuitton', function() {
         balloon.animate({
             duration: 4 + Math.random() * 10,
             begin: [0, 0, 0],
-            end: [10, 90, 0],
+            end: [0, 180, 0],
             attribute: 'rotation',
         });
         balloon.animate({
