@@ -395,37 +395,46 @@ PEEKS.registerPage('louisvuitton', function() {
         onClick: 'searchPage',
     })
 
-    screen.addAsset({position: [-.05, 0]}).addMesh({
-        geometry: '/assets/baloon_1.obj',
-        position: [0, 0, 0],
-        size: .01,
-        color: [1, 1, .5],
-        rotation: [90, 0, 0],
-    });
+    var balloons = [];
 
-    screen.addAsset({position: [-.1, 0]}).addMesh({
-        geometry: '/assets/baloon_2.obj',
-        position: [0, 0, 0],
-        size: .01,
-        color: [.5, .5, 1],
-        rotation: [-90, 0, 0],
-    });
+    var createBalloon = function(name) {
+        var rotation = [0, 0, 0];
+        if (name === '1') {
+            rotation = [90, 0, 0];
+        } else if (name === '2') {
+            rotation = [-90, 0, 0];
+        } else if (name === '3') {
+            rotation = [90, 90, 0];
+        } else if (name === '4') {
+            rotation = [90, 0, 0];
+        }
+        return page.addMesh({
+            geometry: '/assets/balloon_' + name + '.obj',
+            position: [-3 + Math.random() * 6, 0, -5],
+            size: .01,
+            color: [1, 1, .5],
+            rotation: rotation,
+        });
+    }
 
-    screen.addAsset({position: [.05, 0]}).addMesh({
-        geometry: '/assets/baloon_3.obj',
-        position: [0, 0, 0],
-        size: .01,
-        color: [.5, 1, .5],
-        rotation: [90, 90, 0],
-    });
+    var createBalloons = function() {
+        balloons.push(createBalloon('1'));
+    }
 
-    screen.addAsset({position: [.15, 0]}).addMesh({
-        geometry: '/assets/baloon_4.obj',
-        position: [0, 0, 0],
-        size: .01,
-        color: [1, .5, .5],
-        rotation: [90, 0, 0],
-    });
+    var releaseBalloons = function() {
+        for (var balloonI = 0; balloonI < balloons.length; balloonI++) {
+            balloons[balloonI].animate({
+                duration: 10,
+                delay: 0,
+                begin: [0,-2, 0],
+                end: [0, 2, 0],
+                attribute: 'position',
+                //            onEnd: 'destroy',
+            });
+        }
+    }
+
+    createBalloons();
 
     screen.addAsset({position: [-.05, .1]}).addMesh({
         geometry: '/assets/lv_shopping_bag.obj',
@@ -451,6 +460,7 @@ PEEKS.registerPage('louisvuitton', function() {
             end: [10, 0, 0],
             attribute: 'position'
         });
+        releaseBalloons();
     }
     var entrance = page.addAsset({
         size: 1,

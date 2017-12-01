@@ -25,13 +25,18 @@ block content
     script(src="/assets/kirkwood.js")
     script(src="/assets/kenzo.js")
 
-    script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
+    // script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1");
 
     script.
-        PEEKS.setLogLevel(1);
+        var url = document.URL;
+        if (url.search('127.0.0.1:3000') != -1) {
+            PEEKS.setAnimationSpeed(10);
+            PEEKS.setLogLevel(1);
+        } else {
+            PEEKS.setLogLevel(3);
+        }
         var peeks = new PEEKS.Scene();
 
-        var url = document.URL;
         var paramsI = url.search("\\?");
         if (paramsI !== -1) {
             var items = [];

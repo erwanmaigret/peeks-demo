@@ -6,34 +6,42 @@
 
 	'use strict';
 
+    var animationSpeed = 1;
+    function setAnimationSpeed(speed) {
+		animationSpeed = speed;
+	};
+
 	// General logging, 2 == info, 3 == warning, 4 == error
 	var logLevel = 2;
 	function setLogLevel(level) {
 		logLevel = level;
 	};
-	function logSuperDebug(message) {
-		if (logLevel <= 0) {
-			console.log("Peeks.IO SUPER DEBUG: " + message);
+    function logVerboseOk() {
+        return logLevel <= 0;
+    }
+	function logVerbose(message) {
+		if (logVerboseOk()) {
+			console.log("Peeks (verbose): " + message);
 		}
 	};
 	function logDebug(message) {
 		if (logLevel <= 1) {
-			console.log("Peeks.IO DEBUG: " + message);
+			console.log("Peeks (debug): " + message);
 		}
 	};
 	function logInfo(message) {
 		if (logLevel <= 2) {
-			console.log("Peeks.IO INFO: " + message);
+			console.log("Peeks (info): " + message);
 		}
 	};
 	function logWarning(message) {
 		if (logLevel <= 3) {
-			console.log("Peeks.IO WARNING: " + message);
+			console.log("Peeks (warning): " + message);
 		}
 	};
 	function logError(message) {
 		if (logLevel <= 4) {
-			console.log("Peeks.IO ERROR: " + message);
+			console.log("Peeks (error): " + message);
 		}
 	};
 
@@ -819,11 +827,12 @@
 
 			animate: function (params) {
 				var anim = this.add(new PEEKS.Animation(params));
+                this.initAsset(anim, params);
                 return this;
 			},
 
-			superDebug: function(message) {
-				logSuperDebug(message);
+			verbose: function(message) {
+				logVerbose(message);
 			},
 			debug: function(message) {
 				logDebug(message);
@@ -1232,6 +1241,17 @@
                     }
                 }
 			},
+
+            raise: function(method) {
+                if (method) {
+                    if (typeof method === 'string') {
+                        method = this[method] || this.getScene()[method];
+                    }
+                    if (method) {
+                        method.apply(this);
+                    }
+                }
+            },
 
 			render: function() {
 				this.onRender();
@@ -1664,7 +1684,7 @@
 			},
 
 			onMouseDown: function (event) {
-				logSuperDebug('onMouseDown');
+				logVerbose('onMouseDown');
                 event.preventDefault();
 
 				this.mouseDown = this.getMouse(event);
@@ -1680,7 +1700,7 @@
 			},
 
 			onMouseUp: function (event) {
-				logSuperDebug('onMouseUp');
+				logVerbose('onMouseUp');
                 event.preventDefault();
 
 				if (this.mouseDown) {
@@ -2627,6 +2647,7 @@
 		this.delay = 0;
 		this.attribute = 'position';
 		this.loop = false;
+        this.ended = false;
 
 		// Assign all passed in attributes
 		if (data.duration) this.duration = data.duration;
@@ -2698,6 +2719,7 @@
 			},
 
 			update: function(time) {
+                time *= animationSpeed;
 				var t = 0;
                 if (this.startTime === undefined) {
                     this.startTime = time;
@@ -2748,7 +2770,19 @@
 							this.parent[this.attribute][2] += p[2];
 						}
 					}
+                    if (this.parent.name && t > 0 && t < 1) {
+                        if (logVerboseOk()) {
+                            logVerbose('Animation update at ' + t.toString() +
+                                ': ' + this.parent.name + '[' + this.attribute +
+                                '] = ' + this.parent[this.attribute].toString());
+                        }
+                    }
 				}
+
+                if (t >= 1 && !this.loop && !this.ended) {
+                    this.ended = true;
+                    this.parent.raise(this.onEnd);
+                }
 			},
 		}
 	);
@@ -2763,11 +2797,18 @@
 	exports.Plane = Plane;
 	exports.Animation = Animation;
 
-	exports.setLogLevel = setLogLevel;
+    exports.setLogLevel = setLogLevel;
+    exports.logLevel = logLevel;
+    exports.logDebug = logDebug;
+    exports.logInfo = logInfo;
+    exports.logWarning = logWarning;
+    exports.logError = logError;
 	exports.registerPage = registerPage;
 	exports.loadPage = loadPage;
     exports.isPhone = isPhone;
     exports.v3 = utils.v3;
+
+    exports.setAnimationSpeed = setAnimationSpeed;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));

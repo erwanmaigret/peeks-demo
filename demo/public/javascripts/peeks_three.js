@@ -470,8 +470,11 @@ PEEKS.ThreeShaderAttr = function(material, name, value) {
 PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
     var threeObject = asset.threeObject;
-    if (threeObject && threeObject.children.length > 0) {
-        var geometry = threeObject.children[0];
+    if (!threeObject) {
+        return;
+    }
+    for (var geomI = 0; geomI < threeObject.children.length; geomI++) {
+        var geometry = threeObject.children[geomI];
         geometry.traverse(
             function (child) {
                 if (child instanceof THREE.Mesh) {
