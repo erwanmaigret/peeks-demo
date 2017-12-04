@@ -7,6 +7,8 @@ router.get('/', function(req, res, next) {
     data.pages.push({ name: 'Target' });
     //data.pages.push({ name: 'Fortinet' });
 
+    data.pages.push({ name: 'Frye', page: 'frye' });
+
     // LVMH
     data.pages.push({ name: 'Louis Vuitton', page: 'louisvuitton', url: 'http://us.louisvuitton.com/' });
     //data.pages.push({ name: 'Nicholas Kirkwood', page: 'kirkwood', url: 'https://www.nicholaskirkwood.com/collections/penelope/' });
