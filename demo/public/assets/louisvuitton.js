@@ -458,8 +458,8 @@ PEEKS.registerPage('louisvuitton', function() {
         balloon.animate({
             duration: 4 + Math.random() * 4,
             delay: Math.random() * 6,
-            begin: [0,-6, 0],
-            end: [0, 6, 0],
+            begin: [0,6, 0],
+            end: [0, -6, 0],
             attribute: 'position',
             onEnd: rewindAnimation,
         });

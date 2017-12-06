@@ -70,6 +70,7 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'Barbara', url: 'http://www.barbara.fr/' });
 
     data.pages.push({ name: 'Mannequin', page: 'mannequin' });
+    data.pages.push({ name: 'Shoe', page: 'shoe' });
     data.pages.push({ name: '2D Assets' });
     data.pages.push({ name: 'Terra Worlds', page: 'terraworlds' });
     data.pages.push({ name: 'SporTrade', page: 'sportrade' });
