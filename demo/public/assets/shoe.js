@@ -4,7 +4,7 @@ function createAsset(page, position) {
     });
 
     var model = femaleHigh.addAsset({
-        position: [0, 0, -2.9],
+        position: [0, 0, -2],
         rotation: [0, -90, 0],
         onClick: 'animateRotate90',
         size: .03,
@@ -34,9 +34,6 @@ function createAsset(page, position) {
 
     var getGeometryUrl = function (part) {
         return "/assets/frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
-//        return "/assets/" + modelName + "_" + pose + "_" + part +
-//            (size ? size : "") +
-//            ".obj";
     };
 
     var updateGeometry = function(node, mesh, properties) {
@@ -71,7 +68,7 @@ function createAsset(page, position) {
             material: fabric,
         });
         mannequin.boot_inside = updateGeometry(mannequin.boot_inside, "inside", {
-            texture: fabric.map,
+            texture: '/assets/material_suede.jpg',
             material: fabric,
         });
         mannequin.boot_sole = updateGeometry(mannequin.boot_sole, "sole", {
@@ -173,52 +170,6 @@ function createAsset(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-
-    var addSizes = function(parent, x, y, part) {
-        var fontSize = 30;
-        parent.addTextButton({
-            position: [x - .1, y, 0],
-            size: .1,
-            label: 'XS',
-            fontSize: fontSize,
-            vm: {},
-            onClick: onSetClothMaterial,
-        }).vm[part + "Size"] = 'XS';
-        parent.addTextButton({
-            position: [x - .05, y, 0],
-            size: .1,
-            label: 'S',
-            fontSize: fontSize,
-            vm: {},
-            onClick: onSetClothMaterial,
-        }).vm[part + "Size"] = 'S';
-        parent.addTextButton({
-            position: [x, y, 0],
-            size: .1,
-            label: 'M',
-            fontSize: fontSize,
-            vm: {},
-            onClick: onSetClothMaterial,
-        }).vm[part + "Size"] = 'M';
-        parent.addTextButton({
-            position: [x + .05, y, 0],
-            size: .1,
-            label: 'L',
-            fontSize: fontSize,
-            vm: {},
-            onClick: onSetClothMaterial,
-        }).vm[part + "Size"] = 'L';
-        parent.addTextButton({
-            position: [x + .1, y, 0],
-            size: .1,
-            label: 'XL',
-            fontSize: fontSize,
-            vm: {
-                size: 'L',
-            },
-            onClick: onSetClothMaterial,
-        }).vm[part + "Size"] = 'XL';
-    }
 
     onSetClothMaterial(defaultMaterial);
 
