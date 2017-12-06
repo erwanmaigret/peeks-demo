@@ -107,6 +107,7 @@ function createAsset(page, position) {
         position: [.4, y, 0],
         size: .05,
         material: {
+            type: 'velvet',
             emissive: [.1,0,0],
             shininess: 2,
             map: '/assets/material_nubuk.jpg',
@@ -175,7 +176,7 @@ function createAsset(page, position) {
 PEEKS.registerPage('shoe', function() {
     var page = new PEEKS.Asset({
         category: 'white',
-        bgColor: [.1, .1, .1],
+        bgColor: [226/255, 220/255, 209/255],
         gyroscope: 'off',
     });
 
