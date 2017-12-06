@@ -22,19 +22,17 @@ PEEKS.registerPage('frye', function() {
 
     page.setAssetPath(imagePath);
 
-    page.addSiteMapItem('GIFTS', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('GIFTS/FEATURES', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('NEW', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/FEATURES', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/FEATURES/BOOTS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('GIFTS', { icon: '42181_slate_l.jpg'} );
+    page.addSiteMapItem('GIFTS/FEATURES', { icon: '42181_slate_l.jpg'} );
+    page.addSiteMapItem('WOMEN', { icon: '76197_black_l.jpg'} );
     page.addSiteMapItem('WOMEN/COLLECTIONS', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BOOTS', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/COLLECTIONS/ALL', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS', { icon: '75419_smoke_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS', { icon: '76695_white_l.jpg'} );
     page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS/1', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BOOTS/BEST SELLERS', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BOOTS/BOOTIES & SHORT', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BOOTS/MID', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/BEST SELLERS', { icon: '75436_wine_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/BOOTIES & SHORT', { icon: '73574_black_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/MID', { icon: '75458_cognac_l.jpg'} );
     page.addSiteMapItem('WOMEN/BOOTS/TALL', { icon: '75419_smoke_f.jpg'} );
     page.addSiteMapItem('WOMEN/BOOTS/TALL/1', { icon: '75419_smoke', isProduct: true });
     page.addSiteMapItem('WOMEN/BOOTS/TALL/2', { icon: '75418_slate', isProduct: true });
@@ -44,9 +42,9 @@ PEEKS.registerPage('frye', function() {
     page.addSiteMapItem('WOMEN/BOOTS/TALL/6', { icon: '75437_chocolate', isProduct: true });
     page.addSiteMapItem('WOMEN/BOOTS/TALL/7', { icon: '75436_wine', isProduct: true });
     page.addSiteMapItem('WOMEN/BOOTS/TALL/8', { icon: '75450_smoke', isProduct: true });
-    page.addSiteMapItem('WOMEN/BOOTS/OVER-THE-KNEE', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BOOTS/WIDE CALF', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/SHOES', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/OVER-THE-KNEE', { icon: '77430_smoke_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/WIDE CALF', { icon: '7541701_redwood_l.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES', { icon: '76537_smoke_l.jpg'} );
     page.addSiteMapItem('WOMEN/SHOES/ALL SHOES', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/SHOES/ALL SHOES/1', { icon: '76373_dusty_rose', isProduct: true });
     page.addSiteMapItem('WOMEN/SHOES/FLATS', { icon: '76374_black_f.jpg'} );
@@ -55,14 +53,24 @@ PEEKS.registerPage('frye', function() {
     page.addSiteMapItem('WOMEN/SHOES/HEELS/2', { icon: '76374_black', isProduct: true });
     page.addSiteMapItem('WOMEN/SHOES/SANDALS', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/SHOES/SNEAKERS', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/BAGS', { icon: '76374_black_f.jpg'} );
-    page.addSiteMapItem('WOMEN/ACCESSORIES', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BAGS', { icon: '42181_slate_l.jpg'} );
+    page.addSiteMapItem('WOMEN/ACCESSORIES', { icon: '42334_black_l.jpg'} );
     page.addSiteMapItem('MEN', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('MELISSA', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('BAGS', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('ACCESSORIES', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('KIDS', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('SALE', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('FEATURED', { icon: '76197_black_l.jpg'} );
+    page.addSiteMapItem('FEATURED/SAMANTHA HIKER', { icon: '76197_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/SABRINA DOUBLE BUCKLE', { icon: '77477_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/MELISSA BUTTON 2', { icon: '75447_smoke_l.jpg' });
+    page.addSiteMapItem('FEATURED/SHANE TIP SHORT', { icon: '77995_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/ILINA HARNESS BACKPACK', { icon: '70887_chestnut_l.jpg' });
+    page.addSiteMapItem('FEATURED/DANICA HARNESS', { icon: '78040_grigio_l.jpg' });
+    page.addSiteMapItem('FEATURED/ILINA HARNESS MINI SADDLE', { icon: '42633_grey_l.jpg' });
+    page.addSiteMapItem('FEATURED/MYRA LUG COMBAT', { icon: '72643_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/ILINA HARNESS SMALL SADDLE', { icon: '42621_wine_l.jpg' });
 
     var currentItems = [];
 
@@ -156,7 +164,8 @@ PEEKS.registerPage('frye', function() {
 
     var onHome = function(path) {
         page.setSiteMapMenuPath('');
-        page.setSiteMapPath('WOMEN/BOOTS/TALL');
+        // page.setSiteMapPath('WOMEN/BOOTS/TALL');
+        page.setSiteMapPath('FEATURED');
         refresh();
     };
 
