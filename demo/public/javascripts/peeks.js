@@ -2417,6 +2417,7 @@
                         delete this.backgroundImage;
                     }
                     var backgroundFilename = page.backgroundImage;
+                    var backgroundColor = page.backgroundImageColor || [1, 1, 1];
                     if (backgroundFilename === undefined) {
                         if (category === 'fashion') {
                             backgroundFilename = '/images/bg_360_place.jpg';
@@ -2441,6 +2442,7 @@
                             rotation: [0, 0, 0],
                             sides: 'back',
                             size: 20,
+                            color: backgroundColor,
                         });
                     }
 

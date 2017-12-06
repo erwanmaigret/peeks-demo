@@ -9,6 +9,7 @@ PEEKS.registerPage('frye', function() {
         groundImage: '/ui/gradient_radial.png',
         groundImageRepeat: 1,
         backgroundImage: '/ui/gradient.png',
+        backgroundImageColor: [226/255, 220/255, 209/255],
     });
 
 	var panel = page.addAsset();
