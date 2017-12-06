@@ -70,49 +70,18 @@ PEEKS.registerPage('frye', function() {
                 viewBgColor: [.96, .96, .96],
             });
 
-            var product = this.product;
-            if (product) {
-                var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var data = JSON.parse(this.responseText);
-
-                        productPane.addText({
-                            viewBgColor: page.fontColorBold,
-                            position: [0, .4, .01],
-                            size: [.9, .2, 1],
-                            fontSize: 52,
-                            fontColor: [.3, .3, .3],
-                            text: data.product.item.product_brand.brand,
-                        });
-
-                        productPane.addText({
-                            viewBgColor: page.fontColorBold,
-                            position: [-.3, -.3, .01],
-                            size: [.3, .2, 1],
-                            fontSize: 52,
-                            fontColor: [.3, .3, .3],
-                            text: data.product.price.listPrice.formattedPrice,
-                        });
-                    }
-                };
-                xhttp.open("GET", url, true);
-                xhttp.send();
-            }
-
             productPane.addText({
                 viewBgColor: page.fontColorBold,
-                position: [0, .2, .01],
+                position: [0, .3, .01],
                 size: [.3, .2, 1],
                 fontSize: 42,
                 fontColor: [.3, .3, .3],
-                text: 'sizes',
+                text: 'Size',
             });
 
             for (var i = 0; i < 5; i++) {
                 productPane.addButton({
-                    position: [-.36 + .18 * i, .0, .01],
+                    position: [-.36 + .18 * i, .1, .01],
                     size: [.15, .2, 1],
                     viewBgColor: [1, 1, 1],
                 }).addText({
@@ -125,8 +94,22 @@ PEEKS.registerPage('frye', function() {
 
             productPane.addButton({
                 viewBgColor: page.fontColorBold,
-                position: [.2, -.3, .01],
-                size: [.4, .2, 1],
+                position: [-.2, -.3, .02],
+                size: [.35, .2, 1],
+                onClick: function() {
+                    page.getScene().loadPage('shoe');
+                }
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [1, 1, 1],
+                text: 'customize',
+            });
+
+            productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [.2, -.3, .02],
+                size: [.35, .2, 1],
             }).addText({
                 position: [0, 0, .01],
                 fontSize: 52,
