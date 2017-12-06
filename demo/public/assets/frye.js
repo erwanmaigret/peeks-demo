@@ -197,6 +197,7 @@ PEEKS.registerPage('frye', function() {
                 });
                 var button = asset.addButton({
                     image: item.image ? imagePath + item.image : undefined,
+                    imageDetour: true,
                     path: item.path,
                     onClick: onClick,
                 })
@@ -225,6 +226,7 @@ PEEKS.registerPage('frye', function() {
                 var button = asset.addButton({
                     image: image ? imagePath + image : undefined,
                     imageBack: imageBack ? imagePath + imageBack : undefined,
+                    imageDetour: true,
                     path: item.path,
                     valign: 'bottom',
                     onClick: item.isProduct ? 'animateFlip' : undefined,

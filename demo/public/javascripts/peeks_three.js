@@ -13,7 +13,7 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
                     //console.log('Loaded texture ' + textureUrl + ' ' +
                     //    width.toString() + 'x' + height.toString());
 
-                    detour = false;
+                    //detour = false;
                     if (detour) {
                         var canvas = document.createElement('canvas');
         				var context = canvas.getContext('2d');
