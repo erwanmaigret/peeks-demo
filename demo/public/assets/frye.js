@@ -29,6 +29,22 @@ PEEKS.registerPage('frye', function() {
     page.addSiteMapItem('WOMEN/FEATURES/BOOTS', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/COLLECTIONS', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/BOOTS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS/1', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/BEST SELLERS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/BOOTIES & SHORT', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/MID', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/TALL', { icon: '75419_smoke_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/1', { icon: '75419_smoke', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/2', { icon: '75418_slate', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/3', { icon: '75417_redwood', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/4', { icon: '75438_black', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/5', { icon: '71374_cognac', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/6', { icon: '75437_chocolate', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/7', { icon: '75436_wine', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/8', { icon: '75450_smoke', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/OVER-THE-KNEE', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/WIDE CALF', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/SHOES', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/SHOES/ALL SHOES', { icon: '76374_black_f.jpg'} );
     page.addSiteMapItem('WOMEN/SHOES/ALL SHOES/1', { icon: '76373_dusty_rose', isProduct: true });
@@ -139,7 +155,7 @@ PEEKS.registerPage('frye', function() {
 
     var onHome = function(path) {
         page.setSiteMapMenuPath('');
-        page.setSiteMapPath('WOMEN/SHOES/HEELS');
+        page.setSiteMapPath('WOMEN/BOOTS/TALL');
         refresh();
     };
 
