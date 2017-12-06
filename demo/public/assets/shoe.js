@@ -5,7 +5,7 @@ function createAsset(page, position) {
 
     var model = femaleHigh.addAsset({
         position: [0, 0, -2],
-        rotation: [0, -90, 0],
+        rotation: [0, -110, 0],
         onClick: 'animateRotate90',
         size: .03,
         onFocus: '',
@@ -61,23 +61,18 @@ function createAsset(page, position) {
         });
         mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
             texture: fabric.map,
-            material: fabric,
         });
         mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
             texture: '/assets/frye_boot_diffuse.jpg',
-            material: fabric,
         });
         mannequin.boot_inside = updateGeometry(mannequin.boot_inside, "inside", {
             texture: '/assets/material_suede.jpg',
-            material: fabric,
         });
         mannequin.boot_sole = updateGeometry(mannequin.boot_sole, "sole", {
             texture: '/assets/frye_sole.jpg',
-            material: fabric,
         });
         mannequin.boot_sole_top = updateGeometry(mannequin.boot_sole_top, "sole_top", {
-            texture: fabric.map,
-            material: fabric,
+            texture: '/assets/frye_sole.jpg',
         });
     };
 
@@ -155,6 +150,7 @@ function createAsset(page, position) {
             emissive: [.1,.0,.0],
             shininess: 2,
             map: '/assets/frye_boot_diffuse.jpg',
+            bumpMap: '/assets/frye_boot_bump.jpg',
         },
         onClick: onSetClothMaterial,
     });
@@ -179,7 +175,7 @@ function createAsset(page, position) {
 PEEKS.registerPage('shoe', function() {
     var page = new PEEKS.Asset({
         category: 'white',
-        bgColor: [.8, .8, .7],
+        bgColor: [.1, .1, .1],
         gyroscope: 'off',
     });
 
