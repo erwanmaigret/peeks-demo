@@ -64,7 +64,7 @@ PEEKS.registerPage('frye', function() {
     page.addSiteMapItem('FEATURED', { icon: '76197_black_l.jpg'} );
     page.addSiteMapItem('FEATURED/SAMANTHA HIKER', { icon: '76197_black_l.jpg' });
     page.addSiteMapItem('FEATURED/SABRINA DOUBLE BUCKLE', { icon: '77477_black_l.jpg' });
-    page.addSiteMapItem('FEATURED/MELISSA BUTTON 2', { icon: '75447_smoke_l.jpg' });
+    page.addSiteMapItem('FEATURED/MELISSA BUTTON 2', { icon: '75447_smoke', isProduct: true, description: 'MELISSA BUTTON 2' });
     page.addSiteMapItem('FEATURED/SHANE TIP SHORT', { icon: '77995_black_l.jpg' });
     page.addSiteMapItem('FEATURED/ILINA HARNESS BACKPACK', { icon: '70887_chestnut_l.jpg' });
     page.addSiteMapItem('FEATURED/DANICA HARNESS', { icon: '78040_grigio_l.jpg' });
@@ -118,28 +118,17 @@ PEEKS.registerPage('frye', function() {
             }
 
             productPane.addButton({
-                viewBgColor: page.fontColorBold,
-                position: [-.2, -.3, .02],
-                size: [.35, .2, 1],
+                viewBgColor: page.backgroundImageColor,
+                position: [0, -.25, .02],
+                size: [.45, .2, 1],
                 onClick: function() {
                     page.getScene().loadPage('shoe');
                 }
             }).addText({
-                position: [0, 0, .01],
-                fontSize: 52,
-                fontColor: [1, 1, 1],
+                position: [0, 0, .02],
+                fontSize: 60,
+                fontColor: [0, 0, 0],
                 text: 'customize',
-            });
-
-            productPane.addButton({
-                viewBgColor: page.fontColorBold,
-                position: [.2, -.3, .02],
-                size: [.35, .2, 1],
-            }).addText({
-                position: [0, 0, .01],
-                fontSize: 52,
-                fontColor: [1, 1, 1],
-                text: 'add to cart',
             });
 
             productPane.animate({
@@ -243,6 +232,16 @@ PEEKS.registerPage('frye', function() {
                 });
                 var yOffset = -.6
                 if (item.isProduct) {
+                    if (item.description) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 64,
+                            fontColor: page.fontColorBold,
+                            text: item.description,
+                        });
+                        yOffset -= .1;
+                        console.log('there!');
+                    }
                     asset.addText({
                         position: [0, yOffset, .1],
                         fontSize: 40,
