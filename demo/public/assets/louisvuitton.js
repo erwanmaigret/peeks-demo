@@ -1,7 +1,7 @@
 PEEKS.registerPage('louisvuitton', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
-        fontColorBold: [0, 0, 0],
+        fontColorBold: [191/255, 166/255, 154/255],
         fontOutlineStyle: '',
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
@@ -9,13 +9,21 @@ PEEKS.registerPage('louisvuitton', function() {
         groundImage: '/ui/gradient_radial.png',
         groundImageRepeat: 1,
         backgroundImage: '/ui/gradient.png',
+        backgroundImageColor: [224/255, 219/255, 213/255],
     });
 
-	var panel = page.addAsset();
+	var balloonsAsset = page.addAsset();
+    var otherAssets = page.addAsset();
 
     var screen = page.addScreen({
         radius: 5,
     });
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    var foreground = page.addAsset();
 
     var imagePath = 'http://us.louisvuitton.com/images/is/image/lv/1/';
 
@@ -157,6 +165,7 @@ PEEKS.registerPage('louisvuitton', function() {
 
             var product = this.product;
             if (product) {
+                /*
                 var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
@@ -184,6 +193,7 @@ PEEKS.registerPage('louisvuitton', function() {
                 };
                 xhttp.open("GET", url, true);
                 xhttp.send();
+                */
             }
 
             productPane.addText({
@@ -311,6 +321,7 @@ PEEKS.registerPage('louisvuitton', function() {
                 var button = asset.addButton({
                     image: image ? imagePath + image : undefined,
                     imageBack: imageBack ? imagePath + imageBack : undefined,
+                    imageDetour: true,
                     path: item.path,
                     valign: 'bottom',
                     onClick: item.isProduct ? 'animateFlip' : undefined,
@@ -349,24 +360,12 @@ PEEKS.registerPage('louisvuitton', function() {
         }
     };
 
-//    onHome();
-
-    var canvas = page.addCanvas({
-        valign: 'bottom',
-    });
+    onHome();
 
     canvas.addView({
         position: [0, -.45],
         size: [1, .12, 1],
-        viewBgColor: [1, 1, 1],
-        alpha: .9,
-    });
-
-    canvas.addView({
-        position: [0, -.45],
-        size: [1, .12, 1],
-        viewBgColor: [1, 1, 1],
-        alpha: .9,
+        viewBgColor: [0, 0, 0],
     });
 
     canvas.addButton({
@@ -389,7 +388,7 @@ PEEKS.registerPage('louisvuitton', function() {
         position: [0, -.45],
         fontSize: 28,
         text: 'search',
-        fontColor: [.3, .3, .3],
+        fontColor: [1, 1, 1],
         size: .08,
         onClick: 'searchPage',
     })
@@ -407,7 +406,7 @@ PEEKS.registerPage('louisvuitton', function() {
         } else if (name === '4') {
             rotation = [90, 0, 0];
         }
-        return page.addMesh({
+        return balloonsAsset.addMesh({
             geometry: '/assets/balloon_' + name + '.obj',
             position: [x, 0, z],
             size: .02,
@@ -456,9 +455,9 @@ PEEKS.registerPage('louisvuitton', function() {
             attribute: 'rotation',
         });
         balloon.animate({
-            duration: 4 + Math.random() * 4,
+            duration: 6 + Math.random() * 4,
             delay: Math.random() * 6,
-            begin: [0,6, 0],
+            begin: [0, 10, 0],
             end: [0, -6, 0],
             attribute: 'position',
             onEnd: rewindAnimation,
@@ -475,7 +474,7 @@ PEEKS.registerPage('louisvuitton', function() {
 
     createBalloons();
 
-    var shoppingBag = page.addMesh({
+    var shoppingBag = otherAssets.addMesh({
         geometry: '/assets/lv_shopping_bag.obj',
         texture: '/assets/lv_shopping_bag.jpg',
         position: [2, -2, -5],
@@ -534,7 +533,7 @@ PEEKS.registerPage('louisvuitton', function() {
             attribute: 'position',
         });
     }
-    var entrance = page.addAsset({
+    var entrance = foreground.addAsset({
         size: 1,
         position: [0, 0, -3],
     });
@@ -546,11 +545,11 @@ PEEKS.registerPage('louisvuitton', function() {
         viewBgColor: [0, 0, 0],
         size: [2, 4, 2],
     });
-    page.addMesh({
+    otherAssets.addMesh({
         geometry: '/assets/lv_logo.obj',
-        position: [0, -.5, -2],
-        size: .025,
-        color: [1, 1, .7],
+        position: [0, -.3, -2],
+        size: .023,
+        color: page.backgroundImageColor,
         material: {
             shininess: 50,
             reflectivity: 2,
@@ -558,12 +557,6 @@ PEEKS.registerPage('louisvuitton', function() {
         rotation: [0, 0, 0],
         onClick: entranceOpen,
         onFocus: function() {},
-    }).animate({
-        duration: 2,
-        delay: 2,
-        begin: [0, 90, 0],
-        end: [0, 0, 0],
-        attribute: 'rotation'
     });
 
     var doorRight = entrance.addAsset({
