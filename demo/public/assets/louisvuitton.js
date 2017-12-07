@@ -200,16 +200,16 @@ PEEKS.registerPage('louisvuitton', function() {
 
             productPane.addText({
                 viewBgColor: page.fontColorBold,
-                position: [0, .2, .01],
+                position: [0, .3, .01],
                 size: [.3, .2, 1],
                 fontSize: 42,
                 fontColor: [.3, .3, .3],
-                text: 'sizes',
+                text: 'Sizes',
             });
 
             for (var i = 0; i < 5; i++) {
                 productPane.addButton({
-                    position: [-.36 + .18 * i, .0, .01],
+                    position: [-.36 + .18 * i, .1, .01],
                     size: [.15, .2, 1],
                     viewBgColor: [1, 1, 1],
                 }).addText({
@@ -222,13 +222,16 @@ PEEKS.registerPage('louisvuitton', function() {
 
             productPane.addButton({
                 viewBgColor: page.fontColorBold,
-                position: [.2, -.3, .01],
+                position: [0, -.3, .01],
                 size: [.4, .2, 1],
             }).addText({
                 position: [0, 0, .01],
                 fontSize: 52,
-                fontColor: [1, 1, 1],
-                text: 'add to cart',
+                fontColor: [0, 0, 0],
+                text: 'try on',
+                onClick: function() {
+                    page.getScene().loadPage('mannequin');
+                }
             });
 
             productPane.animate({
@@ -453,9 +456,20 @@ PEEKS.registerPage('louisvuitton', function() {
     var playBalloons = false;
 
     var rewindAnimation = function() {
+        // Just play once
+        this.destroy();
+        return;
+
         if (playBalloons) {
-            this.clearAnimations();
-            releaseBalloon(this);
+            if (this.rewindCount === undefined) {
+                this.rewindCount = 0;
+            }
+            this.rewindCount++;
+
+            if (this.rewindCount < 1) {
+                this.clearAnimations();
+                releaseBalloon(this);
+            }
         } else {
             this.destroy();
         }

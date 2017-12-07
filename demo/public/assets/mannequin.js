@@ -19,7 +19,7 @@ function createMannequin(page, position) {
         position: [.5, 1, -3],
     });
 
-    var outfit = "pants";
+    var outfit = "skirt";
     var size = "M";
     var sizeDefault = "M";
     var chestSize = "M";
