@@ -1020,7 +1020,7 @@
 				this.initialSize = this.size.slice();
 			},
 
-            measureText: function(aFont, aSize, aChars, aOptions={}) {
+            measureText: function(aFont, aSize, aChars, aOptions) {
                 // if you do pass aOptions.ctx, keep in mind that the ctx properties will be changed and not set back. so you should have a devoted canvas for this
                 // if you dont pass in a width to aOptions, it will return it to you in the return object
                 // the returned width is Math.ceil'ed
@@ -1030,6 +1030,7 @@
                     range: 3
                 };
 
+                aOptions = aOptions || {};
                 aOptions.range = aOptions.range || 3; // multiples the aSize by this much
 
                 if (aChars === '') {
@@ -1130,7 +1131,7 @@
                     var texture = {};
 					texture.canvas = document.createElement('canvas');
 					texture.context = texture.canvas.getContext('2d');
-                    var font = `${size.toString()}px ` + this.getAttr('fontName');
+                    var font = size.toString() + 'px ' + this.getAttr('fontName');
                     texture.context.font = font;
                     var measure = this.measureText(font, size, text);
 					var width = measure.width;
@@ -2871,6 +2872,30 @@
     exports.math = utils.math;
 
     exports.setAnimationSpeed = setAnimationSpeed;
+
+    var global = Function('return this')();
+    global.PEEKS = global.PEEKS || {}
+    PEEKS.EventDispatcher = EventDispatcher;
+	PEEKS.Node = Node;
+	PEEKS.Asset = Asset;
+	PEEKS.Scene = Scene;
+	PEEKS.Camera = Camera;
+	PEEKS.Canvas = Canvas;
+    PEEKS.Screen = Screen;
+	PEEKS.Plane = Plane;
+	PEEKS.Animation = Animation;
+    PEEKS.setLogLevel = setLogLevel;
+    PEEKS.logLevel = logLevel;
+    PEEKS.logDebug = logDebug;
+    PEEKS.logInfo = logInfo;
+    PEEKS.logWarning = logWarning;
+    PEEKS.logError = logError;
+	PEEKS.registerPage = registerPage;
+	PEEKS.loadPage = loadPage;
+    PEEKS.isPhone = isPhone;
+    PEEKS.v3 = utils.v3;
+    PEEKS.color = utils.color;
+    PEEKS.math = utils.math;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 })));
