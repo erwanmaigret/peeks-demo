@@ -2422,6 +2422,8 @@
                     if (backgroundFilename === undefined) {
                         if (category === 'fashion') {
                             backgroundFilename = '/images/bg_360_place.jpg';
+                        } else if (category === 'winter') {
+                            backgroundFilename = '/images/bg_360_winter.jpg';
                         } else if (category === 'shopping') {
                             backgroundFilename = '/images/bg_360_interior2.jpg';
                         } else if (category === 'entertainment') {
@@ -2504,6 +2506,73 @@
 			},
 
 			start: function (window, animate) {
+                var document = window.document;
+
+                var url = document.URL;
+                if (url.search('127.0.0.1:3000') != -1) {
+                    PEEKS.setLogLevel(1);
+                } else {
+                    PEEKS.setLogLevel(3);
+                }
+
+                var paramsI = url.search("\\?");
+                if (paramsI !== -1) {
+                    var items = [];
+
+                    var paramStr = url.substring(paramsI + 1);
+                    var params = paramStr.split('&');
+                    for (var paramI = 0; paramI < params.length; paramI++) {
+                        var param = params[paramI].split('=');
+                        items.push([param[0], param[1]]);
+                    }
+
+                    PEEKS.registerPage('Christmas', function() {
+                    	var page = new PEEKS.Asset({
+                            category: 'winter',
+                        });
+                        var canvas = page.addCanvas();
+
+                        var pane = canvas.addView({
+                            position: [0, 0],
+                            size: [1, .6, 1],
+                            viewBgColor: [.3, .3, .3],
+                            alpha: 0,
+                        });
+
+                        var itemCount = 0;
+                        for (var itemI = 0; itemI < items.length; itemI++) {
+                            var fontSize = 50;
+                            var urlTarget = items[itemI][1];
+                            pane.addTextButton({
+                                label: items[itemI][0].replace('_', ' '),
+                                position: [0, .6 - itemCount * .2, 0],
+                                size: [.9, .15, 1],
+                                fontSize: fontSize,
+                                urlTarget: items[itemI][1],
+                                onClick: function() {
+                                    window.open(this.urlTarget,'_blank');
+                                }
+                            });
+
+                            itemCount++;
+                        }
+
+                    	page.addPage('peeks_toolbar');
+                    	return page;
+                    });
+
+                    this.loadPage('Christmas');
+                } else {
+                    var page = document.title;
+                    if (page === 'Peeks') {
+                        var urlSplit = url.split('.');
+                        if (urlSplit.length > 2) {
+                            page = urlSplit[1];
+                        }
+                    }
+                    this.loadPage(page);
+                }
+
                 analytics('event', 'scene.start');
                 logDebug('Scene.start');
 
@@ -2516,7 +2585,6 @@
 
 				mainScene = this;
 
-                var document = window.document;
 				if (document) {
 					document.body.appendChild(mainScene.domElement);
 
