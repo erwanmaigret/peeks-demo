@@ -718,20 +718,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     // console.log( item, loaded, total );
                 };
 
-                var onProgress = function ( xhr ) {
-                    if ( xhr.lengthComputable ) {
-                        var percentComplete = xhr.loaded / xhr.total * 100;
-                    }
+                var onProgress = function (xhr) {
                 };
 
-                var onError = function ( xhr ) {
-                    console.log( 'Obj loading error' );
+                var onError = function (xhr) {
                 };
 
                 var peeksObject = this;
                 var node = this.threeObject;
                 this.threeObject.peeksAsset = peeksObject;
-                var textureUrl = this.getAttr('textureUrl');
                 var autofit = this.getAttr('autofit');
                 var loader = new THREE.OBJLoader( manager );
                 loader.load(this.geometryUrl, function ( object ) {

@@ -599,7 +599,6 @@ __webpack_require__(5);
                 var page = this.addAsset();
                 page.url = url;
 
-                var scene = this.getScene();
                 this.url = url;
 
                 page.progressStart('Loading...');
@@ -649,8 +648,6 @@ __webpack_require__(5);
                     button.animateInFromFar(itemCount * .1);
                     itemCount++;
                 };
-
-                var imageY = .25;
 
                 var addImage = function(width, height, url, href) {
                     if (imageCount >= 20) {
@@ -1107,11 +1104,6 @@ __webpack_require__(5);
                 // if you do pass aOptions.ctx, keep in mind that the ctx properties will be changed and not set back. so you should have a devoted canvas for this
                 // if you dont pass in a width to aOptions, it will return it to you in the return object
                 // the returned width is Math.ceil'ed
-                var defaultOptions = {
-                    width: undefined, // if you specify a width then i wont have to use measureText to get the width
-                    canAndCtx: undefined, // set it to object {can:,ctx:} // if not provided, i will make one
-                    range: 3
-                };
 
                 aOptions = aOptions || {};
                 aOptions.range = aOptions.range || 3; // multiples the aSize by this much
@@ -1126,8 +1118,6 @@ __webpack_require__(5);
                     };
                     // otherwise i will get IndexSizeError: Index or size is negative or greater than the allowed amount error somewhere below
                 }
-
-                // validateOptionsObj(aOptions, defaultOptions); // not needed because all defaults are undefined
 
                 var can;
                 var ctx;
@@ -1912,7 +1902,6 @@ __webpack_require__(5);
 				var manipFactor = event.shiftKey ? .1 : 1;
 				var animAttribute;
 				var animValue;
-                var alt = event.altKey;
                 var isVehicle = this.page && this.page.navigation === 'vehicle';
 				switch (event.keyCode) {
 					case 37: { // Arrow Left
@@ -2082,7 +2071,6 @@ __webpack_require__(5);
                     });
                     this.page.siteMapMenu.items.push(menuScreen);
 
-                    var itemCountMax = 18;
                     var itemStep = .055;
 
                     var items = this.page.querySiteMapMenuAssets(filter);
@@ -2593,7 +2581,6 @@ __webpack_require__(5);
 
                 var url = document.URL;
                 if (url.search('127.0.0.1:3000') != -1) {
-                    //PEEKS.setAnimationSpeed(10);
                     PEEKS.setLogLevel(1);
                 } else {
                     PEEKS.setLogLevel(3);
@@ -2626,7 +2613,6 @@ __webpack_require__(5);
                         var itemCount = 0;
                         for (var itemI = 0; itemI < items.length; itemI++) {
                             var fontSize = 50;
-                            var urlTarget = items[itemI][1];
                             pane.addTextButton({
                                 label: items[itemI][0].replace('_', ' '),
                                 position: [0, .6 - itemCount * .2, 0],
@@ -49971,20 +49957,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     // console.log( item, loaded, total );
                 };
 
-                var onProgress = function ( xhr ) {
-                    if ( xhr.lengthComputable ) {
-                        var percentComplete = xhr.loaded / xhr.total * 100;
-                    }
+                var onProgress = function (xhr) {
                 };
 
-                var onError = function ( xhr ) {
-                    console.log( 'Obj loading error' );
+                var onError = function (xhr) {
                 };
 
                 var peeksObject = this;
                 var node = this.threeObject;
                 this.threeObject.peeksAsset = peeksObject;
-                var textureUrl = this.getAttr('textureUrl');
                 var autofit = this.getAttr('autofit');
                 var loader = new THREE.OBJLoader( manager );
                 loader.load(this.geometryUrl, function ( object ) {
