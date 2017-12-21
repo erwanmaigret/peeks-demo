@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>example</title>
+        <link rel="stylesheet" href="https://www.peeks.io/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="https://www.peeks.io/peeks.js"></script>
+            <script>
+                var peeks = new PEEKS.Scene();
+
+                // Create the page (make the page-name match the document-title)
+                PEEKS.registerPage('example', function() {
+                    var page = new PEEKS.Asset({
+                        category: 'white', // Don't use any background
+                    });
+
+                    // A 3d sperical screen
+                    var screen = page.addScreen({ radius: 2 });
+
+                    screen.addTextButton({
+                        label: 'label',
+                        position: [0, 0, 0],
+                        fontSize: 40,
+                    });
+
+                    screen.addTextButton({
+                        label: 'label2',
+                        position: [0, .2, 0],
+                        fontSize: 40,
+                    });
+
+                    return page;
+                });
+
+                peeks.start(window);
+            </script>
+        </section>
+    </body>
+</html>
