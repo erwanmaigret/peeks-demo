@@ -365,38 +365,28 @@ PEEKS.Scene.prototype.onRender = function() {
 	var height = (this.height) ? this.height : 500;
 
     if (this.isVrMode()) {
-        var useStereoEffect = false;
-        if (useStereoEffect) {
-            // This is for test, but it's not working very well
-            //  when rotating all the way to the back
-            if (three.stereoEffect === undefined) {
-                three.stereoEffect = new THREE.StereoEffect(three.renderer);
-            }
-            three.stereoEffect.render(three.scene, three.camera);
-        } else {
-            three.renderer.setScissorTest(true);
+        three.renderer.setScissorTest(true);
 
-            three.renderer.setViewport(width / 2, 0, width / 2, height);
-            three.renderer.setScissor(width / 2, 0, width / 2, height);
+        three.renderer.setViewport(width / 2, 0, width / 2, height);
+        three.renderer.setScissor(width / 2, 0, width / 2, height);
 
-            var width = (this.width) ? this.width : 500;
-            var height = (this.height) ? this.height : 500;
-            this.three.camera.aspect = (width / 2) / height;
-            this.three.camera.updateProjectionMatrix();
-            //this.three.renderer.setSize(width, height);
+        var width = (this.width) ? this.width : 500;
+        var height = (this.height) ? this.height : 500;
+        this.three.camera.aspect = (width / 2) / height;
+        this.three.camera.updateProjectionMatrix();
+        //this.three.renderer.setSize(width, height);
 
-            three.renderer.render(three.scene, three.camera);
-            if (three.cssRenderer) {
-                three.cssRenderer.render(three.cssScene, three.camera);
-            }
+        three.renderer.render(three.scene, three.camera);
+        if (three.cssRenderer) {
+            three.cssRenderer.render(three.cssScene, three.camera);
+        }
 
-            three.renderer.setViewport(0, 0, width / 2, height);
-            three.renderer.setScissor(0, 0, width / 2, height);
+        three.renderer.setViewport(0, 0, width / 2, height);
+        three.renderer.setScissor(0, 0, width / 2, height);
 
-            three.renderer.render(three.scene, three.camera);
-            if (three.cssRenderer) {
-                three.cssRenderer.render(three.cssScene, three.camera);
-            }
+        three.renderer.render(three.scene, three.camera);
+        if (three.cssRenderer) {
+            three.cssRenderer.render(three.cssScene, three.camera);
         }
     } else {
         this.three.renderer.setViewport(0, 0, width, height);
@@ -872,7 +862,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
 	this.threeSynchVideoTexture();
 
-	var visible = this.threeGetVisibility();
 	this.threeObject.visible = this.threeGetVisibility();
 
 	if (threeObject === undefined) {
@@ -1037,24 +1026,6 @@ PEEKS.Scene.prototype.onResize = function() {
     }
 }
 
-var CreateCssElement = function ( id, x, y, z) {
-	var div = document.createElement('div');
-	div.style.width = '256px';
-	div.style.height = '256px';
-	div.style.backgroundColor = '#000';
-	var iframe = document.createElement('iframe');
-	iframe.style.width = '256px';
-	iframe.style.height = '256px';
-	iframe.style.border = '0px';
-    iframe.src = [ 'https://assets.bloomingdales.com/navapp/dyn_img/homepage_pools/0929_1009_HP_INTL_02_1505750668351.jpg' ].join( '' );
-	div.appendChild(iframe);
-
-	var object = new THREE.CSS3DObject(div);
-    object.position.set(0, 0, -256);
-    object.scale.set(.1, .1, .1);
-	return object;
-};
-
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
 
@@ -1073,24 +1044,6 @@ PEEKS.Scene.prototype.onStart = function() {
     var directionalLight = new THREE.DirectionalLight( 0xdddddd );
 	directionalLight.position.set(0, 0, 1);
 	scene.add( directionalLight );
-
-    var addCssLayer = false;
-    if (addCssLayer) {
-        var container = document.createElement( 'div' );
-        container.style.position = 'relative';
-        document.body.appendChild( container );
-
-        var cssRenderer = new THREE.CSS3DRenderer();
-        cssRenderer.setSize(400, 400);
-    	cssRenderer.domElement.style.position = 'absolute';
-    	cssRenderer.domElement.style.top = 0;
-
-        this.three.cssRenderer = cssRenderer;
-        this.three.cssScene = new THREE.Scene();
-    	this.three.cssScene.add(new CreateCssElement( 'OX9I1KyNa8M', 0, 0, -240));
-
-        container.appendChild( cssRenderer.domElement );
-    }
 
     var renderer = new THREE.WebGLRenderer({
         alpha: true,
