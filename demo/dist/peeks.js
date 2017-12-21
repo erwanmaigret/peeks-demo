@@ -73,7 +73,6 @@ var global = Function('return this')();
 
 global.THREE = __webpack_require__(2);
 __webpack_require__(3);
-//require('./three/renderers/CSS3DRenderer.js');
 __webpack_require__(4);
 
 __webpack_require__(5);
@@ -1621,9 +1620,9 @@ function Scene() {
 	this.camera = this.add(new Camera());
 	this.mouseDownTime = 0;
 	this.type = 'Scene';
-	this.arAsset = this.add(new PEEKS.Asset());
     this.ground = this.add(new PEEKS.Asset());
     this.background = this.add(new PEEKS.Asset());
+    this.arAsset = this.add(new PEEKS.Asset());
 
     var userAgent = navigator.userAgent.toLowerCase();
     this.isPhone =
@@ -2356,12 +2355,13 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
 			if (state) {
 				if (!this.arImage) {
-					var asset = new PEEKS.Plane();
-                    asset.setPosition(0, 2, -10);
-                    asset.setSize(10);
+                    var canvas = this.arAsset.addCanvas({
+                        valign: 'bottom',
+                    });
+                    var asset = new PEEKS.Plane();
                     asset.setUseVideoTexture(true);
-                    this.arAsset.add(asset);
-					this.arImage = asset;
+                    canvas.add(asset);
+                    this.arImage = canvas;
 				}
 				this.arImage.show();
 			} else {
@@ -2608,34 +2608,32 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     });
                     var canvas = page.addCanvas();
 
-                    var pane = canvas.addView({
-                        position: [0, 0],
-                        size: [1, .6, 1],
-                        viewBgColor: [.3, .3, .3],
-                        alpha: 0,
+                    var screen = page.addScreen({
+                        radius: 2,
                     });
 
-                    var itemCount = 0;
                     for (var itemI = 0; itemI < items.length; itemI++) {
                         var fontSize = 50;
-                        pane.addTextButton({
+                        screen.addTextButton({
                             label: items[itemI][0].replace('_', ' '),
-                            position: [0, .6 - itemCount * .2, 0],
-                            size: [.9, .15, 1],
+                            position: [(itemI - items.length * .5) * .2, 0, 0],
                             fontSize: fontSize,
-                            urlTarget: items[itemI][1],
-                            onClick: function() {
-                                window.open(this.urlTarget,'_blank');
-                            }
-                        });
-
-                        itemCount++;
+                        }).animate({
+                    		duration: 20,
+                    		delay: 0,
+                    		begin: [1, 0, 0],
+                    		end: [-1, 0, 0],
+                    		attribute: 'position',
+                            loop: true,
+                    	});
                     }
 
                 	return page;
                 });
 
                 this.loadPage('Christmas');
+                //this.setArMode(true);
+                //this.arImage.alpha = 1;
             } else {
                 var page = document.title;
                 if (page === 'Peeks') {
