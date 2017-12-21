@@ -73,8 +73,22 @@ var global = Function('return this')();
 
 global.THREE = __webpack_require__(2);
 __webpack_require__(3);
+//require('./three/renderers/CSS3DRenderer.js');
 __webpack_require__(4);
+
 __webpack_require__(5);
+__webpack_require__(6);
+__webpack_require__(7);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(10);
+__webpack_require__(11);
+__webpack_require__(12);
+__webpack_require__(13);
+__webpack_require__(14);
+__webpack_require__(15);
+__webpack_require__(16);
+__webpack_require__(17);
 
 
 /***/ }),
@@ -48964,264 +48978,6 @@ THREE.OBJLoader = ( function () {
 /* 4 */
 /***/ (function(module, exports) {
 
-/**
- * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
- * @author mrdoob / http://mrdoob.com/
- */
-
-THREE.CSS3DObject = function ( element ) {
-
-	THREE.Object3D.call( this );
-
-	this.element = element;
-	this.element.style.position = 'absolute';
-
-	this.addEventListener( 'removed', function ( event ) {
-
-		if ( this.element.parentNode !== null ) {
-
-			this.element.parentNode.removeChild( this.element );
-
-		}
-
-	} );
-
-};
-
-THREE.CSS3DObject.prototype = Object.create( THREE.Object3D.prototype );
-THREE.CSS3DObject.prototype.constructor = THREE.CSS3DObject;
-
-THREE.CSS3DSprite = function ( element ) {
-
-	THREE.CSS3DObject.call( this, element );
-
-};
-
-THREE.CSS3DSprite.prototype = Object.create( THREE.CSS3DObject.prototype );
-THREE.CSS3DSprite.prototype.constructor = THREE.CSS3DSprite;
-
-//
-
-THREE.CSS3DRenderer = function () {
-
-	console.log( 'THREE.CSS3DRenderer', THREE.REVISION );
-
-	var _width, _height;
-	var _widthHalf, _heightHalf;
-
-	var matrix = new THREE.Matrix4();
-
-	var cache = {
-		camera: { fov: 0, style: '' },
-		objects: {}
-	};
-
-	var domElement = document.createElement( 'div' );
-	domElement.style.overflow = 'hidden';
-
-	domElement.style.WebkitTransformStyle = 'preserve-3d';
-	domElement.style.MozTransformStyle = 'preserve-3d';
-	domElement.style.oTransformStyle = 'preserve-3d';
-	domElement.style.transformStyle = 'preserve-3d';
-
-	this.domElement = domElement;
-
-	var cameraElement = document.createElement( 'div' );
-
-	cameraElement.style.WebkitTransformStyle = 'preserve-3d';
-	cameraElement.style.MozTransformStyle = 'preserve-3d';
-	cameraElement.style.oTransformStyle = 'preserve-3d';
-	cameraElement.style.transformStyle = 'preserve-3d';
-
-	domElement.appendChild( cameraElement );
-
-	this.setClearColor = function () {};
-
-	this.getSize = function() {
-
-		return {
-			width: _width,
-			height: _height
-		};
-
-	};
-
-	this.setSize = function ( width, height ) {
-
-		_width = width;
-		_height = height;
-
-		_widthHalf = _width / 2;
-		_heightHalf = _height / 2;
-
-		domElement.style.width = width + 'px';
-		domElement.style.height = height + 'px';
-
-		cameraElement.style.width = width + 'px';
-		cameraElement.style.height = height + 'px';
-
-	};
-
-	var epsilon = function ( value ) {
-
-		return Math.abs( value ) < Number.EPSILON ? 0 : value;
-
-	};
-
-	var getCameraCSSMatrix = function ( matrix ) {
-
-		var elements = matrix.elements;
-
-		return 'matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon( - elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-			epsilon( elements[ 4 ] ) + ',' +
-			epsilon( - elements[ 5 ] ) + ',' +
-			epsilon( elements[ 6 ] ) + ',' +
-			epsilon( elements[ 7 ] ) + ',' +
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon( - elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-			epsilon( elements[ 12 ] ) + ',' +
-			epsilon( - elements[ 13 ] ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
-		')';
-
-	};
-
-	var getObjectCSSMatrix = function ( matrix ) {
-
-		var elements = matrix.elements;
-
-		return 'translate3d(-50%,-50%,0) matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon( elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-			epsilon( - elements[ 4 ] ) + ',' +
-			epsilon( - elements[ 5 ] ) + ',' +
-			epsilon( - elements[ 6 ] ) + ',' +
-			epsilon( - elements[ 7 ] ) + ',' +
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon( elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-			epsilon( elements[ 12 ] ) + ',' +
-			epsilon( elements[ 13 ] ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
-		')';
-
-	};
-
-	var renderObject = function ( object, camera ) {
-
-		if ( object instanceof THREE.CSS3DObject ) {
-
-			var style;
-
-			if ( object instanceof THREE.CSS3DSprite ) {
-
-				// http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
-
-				matrix.copy( camera.matrixWorldInverse );
-				matrix.transpose();
-				matrix.copyPosition( object.matrixWorld );
-				matrix.scale( object.scale );
-
-				matrix.elements[ 3 ] = 0;
-				matrix.elements[ 7 ] = 0;
-				matrix.elements[ 11 ] = 0;
-				matrix.elements[ 15 ] = 1;
-
-				style = getObjectCSSMatrix( matrix );
-
-			} else {
-
-				style = getObjectCSSMatrix( object.matrixWorld );
-
-			}
-
-			var element = object.element;
-			var cachedStyle = cache.objects[ object.id ];
-
-			if ( cachedStyle === undefined || cachedStyle !== style ) {
-
-				element.style.WebkitTransform = style;
-				element.style.MozTransform = style;
-				element.style.oTransform = style;
-				element.style.transform = style;
-
-				cache.objects[ object.id ] = style;
-
-			}
-
-			if ( element.parentNode !== cameraElement ) {
-
-				cameraElement.appendChild( element );
-
-			}
-
-		}
-
-		for ( var i = 0, l = object.children.length; i < l; i ++ ) {
-
-			renderObject( object.children[ i ], camera );
-
-		}
-
-	};
-
-	this.render = function ( scene, camera ) {
-
-		var fov = 0.5 / Math.tan( THREE.Math.degToRad( camera.getEffectiveFOV() * 0.5 ) ) * _height;
-
-		if ( cache.camera.fov !== fov ) {
-
-			domElement.style.WebkitPerspective = fov + "px";
-			domElement.style.MozPerspective = fov + "px";
-			domElement.style.oPerspective = fov + "px";
-			domElement.style.perspective = fov + "px";
-
-			cache.camera.fov = fov;
-
-		}
-
-		scene.updateMatrixWorld();
-
-		if ( camera.parent === null ) camera.updateMatrixWorld();
-
-		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
-
-		var style = "translate3d(0,0," + fov + "px)" + getCameraCSSMatrix( camera.matrixWorldInverse ) +
-			" translate3d(" + _widthHalf + "px," + _heightHalf + "px, 0)";
-
-		if ( cache.camera.style !== style ) {
-
-			cameraElement.style.WebkitTransform = style;
-			cameraElement.style.MozTransform = style;
-			cameraElement.style.oTransform = style;
-			cameraElement.style.transform = style;
-
-			cache.camera.style = style;
-
-		}
-
-		renderObject( scene, camera );
-
-	};
-
-};
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
 var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
     removeBackground)
 {
@@ -50596,6 +50352,3837 @@ THREE.ShaderPeeks = {
 
 	},
 };
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('2D Assets', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+        category: 'fashion',
+    });
+
+	// Imported from Bloomingdales website:
+	var assets = [
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+		['9579778_fpx.png', '9579779_fpx.png'],
+		['9617416_fpx.png', '9617417_fpx.png'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+		['9579778_fpx.png', '9579779_fpx.png'],
+		['9617416_fpx.png', '9617417_fpx.png'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+		['9579778_fpx.png', '9579779_fpx.png'],
+		['9617416_fpx.png', '9617417_fpx.png'],
+		['9427112_fpx.png', '9427113_fpx.png'],
+		['9477418_fpx.png', '9477419_fpx.png'],
+		['9513483_fpx.png', '9513484_fpx.png'],
+	];
+
+	var panel = page.addAsset();
+
+    var hideInfo = function () {
+        var infoPage = this.parent;
+        infoPage.animate({
+            duration: 1,
+            begin: [0, 0, 0],
+            end: [0, -.6, 0],
+            attribute: 'position'
+        });
+        infoPage.parent.assetPage.infoVisible = false;
+    };
+
+    var showInfo = function () {
+        var asset = this.parent;
+        if (asset) {
+            if (this.infoVisible) {
+                this.animateFlip();
+            } else {
+                this.infoVisible = true;
+
+                asset.assetPage = this;
+                if (asset.infoPage === undefined) {
+                    asset.infoPage = asset.addAsset({
+                        position: [0, 0, -.2],
+                    });
+                    var pane = asset.infoPage.addButton({
+                        size: 1,
+                        alpha: 0,
+                        onClick: hideInfo,
+                    });
+                    pane.addText({
+                		position: [0, 0, .1],
+                		text: 'Product Name',
+                        textAlign: 'center',
+                        fontSize: 40
+                	});
+                }
+                asset.infoPage.animate({
+                    duration: 1,
+                    begin: [0, 0, 0],
+                    end: [0, .6, 0],
+                    attribute: 'position'
+                });
+            }
+        }
+    };
+
+    var screen = page.addScreen({
+        radius: 3,
+    });
+
+    for (var assetI = 0; assetI < assets.length; assetI++) {
+        var panel = screen.addAsset({
+            position: [-1 + assetI * 2 / assets.length, 0, 0],
+        });
+
+        panel.addButton({
+            image: '/images/' + assets[assetI][0],
+            imageBack: '/images/' + assets[assetI][1],
+            //position: [-1 + assetI * 2 / assets.length, 0, 0],
+            onClick: showInfo,
+        });
+    }
+
+	page.addPage('peeks_toolbar');
+
+	return page;
+});
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('terraworlds', function() {
+	var page = new PEEKS.Asset({
+//        colorDark:   [.2, 0.2 , 0.5],
+//        colorLight:  [.6, 0.6 , 0.8],
+        category: 'white',
+    });
+
+    page.setAttr('fontColor', page.getAttr('colorDark'));
+
+    var cubeSize = 1;
+    var cubeColor = [0, 1, 0];
+    var cubeImage ='/images/minecraft_stone.jpg';
+    var cubeRepeat = [3, 3];
+    var onClick = function()
+    {
+        this.addButton({
+            position: [0, 0, 1],
+            viewBgColor: cubeColor,
+            image: cubeImage,
+            imageRepeat: cubeRepeat,
+            onClick: onClick,
+            size: cubeSize,
+            sides: 'front',
+        });
+        this.addButton({
+            position: [0, -.5, .5],
+            rotation: [90, 0, 0],
+            viewBgColor: cubeColor,
+            image: cubeImage,
+            imageRepeat: cubeRepeat,
+            onClick: onClick,
+            size: cubeSize,
+            sides: 'front',
+        });
+        this.addButton({
+            position: [0, .5, .5],
+            rotation: [-90, 0, 0],
+            viewBgColor: cubeColor,
+            image: cubeImage,
+            imageRepeat: cubeRepeat,
+            onClick: onClick,
+            size: cubeSize,
+            sides: 'front',
+        });
+        this.addButton({
+            position: [0.5, 0, .5],
+            rotation: [0, 90, 0],
+            viewBgColor: cubeColor,
+            image: cubeImage,
+            imageRepeat: cubeRepeat,
+            onClick: onClick,
+            size: cubeSize,
+            sides: 'front',
+        });
+        this.addButton({
+            position: [-0.5, 0, .5],
+            rotation: [0, -90, 0],
+            viewBgColor: cubeColor,
+            image: cubeImage,
+            imageRepeat: cubeRepeat,
+            onClick: onClick,
+            size: cubeSize,
+            sides: 'front',
+        });
+    };
+
+	var size = 15;
+	for (var x = -size; x < size; x++) {
+		for (var z = -size; z < size; z++) {
+			page.addButton({
+                position: [x / 2, -1, z / 2],
+				rotation: [-90, 0, 0],
+                viewBgColor: [.3, .5, .2],
+                //size: .97,
+                sides: 'front',
+                size: .5,
+				onClick: onClick,
+			}).animate({
+				duration: 2 + Math.random() * 1,
+				delay: .5 + Math.random() * .5,
+				p0: [0, 0, 0],
+				p1: [10, .3,0],
+				p2: [-15, -4, 0],
+				p3: [0, 0, 0],
+				attribute: 'position',
+				//loop: true
+			});
+		}
+	}
+
+	page.addPage('peeks_toolbar');
+
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
+
+    canvas.addButton({
+        position: [.1, .45],
+		size: .08,
+        image: '/images/minecraft_wood.jpg',
+        onClick: function() {
+            cubeImage = '/images/minecraft_wood.jpg';
+            cubeRepeat = [2, 2];
+        },
+    });
+
+    canvas.addButton({
+        position: [-.1, .45],
+		size: .08,
+        image: '/images/minecraft_craftingtable.jpg',
+        onClick: function() {
+            cubeImage = '/images/minecraft_craftingtable.jpg';
+            cubeRepeat = [1, 1];
+        },
+    });
+
+    canvas.addButton({
+        position: [.3, .45],
+		size: .08,
+        image: '/images/minecraft_stone.jpg',
+        onClick: function() {
+            cubeImage = '/images/minecraft_stone.jpg';
+            cubeRepeat = [3, 3];
+        },
+    });
+    canvas.addButton({
+        position: [-.3, .45],
+        size: .08,
+        image: '/images/minecraft_dirt.jpg',
+        onClick: function() {
+            cubeImage = '/images/minecraft_dirt.jpg';
+            cubeRepeat = [1, 1];
+        },
+    });
+
+    page.onLoad = function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+                function (position) {
+                    console.log("Latitude: " + position.coords.latitude);
+                    console.log("longitude: " + position.coords.longitude);
+                }
+            );
+        } else {
+            console.log("No geolocation");
+        }
+    };
+
+    page.onUnload = function () {
+    };
+
+    page.onUpdate = function () {
+    };
+
+	return page;
+});
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('3D Assets', function() {
+    var page = new PEEKS.Asset({
+        category: 'fashion',
+    });
+
+    page.addPage('peeks_toolbar');
+
+    page.addCurvedPanel({
+        size: 5,
+        texture: '/images/logo_lacoste.png',
+        rotation: [20, 0, 0],
+    });
+
+    page.addCurvedPanel({
+        size: 5,
+        texture: '/images/logo_converse.png',
+        position: [0, 1],
+        rotation: [0, 30, 0],
+    });
+
+    page.addCurvedPanel({
+        size: 5,
+        texture: '/images/logo_converse.png',
+        position: [0, 1],
+        rotation: [0, -30, 0],
+    });
+
+    page.addMesh({
+		geometry: '/assets/converse.obj',
+		texture: '/assets/converse.jpg',
+		position: [-1, 0, -3],
+		rotation: [0, 0, 0],
+		size: .05,
+        onClick: 'animateRotate90',
+	});
+
+    page.addAsset({
+        position: [0, .5, -3],
+        onClick: 'animateRotate90',
+    }).addMesh({
+		geometry: '/assets/lacoste_polo_shirt.obj',
+		texture: '/assets/lacoste_polo_shirt.jpg',
+        rotation: [-90, 0, 0],
+		size: .02,
+	});
+
+    page.addMesh({
+        geometry: '/assets/black_leather_shoes.obj',
+        texture: '/assets/black_leather_shoes.png',
+        position: [1.5, 0, -3],
+        rotation: [0, 200, 0],
+        size: .1,
+        onClick: 'animateRotate90',
+    });
+
+	return page;
+});
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('Target', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+        fontColorBold: [197/255, 1/255, 0],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [1, 1, 1],
+        category: 'white',
+        groundImage: '/ui/gradient_radial.png',
+        groundImageRepeat: 1,
+        backgroundImage: '/ui/gradient.png',
+    });
+
+	var panel = page.addAsset();
+
+    var screen = page.addScreen({
+        radius: 5,
+    });
+
+    page.setAssetPath('https://target.scene7.com/is/image/Target/');
+
+    page.addSiteMapItem('clothing', { icon: '53451-160411_1460383116963'} );
+    page.addSiteMapItem("clothing/women's clothing", { icon: '52690603'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses", { icon: '52922424'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi", { icon: '52833477'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/1", { icon: '52840296', isProduct: true } );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/2", { icon: '52760285', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/3", { icon: '52833477', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/4", { icon: '52654414', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/5", { icon: '52722444', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/6", { icon: '52132992', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/7", { icon: '52760285', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/8", { icon: '52589309', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/9", { icon: '52090041', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/10", { icon: '52840296', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/11", { icon: '52237779', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/12", { icon: '52363084', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/13", { icon: '52722288', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/14", { icon: '52380730', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/15", { icon: '52090019', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/maxi/16", { icon: '52535884', isProduct: true} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/fit & flare", { icon: '52841027'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/shirt", { icon: '52568060'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/t-shirt", { icon: '52939367'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/shift", { icon: '52514130'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/jumpsuits & rompers", { icon: '52722404'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/floral", { icon: '51962176'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/ruffle detail", { icon: '52050580'} );
+    page.addSiteMapItem("clothing/women's clothing/dresses/midi", { icon: '51980268'} );
+    page.addSiteMapItem("clothing/women's clothing/juniors", { icon: '52760000'} );
+    page.addSiteMapItem("clothing/women's clothing/maternity", { icon: '52648512'} );
+    page.addSiteMapItem("clothing/women's clothing/plus size clothing", { icon: '52845920'} );
+    page.addSiteMapItem("clothing/women's clothing/new arrivals", { icon: '52509758'} );
+    page.addSiteMapItem("clothing/women's clothing/activewear", { icon: '52044488'} );
+    page.addSiteMapItem("clothing/women's clothing/athleisure", { icon: '51014419'} );
+    page.addSiteMapItem("clothing/women's clothing/coats & jackets", { icon: '52922427'} );
+    page.addSiteMapItem("clothing/women's clothing/jumpsuits & rompers", { icon: '52722404'} );
+    page.addSiteMapItem("clothing/women's clothing/leggings", { icon: '51002014'} );
+    page.addSiteMapItem("clothing/women's clothing/pajamas & robes", { icon: '52809347'} );
+    page.addSiteMapItem("clothing/women's clothing/pants", { icon: '52922490'} );
+    page.addSiteMapItem("clothing/men's clothing", { icon: '52507016'} );
+    page.addSiteMapItem("clothing/girl's clothing", { icon: '52595777'} );
+    page.addSiteMapItem("clothing/boys's clothing", { icon: '52373399'} );
+    page.addSiteMapItem("clothing/toddler clothing", { icon: '52706606'} );
+    page.addSiteMapItem("clothing/baby clothing", { icon: '52376100'} );
+    page.addSiteMapItem("clothing/school uniforms", { icon: '52383471'} );
+    page.addSiteMapItem("clothing/adaptive clothing", { icon: '52724490'} );
+    page.addSiteMapItem("clothing/family outfits", { icon: '52804140'} );
+    page.addSiteMapItem("shoes", { icon: '53451-160411_1460383139759'} );
+    page.addSiteMapItem("accessories", { icon: '53451-160411_1460383161792'} );
+    page.addSiteMapItem("home", { icon: '61480-160630_1467310167162'} );
+    page.addSiteMapItem("furniture", { icon: '53476-160411_1460402362708'} );
+    page.addSiteMapItem("patio & garden", { icon: '53476-160411_1460402380575'} );
+    page.addSiteMapItem("luggage", { icon: '57687-160505_1462459899971'} );
+    page.addSiteMapItem("all baby", { icon: '53452-160411_1460402021722'} );
+    page.addSiteMapItem("baby clothing", { icon: '53452-160411_1460402035275'} );
+    page.addSiteMapItem("baby shoes", { icon: '53452-160411_1460402051043'} );
+    page.addSiteMapItem("girls' clothing", { icon: '53452-160411_1460402129559'} );
+    page.addSiteMapItem("girls' shoes", { icon: '53452-160411_1460402148576'} );
+    page.addSiteMapItem("boys' clothing", { icon: '53452-160411_1460402089694'} );
+    page.addSiteMapItem("boys' shoes", { icon: '53452-160411_1460402111660'} );
+    page.addSiteMapItem('Promotions');
+    page.addSiteMapItem("Promotions/Our Black Friday deals", { description: "Get a sneak peek now", icon: '2017_NovWk2_HP_StoryBlocks_v1_21103877-171101_1509556671597'} );
+    page.addSiteMapItem("Promotions/20% off trees, wreaths & lights", { description: "Get your Christmas decor now", icon: '2017_NovWk2_HP_StoryBlocks_v1_03103877-171026_1509030239564'} );
+    page.addSiteMapItem("Promotions/20% off shoes", { description: "Save on styles & sizes for the family", icon: '2017_NovWk2_HP_StoryBlocks_v1_05103877-171025_1508964273152'} );
+    page.addSiteMapItem("Promotions/Xbox One X is here", { description: "The world’s most powerful console yet", icon: '2017_NovWk2_HP_StoryBlocks_v1_08103877-171024_1508869525494'} );
+    page.addSiteMapItem("Promotions/Gather & gobble", { description: "Find all you need for your Thanksgiving feast", icon: 'C-000437-01-046_THR_CROP_2544_MetalGarland103876-171030_1509398096992'} );
+    page.addSiteMapItem("Promotions/Friendsgiving edition", { icon: 'TF_friendsgiving_HP103876-171027_1509126668125'} );
+    page.addSiteMapItem("Promotions/PJs for the whole crew", { icon: '2017_NovWk2_HP_StoryBlocks_v1_03103876-171019_1508446147822'} );
+    page.addSiteMapItem("Featured");
+    page.addSiteMapItem("Featured/Thanksgiving", { icon: 'thanksgiving97188-171025_1508960298143'} );
+    page.addSiteMapItem("Featured/Christmas", { icon: 'christmas97188-171025_1508962692123'} );
+    page.addSiteMapItem("Featured/Kids' gifting", { icon: 'KidsGifts-icon98553-171005_1507224706616'} );
+    page.addSiteMapItem("Featured/Gift Ideas", { icon: '10-22_KidsGifting-CatBrowse-14105040-171024_1508883169598'} );
+    page.addSiteMapItem("Featured/Target Finds", { icon: 'finds105040-171025_1508959860693'} );
+    page.addSiteMapItem("Featured/Clothing", { icon: 'clothing97188-171019_1508445409180'} );
+    page.addSiteMapItem("Featured/Shoes", { icon: 'shoes97188-171025_1508966363467'} );
+    page.addSiteMapItem("Featured/Accessories", { icon: 'accessories97188-171027_1509114673981'} );
+    page.addSiteMapItem("Featured/Baby", { icon: 'baby97188-171025_1508965179518'} );
+    page.addSiteMapItem("Featured/Home", { icon: 'home97188-171019_1508445579038'} );
+    page.addSiteMapItem("Featured/Furniture", { icon: 'furniture97188-171025_1508965473814'} );
+    page.addSiteMapItem("Featured/Kitchen", { icon: 'kitchen97188-171019_1508445075384'} );
+    page.addSiteMapItem("Featured/Electronics", { icon: 'electronics97188-171025_1508966407077'} );
+    page.addSiteMapItem("Featured/Toys", { icon: 'toys97188-171025_1508966907610'} );
+    page.addSiteMapItem("Featured/Entertainment", { icon: 'entertainment97188-171019_1508447521853'} );
+    page.addSiteMapItem("Featured/Beauty", { icon: 'beauty97188-171025_1508965241734'} );
+    page.addSiteMapItem("Featured/Deals", { icon: 'deals97188-171020_1508510709891'} );
+    page.addSiteMapItem("Featured/Clearance", { icon: 'clearance97188-171020_1508525411214'} );
+
+    var imagePath = 'https://target.scene7.com/is/image/Target/';
+    var siteMapOld = [
+        {
+            name: 'clothing',
+            image: '53451-160411_1460383116963',
+            items: [
+                {   name: "women's clothing", image: '52690603',
+                    items: [
+                        {   name: "dresses", image: '52922424',
+                            items: [
+                                {   name: "maxi", image: '52833477',
+                                    highlightItems: [
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "fit & flare", image: '52841027',
+                                    highlightItems: [
+                                        { name: " ", product: '52760288' },
+                                        { name: " ", product: '52687571' },
+                                        { name: " ", product: '52688047' },
+                                        { name: " ", product: '52765475' },
+                                        { name: " ", product: '52840416' },
+                                        { name: " ", product: '52841028' },
+                                        { name: " ", product: '52841027' },
+                                        { name: " ", product: '52966315' },
+                                        { name: " ", product: '52840417' },
+                                        { name: " ", product: '52782497' },
+                                        { name: " ", product: '52840652' },
+                                        { name: " ", product: '52840538' },
+                                        { name: " ", product: '52767349' },
+                                        { name: " ", product: '52840418' },
+                                    ]
+                                },
+                                { name: "shirt", image: '52568060',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "t-shirt", image: '52939367',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "shift", image: '52514130',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "jumpsuits & rompers", image: '52722404',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "floral", image: '51962176',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "ruffle detail", image: '52050580',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                                { name: "midi", image: '51980268',
+                                    highlightItems: [
+                                        { name: " ", product: '52833477' },
+                                        { name: " ", product: '52654414' },
+                                        { name: " ", product: '52722444' },
+                                        { name: " ", product: '52132992' },
+                                        { name: " ", product: '52760285' },
+                                        { name: " ", product: '52589309' },
+                                        { name: " ", product: '52090041' },
+                                        { name: " ", product: '52840296' },
+                                        { name: " ", product: '52237779' },
+                                        { name: " ", product: '52363084' },
+                                        { name: " ", product: '52722288' },
+                                        { name: " ", product: '52380730' },
+                                        { name: " ", product: '52090019' },
+                                        { name: " ", product: '52535884' },
+                                    ]
+                                },
+                            ]
+                        },
+                        { name: "juniors", image: '52760000', },
+                        { name: "maternity", image: '52648512', },
+                        { name: "plus size clothing", image: '52845920', },
+                        { name: "new arrivals", image: '52509758', },
+                        { name: "activewear", image: '52044488', },
+                        { name: "athleisure", image: '51014419', },
+                        { name: "coats & jackets", image: '52922427', },
+                        // Images with CORS issues on load, why is it so?
+                        // { name: "intimates", image: '51909861', },
+                        // { name: "jeans", image: '51909861', },
+                        { name: "jumpsuits & rompers", image: '52722404', },
+                        { name: "leggings", image: '51002014', },
+                        { name: "pajamas & robes", image: '52809347', },
+                        { name: "pants", image: '52922490', },
+                    ]
+                },
+                { name: "men's clothing", image: '52507016', },
+                { name: "girl's clothing", image: '52595777', },
+                { name: "boys's clothing", image: '52373399', },
+                { name: "toddler clothing", image: '52706606', },
+                { name: "baby clothing", image: '52376100', },
+                { name: "school uniforms", image: '52383471', },
+                { name: "adaptive clothing", image: '52724490', },
+                { name: "family outfits", image: '52804140', },
+            ]
+        },
+        { name: 'shoes', image: '53451-160411_1460383139759', },
+        { name: 'accessories', image: '53451-160411_1460383161792', },
+        { name: 'home', image: '61480-160630_1467310167162', },
+        { name: 'furniture', image: '53476-160411_1460402362708', },
+        { name: 'patio & garden', image: '53476-160411_1460402380575', },
+        { name: 'luggage', image: '57687-160505_1462459899971', },
+        { name: 'all baby', image: '53452-160411_1460402021722', },
+        { name: 'baby clothing', image: '53452-160411_1460402035275', },
+        { name: 'baby shoes', image: '53452-160411_1460402051043', },
+        { name: "girls' clothing", image: '53452-160411_1460402129559', },
+        { name: "girls' shoes", image: '53452-160411_1460402148576', },
+        { name: "boys' clothing", image: '53452-160411_1460402089694', },
+        { name: "boys' shoes", image: '53452-160411_1460402111660', },
+        { name: "Featured",
+            items: [
+                { name: "Thanksgiving", image: 'thanksgiving97188-171025_1508960298143', },
+                { name: "Christmas", image: 'christmas97188-171025_1508962692123', },
+                { name: "Kids' gifting", image: 'KidsGifts-icon98553-171005_1507224706616', },
+                { name: "Gift Ideas", image: '10-22_KidsGifting-CatBrowse-14105040-171024_1508883169598', },
+                { name: "Target Finds", image: 'finds105040-171025_1508959860693', },
+                { name: "Clothing", image: 'clothing97188-171019_1508445409180', },
+                { name: "Shoes", image: 'shoes97188-171025_1508966363467', },
+                { name: "Accessories", image: 'accessories97188-171027_1509114673981', },
+                { name: "Baby", image: 'baby97188-171025_1508965179518', },
+                { name: "Home", image: 'home97188-171019_1508445579038', },
+                { name: "Furniture", image: 'furniture97188-171025_1508965473814', },
+                { name: "Kitchen", image: 'kitchen97188-171019_1508445075384', },
+                { name: "Electronics", image: 'electronics97188-171025_1508966407077', },
+                { name: "Toys", image: 'toys97188-171025_1508966907610', },
+                { name: "Entertainment", image: 'entertainment97188-171019_1508447521853', },
+                { name: "Beauty", image: 'beauty97188-171025_1508965241734', },
+                { name: "Deals", image: 'deals97188-171020_1508510709891', },
+                { name: "Clearance", image: 'clearance97188-171020_1508525411214', },
+            ],
+        },
+        { name: "Promotions",
+            highlightItems: [
+                {
+                    name: "Our Black Friday deals",
+                    description: "Get a sneak peek now.",
+                    image: '2017_NovWk2_HP_StoryBlocks_v1_21103877-171101_1509556671597',
+                },
+                {
+                    name: "20% off trees, wreaths & lights",
+                    description: "Get your Christmas decor now.",
+                    image: '2017_NovWk2_HP_StoryBlocks_v1_03103877-171026_1509030239564',
+                },
+                {
+                    name: "20% off shoes",
+                    description: "Save on styles & sizes for the family.",
+                    image: '2017_NovWk2_HP_StoryBlocks_v1_05103877-171025_1508964273152',
+                },
+                {
+                    name: "Xbox One X is here",
+                    description: "The world’s most powerful console yet.",
+                    image: '2017_NovWk2_HP_StoryBlocks_v1_08103877-171024_1508869525494',
+                },
+                {
+                    name: "Gather & gobble",
+                    description: "Find all you need for your Thanksgiving feast.",
+                    image: 'C-000437-01-046_THR_CROP_2544_MetalGarland103876-171030_1509398096992',
+                },
+                {
+                    name: "Friendsgiving edition",
+                    description: "",
+                    image: 'TF_friendsgiving_HP103876-171027_1509126668125',
+                },
+                {
+                    name: "PJs for the whole crew",
+                    description: "",
+                    image: '2017_NovWk2_HP_StoryBlocks_v1_03103876-171019_1508446147822',
+                },
+            ],
+        },
+    ];
+
+    page.setSiteMapMenuPath('');
+    page.setSiteMapPath('Promotions');
+
+    var currentItems = [];
+
+    page.onUpdateSiteMapPath = function() {
+        refresh();
+    };
+
+    var onClick = function() {
+        if (page.siteMapPathIsLeaf(this.path)) {
+            page.setSiteMapPath(this.path);
+        } else {
+            page.setSiteMapMenuPath(this.path);
+        }
+        refresh();
+    };
+
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            var productPane = this.parent.addView({
+                position: [0, .75, -.1],
+                size: [.8, .4, 1],
+                viewBgColor: [.96, .96, .96],
+            });
+
+            var product = this.product;
+            if (product) {
+                var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = JSON.parse(this.responseText);
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [0, .4, .01],
+                            size: [.9, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.item.product_brand.brand,
+                        });
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [-.3, -.3, .01],
+                            size: [.3, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.price.listPrice.formattedPrice,
+                        });
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            }
+
+            productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .2, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'sizes',
+            });
+
+            for (var i = 0; i < 5; i++) {
+                productPane.addButton({
+                    position: [-.36 + .18 * i, .0, .01],
+                    size: [.15, .2, 1],
+                    viewBgColor: [1, 1, 1],
+                }).addText({
+                    position: [0, 0, .01],
+                    fontSize: 52,
+                    fontColor: [.3, .3, .3],
+                    text: (6 + i * 2).toString(),
+                });
+            }
+
+            productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [.2, -.3, .01],
+                size: [.4, .2, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [1, 1, 1],
+                text: 'add to cart',
+            });
+
+            productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+
+            this.productPane = productPane;
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
+        }
+    };
+
+    var subMenuY = .3;
+    var highlightsY = 0;
+
+    var menuPopup;
+
+    var onHome = function(path) {
+        page.setSiteMapMenuPath('');
+        page.setSiteMapPath('Promotions');
+        refresh();
+    };
+
+    var refresh = function() {
+        //
+        // Remove previous items
+        //
+
+        var itemCount = currentItems.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            currentItems[itemI].destroy();
+        }
+        currentItems = [];
+
+        //
+        // Update elements
+        //
+
+        var itemCountMax = 18;
+        var itemStep = .055;
+
+        var items = page.querySiteMapMenuAssets();
+
+        // Current navigation level
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var xIndex = itemI;
+                var yOffset = subMenuY;
+                while (xIndex >= 9) {
+                    yOffset += .2;
+                    xIndex -= 9;
+                }
+                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                var asset = screen.addAsset({
+                    position: [xOffset, yOffset, 0],
+                    size: .4,
+                });
+                var button = asset.addButton({
+                    image: item.image ? imagePath + item.image : undefined,
+                    path: item.path,
+                    onClick: onClick,
+                })
+                asset.addText({
+                    position: [0, -.6, .1],
+                    fontSize: 80,
+                    text: item.name,
+                });
+                currentItems.push(asset);
+            }
+        }
+
+        items = page.querySiteMapAssets();
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var asset = screen.addAsset({
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
+                });
+                var image = item.image;
+                var imageBack = item.isProduct ? item.image + '_Alt01' : undefined;
+                var button = asset.addButton({
+                    image: image ? imagePath + image : undefined,
+                    imageBack: imageBack ? imagePath + imageBack : undefined,
+                    path: item.path,
+                    valign: 'bottom',
+                    onClick: item.isProduct ? 'animateFlip' : undefined,
+                });
+                var yOffset = -.6
+                if (item.isProduct) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: 'details',
+                        product: item.icon,
+                        onClick: onToggleProduct,
+                    });
+                    yOffset -= .2;
+                } else {
+                    if (item.name) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 64,
+                            fontColor: page.fontColorBold,
+                            text: item.name,
+                        });
+                        yOffset -= .1;
+                    }
+                    if (item.description) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 40,
+                            text: item.description,
+                        });
+                        yOffset -= .1;
+                    }
+                }
+                currentItems.push(asset);
+            }
+        }
+    };
+
+    onHome();
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: .9,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_logo.png',
+        position: [-.45, -.45],
+        size: .08,
+        onClick: onHome,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_menu.png',
+        position: [-.35, -.45],
+        size: .08,
+        onClick: 'onShowSiteMapMenu',
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_account.png',
+        position: [.25, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_cart.png',
+        position: [.35, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_vr.png',
+        position: [.45, -.45],
+        size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
+    });
+
+    canvas.addText({
+        position: [0, -.45],
+        fontSize: 28,
+        text: 'search',
+        fontColor: [.3, .3, .3],
+        size: .08,
+        onClick: 'searchPage',
+    })
+
+
+	return page;
+});
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('Fortinet', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [1, 1, 1],
+        fontColorBold: [197/255, 1/255, 0],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [0, 0, 0],
+        category: '',
+        groundImage: '/images/floor_network.jpg',
+        groundImageRepeat: 200,
+        groundImageAlpha: 1,
+    });
+
+	var panel = page.addAsset();
+
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
+
+    canvas.addText({
+        position: [-.45, .4],
+        fontSize: 100,
+        text: 'F',
+    }).animate({
+        duration: 1,
+        delay: 4,
+        begin: [1.5, 0, 0],
+        end: [0, 0, 0],
+        attribute: 'position'
+    });
+
+    canvas.addText({
+        position: [-.38, .4],
+        fontSize: 100,
+        fontColor: page.fontColorBold,
+        text: 'O',
+    }).animate({
+        duration: 1,
+        delay: 4.25,
+        begin: [1.5, 0, 0],
+        end: [0, 0, 0],
+        attribute: 'position'
+    });
+
+    canvas.addText({
+        position: [-.17, .4],
+        fontSize: 100,
+        text: 'RTINET',
+    }).animate({
+        duration: 1,
+        delay: 4.5,
+        begin: [1.5, 0, 0],
+        end: [0, 0, 0],
+        attribute: 'position'
+    });
+
+    var onProductInfo = function () {
+        var pane = this.parent.addView({
+            position: [0, 1, 0],
+            size: [1.5, 1, 1],
+            alpha: .3,
+            viewBgColor: [1, 1, 1],
+        }).animate({
+            duration: 1,
+            begin: [0, 6, 0],
+            end: [0, 0, 0],
+            attribute: 'position'
+        });
+        pane.addText({
+            position: [0, .25, .1],
+            fontSize: 160,
+            text: 'Data Center',
+        });
+        pane.addText({
+            position: [0, -.25, .1],
+            fontSize: 120,
+            text: 'XXX',
+        });
+    }
+
+    var delay = 2;
+    delay = 0;
+    var addStorage = function(position) {
+        var asset = page.addAsset({
+            position: position,
+        });
+        asset.addMesh({
+            geometry: '/assets/network_raid-nas.obj',
+            texture: '/assets/network_raid-nas.jpg',
+            position: [0, 0, 0],
+            rotation: [0, 0, 0],
+            size: .05,
+            onClick: onProductInfo,
+        });
+        asset.animate({
+            duration: 1,
+            delay: 2 + delay,
+            begin: [0, -2, 0],
+            end: [0, 0, 0],
+            attribute: 'position'
+        });
+        delay += .3;
+    }
+
+    addStorage([-2, -1, -7]);
+    addStorage([-1, -1, -9]);
+    addStorage([1, -1, -9]);
+    addStorage([2, -1, -7]);
+
+    var entranceOpen = function () {
+        doorLeft.animate({
+            duration: 2,
+            delay: 0,
+            begin: [0, 0, 0],
+            end: [0, 90, 0],
+            attribute: 'rotation'
+        });
+        doorRight.animate({
+            duration: 2,
+            delay: 0,
+            begin: [0, 0, 0],
+            end: [0, -90, 0],
+            attribute: 'rotation'
+        });
+    }
+    var entrance = page.addAsset({
+        size: 1,
+    });
+    var doorLeft = entrance.addAsset({
+        position: [-2, -.7, -3],
+    });
+    var doorLeftPane = doorLeft.addView({
+        position: [1, 0, 0],
+        viewBgColor: [.2, .2, .2],
+        size: 2,
+    });
+    doorLeftPane.addTextButton({
+        position: [0, 0, .01],
+        fontSize: 400,
+        text: 'D',
+        size: .2,
+        onClick: entranceOpen
+    });
+    var doorRight = entrance.addAsset({
+        position: [2, -.7, -3],
+    });
+    var doorRightPane = doorRight.addView({
+        position: [-1, 0, 0],
+        viewBgColor: [.18, .18, .18],
+        size: 2,
+    });
+    doorRightPane.addTextButton({
+        position: [0, 0, .01],
+        fontSize: 400,
+        text: 'X',
+        size: .2,
+        onClick: entranceOpen
+    });
+
+	return page;
+});
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('sportrade', function() {
+	var page = new PEEKS.Asset({
+        category: 'soccer',
+        gyroscope: 'off',
+    });
+
+    page.setAssetPath('http://52.25.54.6/?url=https://medias.lequipe.fr/logo-football/');
+
+    page.addSiteMapItem('WC 2018', { icon: 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f7/FIFA_World_Cup_2018_Logo.png/200px-FIFA_World_Cup_2018_Logo.png', description: 'Mars 2018'} );
+    page.addSiteMapItem("WC 2018/Brésil", { icon: '626/300'} );
+    page.addSiteMapItem("WC 2018/Argentine", { icon: '642/300'} );
+    page.addSiteMapItem("WC 2018/Uruguay", { icon: '885/300'} );
+    page.addSiteMapItem("WC 2018/Colombie", { icon: '640/300'} );
+    page.addSiteMapItem("WC 2018/Égypte", { icon: '654/300'} );
+    page.addSiteMapItem("WC 2018/Maroc", { icon: '627/300'} );
+    page.addSiteMapItem("WC 2018/Nigéria", { icon: '634/300'} );
+    page.addSiteMapItem("WC 2018/Tunisie", { icon: '639/300'} );
+    page.addSiteMapItem("WC 2018/Sénégal", { icon: '951/300'} );
+    page.addSiteMapItem("WC 2018/Arabie Saoudite", { icon: '631/300'} );
+    page.addSiteMapItem("WC 2018/Iran", { icon: '637/300'} );
+    page.addSiteMapItem("WC 2018/République de Corée", { icon: '636/300'} );
+    page.addSiteMapItem("WC 2018/Japon", { icon: '643/300'} );
+    page.addSiteMapItem("WC 2018/Allemagne", { icon: '159/300'} );
+    page.addSiteMapItem("WC 2018/Angleterre", { icon: '170/300'} );
+    page.addSiteMapItem("WC 2018/Belgique", { icon: '644/300'} );
+    page.addSiteMapItem("WC 2018/Croatie", { icon: '187/300'} );
+    page.addSiteMapItem("WC 2018/Espagne", { icon: '175/300'} );
+    page.addSiteMapItem("WC 2018/France", { icon: '165/300'} );
+    page.addSiteMapItem("WC 2018/Islande", { icon: '167/300'} );
+    page.addSiteMapItem("WC 2018/Pologne", { icon: '173/300'} );
+    page.addSiteMapItem("WC 2018/Portugal", { icon: '181/300'} );
+    page.addSiteMapItem("WC 2018/Russie", { icon: '164/300'} );
+    page.addSiteMapItem("WC 2018/Serbie", { icon: '4256/300'} );
+    page.addSiteMapItem("WC 2018/Suède", { icon: '172/300'} );
+    page.addSiteMapItem("WC 2018/Suisse", { icon: '152/300'} );
+    page.addSiteMapItem("WC 2018/Costa Rica", { icon: '5000000000000000000001351/300'} );
+    page.addSiteMapItem("WC 2018/Mexique", { icon: '635/300'} );
+    page.addSiteMapItem("WC 2018/Panama", { icon: '1207/300'} );
+    page.addSiteMapItem("WC 2018/Pérou", { icon: '650/300'} );
+    page.addSiteMapItem("WC 2018/Danemark", { icon: '151/300'} );
+    page.addSiteMapItem("WC 2018/Australie", { icon: '1889/300'} );
+    page.addSiteMapItem("Ligue1 2019", { icon: '/assets/sportrade_icon_france_ligue1.png', description: 'Juin 2018'} );
+    page.addSiteMapItem("Ligue1 2019/PSG", { icon: '26/300'} );
+    page.addSiteMapItem("Ligue1 2019/OM", { icon: '6/300'} );
+    page.addSiteMapItem("Ligue1 2019/OL", { icon: '22/300' } );
+    page.addSiteMapItem("Ligue1 2019/As Monaco", { icon: '25/300' } );
+    page.addSiteMapItem("Ligue1 2019/FCG Bordeaux", { icon: '18/300' } );
+    page.addSiteMapItem("Ligue1 2019/FC Nantes", { icon: '15/300' } );
+    page.addSiteMapItem("Ligue1 2019/EA Guingamp", { icon: '37/300' } );
+    page.addSiteMapItem("Ligue1 2019/SCO Angers", { icon: '374/300' } );
+    page.addSiteMapItem("Ligue1 2019/Toulouse FC", { icon: '12/300' } );
+    page.addSiteMapItem("Ligue1 2019/Amiens SC", { icon: '44/300' } );
+    page.addSiteMapItem("Ligue1 2019/RC Strasbourg", { icon: '13/300' } );
+    page.addSiteMapItem("Ligue1 2019/Lille OSC", { icon: '43/300' } );
+    page.addSiteMapItem("Ligue1 2019/AS Saint-Etienne", { icon: '38/300' } );
+    page.addSiteMapItem("Ligue1 2019/Dijon FCO", { icon: '202/300' } );
+    page.addSiteMapItem("Ligue1 2019/FC Metz", { icon: '20/300' } );
+    page.addSiteMapItem("Ligue1 2019/SM Caen", { icon: '41/300' } );
+    page.addSiteMapItem("Ligue1 2019/Montpellier HSC", { icon: '17/300' } );
+    page.addSiteMapItem("Ligue1 2019/ESTAC", { icon: '30/300' } );
+    page.addSiteMapItem("Ligue1 2019/OGC Nice", { icon: '46/300' } );
+    page.addSiteMapItem("Ligue1 2019/Stade Rennais FC", { icon: '14/300' } );
+    page.addSiteMapItem("Ligue1 2020", { icon: '/assets/sportrade_icon_france_ligue1.png', description: 'Juin 2019'} );
+    page.addSiteMapItem("Ligue1 2020/PSG", { icon: '26/300'} );
+    page.addSiteMapItem("Ligue1 2020/OM", { icon: '6/300'} );
+    page.addSiteMapItem("Ligue1 2020/OL", { icon: '22/300' } );
+    page.addSiteMapItem("Ligue1 2020/As Monaco", { icon: '25/300' } );
+    page.addSiteMapItem("Ligue1 2020/FCG Bordeaux", { icon: '18/300' } );
+    page.addSiteMapItem("Ligue1 2020/FC Nantes", { icon: '15/300' } );
+    page.addSiteMapItem("Ligue1 2020/EA Guingamp", { icon: '37/300' } );
+    page.addSiteMapItem("Ligue1 2020/SCO Angers", { icon: '374/300' } );
+    page.addSiteMapItem("Ligue1 2020/Toulouse FC", { icon: '12/300' } );
+    page.addSiteMapItem("Ligue1 2020/Amiens SC", { icon: '44/300' } );
+    page.addSiteMapItem("Ligue1 2020/RC Strasbourg", { icon: '13/300' } );
+    page.addSiteMapItem("Ligue1 2020/Lille OSC", { icon: '43/300' } );
+    page.addSiteMapItem("Ligue1 2020/AS Saint-Etienne", { icon: '38/300' } );
+    page.addSiteMapItem("Ligue1 2020/Dijon FCO", { icon: '202/300' } );
+    page.addSiteMapItem("Ligue1 2020/FC Metz", { icon: '20/300' } );
+    page.addSiteMapItem("Ligue1 2020/SM Caen", { icon: '41/300' } );
+    page.addSiteMapItem("Ligue1 2020/Montpellier HSC", { icon: '17/300' } );
+    page.addSiteMapItem("Ligue1 2020/ESTAC", { icon: '30/300' } );
+    page.addSiteMapItem("Ligue1 2020/OGC Nice", { icon: '46/300' } );
+    page.addSiteMapItem("Ligue1 2020/Stade Rennais FC", { icon: '14/300' } );
+
+    page.setSiteMapMenuPath('');
+
+    page.onUpdateSiteMapPath = function() {
+        refresh();
+    };
+
+    var onClick = function() {
+        if (page.querySiteMapItemAssets(this.path).length > 0) {
+            page.setSiteMapMenuPath(this.path);
+            refresh();
+        }
+    };
+
+    var screen = undefined;
+
+    var refresh = function() {
+        if (screen) {
+            screen.destroy();
+        }
+
+        var items = page.querySiteMapMenuAssets();
+        if (items) {
+            var itemCount = items.length;
+            var itemCountMin = itemCount < 15 ? 15 : itemCount;
+
+            screen = page.addScreen({
+                radius: itemCountMin / 4,
+            });
+
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var xIndex = itemI;
+                var xOffset = (xIndex % 2 === 0) ?
+                    (-xIndex / itemCountMin) :
+                    (xIndex + 1) / itemCountMin;
+                var asset = screen.addAsset({
+                    position: [xOffset, 0, 0],
+                    size: .4,
+                });
+                asset.addView({
+                    position: [0, -1, -.3],
+                    size: [1.4, 2, 1],
+                    alpha: .6,
+                    viewBgColor: [0, 0, 0],
+                });
+
+                var button = asset.addButton({
+                    image: item.image ? page.getAssetPath(item.image) : undefined,
+                    path: item.path,
+                    onClick: onClick,
+                });
+                var yOffset = -1;
+                if (item.name) {
+                    asset.addText({
+                        position: [0, yOffset, .05],
+                        fontSize: 64,
+                        text: item.name,
+                    });
+                    yOffset -= .4;
+                }
+                if (item.description) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: item.description,
+                    });
+                    yOffset -= .4;
+                }
+            }
+        }
+        screen.addAsset({
+            position: [0, -.3, 0],
+        }).addText({
+            position: [0, 0, 1],
+            fontSize: 100,
+            size: 1,
+            text: 'RDV en Mars 2018'
+        });
+    }
+
+    refresh();
+
+    //page.addPage('peeks_toolbar');
+
+	return page;
+});
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+function createMannequin(page, position) {
+    var femaleHigh = page.addAsset({
+        position: position,
+    });
+
+    var model = femaleHigh.addAsset({
+        position: [0, -1, -2.9],
+        onClick: 'animateRotate90',
+        size: .013,
+        onFocus: '',
+    });
+
+    model.mannequin = {
+    };
+
+    var mannequin = model.mannequin;
+
+    var panel = femaleHigh.addAsset({
+        position: [.5, 1, -3],
+    });
+
+    var outfit = "skirt";
+    var size = "M";
+    var sizeDefault = "M";
+    var chestSize = "M";
+    var breastSize = "M";
+    var hipsSize = "M";
+    var skin = [1, 1, 1];
+    var modelName = "woman";
+    var pose = "pose1";
+    var poseDefault = "pose1";
+    var fabric = undefined;
+
+    var getGeometryUrl = function (part, pose, size) {
+        return "/assets/" + modelName + "_" + pose + "_" + part +
+            (size ? size : "") +
+            ".obj";
+    };
+
+    var updateGeometry = function(node, mesh, properties, visible) {
+        if (node === undefined) {
+            node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault) });
+        }
+        node.initShapeWeights();
+        var hipsWeight =
+            (hipsSize === 'XS') ? -1
+            : (hipsSize === 'S') ? -.5
+            : (hipsSize === 'M') ? 0
+            : (hipsSize === 'L') ? .5
+            : (hipsSize === 'XL') ? 1
+            : 0;
+        var breastWeight =
+            (breastSize === 'XS') ? -1
+            : (breastSize === 'S') ? -.5
+            : (breastSize === 'M') ? 0
+            : (breastSize === 'L') ? .5
+            : (breastSize === 'XL') ? 1
+            : 0;
+        var chestWeight =
+            (chestSize === 'XS') ? -1
+            : (chestSize === 'S') ? -.5
+            : (chestSize === 'M') ? 0
+            : (chestSize === 'L') ? .5
+            : (chestSize === 'XL') ? 1
+            : 0;
+        if (mesh === 'jacket' ||
+            mesh === 'j_blouse' ||
+            mesh === 'pants' ||
+            mesh === 'skirt' ||
+            mesh === 'underwear' ||
+            mesh === 'body')
+        {
+            if (hipsWeight !== 0) {
+                node.setShape(pose + '_hips_1_1', getGeometryUrl(mesh, pose, '_hips_1_1'), hipsWeight);
+            }
+            if (breastWeight !== 0) {
+                node.setShape(pose + '_breast_1_1', getGeometryUrl(mesh, pose, '_spine1_1_1'), breastWeight);
+            }
+            if (chestWeight !== 0) {
+                node.setShape(pose + '_chest_1_1', getGeometryUrl(mesh, pose, '_spine2_1_1'), chestWeight);
+            }
+        }
+        node.validateShapeWeights();
+        node.setProperties(properties);
+        node.setVisible(visible !== undefined ? visible : true);
+        return node;
+    };
+
+    var onSetClothMaterial = function(caller) {
+        if (caller === undefined) {
+            caller = this;
+        }
+        if (caller.material !== undefined) {
+            fabric = caller.material;
+        }
+        if (caller.vm !== undefined) {
+            if (caller.vm.size !== undefined) {
+                size = caller.vm.size;
+            }
+            if (caller.vm.breastSize !== undefined) {
+                breastSize = caller.vm.breastSize;
+            }
+            if (caller.vm.chestSize !== undefined) {
+                chestSize = caller.vm.chestSize;
+            }
+            if (caller.vm.hipsSize !== undefined) {
+                hipsSize = caller.vm.hipsSize;
+            }
+            if (caller.vm.outfit !== undefined) {
+                outfit = caller.vm.outfit;
+            }
+            if (caller.vm.skin !== undefined) {
+                skin = caller.vm.skin;
+            }
+        }
+
+        mannequin.shoes = updateGeometry(mannequin.shoes, "highHeels", {
+            texture: '/assets/material_suede.jpg',
+            material: { type: "velvet" },
+        });
+
+        mannequin.body = updateGeometry(mannequin.body, "body", {
+            texture: '/assets/woman_body.png',
+            color: skin,
+            material: {
+                emissive: [.1, .05, .05],
+                shininess: 20,
+            },
+        });
+
+        mannequin.pants = updateGeometry(mannequin.pants, "pants", {
+            texture: fabric.map,
+            material: fabric,
+        }, outfit === 'pants');
+
+        mannequin.skirt = updateGeometry(mannequin.skirt, "skirt", {
+            texture: fabric.map,
+            material: fabric,
+        }, outfit === 'skirt');
+
+        mannequin.jacket = updateGeometry(mannequin.jacket, "jacket", {
+            texture: fabric.map,
+            material: fabric,
+        }, outfit === 'pants' || outfit === 'skirt');
+
+        mannequin.blouse = updateGeometry(mannequin.blouse, "j_blouse", {
+            texture: '/assets/material_white.jpg',
+            material: {
+                type: 'velvet',
+                emissive: [.05, .05, .1],
+                shininess: 10,
+                normalMap: '/assets/material_suede_normal.jpg',
+            },
+        }, outfit === 'pants' || outfit === 'skirt');
+
+        mannequin.underwear = updateGeometry(mannequin.underwear, "underwear", {
+            texture: fabric.map === '/assets/material_dark.jpg'
+                ? '/assets/woman_underwear_transparency.png'
+                : fabric.map,
+            alpha: fabric.map === '/assets/material_dark.jpg'
+                ? .7
+                : 1,
+            material: fabric.map === '/assets/material_dark.jpg'
+                ? undefined
+                : fabric,
+        }, outfit === 'underwear');
+
+        mannequin.iris = updateGeometry(mannequin.iris, "iris", {
+            texture: '/assets/woman_iris.png',
+        });
+
+        mannequin.sclera = updateGeometry(mannequin.sclera, "sclera", {
+            texture: '/assets/woman_sclera.png',
+            material: {
+                alphaMap: '/assets/woman_sclera_alpha.png'
+            }
+        });
+    };
+
+    var canvas = page.addCanvas({valign: 'top'});
+    var y = .45;
+    canvas.addText({
+        position: [.35, y, 0],
+        text: 'Fabric',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [.35, y - .03, 0],
+        size: [.2, .001, 1],
+    });
+    y-= .08;
+    var defaultMaterial = canvas.addDisc({
+        texture: '/assets/material_red_satin.jpg',
+        position: [.3, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.1,.1,.1],
+            shininess: 10,
+            normalMap: undefined,
+            map: '/assets/material_red_satin.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/material_red_velvet.jpg',
+        position: [.4, y, 0],
+        size: .05,
+        material: {
+            emissive: [.1,0,0],
+            shininess: 2,
+            normalMap: '/assets/material_velvet_normal.jpg',
+            map: '/assets/material_red_velvet.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/material_suede.jpg',
+        position: [.3, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.1,.1,.1],
+            shininess: 5,
+            normalMap: '/assets/material_suede_normal.jpg',
+            map: '/assets/material_suede.jpg',
+            specularMap: '/assets/material_red_satin.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/material_blue_satin.jpg',
+        position: [.4, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.05,.05,.1],
+            shininess: 5,
+            normalMap: '/assets/material_suede_normal.jpg',
+            map: '/assets/material_blue_satin.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/material_white.jpg',
+        position: [.3, y, 0],
+        size: .05,
+        material: {
+            emissive: [.1,.0,.0],
+            shininess: 2,
+            normalMap: '/assets/material_velvet_normal.jpg',
+            map: '/assets/material_white.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/material_dark.jpg',
+        position: [.4, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.0,.0,.1],
+            shininess: 5,
+            map: '/assets/material_dark.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    y-= .2;
+    canvas.addText({
+        position: [.35, y, 0],
+        text: 'Skin',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [.35, y - .03, 0],
+        size: [.2, .001, 1],
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.3, y, 0],
+        size: .05,
+        color: [1.1, 1.1, 1.4],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [1.1, 1.1, 1.4],
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.4, y, 0],
+        size: .05,
+        color: [1, 1, 1],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [1, 1, 1],
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.3, y, 0],
+        size: .05,
+        color: [1, 1, 0.7],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [1, 1, 0.7],
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.4, y, 0],
+        size: .05,
+        color: [.7, .7, .6],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [.7, .7, .6],
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.3, y, 0],
+        size: .05,
+        color: [.5, .5, .5],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [.5, .5, .5],
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/woman_body.png',
+        position: [.4, y, 0],
+        size: .05,
+        color: [.3, .3, .3],
+        textureRepeat: [.15, .15],
+        vm: {
+            skin: [.3, .3, .3],
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    var addSizes = function(parent, x, y, part) {
+        var fontSize = 30;
+        parent.addTextButton({
+            position: [x - .1, y, 0],
+            size: .1,
+            label: 'XS',
+            fontSize: fontSize,
+            vm: {},
+            onClick: onSetClothMaterial,
+        }).vm[part + "Size"] = 'XS';
+        parent.addTextButton({
+            position: [x - .05, y, 0],
+            size: .1,
+            label: 'S',
+            fontSize: fontSize,
+            vm: {},
+            onClick: onSetClothMaterial,
+        }).vm[part + "Size"] = 'S';
+        parent.addTextButton({
+            position: [x, y, 0],
+            size: .1,
+            label: 'M',
+            fontSize: fontSize,
+            vm: {},
+            onClick: onSetClothMaterial,
+        }).vm[part + "Size"] = 'M';
+        parent.addTextButton({
+            position: [x + .05, y, 0],
+            size: .1,
+            label: 'L',
+            fontSize: fontSize,
+            vm: {},
+            onClick: onSetClothMaterial,
+        }).vm[part + "Size"] = 'L';
+        parent.addTextButton({
+            position: [x + .1, y, 0],
+            size: .1,
+            label: 'XL',
+            fontSize: fontSize,
+            vm: {
+                size: 'L',
+            },
+            onClick: onSetClothMaterial,
+        }).vm[part + "Size"] = 'XL';
+    }
+
+    var y = .45;
+
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Breast',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y, 'chest');
+    y-= .08;
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Waist',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y, 'breast');
+    y-= .08;
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Hips',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    y-= .05;
+    addSizes(canvas, -.35, y, 'hips');
+
+    y-= .2;
+
+    canvas.addText({
+        position: [-.35, y, 0],
+        text: 'Outfit',
+        fontSize: 30,
+        fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [-.35, y - .03, 0],
+        size: [.2, .001, 1],
+    });
+    y-= .08;
+    canvas.addTextButton({
+        position: [-.35, y, 0],
+		size: .15,
+        label: 'Underwear',
+        fontSize: 35,
+        vm: {
+            outfit: 'underwear'
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addTextButton({
+        position: [-.35, y, 0],
+		size: .15,
+        label: 'Pants',
+        fontSize: 35,
+        vm: {
+            outfit: 'pants'
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addTextButton({
+        position: [-.35, y, 0],
+		size: .15,
+        label: 'Skirt',
+        fontSize: 35,
+        vm: {
+            outfit: 'skirt'
+        },
+        onClick: onSetClothMaterial,
+    });
+
+
+    onSetClothMaterial(defaultMaterial);
+
+    return femaleHigh;
+}
+
+PEEKS.registerPage('mannequin', function() {
+    var page = new PEEKS.Asset({
+        category: 'white',
+        gyroscope: 'off',
+    });
+
+    createMannequin(page, [0, 0, 0]);
+
+	return page;
+});
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+function createAsset(page, position) {
+    var femaleHigh = page.addAsset({
+        position: position,
+    });
+
+    var model = femaleHigh.addAsset({
+        position: [0, 0, -2],
+        rotation: [0, -110, 0],
+        onClick: 'animateRotate90',
+        size: .03,
+        onFocus: '',
+    });
+
+    model.mannequin = {
+    };
+
+    var mannequin = model.mannequin;
+
+    var panel = femaleHigh.addAsset({
+        position: [.5, 1, -3],
+    });
+
+    var outfit = "pants";
+    var size = "M";
+    var sizeDefault = "M";
+    var chestSize = "M";
+    var breastSize = "M";
+    var hipsSize = "M";
+    var skin = [1, 1, 1];
+    var modelName = "woman";
+    var pose = "pose1";
+    var poseDefault = "pose1";
+    var fabric = undefined;
+
+    var getGeometryUrl = function (part) {
+        return "/assets/frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
+    };
+
+    var updateGeometry = function(node, mesh, properties) {
+        if (node === undefined) {
+            node = model.addMesh({
+                geometry: getGeometryUrl(mesh, poseDefault),
+                position: [-20, -20, 20],
+            });
+        }
+        node.setProperties(properties);
+        return node;
+    };
+
+    var onSetClothMaterial = function(caller) {
+        if (caller === undefined) {
+            caller = this;
+        }
+        if (caller.material !== undefined) {
+            fabric = caller.material;
+        }
+
+        mannequin.boot = updateGeometry(mannequin.boot, "", {
+            texture: fabric.map,
+            material: fabric,
+        });
+        mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
+            texture: fabric.map,
+        });
+        mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
+            texture: '/assets/frye_boot_diffuse.jpg',
+        });
+        mannequin.boot_inside = updateGeometry(mannequin.boot_inside, "inside", {
+            texture: '/assets/material_suede.jpg',
+        });
+        mannequin.boot_sole = updateGeometry(mannequin.boot_sole, "sole", {
+            texture: '/assets/frye_sole.jpg',
+        });
+        mannequin.boot_sole_top = updateGeometry(mannequin.boot_sole_top, "sole_top", {
+            texture: '/assets/frye_sole.jpg',
+        });
+    };
+
+    var canvas = page.addCanvas({valign: 'top'});
+    var y = .45;
+    canvas.addText({
+        position: [.35, y, 0],
+        text: 'Finish',
+        fontSize: 40,
+        fontOutlineStyle: '',
+    });
+    canvas.addView({
+        position: [.35, y - .03, 0],
+        size: [.2, .001, 1],
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/material_red_satin.jpg',
+        position: [.3, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.1,.1,.1],
+            shininess: 10,
+            normalMap: undefined,
+            map: '/assets/material_red_satin.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/material_nubuk.jpg',
+        position: [.4, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.1,0,0],
+            shininess: 2,
+            map: '/assets/material_nubuk.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    canvas.addDisc({
+        texture: '/assets/material_suede.jpg',
+        position: [.3, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.1,.1,.1],
+            shininess: 5,
+            normalMap: '/assets/material_suede_normal.jpg',
+            map: '/assets/material_suede.jpg',
+            specularMap: '/assets/material_red_satin.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/material_blue_satin.jpg',
+        position: [.4, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.05,.05,.1],
+            shininess: 5,
+            normalMap: '/assets/material_suede_normal.jpg',
+            map: '/assets/material_blue_satin.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    y-= .08;
+    var defaultMaterial = canvas.addDisc({
+        texture: '/assets/frye_boot_diffuse.jpg',
+        position: [.3, y, 0],
+        size: .05,
+        material: {
+            emissive: [.1,.0,.0],
+            shininess: 2,
+            map: '/assets/frye_boot_diffuse.jpg',
+            bumpMap: '/assets/frye_boot_bump.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+    canvas.addDisc({
+        texture: '/assets/material_dark.jpg',
+        position: [.4, y, 0],
+        size: .05,
+        material: {
+            type: 'velvet',
+            emissive: [.0,.0,.1],
+            shininess: 5,
+            map: '/assets/material_dark.jpg',
+        },
+        onClick: onSetClothMaterial,
+    });
+
+    onSetClothMaterial(defaultMaterial);
+
+    return femaleHigh;
+}
+
+PEEKS.registerPage('shoe', function() {
+    var page = new PEEKS.Asset({
+        category: 'white',
+        bgColor: [226/255, 220/255, 209/255],
+        gyroscope: 'off',
+    });
+
+    createAsset(page, [0, 0, 0]);
+
+	return page;
+});
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('tron', function() {
+    var gridImage = '/images/floor_network.jpg';
+    var gridRepeat = 200;
+
+	var page = new PEEKS.Asset({
+        fontColor: [1, 1, 1],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [0, 0, 0],
+        category: '',
+        groundImage: gridImage,
+        groundImageRepeat: gridRepeat,
+        navigation: 'vehicle',
+    });
+
+    var canvas = page.addCanvas();
+
+    canvas.addTextButton({
+        fontSize: 40,
+        text: 'go',
+        onClick: function() {
+            page.getCamera().speed = 10;
+            this.destroy();
+        }
+    });
+
+    var moto;
+    var offsetFromCamera = [0, -1, -4];
+
+    page.onUpdate = function() {
+        var p1 = this.getScene().computeOffsetFromCamera(offsetFromCamera);
+
+        if (moto == undefined) {
+            moto = page.addMesh({
+                geometry: '/assets/tron_moto.obj',
+                size: .02,
+                rotation: [0, 180, 0],
+                position: p1,
+            });
+            moto.trail = {
+                lastPosition: p1.slice(),
+                points: [],
+            };
+        }
+
+        moto.setPosition(p1);
+
+        var p0 = moto.trail.lastPosition;
+        var offsetV2 = [p1[0] - p0[0], p1[2] - p0[2]];
+
+        var distance = Math.sqrt(offsetV2[0] * offsetV2[0] + offsetV2[1] * offsetV2[1]);
+        if (distance > .02) {
+            moto.trail.lastPosition = p1.slice();
+            moto.trail.points.push(p1.slice());
+            if (moto.trail.ribbons !== undefined) {
+                moto.trail.ribbons.destroy();
+            }
+            moto.trail.ribbons = page.addAsset();
+            moto.trail.ribbons.addRibbon({position: [0, .2, 0], points: moto.trail.points });
+            moto.trail.ribbons.addRibbon({position: [0, .25, 0], points: moto.trail.points });
+            moto.trail.ribbons.addRibbon({position: [0, .3, 0], points: moto.trail.points });
+        }
+
+        if (moto.trail.points.length >= 2) {
+            var shift = moto.trail.points.length >= 10 ? 10 : moto.trail.points.length;
+            var a = moto.trail.points[moto.trail.points.length - shift];
+            var b = moto.trail.points[moto.trail.points.length - 1];
+            var dir = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+            var length = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2])
+            dir = [dir[0] / length, dir[1] / length, dir[2] / length];
+            var cos = dir[0];
+            var sign =  dir[2] < 0 ? 1 : -1;
+            moto.setRotation([0, 90 + sign * Math.acos(cos) * 180 / Math.PI, 0]);
+        }
+    };
+
+	return page;
+});
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('louisvuitton', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+        fontColorBold: [191/255, 166/255, 154/255],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [1, 1, 1],
+        category: 'white',
+        groundImage: '/ui/gradient_radial.png',
+        groundImageRepeat: 1,
+        backgroundImage: '/ui/gradient.png',
+        backgroundImageColor: [224/255, 219/255, 213/255],
+    });
+
+	var balloonsAsset = page.addAsset();
+    var otherAssets = page.addAsset();
+
+    var screen = page.addScreen({
+        radius: 5,
+    });
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    var foreground = page.addAsset();
+
+    var imagePath = 'http://us.louisvuitton.com/images/is/image/lv/1/';
+
+    page.setAssetPath(imagePath);
+    page.addSiteMapItem('LV NOW', { icon: 'PP_VP_AS/VE_FB_VISUAL9_L/louis-vuitton--909_MONUMENTA_01_VISUAL9.jpg'});
+    page.addSiteMapItem('WORLD OF LOUIS VUITTON', { icon: 'VE_DI3_L/louis-vuitton--LV_Now_LVTHEBOOKGIFTS_1_DI3.jpg'});
+    page.addSiteMapItem('WOMEN', { icon: 'VE_VISUAL4_M/louis-vuitton--Cruise18_Look_01_VISUAL4.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR', { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Skirts', { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg'});
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/1", { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/2", { icon: 'PP_VP_AS/louis-vuitton--FESK90GBS702_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/3", { icon: 'PP_VP_AS/louis-vuitton--FESK91GFA006_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/4", { icon: 'PP_VP_AS/louis-vuitton--FESK91XHE900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/4", { icon: 'PP_VP_AS/louis-vuitton--FDJB05DRH900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/5", { icon: 'PP_VP_AS/louis-vuitton--FEJB01FGK650_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/6", { icon: 'PP_VP_AS/louis-vuitton--FESK13FUQ506_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/7", { icon: 'PP_VP_AS/louis-vuitton--FESK11XHE900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/8", { icon: 'PP_VP_AS/louis-vuitton--FDSK26DRX900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/9", { icon: 'PP_VP_AS/louis-vuitton--FDSK26DZH811_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/10", { icon: 'PP_VP_AS/louis-vuitton--FDSK34DRT651_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/11", { icon: 'PP_VP_AS/louis-vuitton--FDSK34DTL900_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem("WOMEN/READY-TO-WEAR/Skirts/12", { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg', isProduct: true } );
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Leathers', { icon: 'PP_VP_L/louis-vuitton-cashmere-suede-calfskin-blazer-with-studs-ready-to-wear--FELJ97GCV822_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Furs', { icon: 'PP_VP_L/louis-vuitton-black-cross-and-leopard-print-mink-gilet-ready-to-wear--FELC81DIF002_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Jackets and Coats', { icon: 'PP_VP_L/louis-vuitton-tree-motif-jacquard-blazer-ready-to-wear--FEJA59FLD001_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Dresses', { icon: 'PP_VP_L/louis-vuitton-sequin-embroidered-dress-ready-to-wear--FEDB93FYC720_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Tops', { icon: 'PP_VP_L/louis-vuitton-cotton-poplin-shirt-with-stripe-details-ready-to-wear--FEBL90FQN651_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Pants', { icon: 'PP_VP_L/louis-vuitton-wool-mohair-pants-with-side-bands-ready-to-wear--FEPA89FIT90T_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/READY-TO-WEAR/Swimwear', { icon: 'PP_VP_L/louis-vuitton-printed-bikini-top-ready-to-wear--FESW01GBK506_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS', { icon: 'PP_VP_L/louis-vuitton-christmas-monogram-flowers-home-decor--GI0194_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/HOME DECOR');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/TIMELESS PIECES');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/FASHION FORWARD');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/ULTIMATE LUXURY');
+    page.addSiteMapItem('WOMEN/GIFT INSPIRATIONS/PERSONALIZATION');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS', { icon: 'PP_VP_L/louis-vuitton-speedy-30-masters-lv-x-koons--M43353_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Boucher');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Da Vinci');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Fragonard');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Gauguin');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Manet');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Monet');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Rubens');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Turner');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/Van Gogh');
+    page.addSiteMapItem('WOMEN/MASTERS LV X KOONS/ALL MASTERS');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS', { icon: 'VE_VISUAL4_M/louis-vuitton--Cruise18_Look_01_VISUAL4.jpg'});
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/SPRING-SUMMER 2018');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/CRUISE 2018 SHOW');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/Fall-Winter 2017 Show');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/FASHION SHOW SELECTION');
+    page.addSiteMapItem('WOMEN/FASHION SHOWS/NICOLAS GHESQUIERE');
+    page.addSiteMapItem('WOMEN/HANDBAGS', { icon: 'PP_VP_L/louis-vuitton-lockme-backpack-mini-lockme-handbags--M54575_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/HANDBAGS/NEW THIS SEASON');
+    page.addSiteMapItem('WOMEN/HANDBAGS/ALL HANDBAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/NEVERFULL ALMA & SPEEDY');
+    page.addSiteMapItem('WOMEN/HANDBAGS/ICONS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/TOP HANDLES');
+    page.addSiteMapItem('WOMEN/HANDBAGS/SHOULDER BAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/CROSS BODY BAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/TOTES');
+    page.addSiteMapItem('WOMEN/HANDBAGS/BACKPACKS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/HOBOS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/CLUTCHES & EVENING');
+    page.addSiteMapItem('WOMEN/HANDBAGS/MINI BAGS');
+    page.addSiteMapItem('WOMEN/HANDBAGS/FASHION SHOWS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS', { icon: 'PP_VP_L/louis-vuitton-cl%C3%A9mence-wallet-epi-small-leather-goods--M60913_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/ALL COLLECTIONS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/WALLETS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/KEY & CARD HOLDERS');
+    page.addSiteMapItem('WOMEN/SMALL LEATHER GOODS/TECHNICAL CASES');
+    page.addSiteMapItem('WOMEN/TRAVEL', { icon: 'PP_VP_L/louis-vuitton-all-in-mm-monogram-travel--M47029_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/TRAVEL/ALL COLLECTIONS');
+    page.addSiteMapItem('WOMEN/TRAVEL/Horizon Collection');
+    page.addSiteMapItem('WOMEN/TRAVEL/ROLLING LUGGAGE');
+    page.addSiteMapItem('WOMEN/TRAVEL/SOFTSIDED LUGGAGE');
+    page.addSiteMapItem('WOMEN/TRAVEL/HARDSIDED LUGGAGE');
+    page.addSiteMapItem('WOMEN/TRAVEL/TRAVEL ACCESSORIES');
+    page.addSiteMapItem('WOMEN/ACCESSORIES', { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/ACCESSORIES/SCARVES, SHAWLS & MORE');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/FASHION JEWELRY');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/LEATHER BRACELETS');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/BELTS');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/SUNGLASSES');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/KEY HOLDERS, BAG CHARMS & MORE');
+    page.addSiteMapItem('WOMEN/ACCESSORIES/HOME DECOR');
+    page.addSiteMapItem('WOMEN/SHOES', { icon: 'PP_VP_L/louis-vuitton-matchmake-pump-shoes--AEKE1JPC02_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/SHOES/ALL COLLECTIONS');
+    page.addSiteMapItem('WOMEN/SHOES/BOOTS & BOOTIES');
+    page.addSiteMapItem('WOMEN/SHOES/PUMPS');
+    page.addSiteMapItem('WOMEN/SHOES/FLATS');
+    page.addSiteMapItem('WOMEN/SHOES/SNEAKERS');
+    page.addSiteMapItem('WOMEN/SHOES/SANDALS');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES', { icon: 'PP_VP_L/louis-vuitton-color-blossom-star-pendant-pink-gold-and-white-mother-of-pearl-jewelry-timepieces--Q93521_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/LOUIS VUITTON FOR UNICEF');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/HIGH JEWELRY');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/FINE JEWELRY');
+    page.addSiteMapItem('WOMEN/JEWELRY & TIMEPIECES/TIMEPIECES');
+    page.addSiteMapItem('WOMEN/FRAGRANCES', { icon: 'PP_VP_L/louis-vuitton-rose-des-vents-gift-inspirations--LP0005_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/FRAGRANCES/DISCOVER THE COLLECTION');
+    page.addSiteMapItem('WOMEN/FRAGRANCES/UNIVERSE');
+    page.addSiteMapItem('WOMEN/FRAGRANCES/SAVOIR-FAIRE');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING', { icon: 'PP_VP_L/louis-vuitton-small-ring-agenda-cover-monogram-books-writing--R20005_PM2_Front%20view.jpg'});
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING/AGENDAS & COVERS');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING/WRITING');
+    page.addSiteMapItem('WOMEN/BOOKS & WRITING/WOMEN/BOOKS');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION', { icon: 'PP_VP_L/louis-vuitton--P00176_PM1_Back%20view.jpg'});
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/My LV World Tour');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/MON MONOGRAM');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/HOTSTAMPING');
+    page.addSiteMapItem('WOMEN/PERSONALIZATION/My LV Tambour');
+    page.addSiteMapItem('MEN', { icon: 'VE_VISUAL4_M/louis-vuitton--Men_Precollection_SS18_LOOK01_VISUAL4.jpg'});
+    page.addSiteMapItem('HOME', { icon: 'VE_DI3_L/louis-vuitton-masters--Masters_Monet_Seydoux_DI3.jpg'});
+    page.addSiteMapItem("HOME/MASTERS", { icon: 'VE_DI3_L/louis-vuitton-masters--Masters_Monet_Seydoux_DI3.jpg' } );
+    page.addSiteMapItem("HOME/VOLEZ VOGUEZ VOYAGEZ", { icon: 'VE_DI3_L/louis-vuitton-volez-voguez-voyagez--WOLV_HSF_VVV_New_York_Expo_DI3.jpg' } );
+    page.addSiteMapItem("HOME/LEATHER ESSENTIALS", { icon: 'VE_DI1_L/louis-vuitton-leather-essentials--HP_US_Pushes5_M51202_DI1.jpg' } );
+    page.addSiteMapItem("HOME/THE ART OF GIFTING", { icon: 'VE_DI1_L/louis-vuitton-the-art-of-gifting--Lv_Now_THEARTOFGIFTING_DI1.jpg' } );
+    page.addSiteMapItem("HOME/MEN'S BAGS", { icon: 'VE_DI1_L/louis-vuitton-men%E2%80%99s-bags--HP_US_Pushes7_M34408_DI1.jpg' } );
+    var currentItems = [];
+
+    page.onUpdateSiteMapPath = function() {
+        refresh();
+    };
+
+    var onClick = function() {
+        if (page.siteMapPathIsLeaf(this.path)) {
+            page.setSiteMapPath(this.path);
+        } else {
+            page.setSiteMapMenuPath(this.path);
+        }
+        refresh();
+    };
+
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            var productPane = this.parent.addView({
+                position: [0, .75, -.1],
+                size: [.8, .4, 1],
+                viewBgColor: [.96, .96, .96],
+            });
+
+            var product = this.product;
+            if (product) {
+                /*
+                var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = JSON.parse(this.responseText);
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [0, .4, .01],
+                            size: [.9, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.item.product_brand.brand,
+                        });
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [-.3, -.3, .01],
+                            size: [.3, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.price.listPrice.formattedPrice,
+                        });
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+                */
+            }
+
+            productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .3, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'Sizes',
+            });
+
+            for (var i = 0; i < 5; i++) {
+                productPane.addButton({
+                    position: [-.36 + .18 * i, .1, .01],
+                    size: [.15, .2, 1],
+                    viewBgColor: [1, 1, 1],
+                }).addText({
+                    position: [0, 0, .01],
+                    fontSize: 52,
+                    fontColor: [.3, .3, .3],
+                    text: (6 + i * 2).toString(),
+                });
+            }
+
+            productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [0, -.3, .01],
+                size: [.4, .2, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [0, 0, 0],
+                text: 'try on',
+                onClick: function() {
+                    page.getScene().loadPage('mannequin');
+                }
+            });
+
+            productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+
+            this.productPane = productPane;
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
+        }
+    };
+
+    var subMenuY = .3;
+    var highlightsY = 0;
+
+    var menuPopup;
+
+    var onHome = function(path) {
+        page.setSiteMapMenuPath('');
+        page.setSiteMapPath('HOME');
+        refresh();
+    };
+
+    var getAsset = function(path) {
+        if (path) {
+            if (path.search('http') === -1) {
+                path = imagePath + path;
+            }
+        }
+        return path;
+    };
+
+    var refresh = function() {
+        //
+        // Remove previous items
+        //
+
+        var itemCount = currentItems.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            currentItems[itemI].destroy();
+        }
+        currentItems = [];
+
+        //
+        // Update elements
+        //
+
+        var itemCountMax = 18;
+        var itemStep = .055;
+
+        var items = page.querySiteMapMenuAssets();
+
+        // Current navigation level
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var xIndex = itemI;
+                var yOffset = subMenuY;
+                while (xIndex >= 8) {
+                    yOffset += .2;
+                    xIndex -= 8;
+                }
+                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                var asset = screen.addAsset({
+                    position: [xOffset, yOffset, 0],
+                    size: .4,
+                });
+                var image = getAsset(item.image);
+                var button = asset.addButton({
+                    image: image,
+                    path: item.path,
+                    imageDetour: true,
+                    alpha: image ? 1 : 0,
+                    onClick: onClick,
+                })
+                asset.addText({
+                    position: [0, -.6, .1],
+                    fontSize: 80,
+                    text: item.name,
+                    path: item.path,
+                    onClick: onClick,
+                });
+                currentItems.push(asset);
+            }
+        }
+
+        items = page.querySiteMapAssets();
+
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var asset = screen.addAsset({
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
+                });
+                var image = item.image;
+                var imageBack = item.isProduct ? item.image.replace('_PM2_Front', '_PM1_Other') : undefined;
+                var button = asset.addButton({
+                    image: getAsset(image),
+                    imageBack: getAsset(imageBack),
+                    imageDetour: true,
+                    path: item.path,
+                    valign: 'bottom',
+                    onClick: item.isProduct ? 'animateFlip' : undefined,
+                });
+                var yOffset = -.6
+                if (item.isProduct) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: 'details',
+                        product: item.icon,
+                        onClick: onToggleProduct,
+                    });
+                    yOffset -= .2;
+                } else {
+                    if (item.name) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 64,
+                            fontColor: page.fontColorBold,
+                            text: item.name,
+                        });
+                        yOffset -= .1;
+                    }
+                    if (item.description) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 40,
+                            text: item.description,
+                        });
+                        yOffset -= .1;
+                    }
+                }
+                currentItems.push(asset);
+            }
+        }
+    };
+
+    onHome();
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [0, 0, 0],
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_menu.png',
+        position: [-.45, -.45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: 'onShowSiteMapMenu',
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_vr.png',
+        position: [.45, -.45],
+        size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
+    });
+
+    canvas.addText({
+        position: [0, -.45],
+        fontSize: 28,
+        text: 'search',
+        fontColor: [1, 1, 1],
+        size: .08,
+        onClick: 'searchPage',
+    })
+
+    var balloons = [];
+
+    var createBalloon = function(name, x, z) {
+        var rotation = [0, 0, 0];
+        if (name === '1') {
+            rotation = [90, 0, 0];
+        } else if (name === '2') {
+            rotation = [-90, 0, 0];
+        } else if (name === '3') {
+            rotation = [90, 90, 0];
+        } else if (name === '4') {
+            rotation = [90, 0, 0];
+        }
+        return balloonsAsset.addMesh({
+            geometry: '/assets/balloon_' + name + '.obj',
+            position: [x, 0, z],
+            size: .02,
+            color: PEEKS.color.hsl(Math.random(), 1, .6),
+            rotation: rotation,
+            material: {
+                normalMap: '/assets/balloon.jpg',
+                shininess: 50,
+                reflectivity: 3,
+            }
+        });
+    }
+
+    var createBalloons = function() {
+        balloons.push(createBalloon('1', -3, -6));
+        balloons.push(createBalloon('2', -2.5, -7));
+        balloons.push(createBalloon('3', -2, -6));
+        balloons.push(createBalloon('4', -1.5, -7));
+        balloons.push(createBalloon('1', -1, -6));
+        balloons.push(createBalloon('2', -0.5, -7));
+        balloons.push(createBalloon('3', 0, -6));
+        balloons.push(createBalloon('4', .5, -7));
+        balloons.push(createBalloon('1', 1, -6));
+        balloons.push(createBalloon('2', 1.5, -7));
+        balloons.push(createBalloon('3', 2, -6));
+        balloons.push(createBalloon('4', 2.5, -7));
+        balloons.push(createBalloon('1', 3, -6));
+    }
+
+    var playBalloons = false;
+
+    var rewindAnimation = function() {
+        // Just play once
+        this.destroy();
+        return;
+
+        if (playBalloons) {
+            if (this.rewindCount === undefined) {
+                this.rewindCount = 0;
+            }
+            this.rewindCount++;
+
+            if (this.rewindCount < 1) {
+                this.clearAnimations();
+                releaseBalloon(this);
+            }
+        } else {
+            this.destroy();
+        }
+    }
+
+    var releaseBalloon = function(balloon) {
+        balloon.animate({
+            duration: 4 + Math.random() * 10,
+            begin: [0, 0, 0],
+            end: [0, 180, 0],
+            attribute: 'rotation',
+        });
+        balloon.animate({
+            duration: 6 + Math.random() * 4,
+            delay: Math.random() * 6,
+            begin: [0, 10, 0],
+            end: [0, -6, 0],
+            attribute: 'position',
+            onEnd: rewindAnimation,
+        });
+    }
+
+    var releaseBalloons = function() {
+        playBalloons = true;
+        for (var balloonI = 0; balloonI < balloons.length; balloonI++) {
+            releaseBalloon(balloons[balloonI]);
+        }
+        balloons = [];
+    }
+
+    createBalloons();
+
+    var shoppingBag = otherAssets.addMesh({
+        geometry: '/assets/lv_shopping_bag.obj',
+        texture: '/assets/lv_shopping_bag.jpg',
+        position: [2, -2, -5],
+        size: 2,
+        rotation: [0, -50, 0],
+    });
+
+    var entranceOpen = function () {
+        this.onClick = undefined;
+        doorLeft.animate({
+            duration: 10,
+            delay: 0,
+            begin: [0, 0, 0],
+            end: [-10, 0, 0],
+            attribute: 'position'
+        });
+        doorRight.animate({
+            duration: 10,
+            delay: 0,
+            begin: [0, 0, 0],
+            end: [10, 0, 0],
+            attribute: 'position'
+        });
+        releaseBalloons();
+        var positionSrc = this.position;
+        var positionTarget = shoppingBag.position;
+        var rotationSrc = this.rotation;
+        var rotationTarget = shoppingBag.rotation;
+        this.animate({
+            duration: 2,
+            delay: 2,
+            begin: [0, 0, 0],
+            end: [
+                positionTarget[0] - positionSrc[0],
+                positionTarget[1] - positionSrc[1] + 1,
+                positionTarget[2] - positionSrc[2]
+            ],
+            attribute: 'position',
+        });
+        this.animate({
+            duration: 2.5,
+            delay: 1,
+            begin: [0, 0, 0],
+            end: [
+                rotationTarget[0],
+                rotationTarget[1],
+                rotationTarget[2]
+            ],
+            attribute: 'rotation',
+        });
+        this.animate({
+            duration: .5,
+            delay: 3.6,
+            begin: [0, 0, 0],
+            end: [0, -1, 0],
+            attribute: 'position',
+        });
+    }
+    var entrance = foreground.addAsset({
+        size: 1,
+        position: [0, 0, -3],
+    });
+    var doorLeft = entrance.addAsset({
+        position: [-2, 0, 0],
+    });
+    var doorLeftPane = doorLeft.addView({
+        position: [1, 0, 0],
+        viewBgColor: [0, 0, 0],
+        size: [2, 4, 2],
+    });
+    otherAssets.addMesh({
+        geometry: '/assets/lv_logo.obj',
+        position: [0, -.3, -2],
+        size: .023,
+        color: page.backgroundImageColor,
+        material: {
+            shininess: 50,
+            reflectivity: 2,
+        },
+        rotation: [0, 0, 0],
+        onClick: entranceOpen,
+        onFocus: function() {},
+    });
+
+    var doorRight = entrance.addAsset({
+        position: [2, 0, 0],
+    });
+    var doorRightPane = doorRight.addView({
+        position: [-1, 0, 0],
+        viewBgColor: [0, 0, 0],
+        size: [2, 4, 2],
+    });
+
+	return page;
+});
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('kirkwood', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+        fontColorBold: [0/255, 0/255, 0/255],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [1, 1, 1],
+        category: 'white',
+        groundImage: '/ui/gradient_radial.png',
+        groundImageRepeat: 1,
+        backgroundImage: '/ui/gradient.png',
+    });
+
+	var panel = page.addAsset();
+
+    var screen = page.addScreen({
+        radius: 5,
+    });
+
+    var imagePath = 'http://52.25.54.6/?url=https://www.nicholaskirkwood.com/wp-content/uploads/';
+    var siteMap = [
+        {
+            name: 'NEWS',
+            image: '2017/11/Eva-Fehren-featured-image-1.jpg',
+        },
+        { name: "PROMOTIONS",
+            highlightItems: [
+                {
+                    name: 'NEWS',
+                    image: '2017/11/Eva-Fehren-featured-image-1.jpg',
+                },
+                {
+                    name: 'COLLECTIONS',
+                    image: '2016/10/3Bulgari-x-NK-collection-RESIZED.jpg',
+                },
+                {
+                    name: 'BULGARI X NICHOLAS KIRKWOOD',
+                    image: '2016/10/IMG_4125836x648.jpg',
+                },
+                {
+                    name: '#MYKIRKWOODS',
+                    image: '2016/10/IMG_4125836x648.jpg',
+                },
+            ],
+        },
+    ];
+
+    var currentPath = '';
+    var currentItems = [];
+    var currentHighlight = [];
+
+    var onClickRoot = function() {
+        currentPath = '/' + this.path;
+        onToggleMenu();
+        refresh();
+    };
+
+    var onClick = function() {
+        currentPath = currentPath + "/" + this.path;
+        refresh();
+    };
+
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            var productPane = this.parent.addView({
+                position: [0, .75, -.1],
+                size: [.8, .4, 1],
+                viewBgColor: [.96, .96, .96],
+            });
+
+            var product = this.product;
+            if (product) {
+                var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = JSON.parse(this.responseText);
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [0, .4, .01],
+                            size: [.9, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.item.product_brand.brand,
+                        });
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [-.3, -.3, .01],
+                            size: [.3, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.price.listPrice.formattedPrice,
+                        });
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            }
+
+            productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .2, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'sizes',
+            });
+
+            for (var i = 0; i < 5; i++) {
+                productPane.addButton({
+                    position: [-.36 + .18 * i, .0, .01],
+                    size: [.15, .2, 1],
+                    viewBgColor: [1, 1, 1],
+                }).addText({
+                    position: [0, 0, .01],
+                    fontSize: 52,
+                    fontColor: [.3, .3, .3],
+                    text: (6 + i * 2).toString(),
+                });
+            }
+
+            productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [.2, -.3, .01],
+                size: [.4, .2, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [1, 1, 1],
+                text: 'add to cart',
+            });
+
+            productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+
+            this.productPane = productPane;
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
+        }
+    };
+
+    var subMenuY = .3;
+    var highlightsY = 0;
+
+    var menuPopup;
+
+    var onHome = function(path) {
+        if (path) {
+            currentPath = path;
+        } else {
+            currentPath = "";
+        }
+        currentHighlight = siteMap[siteMap.length - 1].highlightItems;
+        refresh();
+    };
+
+    var onToggleMenu = function() {
+        if (menuPopup === undefined) {
+            menuPopup = page.addAsset();
+
+            sphere = menuPopup.addSphere({
+                //image: backgroundFilename,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0],
+                sides: 'back',
+                size: 4,
+                alpha: .96,
+                onClick: onToggleMenu,
+            });
+
+            menuScreen = menuPopup.addScreen({
+                radius: 3,
+            });
+
+            var itemCountMax = 18;
+            var itemStep = .055;
+
+            var items = siteMap;
+            if (items) {
+                var itemCount = items.length;
+                for (var itemI = 0; itemI < itemCount; itemI++) {
+                    var item = items[itemI];
+                    var xIndex = itemI;
+                    var yOffset = .2;
+                    while (xIndex >= 3) {
+                        yOffset -= .1;
+                        xIndex -= 3;
+                    }
+                    var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                    var asset = menuScreen.addButton({
+                        position: [.5, yOffset, 0],
+                        size: [.5, .2, 1],
+                        path: item.name,
+                        viewBgColor: [.98, .98, .98],
+                        onClick: onClickRoot,
+                    }).animate({
+                        duration: .6,
+                        delay: 0,
+                        begin: [0, 0, 0],
+                        end: [xOffset - .5, 0, 0],
+                        attribute: 'position'
+                    });
+                    var button = asset.addText({
+                        position: [0, 0, .01],
+                        fontSize: 48,
+                        text: item.name,
+                    });
+                    currentItems.push(button);
+                }
+            }
+        } else {
+            menuPopup.destroy();
+            menuPopup = undefined;
+        }
+    };
+
+    var refresh = function() {
+        //
+        // Remove previous items
+        //
+
+        var itemCount = currentItems.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            currentItems[itemI].destroy();
+        }
+        currentItems = [];
+
+        //
+        // Update elements
+        //
+
+        var itemCountMax = 18;
+        var itemStep = .055;
+
+        var paths = currentPath.split('/');
+        var items = siteMap;
+        for (var pathI = 1; pathI < paths.length; pathI++) {
+            for (var itemI = 0; itemI < items.length; itemI++) {
+                if (items[itemI].name === paths[pathI]) {
+                    if (items[itemI].highlightItems) {
+                        currentHighlight = items[itemI].highlightItems;
+                    } else {
+                        items = items[itemI].items;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Current navigation level
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var xIndex = itemI;
+                var yOffset = subMenuY;
+                while (xIndex >= 9) {
+                    yOffset += .2;
+                    xIndex -= 9;
+                }
+                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                var asset = screen.addAsset({
+                    position: [xOffset, yOffset, 0],
+                    size: .4,
+                });
+                var button = asset.addButton({
+                    image: item.image ? imagePath + item.image : undefined,
+                    path: item.name,
+                    onClick: onClick,
+                })
+                asset.addText({
+                    position: [0, -.6, .1],
+                    fontSize: 80,
+                    text: item.name,
+                });
+                currentItems.push(asset);
+            }
+        }
+
+        // Highlights
+        items = currentHighlight;
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var asset = screen.addAsset({
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
+                });
+                var image = item.product ? item.product : item.image;
+                var imageBack = item.product ? item.product + '_Alt01' : undefined;
+                var button = asset.addButton({
+                    image: image ? imagePath + image : undefined,
+                    imageBack: imageBack ? imagePath + imageBack : undefined,
+                    path: item.name,
+                    valign: 'bottom',
+                    onClick: item.product ? 'animateFlip' : undefined,
+                });
+                var yOffset = -.6
+                if (item.product) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: 'details',
+                        product: item.product ? item.product : undefined,
+                        onClick: onToggleProduct,
+                    });
+                    yOffset -= .2;
+                }
+                if (item.name) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 64,
+                        fontColor: page.fontColorBold,
+                        text: item.name,
+                    });
+                    yOffset -= .1;
+                }
+                if (item.description) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: item.description,
+                    });
+                    yOffset -= .1;
+                }
+                currentItems.push(asset);
+            }
+        }
+    };
+
+    onHome();
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: .9,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_logo.png',
+        position: [-.45, -.45],
+        size: .08,
+        onClick: onHome,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_menu.png',
+        position: [-.35, -.45],
+        size: .08,
+        onClick: onToggleMenu,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_account.png',
+        position: [.25, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: '/images/target_icon_cart.png',
+        position: [.35, -.45],
+        size: .08,
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_vr.png',
+        position: [.45, -.45],
+        size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
+    });
+
+    canvas.addText({
+        position: [0, -.45],
+        fontSize: 28,
+        text: 'search',
+        fontColor: [.3, .3, .3],
+        size: .08,
+    })
+
+
+	return page;
+});
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('kenzo', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+        fontColorBold: [0/255, 0/255, 0/255],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [1, 1, 1],
+        category: 'white',
+        groundImage: '/ui/gradient_radial.png',
+        groundImageRepeat: 1,
+        backgroundImage: '/ui/gradient.png',
+    });
+
+	var panel = page.addAsset();
+
+    var screen = page.addScreen({
+        radius: 5,
+    });
+
+    var imagePath = 'http://52.25.54.6/?url=https://www.nicholaskirkwood.com/wp-content/uploads/';
+    var siteMap = [
+        {
+            name: 'NEWS',
+            image: '2017/11/Eva-Fehren-featured-image-1.jpg',
+        },
+        { name: "PROMOTIONS",
+            highlightItems: [
+                {
+                    name: 'NEWS',
+                    image: '2017/11/Eva-Fehren-featured-image-1.jpg',
+                },
+                {
+                    name: 'COLLECTIONS',
+                    image: '2016/10/3Bulgari-x-NK-collection-RESIZED.jpg',
+                },
+                {
+                    name: 'BULGARI X NICHOLAS KIRKWOOD',
+                    image: '2016/10/IMG_4125836x648.jpg',
+                },
+                {
+                    name: '#MYKIRKWOODS',
+                    image: '2016/10/IMG_4125836x648.jpg',
+                },
+            ],
+        },
+    ];
+
+    var currentPath = '';
+    var currentItems = [];
+    var currentHighlight = [];
+
+    var onClickRoot = function() {
+        currentPath = '/' + this.path;
+        onToggleMenu();
+        refresh();
+    };
+
+    var onClick = function() {
+        currentPath = currentPath + "/" + this.path;
+        refresh();
+    };
+
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            var productPane = this.parent.addView({
+                position: [0, .75, -.1],
+                size: [.8, .4, 1],
+                viewBgColor: [.96, .96, .96],
+            });
+
+            var product = this.product;
+            if (product) {
+                var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = JSON.parse(this.responseText);
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [0, .4, .01],
+                            size: [.9, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.item.product_brand.brand,
+                        });
+
+                        productPane.addText({
+                            viewBgColor: page.fontColorBold,
+                            position: [-.3, -.3, .01],
+                            size: [.3, .2, 1],
+                            fontSize: 52,
+                            fontColor: [.3, .3, .3],
+                            text: data.product.price.listPrice.formattedPrice,
+                        });
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            }
+
+            productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .2, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'sizes',
+            });
+
+            for (var i = 0; i < 5; i++) {
+                productPane.addButton({
+                    position: [-.36 + .18 * i, .0, .01],
+                    size: [.15, .2, 1],
+                    viewBgColor: [1, 1, 1],
+                }).addText({
+                    position: [0, 0, .01],
+                    fontSize: 52,
+                    fontColor: [.3, .3, .3],
+                    text: (6 + i * 2).toString(),
+                });
+            }
+
+            productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [.2, -.3, .01],
+                size: [.4, .2, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [1, 1, 1],
+                text: 'add to cart',
+            });
+
+            productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+
+            this.productPane = productPane;
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
+        }
+    };
+
+    var subMenuY = .3;
+    var highlightsY = 0;
+
+    var menuPopup;
+
+    var onHome = function(path) {
+        if (path) {
+            currentPath = path;
+        } else {
+            currentPath = "";
+        }
+        currentHighlight = siteMap[siteMap.length - 1].highlightItems;
+        refresh();
+    };
+
+    var onToggleMenu = function() {
+        if (menuPopup === undefined) {
+            menuPopup = page.addAsset();
+
+            sphere = menuPopup.addSphere({
+                //image: backgroundFilename,
+                position: [0, 0, 0],
+                rotation: [0, 0, 0],
+                sides: 'back',
+                size: 4,
+                alpha: .96,
+                onClick: onToggleMenu,
+            });
+
+            menuScreen = menuPopup.addScreen({
+                radius: 3,
+            });
+
+            var itemCountMax = 18;
+            var itemStep = .055;
+
+            var items = siteMap;
+            if (items) {
+                var itemCount = items.length;
+                for (var itemI = 0; itemI < itemCount; itemI++) {
+                    var item = items[itemI];
+                    var xIndex = itemI;
+                    var yOffset = .2;
+                    while (xIndex >= 3) {
+                        yOffset -= .1;
+                        xIndex -= 3;
+                    }
+                    var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                    var asset = menuScreen.addButton({
+                        position: [.5, yOffset, 0],
+                        size: [.5, .2, 1],
+                        path: item.name,
+                        viewBgColor: [.98, .98, .98],
+                        onClick: onClickRoot,
+                    }).animate({
+                        duration: .6,
+                        delay: 0,
+                        begin: [0, 0, 0],
+                        end: [xOffset - .5, 0, 0],
+                        attribute: 'position'
+                    });
+                    var button = asset.addText({
+                        position: [0, 0, .01],
+                        fontSize: 48,
+                        text: item.name,
+                    });
+                    currentItems.push(button);
+                }
+            }
+        } else {
+            menuPopup.destroy();
+            menuPopup = undefined;
+        }
+    };
+
+    var refresh = function() {
+        //
+        // Remove previous items
+        //
+
+        var itemCount = currentItems.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            currentItems[itemI].destroy();
+        }
+        currentItems = [];
+
+        //
+        // Update elements
+        //
+
+        var itemCountMax = 18;
+        var itemStep = .055;
+
+        var paths = currentPath.split('/');
+        var items = siteMap;
+        for (var pathI = 1; pathI < paths.length; pathI++) {
+            for (var itemI = 0; itemI < items.length; itemI++) {
+                if (items[itemI].name === paths[pathI]) {
+                    if (items[itemI].highlightItems) {
+                        currentHighlight = items[itemI].highlightItems;
+                    } else {
+                        items = items[itemI].items;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Current navigation level
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var xIndex = itemI;
+                var yOffset = subMenuY;
+                while (xIndex >= 9) {
+                    yOffset += .2;
+                    xIndex -= 9;
+                }
+                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                var asset = screen.addAsset({
+                    position: [xOffset, yOffset, 0],
+                    size: .4,
+                });
+                var button = asset.addButton({
+                    image: item.image ? imagePath + item.image : undefined,
+                    path: item.name,
+                    onClick: onClick,
+                })
+                asset.addText({
+                    position: [0, -.6, .1],
+                    fontSize: 80,
+                    text: item.name,
+                });
+                currentItems.push(asset);
+            }
+        }
+
+        // Highlights
+        items = currentHighlight;
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var asset = screen.addAsset({
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
+                });
+                var image = item.product ? item.product : item.image;
+                var imageBack = item.product ? item.product + '_Alt01' : undefined;
+                var button = asset.addButton({
+                    image: image ? imagePath + image : undefined,
+                    imageBack: imageBack ? imagePath + imageBack : undefined,
+                    path: item.name,
+                    valign: 'bottom',
+                    onClick: item.product ? 'animateFlip' : undefined,
+                });
+                var yOffset = -.6
+                if (item.product) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: 'details',
+                        product: item.product ? item.product : undefined,
+                        onClick: onToggleProduct,
+                    });
+                    yOffset -= .2;
+                }
+                if (item.name) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 64,
+                        fontColor: page.fontColorBold,
+                        text: item.name,
+                    });
+                    yOffset -= .1;
+                }
+                if (item.description) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: item.description,
+                    });
+                    yOffset -= .1;
+                }
+                currentItems.push(asset);
+            }
+        }
+    };
+
+    onHome();
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: .9,
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_menu.png',
+        position: [-.45, -.45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: onToggleMenu,
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_vr.png',
+        position: [.45, -.45],
+        size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
+    });
+
+    canvas.addText({
+        position: [0, -.45],
+        fontSize: 28,
+        text: 'search',
+        fontColor: [.3, .3, .3],
+        size: .08,
+    })
+
+	return page;
+});
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('frye', function() {
+	var page = new PEEKS.Asset({
+        fontColor: [0, 0, 0],
+        fontColorBold: [0, 0, 0],
+        fontOutlineStyle: '',
+        fontName: 'Helvetica Neue',
+        bgColor: [1, 1, 1],
+        category: 'white',
+        groundImage: '/ui/gradient_radial.png',
+        groundImageRepeat: 1,
+        backgroundImage: '/ui/gradient.png',
+        backgroundImageColor: [226/255, 220/255, 209/255],
+    });
+
+	var panel = page.addAsset();
+
+    var screen = page.addScreen({
+        radius: 5,
+    });
+
+    var imagePath = 'https://s003.osstatic.net/s/FRYE/store/productimages/master/';
+
+    page.setAssetPath(imagePath);
+
+    page.addSiteMapItem('GIFTS', { icon: '42181_slate_l.jpg'} );
+    page.addSiteMapItem('GIFTS/FEATURES', { icon: '42181_slate_l.jpg'} );
+    page.addSiteMapItem('WOMEN', { icon: '76197_black_l.jpg'} );
+    page.addSiteMapItem('WOMEN/COLLECTIONS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/COLLECTIONS/ALL', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS', { icon: '75419_smoke_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS', { icon: '76695_white_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/ALL BOOTS/1', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/BEST SELLERS', { icon: '75436_wine_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/BOOTIES & SHORT', { icon: '73574_black_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/MID', { icon: '75458_cognac_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/TALL', { icon: '75419_smoke_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/1', { icon: '75419_smoke', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/2', { icon: '75418_slate', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/3', { icon: '75417_redwood', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/4', { icon: '75438_black', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/5', { icon: '71374_cognac', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/6', { icon: '75437_chocolate', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/7', { icon: '75436_wine', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/TALL/8', { icon: '75450_smoke', isProduct: true });
+    page.addSiteMapItem('WOMEN/BOOTS/OVER-THE-KNEE', { icon: '77430_smoke_l.jpg'} );
+    page.addSiteMapItem('WOMEN/BOOTS/WIDE CALF', { icon: '7541701_redwood_l.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES', { icon: '76537_smoke_l.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES/ALL SHOES', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES/ALL SHOES/1', { icon: '76373_dusty_rose', isProduct: true });
+    page.addSiteMapItem('WOMEN/SHOES/FLATS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES/HEELS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES/HEELS/1', { icon: '76373_dusty_rose', isProduct: true });
+    page.addSiteMapItem('WOMEN/SHOES/HEELS/2', { icon: '76374_black', isProduct: true });
+    page.addSiteMapItem('WOMEN/SHOES/SANDALS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/SHOES/SNEAKERS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('WOMEN/BAGS', { icon: '42181_slate_l.jpg'} );
+    page.addSiteMapItem('WOMEN/ACCESSORIES', { icon: '42334_black_l.jpg'} );
+    page.addSiteMapItem('MEN', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('MELISSA', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('BAGS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('ACCESSORIES', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('KIDS', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('SALE', { icon: '76374_black_f.jpg'} );
+    page.addSiteMapItem('FEATURED', { icon: '76197_black_l.jpg'} );
+    page.addSiteMapItem('FEATURED/SAMANTHA HIKER', { icon: '76197_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/SABRINA DOUBLE BUCKLE', { icon: '77477_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/MELISSA BUTTON 2', { icon: '75447_smoke', isProduct: true, description: 'MELISSA BUTTON 2' });
+    page.addSiteMapItem('FEATURED/SHANE TIP SHORT', { icon: '77995_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/ILINA HARNESS BACKPACK', { icon: '70887_chestnut_l.jpg' });
+    page.addSiteMapItem('FEATURED/DANICA HARNESS', { icon: '78040_grigio_l.jpg' });
+    page.addSiteMapItem('FEATURED/ILINA HARNESS MINI SADDLE', { icon: '42633_grey_l.jpg' });
+    page.addSiteMapItem('FEATURED/MYRA LUG COMBAT', { icon: '72643_black_l.jpg' });
+    page.addSiteMapItem('FEATURED/ILINA HARNESS SMALL SADDLE', { icon: '42621_wine_l.jpg' });
+
+    var currentItems = [];
+
+    page.onUpdateSiteMapPath = function() {
+        refresh();
+    };
+
+    var onClick = function() {
+        if (page.siteMapPathIsLeaf(this.path)) {
+            page.setSiteMapPath(this.path);
+        } else {
+            page.setSiteMapMenuPath(this.path);
+        }
+        refresh();
+    };
+
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            var productPane = this.parent.addView({
+                position: [0, .75, -.1],
+                size: [.8, .4, 1],
+                viewBgColor: [.96, .96, .96],
+            });
+
+            productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .3, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'Size',
+            });
+
+            for (var i = 0; i < 5; i++) {
+                productPane.addButton({
+                    position: [-.36 + .18 * i, .1, .01],
+                    size: [.15, .2, 1],
+                    viewBgColor: [1, 1, 1],
+                }).addText({
+                    position: [0, 0, .01],
+                    fontSize: 52,
+                    fontColor: [.3, .3, .3],
+                    text: (6 + i * 2).toString(),
+                });
+            }
+
+            productPane.addButton({
+                viewBgColor: page.backgroundImageColor,
+                position: [0, -.25, .02],
+                size: [.45, .2, 1],
+                onClick: function() {
+                    page.getScene().loadPage('shoe');
+                }
+            }).addText({
+                position: [0, 0, .02],
+                fontSize: 60,
+                fontColor: [0, 0, 0],
+                text: 'customize',
+            });
+
+            productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+
+            this.productPane = productPane;
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
+        }
+    };
+
+    var subMenuY = .3;
+    var highlightsY = 0;
+
+    var menuPopup;
+
+    var onHome = function(path) {
+        page.setSiteMapMenuPath('');
+        // page.setSiteMapPath('WOMEN/BOOTS/TALL');
+        page.setSiteMapPath('FEATURED');
+        refresh();
+    };
+
+    var refresh = function() {
+        //
+        // Remove previous items
+        //
+
+        var itemCount = currentItems.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            currentItems[itemI].destroy();
+        }
+        currentItems = [];
+
+        //
+        // Update elements
+        //
+
+        var itemCountMax = 18;
+        var itemStep = .055;
+
+        var items = page.querySiteMapMenuAssets();
+
+        // Current navigation level
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var xIndex = itemI;
+                var yOffset = subMenuY;
+                while (xIndex >= 9) {
+                    yOffset += .2;
+                    xIndex -= 9;
+                }
+                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+                var asset = screen.addAsset({
+                    position: [xOffset, yOffset, 0],
+                    size: .4,
+                });
+                var button = asset.addButton({
+                    image: item.image ? imagePath + item.image : undefined,
+                    imageDetour: true,
+                    path: item.path,
+                    onClick: onClick,
+                })
+                asset.addText({
+                    position: [0, -.6, .1],
+                    fontSize: 80,
+                    text: item.name,
+                    path: item.path,
+                    onClick: onClick,
+                });
+                currentItems.push(asset);
+            }
+        }
+
+        items = page.querySiteMapAssets();
+
+        if (items) {
+            var itemCount = items.length;
+            for (var itemI = 0; itemI < itemCount; itemI++) {
+                var item = items[itemI];
+                var asset = screen.addAsset({
+                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
+                });
+                var image = item.image + (item.isProduct ? '_l.jpg' : '');
+                var imageBack = item.isProduct ? item.image + '_f.jpg' : undefined;
+                var button = asset.addButton({
+                    image: image ? imagePath + image : undefined,
+                    imageBack: imageBack ? imagePath + imageBack : undefined,
+                    imageDetour: true,
+                    path: item.path,
+                    valign: 'bottom',
+                    onClick: item.isProduct ? 'animateFlip' : undefined,
+                });
+                var yOffset = -.6
+                if (item.isProduct) {
+                    if (item.description) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 64,
+                            fontColor: page.fontColorBold,
+                            text: item.description,
+                        });
+                        yOffset -= .1;
+                        console.log('there!');
+                    }
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: 'details',
+                        product: item.icon,
+                        onClick: onToggleProduct,
+                    });
+                    yOffset -= .2;
+                } else {
+                    if (item.name) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 64,
+                            fontColor: page.fontColorBold,
+                            text: item.name,
+                        });
+                        yOffset -= .1;
+                    }
+                    if (item.description) {
+                        asset.addText({
+                            position: [0, yOffset, .1],
+                            fontSize: 40,
+                            text: item.description,
+                        });
+                        yOffset -= .1;
+                    }
+                }
+                currentItems.push(asset);
+            }
+        }
+    };
+
+    onHome();
+
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: .9,
+    });
+
+    canvas.addView({
+        position: [0, -.45],
+        size: [1, .12, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: .9,
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_menu.png',
+        position: [-.45, -.45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: 'onShowSiteMapMenu',
+    });
+
+    canvas.addButton({
+        image: '/ui/icon_vr.png',
+        position: [.45, -.45],
+        size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
+    });
+
+    canvas.addText({
+        position: [0, -.45],
+        fontSize: 28,
+        text: 'search',
+        fontColor: [.3, .3, .3],
+        size: .08,
+        onClick: 'searchPage',
+    })
+
+	return page;
+});
 
 
 /***/ })
