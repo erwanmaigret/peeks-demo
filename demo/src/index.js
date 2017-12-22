@@ -19,3 +19,4 @@ require("./pages/louisvuitton.js");
 require("./pages/kirkwood.js");
 require("./pages/kenzo.js");
 require("./pages/frye.js");
+require("./pages/wishes.js");

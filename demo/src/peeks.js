@@ -1488,11 +1488,12 @@ function registerPage(name, ctor) {
 }
 
 window.dataLayer = window.dataLayer || [];
+var doAnalytics = true;
 function analytics() {
-    dataLayer.push(arguments);
+    if (doAnalytics) {
+        dataLayer.push(arguments);
+    }
 }
-analytics('js', new Date());
-analytics('config', 'UA-109650112-1');
 
 function loadPage(name) {
 	if (pages[name]) {
@@ -2490,13 +2491,18 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             var url = document.URL;
             if (url.search('127.0.0.1:3000') != -1) {
+                doAnalytics = false;
                 PEEKS.setLogLevel(1);
             } else {
                 PEEKS.setLogLevel(3);
             }
 
+            analytics('js', new Date());
+            analytics('config', 'UA-109650112-1');
+
             var paramsI = url.search("\\?");
             if (paramsI !== -1) {
+                this.urlParams = [];
                 var items = [];
 
                 var paramStr = url.substring(paramsI + 1);
@@ -2504,6 +2510,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 for (var paramI = 0; paramI < params.length; paramI++) {
                     var param = params[paramI].split('=');
                     items.push([param[0], param[1]]);
+                    this.urlParams.push([param[0], param[1]]);
                 }
 
                 PEEKS.registerPage('Christmas', function() {
