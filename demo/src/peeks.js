@@ -2032,7 +2032,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
         },
 
-        showKeyboard: function() {
+        showKeyboard: function(params) {
+            if (params === undefined) {
+                    params = {};
+            }
+
             analytics('event', 'scene.showKeyboard');
 
             if (this.keyboard === undefined) {
@@ -2067,7 +2071,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         text: bg.textInput !== '' ? bg.textInput : '<type some text>',
                         size: [1, 1 / keys.length, 1],
                     });
-                    bg.getScene().showSiteMapMenu(bg.textInput);
+                    if (params.onUpdate) {
+                        params.onUpdate.call(bg.getScene(), bg.textInput);
+                    }
                 };
 
                 var onBack = function () {
@@ -2078,7 +2084,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     onRefresh();
                 };
 
-                var onEnter = function () {
+                var onEnterPressed = function () {
+                    if (params.onEnter) {
+                        params.onEnter.call(bg.getScene(), bg.textInput);
+                    }
                     this.getScene().hideKeyboard();
                 };
 
@@ -2146,7 +2155,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         { text: 'L', textBack: 'l'},
                         { text: ';', textBack: ':'},
                         { text: "'", textBack: '"'},
-                        { label: 'enter', onClick: onEnter },
+                        { label: 'enter', onClick: onEnterPressed },
                         '',
                     ],
                     [
@@ -2473,7 +2482,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         searchPage: function() {
             analytics('event', 'scene.searchPage');
 
-            this.showKeyboard();
+            this.showKeyboard({
+                onUpdate: function(text) {
+                    this.showSiteMapMenu(text);
+                }
+            });
 		},
 
 		resetCamera: function (animate) {

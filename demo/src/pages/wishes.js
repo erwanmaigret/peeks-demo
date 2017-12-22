@@ -51,6 +51,21 @@ PEEKS.registerPage('wishes', function() {
         refresh();
     };
 
+    var onSend = function() {
+        var onUpdate = function () {
+
+        };
+
+        this.getScene().showKeyboard({
+            onUpdate: function(text) {
+                console.log(text);
+            },
+            onEnter: function(text) {
+                console.log('end: ' + text);
+            },
+        });
+    };
+
     var subMenuY = .3;
     var highlightsY = 0;
 
@@ -143,7 +158,7 @@ PEEKS.registerPage('wishes', function() {
                     imageDetour: true,
                     path: item.path,
                     valign: 'bottom',
-                    onClick: item.isProduct ? 'animateFlip' : undefined,
+                    onClick: onSend,
                 });
                 var yOffset = -.6
                 if (item.isProduct) {
