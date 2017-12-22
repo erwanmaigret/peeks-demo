@@ -2165,7 +2165,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         fontSize: fontSize,
                         fontOutlineStyle: '',
                         fontColor: bg.textInput === '' ? [.4, .4, .4] : [1, 1, 1],
-                        text: bg.textInput !== '' ? bg.textInput : '<type some text>',
+                        text: bg.textInput !== ''
+                            ? bg.textInput
+                            : (params.style === 'email')
+                                ? '<enter email>'
+                                : '<type some text>',
                         size: [1, 1 / keys.length, 1],
                     });
                     if (params.onUpdate) {
@@ -2225,45 +2229,50 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     ],
                     [
                         '',
-                        { text: 'Q', textBack: 'q'},
-                        { text: 'W', textBack: 'w'},
-                        { text: 'E', textBack: 'e'},
-                        { text: 'R', textBack: 'r'},
-                        { text: 'T', textBack: 't'},
-                        { text: 'Y', textBack: 'y'},
-                        { text: 'U', textBack: 'u'},
-                        { text: 'I', textBack: 'i'},
-                        { text: 'O', textBack: 'o'},
-                        { text: 'P', textBack: 'p'},
+                        { text: 'q', textBack: 'Q'},
+                        { text: 'w', textBack: 'W'},
+                        { text: 'e', textBack: 'E'},
+                        { text: 'r', textBack: 'R'},
+                        { text: 't', textBack: 'T'},
+                        { text: 'y', textBack: 'Y'},
+                        { text: 'u', textBack: 'U'},
+                        { text: 'i', textBack: 'I'},
+                        { text: 'o', textBack: 'O'},
+                        { text: 'p', textBack: 'P'},
                         { label: 'back', onClick: onBack },
                         '',
                         '',
                     ],
                     [
                         '',
-                        { text: 'A', textBack: 'a'},
-                        { text: 'S', textBack: 's'},
-                        { text: 'D', textBack: 'd'},
-                        { text: 'F', textBack: 'f'},
-                        { text: 'G', textBack: 'g'},
-                        { text: 'H', textBack: 'h'},
-                        { text: 'J', textBack: 'j'},
-                        { text: 'K', textBack: 'k'},
-                        { text: 'L', textBack: 'l'},
+                        { text: 'a', textBack: 'A'},
+                        { text: 's', textBack: 'S'},
+                        { text: 'd', textBack: 'D'},
+                        { text: 'f', textBack: 'F'},
+                        { text: 'g', textBack: 'G'},
+                        { text: 'h', textBack: 'H'},
+                        { text: 'j', textBack: 'J'},
+                        { text: 'k', textBack: 'K'},
+                        { text: 'l', textBack: 'L'},
                         { text: ';', textBack: ':'},
                         { text: "'", textBack: '"'},
-                        { label: 'enter', onClick: onEnterPressed },
+                        {
+                            label: (params.style === 'email')
+                                ? 'send'
+                                : 'enter',
+                            onClick: onEnterPressed
+                        },
                         '',
                     ],
                     [
                         '',
-                        { text: 'Z', textBack: 'z'},
-                        { text: 'X', textBack: 'x'},
-                        { text: 'C', textBack: 'c'},
-                        { text: 'V', textBack: 'v'},
-                        { text: 'B', textBack: 'b'},
-                        { text: 'N', textBack: 'n'},
-                        { text: 'M', textBack: 'm'},
+                        { text: 'z', textBack: 'Z'},
+                        { text: 'x', textBack: 'X'},
+                        { text: 'c', textBack: 'C'},
+                        { text: 'v', textBack: 'V'},
+                        { text: 'b', textBack: 'B'},
+                        { text: 'n', textBack: 'N'},
+                        { text: 'm', textBack: 'M'},
                         { text: ',', textBack: '<'},
                         { text: '.', textBack: '>'},
                         { text: '/', textBack: '?'},
@@ -2273,10 +2282,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     ],
                     [
                         '', '', '',
-                        { label: 'SHIFT', onClick: onShift },
+                        { label: 'shift', onClick: onShift },
                         '',
-                        { label: 'SPACE', text: ' ', },
-                        '',
+                        { label: 'space', text: ' ', },
+                        (params.style === 'email') ? { text: '@', } : '',
                         { text: 'v', onClick: 'hideKeyboard' },
                         '', '', '',
                     ],
@@ -54267,11 +54276,14 @@ PEEKS.registerPage('wishes', function() {
         };
 
         this.getScene().showKeyboard({
+            style: 'email',
             onUpdate: function(text) {
-                console.log(text);
             },
             onEnter: function(text) {
-                console.log('end: ' + text);
+                var link = "mailto:"+ text
+                    + "?subject=" + escape("You received a card in Virtual Reality")
+                    + "&body=" + "https://www.peeks.io/wishes";
+                window.location.href = link;
             },
         });
     };
@@ -54361,44 +54373,12 @@ PEEKS.registerPage('wishes', function() {
                     position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
                 });
                 var image = item.image;
-                var imageBack = item.isProduct ? item.image.replace('_PM2_Front', '_PM1_Other') : undefined;
                 var button = asset.addButton({
                     image: getAsset(image),
-                    imageBack: getAsset(imageBack),
-                    imageDetour: true,
                     path: item.path,
                     valign: 'bottom',
                     onClick: onSend,
                 });
-                var yOffset = -.6
-                if (item.isProduct) {
-                    asset.addText({
-                        position: [0, yOffset, .1],
-                        fontSize: 40,
-                        text: 'details',
-                        product: item.icon,
-                        onClick: function() {},
-                    });
-                    yOffset -= .2;
-                } else {
-                    if (item.name) {
-                        asset.addText({
-                            position: [0, yOffset, .1],
-                            fontSize: 64,
-                            fontColor: page.fontColorBold,
-                            text: item.name,
-                        });
-                        yOffset -= .1;
-                    }
-                    if (item.description) {
-                        asset.addText({
-                            position: [0, yOffset, .1],
-                            fontSize: 40,
-                            text: item.description,
-                        });
-                        yOffset -= .1;
-                    }
-                }
                 currentItems.push(asset);
             }
         }

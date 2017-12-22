@@ -57,11 +57,14 @@ PEEKS.registerPage('wishes', function() {
         };
 
         this.getScene().showKeyboard({
+            style: 'email',
             onUpdate: function(text) {
-                console.log(text);
             },
             onEnter: function(text) {
-                console.log('end: ' + text);
+                var link = "mailto:"+ text
+                    + "?subject=" + escape("You received a card in Virtual Reality")
+                    + "&body=" + "https://www.peeks.io/wishes";
+                window.location.href = link;
             },
         });
     };
@@ -151,44 +154,12 @@ PEEKS.registerPage('wishes', function() {
                     position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
                 });
                 var image = item.image;
-                var imageBack = item.isProduct ? item.image.replace('_PM2_Front', '_PM1_Other') : undefined;
                 var button = asset.addButton({
                     image: getAsset(image),
-                    imageBack: getAsset(imageBack),
-                    imageDetour: true,
                     path: item.path,
                     valign: 'bottom',
                     onClick: onSend,
                 });
-                var yOffset = -.6
-                if (item.isProduct) {
-                    asset.addText({
-                        position: [0, yOffset, .1],
-                        fontSize: 40,
-                        text: 'details',
-                        product: item.icon,
-                        onClick: function() {},
-                    });
-                    yOffset -= .2;
-                } else {
-                    if (item.name) {
-                        asset.addText({
-                            position: [0, yOffset, .1],
-                            fontSize: 64,
-                            fontColor: page.fontColorBold,
-                            text: item.name,
-                        });
-                        yOffset -= .1;
-                    }
-                    if (item.description) {
-                        asset.addText({
-                            position: [0, yOffset, .1],
-                            fontSize: 40,
-                            text: item.description,
-                        });
-                        yOffset -= .1;
-                    }
-                }
                 currentItems.push(asset);
             }
         }
