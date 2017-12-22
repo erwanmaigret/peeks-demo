@@ -33,6 +33,11 @@ PEEKS.registerPage('wishes', function() {
     page.addSiteMapItem('QUOTES', { icon: 'http://52.25.54.6/?url=http://fypcoachkaren.com/blog/wp-content/uploads/2014/12/New-Year-Quote.jpg'});
     page.addSiteMapItem('QUOTES/1', { icon: 'http://52.25.54.6/?url=https://heavyeditorial.files.wordpress.com/2015/12/poems-new-years-10.jpg'});
     page.addSiteMapItem('QUOTES/2', { icon: 'http://52.25.54.6/?url=http://fypcoachkaren.com/blog/wp-content/uploads/2014/12/New-Year-Quote.jpg'});
+    page.addSiteMapItem('QUOTES/3', { icon: 'http://52.25.54.6/?url=http://www.agingbutdangerous.com/wp-content/uploads/2015/12/happy-new-year-2015-design-free-wallpaper.jpg'});
+    page.addSiteMapItem('QUOTES/4', { icon: 'http://52.25.54.6/?url=http://www.agingbutdangerous.com/wp-content/uploads/2015/12/new-year-post.jpg'});
+    page.addSiteMapItem('STICKERS', { icon: 'http://52.25.54.6/?url=http://www.line-stickers.com/wp-content/uploads/2017/05/LINE-Happy-New-Year-.png'});
+    page.addSiteMapItem('STICKERS/1', { icon: 'http://52.25.54.6/?url=http://www.line-stickers.com/wp-content/uploads/2017/05/LINE-Happy-New-Year-.png'});
+    page.addSiteMapItem('STICKERS/2', { icon: 'http://52.25.54.6/?url=http://www.line-stickers.com/wp-content/uploads/2017/05/LINE-Happy-New-Year-.png'});
     page.addSiteMapItem('FLAGS', { icon: 'http://52.25.54.6/?url=http://flags.fmcdn.net/data/flags/w1160/gb.png'});
     page.addSiteMapItem('FLAGS/GB', { icon: 'http://52.25.54.6/?url=http://flags.fmcdn.net/data/flags/w1160/gb.png'});
     page.addSiteMapItem('FLAGS/FR', { icon: 'http://52.25.54.6/?url=http://flags.fmcdn.net/data/flags/w1160/fr.png'});
@@ -76,7 +81,7 @@ PEEKS.registerPage('wishes', function() {
 
     var onHome = function(path) {
         page.setSiteMapMenuPath('');
-        page.setSiteMapPath('STAMPS');
+        page.setSiteMapPath('QUOTES');
         refresh();
     };
 
