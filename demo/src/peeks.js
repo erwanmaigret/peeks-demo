@@ -636,6 +636,18 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 
                     var itemCount = 0;
                     if (data && data.pages) {
+                        var openPage = function() {
+                            if (this.page) {
+                                console.log(this.page);
+                                if (this.page.url) {
+                                    var win = window.open(this.page.url, '_blank');
+                                    win.focus();
+                                } else if (this.page.page) {
+                                    loadPage(this.page.page);
+                                }
+                            }
+                        };
+
                         for (var pageI in data.pages) {
                             var page = data.pages[pageI];
 
@@ -655,8 +667,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                                 label: page.name,
                                 position: [0, .6 - itemCount * .2, 0],
                                 size: [.9, .15, 1],
-                                onClick: 'loadPage',
-                                onClickArgs: [page.page || page.name],
+                                onClick: openPage,
                                 fontSize: fontSize,
                             }).animate({
                                 duration: animDuration,
@@ -664,7 +675,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                                 begin: [-90, 0, 0],
                                 end: [0, 0, 0],
                                 attribute: 'rotation'
-                            });
+                            }).page = page;
 
                             itemCount++;
                         }

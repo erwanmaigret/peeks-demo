@@ -42,7 +42,7 @@ app.use('/kenzo', require('./routes/kenzo'));
 app.use('/louisvuitton', require('./routes/louisvuitton'));
 app.use('/frye', require('./routes/frye'));
 app.use('/wgtiootb', require('./routes/demo'));
-app.use('/wishes', require('./routes/wishes'));
+app.use('/greetings', require('./routes/greetings'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
