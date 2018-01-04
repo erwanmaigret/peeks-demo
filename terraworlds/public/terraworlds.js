@@ -14,47 +14,7 @@ PEEKS.registerPage('Terraworlds', function() {
     var onClick = function()
     {
         this.addButton({
-            position: [0, 0, 1],
-            viewBgColor: cubeColor,
-            image: cubeImage,
-            imageRepeat: cubeRepeat,
-            onClick: onClick,
-            size: cubeSize,
-            sides: 'front',
-        });
-        this.addButton({
-            position: [0, -.5, .5],
-            rotation: [90, 0, 0],
-            viewBgColor: cubeColor,
-            image: cubeImage,
-            imageRepeat: cubeRepeat,
-            onClick: onClick,
-            size: cubeSize,
-            sides: 'front',
-        });
-        this.addButton({
-            position: [0, .5, .5],
-            rotation: [-90, 0, 0],
-            viewBgColor: cubeColor,
-            image: cubeImage,
-            imageRepeat: cubeRepeat,
-            onClick: onClick,
-            size: cubeSize,
-            sides: 'front',
-        });
-        this.addButton({
-            position: [0.5, 0, .5],
-            rotation: [0, 90, 0],
-            viewBgColor: cubeColor,
-            image: cubeImage,
-            imageRepeat: cubeRepeat,
-            onClick: onClick,
-            size: cubeSize,
-            sides: 'front',
-        });
-        this.addButton({
-            position: [-0.5, 0, .5],
-            rotation: [0, -90, 0],
+            position: [0, 0, .1],
             viewBgColor: cubeColor,
             image: cubeImage,
             imageRepeat: cubeRepeat,
