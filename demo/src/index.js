@@ -11,5 +11,4 @@ require("./pages/fashion.js");
 require("./pages/mannequin.js");
 require("./pages/shoe.js");
 require("./pages/sportrade.js");
-require("./pages/terraworlds.js");
 require("./pages/tron.js");

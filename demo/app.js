@@ -6,11 +6,6 @@ var bodyParser = require('body-parser');
 var stylus = require('stylus');
 var logger = require('morgan');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var scrap = require('./routes/scrap');
-var reco = require('./routes/reco');
-
 var app = express();
 
 // view engine setup
@@ -26,14 +21,13 @@ app.use(cookieParser());
 app.use(stylus.middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/scrap', scrap);
-app.use('/reco', reco);
+app.use('/', require('./routes/index'));
+app.use('/users', require('./routes/users'));
+app.use('/scrap', require('./routes/scrap'));
+app.use('/reco', require('./routes/reco'));
 app.use('/target', require('./routes/target'));
 app.use('/fortinet', require('./routes/fortinet'));
 app.use('/tron', require('./routes/tron'));
-app.use('/terraworlds', require('./routes/terraworlds'));
 app.use('/sportrade', require('./routes/sportrade'));
 app.use('/mannequin', require('./routes/mannequin'));
 app.use('/shoe', require('./routes/shoe'));
