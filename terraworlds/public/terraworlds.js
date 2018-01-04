@@ -1,27 +1,32 @@
 PEEKS.registerPage('Terraworlds', function() {
 	var page = new PEEKS.Asset({
-//        colorDark:   [.2, 0.2 , 0.5],
-//        colorLight:  [.6, 0.6 , 0.8],
         category: 'white',
     });
 
     page.setAttr('fontColor', page.getAttr('colorDark'));
 
+    var tool = {};
+
     var cubeSize = 1;
     var cubeColor = [0, 1, 0];
     var cubeImage ='/images/minecraft_stone.jpg';
     var cubeRepeat = [3, 3];
-    var onClick = function()
-    {
-        this.addButton({
-            position: [0, 0, .1],
-            viewBgColor: cubeColor,
-            image: cubeImage,
-            imageRepeat: cubeRepeat,
-            onClick: onClick,
-            size: cubeSize,
-            sides: 'front',
-        });
+    var onClick = function() {
+        if (tool.image) {
+            this.addButton({
+                position: [0, 0, .1],
+                viewBgColor: cubeColor,
+                image: tool.image,
+                imageRepeat: [tool.tiles, tool.tiles],
+                onClick: onClick,
+                size: cubeSize,
+                sides: 'front',
+            });
+        } else {
+            if (!this.isRoot) {
+                this.destroy();
+            }
+        }
     };
 
 	var size = 15;
@@ -35,6 +40,7 @@ PEEKS.registerPage('Terraworlds', function() {
                 sides: 'front',
                 size: .5,
 				onClick: onClick,
+                isRoot: true,
 			}).animate({
 				duration: 2 + Math.random() * 1,
 				delay: .5 + Math.random() * .5,
@@ -52,44 +58,26 @@ PEEKS.registerPage('Terraworlds', function() {
         valign: 'top',
     });
 
-    canvas.addButton({
-        position: [.1, .45],
-		size: .08,
-        image: '/images/minecraft_wood.jpg',
-        onClick: function() {
-            cubeImage = '/images/minecraft_wood.jpg';
-            cubeRepeat = [2, 2];
-        },
-    });
+    var tools = [];
+    var addTool = function(icon, image, tiles) {
+        var button = canvas.addButton({
+            position: [-.5 + tools.length * .1, .45],
+    		size: .08,
+            image: icon,
+            onClick: function() {
+                tool.image = image;
+                tool.tiles = tiles;
+            },
+        });
+        tools.push(button);
+    }
 
-    canvas.addButton({
-        position: [-.1, .45],
-		size: .08,
-        image: '/images/minecraft_craftingtable.jpg',
-        onClick: function() {
-            cubeImage = '/images/minecraft_craftingtable.jpg';
-            cubeRepeat = [1, 1];
-        },
-    });
-
-    canvas.addButton({
-        position: [.3, .45],
-		size: .08,
-        image: '/images/minecraft_stone.jpg',
-        onClick: function() {
-            cubeImage = '/images/minecraft_stone.jpg';
-            cubeRepeat = [3, 3];
-        },
-    });
-    canvas.addButton({
-        position: [-.3, .45],
-        size: .08,
-        image: '/images/minecraft_dirt.jpg',
-        onClick: function() {
-            cubeImage = '/images/minecraft_dirt.jpg';
-            cubeRepeat = [1, 1];
-        },
-    });
+    addTool('/images/minecraft_wood.jpg', '/images/minecraft_wood.jpg', 2);
+    addTool('/images/minecraft_craftingtable.jpg', '/images/minecraft_craftingtable.jpg', 1);
+    addTool('/images/minecraft_stone.jpg', '/images/minecraft_stone.jpg', 3);
+    addTool('/images/minecraft_dirt.jpg', '/images/minecraft_dirt.jpg', 1);
+    addTool('/images/minecraft_wood.jpg', undefined, 1);
+    tools[0].onClick();
 
     page.onLoad = function () {
         if (navigator.geolocation) {
