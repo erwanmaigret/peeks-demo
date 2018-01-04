@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    script(src="https://www.peeks.io/peeks.js")
+    script(src="/terraworlds.js")
+    script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
+    script.
+        var peeks = new PEEKS.Scene();
+        peeks.start(window);
