@@ -1,7 +1,22 @@
-var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
-    removeBackground)
+PEEKS.texturesCache = {
+};
+
+PEEKS.ThreeLoadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
+    removeBackground, useCache)
 {
 	if (textureUrl != '') {
+        // Mangle the name so it's unique with all the given parameters
+        var cacheName = textureUrl +
+            '&textureRepeat=' + (textureRepeat ? textureRepeat.toString() : '1,1') +
+            '&flipX=' + (flipX ? flipX.toString() : 'false') +
+            '&flipY=' + (flipY ? flipY.toString() : 'false') +
+            '&removeBackground=' + (removeBackground ? removeBackground.toString() : 'false');
+
+        if (useCache && PEEKS.texturesCache[cacheName]) {
+            material.map = PEEKS.texturesCache[cacheName];
+            return;
+        }
+
 		var loader = new THREE.TextureLoader();
         var mat = material;
         var detour = removeBackground;
@@ -66,7 +81,12 @@ var loadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
             },
             function (xhr) {
                 // console.log( 'An error happened' );
-            });
+            }
+        );
+
+        if (useCache) {
+            PEEKS.texturesCache[cacheName] = material.map;
+        }
 
 		// Don't mind not POT textures
         material.map.minFilter = THREE.LinearMipMapLinearFilter;
@@ -97,13 +117,10 @@ PEEKS.ThreeSetObjectQuaternion = function(quaternion, alpha, beta, gamma, orient
     quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
 }
 
-var texturesCache = {
-};
-
-var textureLoader = function(path) {
+PEEKS.ThreeTextureLoader = function(path) {
     if (path) {
-        if (texturesCache[path]) {
-            return texturesCache[path];
+        if (PEEKS.texturesCache[path]) {
+            return PEEKS.texturesCache[path];
         }
 
         var loader = new THREE.TextureLoader();
@@ -114,7 +131,7 @@ var textureLoader = function(path) {
         }
         var texture = loader.load(path);
         texture.name = path;
-        texturesCache[path] = texture;
+        PEEKS.texturesCache[path] = texture;
         return texture;
     }
 }
@@ -451,7 +468,7 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
 PEEKS.ThreeShaderAttr = function(material, name, value) {
     if (typeof value === 'string') {
         // This is a texture resource to load
-        value = textureLoader(value);
+        value = PEEKS.ThreeTextureLoader(value);
     }
     material[name] = value;
     material.uniforms[name].value = value;
@@ -477,8 +494,8 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
             				//uniforms[ "enableBump" ].value = true;
             				uniforms[ "enableSpecular" ].value = true;
-                            uniforms[ "tBeckmann" ].value = textureLoader(refMat.specularMap);
-                            uniforms[ "tDiffuse" ].value = textureLoader(asset.textureUrl);
+                            uniforms[ "tBeckmann" ].value = PEEKS.ThreeTextureLoader(refMat.specularMap);
+                            uniforms[ "tDiffuse" ].value = PEEKS.ThreeTextureLoader(asset.textureUrl);
             				uniforms[ "diffuse" ].value.setHex( 0xffffff );
             				uniforms[ "specular" ].value.setHex( 0xa0a0a0 );
             				uniforms[ "uRoughness" ].value = 0.2;
@@ -588,16 +605,16 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                                 });
                                 child.material = material;
                             }
-                            material.map = textureLoader(asset.textureUrl);
+                            material.map = PEEKS.ThreeTextureLoader(asset.textureUrl);
                             material.transparent = true;
                             material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
                             material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
                             material.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
                             material.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
                             material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
-                            material.normalMap = textureLoader(refMat.normalMap);
-                            material.alphaMap = textureLoader(refMat.alphaMap);
-                            material.bumpMap = textureLoader(refMat.bumpMap);
+                            material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
+                            material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
+                            material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
                             material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                             material.side = THREE.FrontSide;
                         }
@@ -657,7 +674,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
-                loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
+                PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
             } else if (this.primitive === PEEKS.Asset.PrimitiveCurvedPanel) {
                 var geometry = new THREE.SphereGeometry(1, 32, 32,
                     Math.PI * 1.45, Math.PI * .1,
@@ -670,7 +687,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
-                loadTexture(material, this.getAttr('textureUrl'), this.textureRepeat, true);
+                PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'), this.textureRepeat, true);
             } else if (this.primitive === PEEKS.Asset.PrimitiveDisc) {
                 var geometry = new THREE.CircleGeometry(.5, 32);
                 var material = new THREE.MeshBasicMaterial({
@@ -678,7 +695,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     transparent: true,
                     depthTest: isScreenSpace ? false : true,
                 });
-                loadTexture(material, this.getAttr('textureUrl'),
+                PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'),
                     this.textureRepeat,
                     false, false,
                     this.imageDetour
@@ -809,7 +826,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						});
 						backSide = new THREE.Mesh(geometry, material);
 						backSide.rotation.y = THREE.Math.degToRad(180);
-						loadTexture(material, this.textureBackUrl,
+						PEEKS.ThreeLoadTexture(material, this.textureBackUrl,
                             this.textureRepeat,
                             false, false,
                             this.imageDetour
@@ -827,7 +844,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-                    loadTexture(material, this.getAttr('textureUrl'),
+                    PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'),
                         this.textureRepeat,
                         false, false,
                         this.imageDetour
@@ -901,7 +918,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 break;
         }
         threeObject.material.depthWrite = this.getAttr('depthWrite') === 'false' ? false : true;
-
 
         // Check on aspect ratio in case of texture present
         if (this.primitive === PEEKS.Asset.PrimitivePlane) {
