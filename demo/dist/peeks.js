@@ -3047,46 +3047,16 @@ exports.math = utils.math;
 exports.setAnimationSpeed = setAnimationSpeed;
 
 var global = Function('return this')();
-global.PEEKS = global.PEEKS || {}
-PEEKS.EventDispatcher = EventDispatcher;
-PEEKS.Node = Node;
-PEEKS.Asset = Asset;
-PEEKS.Scene = Scene;
-PEEKS.Camera = Camera;
-PEEKS.Canvas = Canvas;
-PEEKS.Screen = Screen;
-PEEKS.Plane = Plane;
-PEEKS.Animation = Animation;
-PEEKS.setLogLevel = setLogLevel;
-PEEKS.logLevel = logLevel;
-PEEKS.logDebug = logDebug;
-PEEKS.logInfo = logInfo;
-PEEKS.logWarning = logWarning;
-PEEKS.logError = logError;
-PEEKS.registerPage = registerPage;
-PEEKS.loadPage = loadPage;
-PEEKS.isPhone = isPhone;
-PEEKS.v3 = utils.v3;
-PEEKS.color = utils.color;
-PEEKS.math = utils.math;
+global.PEEKS = global.PEEKS || exports;
 
 PEEKS.registerPage('peeks_toolbar', function() {
-var page = new PEEKS.Asset();
+    var page = new PEEKS.Asset();
 
-var canvas = page.addCanvas({
-    valign: 'bottom',
-});
+    var canvas = page.addCanvas({
+        valign: 'bottom',
+    });
 
-var height = -.44;
-
-/*
-canvas.addView({
-	position: [0, height],
-	size: [1, .12, 1],
-    viewBgColor: [.3, .3, .3],
-	alpha: 0,
-});
-*/
+    var height = -.44;
 
     canvas.addRoundIconButton({
 		icon: '/ui/icon_previous.png',
