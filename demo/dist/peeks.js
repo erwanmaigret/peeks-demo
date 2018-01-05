@@ -68,19 +68,22 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-
-var global = Function('return this')();
-
-global.THREE = __webpack_require__(2);
+__webpack_require__(2);
 __webpack_require__(3);
 __webpack_require__(4);
 
-__webpack_require__(5);
+var global = Function('return this')();
+
+global.THREE = __webpack_require__(5);
 __webpack_require__(6);
 __webpack_require__(7);
+
 __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
+__webpack_require__(11);
+__webpack_require__(12);
+__webpack_require__(13);
 
 
 /***/ }),
@@ -3049,6 +3052,11 @@ exports.setAnimationSpeed = setAnimationSpeed;
 var global = Function('return this')();
 global.PEEKS = global.PEEKS || exports;
 
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
 PEEKS.registerPage('peeks_toolbar', function() {
     var page = new PEEKS.Asset();
 
@@ -3116,6 +3124,11 @@ PEEKS.registerPage('peeks_toolbar', function() {
 	return page;
 });
 
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
 PEEKS.registerPage('Demo', function() {
 	var page = new PEEKS.Asset();
 
@@ -3124,6 +3137,11 @@ PEEKS.registerPage('Demo', function() {
 	page.addPage('peeks_toolbar');
 	return page;
 });
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
 
 PEEKS.registerPage('Peeks', function() {
 	var page = new PEEKS.Asset();
@@ -3188,7 +3206,7 @@ PEEKS.registerPage('Peeks', function() {
 
 
 /***/ }),
-/* 2 */
+/* 5 */
 /***/ (function(module, exports) {
 
 (function (global, factory) {
@@ -48255,7 +48273,7 @@ PEEKS.registerPage('Peeks', function() {
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /**
@@ -48976,7 +48994,7 @@ THREE.OBJLoader = ( function () {
 
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports) {
 
 PEEKS.texturesCache = {
@@ -50372,7 +50390,7 @@ THREE.ShaderPeeks = {
 
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('3D Assets', function() {
@@ -50435,7 +50453,7 @@ PEEKS.registerPage('3D Assets', function() {
 
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('2D Assets', function() {
@@ -50538,7 +50556,7 @@ PEEKS.registerPage('2D Assets', function() {
 
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports) {
 
 function createMannequin(page, position) {
@@ -51033,7 +51051,7 @@ PEEKS.registerPage('mannequin', function() {
 
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports) {
 
 function createAsset(page, position) {
@@ -51225,7 +51243,7 @@ PEEKS.registerPage('shoe', function() {
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('sportrade', function() {
@@ -51401,7 +51419,7 @@ PEEKS.registerPage('sportrade', function() {
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('tron', function() {

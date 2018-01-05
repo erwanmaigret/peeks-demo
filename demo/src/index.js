@@ -1,4 +1,7 @@
 require('./peeks.js');
+require('./peeks_toolbar.js');
+require('./peeks_demo.js');
+require('./peeks_main.js');
 
 var global = Function('return this')();
 
