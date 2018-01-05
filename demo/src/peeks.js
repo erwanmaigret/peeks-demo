@@ -2519,6 +2519,52 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			}
 		},
 
+        updateFullScreen: function () {
+            var document = this.getDocument();
+			if (document) {
+                if (document.fullscreenEnabled ||
+                    document.webkitFullscreenEnabled ||
+                    document.mozFullScreenEnabled ||
+                    document.msFullscreenEnabled)
+                {
+                    if (this.isVrMode()) {
+                        if (document.fullscreenElement ||
+                            document.webkitFullscreenElement ||
+                            document.mozFullscreenElement ||
+                            document.msFullscreenElement
+                        ) {
+                        } else {
+                            if (this.domElement.requestFullscreen) {
+                                this.domElement.requestFullscreen();
+                            } else if (this.domElement.webkitRequestFullscreen) {
+                                this.domElement.webkitRequestFullscreen();
+                            } else if (this.domElement.mozRequestFullScreen) {
+                                this.domElement.mozRequestFullScreen();
+                            } else if (this.domElement.msRequestFullscreen) {
+                                this.domElement.msRequestFullscreen();
+                            }
+                        }
+                    } else {
+                        if (document.fullscreenElement ||
+                            document.webkitFullscreenElement ||
+                            document.mozFullscreenElement ||
+                            document.msFullscreenElement
+                        ) {
+                            if (document.exitFullscreen) {
+                                document.exitFullscreen();
+                            } else if (document.webkitExitFullscreen) {
+                                document.webkitExitFullscreen();
+                            } else if (document.mozExitFullscreen) {
+                                document.mozExitFullscreen();
+                            } else if (document.msExitFullscreen) {
+                                document.msExitFullscreen();
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
 		start: function (window, animate) {
             var document = window.document;
 
