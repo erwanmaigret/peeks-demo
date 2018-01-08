@@ -18,6 +18,7 @@ PEEKS.registerPage('kirkwood', function() {
     });
 
     var imagePath = 'http://52.25.54.6/?url=https://www.nicholaskirkwood.com/wp-content/uploads/';
+    //var imagePath = 'https://www.nicholaskirkwood.com/wp-content/uploads/';
     var siteMap = [
         {
             name: 'NEWS',
