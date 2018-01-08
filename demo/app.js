@@ -24,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/scrap', require('./routes/scrap'));
+app.use('/scrape', require('./routes/scrape'));
 app.use('/reco', require('./routes/reco'));
 app.use('/target', require('./routes/target'));
 app.use('/fortinet', require('./routes/fortinet'));
