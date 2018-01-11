@@ -1,4 +1,7 @@
 PEEKS.registerPage('louisvuitton', function() {
+    var useEntranceAnimation = false;
+    var useBalloons = false;
+
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
         fontColorBold: [191/255, 166/255, 154/255],
@@ -29,7 +32,9 @@ PEEKS.registerPage('louisvuitton', function() {
 
     page.setAssetPath(imagePath);
     page.addSiteMapItem('LV NOW', { icon: 'PP_VP_AS/VE_FB_VISUAL9_L/louis-vuitton--909_MONUMENTA_01_VISUAL9.jpg'});
-    page.addSiteMapItem('WORLD OF LOUIS VUITTON', { icon: 'VE_DI3_L/louis-vuitton--LV_Now_LVTHEBOOKGIFTS_1_DI3.jpg'});
+    page.addSiteMapItem('Games', { icon: 'VE_DI3_L/louis-vuitton--1053_Lv_Now_FONDATIONLOUISVUITTONETREMODERNELEMoMAAPARIS_1_DI3.jpg'});
+    page.addSiteMapItem("Games/Hidden Objects", { icon: 'VE_DI3_L/louis-vuitton--1053_Lv_Now_FONDATIONLOUISVUITTONETREMODERNELEMoMAAPARIS_1_DI3.jpg', page: 'gameHiddenObjects' } );
+    page.addSiteMapItem("Games/Puzzle", { icon: 'VE_DI3_L/louis-vuitton--1053_Lv_Now_FONDATIONLOUISVUITTONETREMODERNELEMoMAAPARIS_4_DI3.jpg', page: 'gameMatch3' } );
     page.addSiteMapItem('WOMEN', { icon: 'VE_VISUAL4_M/louis-vuitton--Cruise18_Look_01_VISUAL4.jpg'});
     page.addSiteMapItem('WOMEN/READY-TO-WEAR', { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg'});
     page.addSiteMapItem('WOMEN/READY-TO-WEAR/Skirts', { icon: 'PP_VP_AS/louis-vuitton--FESK91FLD001_PM2_Front%20view.jpg'});
@@ -135,6 +140,7 @@ PEEKS.registerPage('louisvuitton', function() {
     page.addSiteMapItem('WOMEN/PERSONALIZATION/MON MONOGRAM');
     page.addSiteMapItem('WOMEN/PERSONALIZATION/HOTSTAMPING');
     page.addSiteMapItem('WOMEN/PERSONALIZATION/My LV Tambour');
+    page.addSiteMapItem('WORLD OF LOUIS VUITTON', { icon: 'VE_DI3_L/louis-vuitton--LV_Now_LVTHEBOOKGIFTS_1_DI3.jpg'});
     page.addSiteMapItem('MEN', { icon: 'VE_VISUAL4_M/louis-vuitton--Men_Precollection_SS18_LOOK01_VISUAL4.jpg'});
     page.addSiteMapItem('HOME', { icon: 'VE_DI3_L/louis-vuitton-masters--Masters_Monet_Seydoux_DI3.jpg'});
     page.addSiteMapItem("HOME/MASTERS", { icon: 'VE_DI3_L/louis-vuitton-masters--Masters_Monet_Seydoux_DI3.jpg' } );
@@ -142,6 +148,7 @@ PEEKS.registerPage('louisvuitton', function() {
     page.addSiteMapItem("HOME/LEATHER ESSENTIALS", { icon: 'VE_DI1_L/louis-vuitton-leather-essentials--HP_US_Pushes5_M51202_DI1.jpg' } );
     page.addSiteMapItem("HOME/THE ART OF GIFTING", { icon: 'VE_DI1_L/louis-vuitton-the-art-of-gifting--Lv_Now_THEARTOFGIFTING_DI1.jpg' } );
     page.addSiteMapItem("HOME/MEN'S BAGS", { icon: 'VE_DI1_L/louis-vuitton-men%E2%80%99s-bags--HP_US_Pushes7_M34408_DI1.jpg' } );
+
     var currentItems = [];
 
     page.onUpdateSiteMapPath = function() {
@@ -269,6 +276,12 @@ PEEKS.registerPage('louisvuitton', function() {
         return path;
     };
 
+    var onPageClick = function() {
+        if (this.page) {
+            page.getScene().loadPage(this.page);
+        }
+    };
+
     var refresh = function() {
         //
         // Remove previous items
@@ -341,7 +354,8 @@ PEEKS.registerPage('louisvuitton', function() {
                     imageDetour: true,
                     path: item.path,
                     valign: 'bottom',
-                    onClick: item.isProduct ? 'animateFlip' : undefined,
+                    page: item.page,
+                    onClick: item.isProduct ? 'animateFlip' : onPageClick,
                 });
                 var yOffset = -.6
                 if (item.isProduct) {
@@ -438,6 +452,10 @@ PEEKS.registerPage('louisvuitton', function() {
     }
 
     var createBalloons = function() {
+        if (!useBalloons) {
+            return;
+        }
+
         balloons.push(createBalloon('1', -3, -6));
         balloons.push(createBalloon('2', -2.5, -7));
         balloons.push(createBalloon('3', -2, -6));
@@ -476,6 +494,10 @@ PEEKS.registerPage('louisvuitton', function() {
     }
 
     var releaseBalloon = function(balloon) {
+        if (!useBalloons) {
+            return;
+        }
+
         balloon.animate({
             duration: 4 + Math.random() * 10,
             begin: [0, 0, 0],
@@ -573,7 +595,7 @@ PEEKS.registerPage('louisvuitton', function() {
         viewBgColor: [0, 0, 0],
         size: [2, 4, 2],
     });
-    otherAssets.addMesh({
+    var lvLogo = otherAssets.addMesh({
         geometry: '/assets/lv_logo.obj',
         position: [0, -.3, -2],
         size: .023,
@@ -595,6 +617,10 @@ PEEKS.registerPage('louisvuitton', function() {
         viewBgColor: [0, 0, 0],
         size: [2, 4, 2],
     });
+
+    if (!useEntranceAnimation) {
+        lvLogo.onClick();
+    }
 
 	return page;
 });
