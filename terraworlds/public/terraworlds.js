@@ -1,57 +1,50 @@
+function onClickTile() {
+    if (this.game.tool.image) {
+        this.addButton({
+            position: [0, 0, .1],
+            image: this.game.tool.image,
+            imageRepeat: [this.game.tool.tiles, this.game.tool.tiles],
+            onClick: onClickTile,
+            sides: 'front',
+            game: this.game,
+        });
+    } else {
+        if (!this.isRoot) {
+            this.destroy();
+        }
+    }
+};
+
+function addTile(game, x, y, z) {
+    var tile = game.addButton({
+        position: [x / 2, -1, z / 2],
+        rotation: [-90, 0, 0],
+        viewBgColor: [.3, .3, .3],
+        sides: 'front',
+        size: .5,
+        onClick: onClickTile,
+        isRoot: true,
+    });
+    tile.game = game;
+};
+
 PEEKS.registerPage('Terraworlds', function() {
 	var page = new PEEKS.Asset({
         category: 'white',
     });
 
+    var game = page;
+
     page.setAttr('fontColor', page.getAttr('colorDark'));
 
     var tool = {};
-
-    var cubeSize = 1;
-    var cubeColor = [0, 1, 0];
-    var cubeImage ='/images/minecraft_stone.jpg';
-    var cubeRepeat = [3, 3];
-    var onClick = function() {
-        if (tool.image) {
-            this.addButton({
-                position: [0, 0, .1],
-                viewBgColor: cubeColor,
-                image: tool.image,
-                imageRepeat: [tool.tiles, tool.tiles],
-                onClick: onClick,
-                size: cubeSize,
-                sides: 'front',
-            });
-        } else {
-            if (!this.isRoot) {
-                this.destroy();
-            }
-        }
-    };
+    game.tool = tool;
 
 	var size = 15;
 	for (var x = -size; x < size; x++) {
 		for (var z = -size; z < size; z++) {
-			page.addButton({
-                position: [x / 2, -1, z / 2],
-				rotation: [-90, 0, 0],
-                viewBgColor: [.3, .5, .2],
-                //size: .97,
-                sides: 'front',
-                size: .5,
-				onClick: onClick,
-                isRoot: true,
-			}).animate({
-				duration: 2 + Math.random() * 1,
-				delay: .5 + Math.random() * .5,
-				p0: [0, 0, 0],
-				p1: [10, .3,0],
-				p2: [-15, -4, 0],
-				p3: [0, 0, 0],
-				attribute: 'position',
-				//loop: true
-			});
-		}
+            addTile(game, x, 0, z);
+        }
 	}
 
     var canvas = page.addCanvas({
@@ -59,12 +52,53 @@ PEEKS.registerPage('Terraworlds', function() {
     });
 
     var tools = [];
-    var addTool = function(icon, image, tiles) {
+    game.tools = tools;
+    game.setTool = function(tool) {
+        if (!game.toolSelection) {
+            var border = canvas.addImage({
+                position: [0, 0],
+                size: .08,
+                image: '/images/tool_selection.png',
+            });
+            game.toolSelection = border;
+        }
+
+        for (var toolI = 0; toolI < game.tools.length; toolI++) {
+            var toolCurrent = game.tools[toolI];
+            if (toolCurrent.border) {
+                toolCurrent.border.animate({
+                    duration: .3,
+                    begin: [1, 1, 1],
+                    end: [0.5, 0.5, 0.5],
+                    attribute: 'size'
+                });
+                toolCurrent.border = undefined;
+            }
+        }
+
+        var toolPosition = tool.getAttr('position');
+        var currentPosition = game.toolSelection.getAttr('position');
+        game.toolSelection.animate({
+            duration: .3,
+            begin: [0, 0, 0],
+            end: [
+                toolPosition[0] - currentPosition[0],
+                toolPosition[1] - currentPosition[1],
+                toolPosition[2] - currentPosition[2]
+            ],
+            attribute: 'position'
+        });
+    };
+
+    game.addTool = function(icon, image, tiles) {
         var button = canvas.addButton({
             position: [-.5 + tools.length * .1, .45],
     		size: .08,
             image: icon,
+            game: game,
+            onFocus: "",
             onClick: function() {
+                game.setTool(this);
                 tool.image = image;
                 tool.tiles = tiles;
             },
@@ -72,11 +106,11 @@ PEEKS.registerPage('Terraworlds', function() {
         tools.push(button);
     }
 
-    addTool('/images/minecraft_wood.jpg', '/images/minecraft_wood.jpg', 2);
-    addTool('/images/minecraft_craftingtable.jpg', '/images/minecraft_craftingtable.jpg', 1);
-    addTool('/images/minecraft_stone.jpg', '/images/minecraft_stone.jpg', 3);
-    addTool('/images/minecraft_dirt.jpg', '/images/minecraft_dirt.jpg', 1);
-    addTool('/images/minecraft_wood.jpg', undefined, 1);
+    game.addTool('/images/minecraft_wood.jpg', '/images/minecraft_wood.jpg', 2);
+    game.addTool('/images/minecraft_craftingtable.jpg', '/images/minecraft_craftingtable.jpg', 1);
+    game.addTool('/images/minecraft_stone.jpg', '/images/minecraft_stone.jpg', 3);
+    game.addTool('/images/minecraft_dirt.jpg', '/images/minecraft_dirt.jpg', 1);
+    game.addTool('/images/icon_trash.png', undefined, 1);
     tools[0].onClick();
 
     page.onLoad = function () {
