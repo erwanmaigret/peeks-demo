@@ -482,146 +482,146 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
     }
     for (var geomI = 0; geomI < threeObject.children.length; geomI++) {
         var geometry = threeObject.children[geomI];
-        geometry.traverse(
-            function (child) {
-                if (child instanceof THREE.Mesh) {
-                    if (child.geometry && child.material) {
-                        var refMat = asset.material || {};
-                        if (refMat.type === 'velvet') {
-                            var shader = THREE.ShaderPeeks["fabric"];
-            				var fragmentShader = shader.fragmentShader;
-            				var vertexShader = shader.vertexShader;
-            				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-            				//uniforms[ "enableBump" ].value = true;
-            				uniforms[ "enableSpecular" ].value = true;
-                            uniforms[ "tBeckmann" ].value = PEEKS.ThreeTextureLoader(refMat.specularMap);
-                            uniforms[ "tDiffuse" ].value = PEEKS.ThreeTextureLoader(asset.textureUrl);
-            				uniforms[ "diffuse" ].value.setHex( 0xffffff );
-            				uniforms[ "specular" ].value.setHex( 0xa0a0a0 );
-            				uniforms[ "uRoughness" ].value = 0.2;
-            				uniforms[ "uSpecularBrightness" ].value = 0.5;
-            				uniforms[ "bumpScale" ].value = 8;
-            				var material = new THREE.ShaderMaterial( { fragmentShader: fragmentShader, vertexShader: vertexShader, uniforms: uniforms, lights: true } );
-            				material.extensions.derivatives = true;
-                            child.material = material;
-                            if (refMat.type === "velvet") {
-                                uniforms["uFresnelBias"].value = 0.01;
-                                uniforms["uFresnelPower"].value = 2.0;
-                                uniforms["uFresnelScale"].value = 0.4;
-                                uniforms["uFresnelColor"].value = [1.0, 1.0, 1.0];
-                            } else {
-                                uniforms["uFresnelScale"].value = 0.0;
-                            }
-                        } else if (refMat.type === 'phong') {
-                            var shader = THREE.ShaderPeeks["phong"];
-            				var fragmentShader = shader.fragmentShader;
-            				var vertexShader = shader.vertexShader;
-            				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-            				var material = new THREE.ShaderMaterial( {
-                                fragmentShader: fragmentShader,
-                                vertexShader: vertexShader,
-                                uniforms: uniforms,
-                                lights: true,
-                            } );
-                            child.material = material;
-
-                            /*
-                            Internal defaults:
-
-                            material.type = 'MeshPhongMaterial';
-                            material.color = new THREE.Color( 0xff0000 ); // diffuse
-                            material.specular = new THREE.Color( 0x0000ff );
-                            material.shininess = 30;
-
-                            material.lightMap = null;
-                            material.lightMapIntensity = 1.0;
-
-                            material.aoMap = null;
-                            material.aoMapIntensity = 1.0;
-
-                            material.emissive = new THREE.Color( 0x000000 );
-                            material.emissiveIntensity = 1.0;
-                            material.emissiveMap = null;
-
-                            material.bumpMap = null;
-                            material.bumpScale = 1;
-
-                            material.normalMap = null;
-                            material.normalScale = new THREE.Vector2( 1, 1 );
-
-                            material.displacementMap = null;
-                            material.displacementScale = 1;
-                            material.displacementBias = 0;
-
-                            material.specularMap = null;
-
-                            material.alphaMap = null;
-
-                            material.envMap = null;
-                            material.combine = THREE.MultiplyOperation;
-                            material.reflectivity = 1;
-                            material.refractionRatio = 0.98;
-
-                            material.wireframe = false;
-                            material.wireframeLinewidth = 1;
-                            material.wireframeLinecap = 'round';
-                            material.wireframeLinejoin = 'round';
-
-                            material.skinning = false;
-                            material.morphTargets = false;
-                            material.morphNormals = false;
-                            */
-
-                            material.extensions.derivatives = true;
-                            material.extensions.fragDepth = true;
-                			material.extensions.drawBuffers = true;
-                            material.extensions.shaderTextureLOD = true;
-
-                            // Defaults:
-                            material.color = 0xffffff;
-                            material.transparent = true;
-                            material.side = THREE.FrontSide;
-                            material.depthTest = true;
-
-                            PEEKS.ThreeShaderAttr(material, 'map', asset.textureUrl);
-                            PEEKS.ThreeShaderAttr(material, 'normalMap', refMat.normalMap);
-                            PEEKS.ThreeShaderAttr(material, 'alphaMap', refMat.alphaMap);
-                            PEEKS.ThreeShaderAttr(material, 'bumpMap', refMat.bumpMap);
-                            PEEKS.ThreeShaderAttr(material, 'opacity', PEEKS.ThreeFloat(asset.alpha, 1));
-                            PEEKS.ThreeShaderAttr(material, 'reflectivity', PEEKS.ThreeFloat(refMat.reflectivity , .2));
-                            PEEKS.ThreeShaderAttr(material, 'shininess', PEEKS.ThreeFloat(refMat.shininess , 10));
-                            PEEKS.ThreeShaderAttr(material, 'emissive', PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]));
-                            PEEKS.ThreeShaderAttr(material, 'specular', PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]));
-                            // PEEKS.ThreeShaderAttr(material, 'color', PEEKS.ThreeColor(refMat.color, [1, 1, 1]));
-                            // PEEKS.ThreeShaderAttr(material, 'side', THREE.FrontSide);
+        for (var childI = 0; childI < geometry.children.length; childI++) {
+            var child = geometry.children[childI];
+            if (child instanceof THREE.Mesh) {
+                if (child.geometry && child.material) {
+                    var refMat = asset.material || {};
+                    if (refMat.type === 'velvet') {
+                        var shader = THREE.ShaderPeeks["fabric"];
+        				var fragmentShader = shader.fragmentShader;
+        				var vertexShader = shader.vertexShader;
+        				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+        				//uniforms[ "enableBump" ].value = true;
+        				uniforms[ "enableSpecular" ].value = true;
+                        uniforms[ "tBeckmann" ].value = PEEKS.ThreeTextureLoader(refMat.specularMap);
+                        uniforms[ "tDiffuse" ].value = PEEKS.ThreeTextureLoader(asset.textureUrl);
+        				uniforms[ "diffuse" ].value.setHex( 0xffffff );
+        				uniforms[ "specular" ].value.setHex( 0xa0a0a0 );
+        				uniforms[ "uRoughness" ].value = 0.2;
+        				uniforms[ "uSpecularBrightness" ].value = 0.5;
+        				uniforms[ "bumpScale" ].value = 8;
+        				var material = new THREE.ShaderMaterial( { fragmentShader: fragmentShader, vertexShader: vertexShader, uniforms: uniforms, lights: true } );
+        				material.extensions.derivatives = true;
+                        child.material = material;
+                        if (refMat.type === "velvet") {
+                            uniforms["uFresnelBias"].value = 0.01;
+                            uniforms["uFresnelPower"].value = 2.0;
+                            uniforms["uFresnelScale"].value = 0.4;
+                            uniforms["uFresnelColor"].value = [1.0, 1.0, 1.0];
                         } else {
-                            var material = child.material;
-                            if (material.type !== 'MeshPhongMaterial') {
-                                material = new THREE.MeshPhongMaterial({
-                                    color: 0xffffff,
-                                    transparent: true,
-                                    side: THREE.FrontSide,
-                                    depthTest: true,
-                                });
-                                child.material = material;
-                            }
-                            material.map = PEEKS.ThreeTextureLoader(asset.textureUrl);
-                            material.transparent = true;
-                            material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
-                            material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
-                            material.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
-                            material.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
-                            material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
-                            material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
-                            material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
-                            material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
-                            material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
-                            material.side = THREE.FrontSide;
+                            uniforms["uFresnelScale"].value = 0.0;
                         }
+                    } else if (refMat.type === 'phong') {
+                        var shader = THREE.ShaderPeeks["phong"];
+        				var fragmentShader = shader.fragmentShader;
+        				var vertexShader = shader.vertexShader;
+        				var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+        				var material = new THREE.ShaderMaterial( {
+                            fragmentShader: fragmentShader,
+                            vertexShader: vertexShader,
+                            uniforms: uniforms,
+                            lights: true,
+                        } );
+                        child.material = material;
+
+                        /*
+                        Internal defaults:
+
+                        material.type = 'MeshPhongMaterial';
+                        material.color = new THREE.Color( 0xff0000 ); // diffuse
+                        material.specular = new THREE.Color( 0x0000ff );
+                        material.shininess = 30;
+
+                        material.lightMap = null;
+                        material.lightMapIntensity = 1.0;
+
+                        material.aoMap = null;
+                        material.aoMapIntensity = 1.0;
+
+                        material.emissive = new THREE.Color( 0x000000 );
+                        material.emissiveIntensity = 1.0;
+                        material.emissiveMap = null;
+
+                        material.bumpMap = null;
+                        material.bumpScale = 1;
+
+                        material.normalMap = null;
+                        material.normalScale = new THREE.Vector2( 1, 1 );
+
+                        material.displacementMap = null;
+                        material.displacementScale = 1;
+                        material.displacementBias = 0;
+
+                        material.specularMap = null;
+
+                        material.alphaMap = null;
+
+                        material.envMap = null;
+                        material.combine = THREE.MultiplyOperation;
+                        material.reflectivity = 1;
+                        material.refractionRatio = 0.98;
+
+                        material.wireframe = false;
+                        material.wireframeLinewidth = 1;
+                        material.wireframeLinecap = 'round';
+                        material.wireframeLinejoin = 'round';
+
+                        material.skinning = false;
+                        material.morphTargets = false;
+                        material.morphNormals = false;
+                        */
+
+                        material.extensions.derivatives = true;
+                        material.extensions.fragDepth = true;
+            			material.extensions.drawBuffers = true;
+                        material.extensions.shaderTextureLOD = true;
+
+                        // Defaults:
+                        material.color = 0xffffff;
+                        material.transparent = true;
+                        material.side = THREE.FrontSide;
+                        material.depthTest = true;
+
+                        PEEKS.ThreeShaderAttr(material, 'map', asset.textureUrl);
+                        PEEKS.ThreeShaderAttr(material, 'normalMap', refMat.normalMap);
+                        PEEKS.ThreeShaderAttr(material, 'alphaMap', refMat.alphaMap);
+                        PEEKS.ThreeShaderAttr(material, 'bumpMap', refMat.bumpMap);
+                        PEEKS.ThreeShaderAttr(material, 'opacity', PEEKS.ThreeFloat(asset.alpha, 1));
+                        PEEKS.ThreeShaderAttr(material, 'reflectivity', PEEKS.ThreeFloat(refMat.reflectivity , .2));
+                        PEEKS.ThreeShaderAttr(material, 'shininess', PEEKS.ThreeFloat(refMat.shininess , 10));
+                        PEEKS.ThreeShaderAttr(material, 'emissive', PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]));
+                        PEEKS.ThreeShaderAttr(material, 'specular', PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]));
+                        // PEEKS.ThreeShaderAttr(material, 'color', PEEKS.ThreeColor(refMat.color, [1, 1, 1]));
+                        // PEEKS.ThreeShaderAttr(material, 'side', THREE.FrontSide);
+                    } else {
+                        var material = child.material;
+                        if (material.type !== 'MeshPhongMaterial') {
+                            material = new THREE.MeshPhongMaterial({
+                                color: 0xffffff,
+                                transparent: true,
+                                side: THREE.FrontSide,
+                                depthTest: true,
+                            });
+                            child.material = material;
+                        }
+                        material.map = PEEKS.ThreeTextureLoader(asset.textureUrl);
+                        material.transparent = true;
+                        material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
+                        material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
+                        material.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
+                        material.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                        material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
+                        material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
+                        material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
+                        material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
+                        var color = asset.getAttrColor('color', [1, 1, 1, 1]);
+                        material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
+                        material.side = THREE.FrontSide;
                     }
                 }
             }
-        );
+        }
     }
 },
 
