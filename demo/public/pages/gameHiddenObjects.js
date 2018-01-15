@@ -1,5 +1,6 @@
 PEEKS.registerPage('gameHiddenObjects', function() {
 	var page = new PEEKS.Asset({
+        backgroundImage: '/images/bg_360_place.jpg',
     });
 
     var panel = page.addAsset({

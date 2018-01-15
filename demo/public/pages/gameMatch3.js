@@ -1,5 +1,6 @@
 PEEKS.registerPage('gameMatch3', function() {
 	var page = new PEEKS.Asset({
+        backgroundImage: '/images/bg_360_place.jpg',
     });
 
     var grid = page.addAsset({
