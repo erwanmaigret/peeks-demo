@@ -1,5 +1,5 @@
 PEEKS.registerPage('louisvuitton', function() {
-    var useEntranceAnimation = false;
+    var useEntranceAnimation = true;
     var useBalloons = false;
 
 	var page = new PEEKS.Asset({
