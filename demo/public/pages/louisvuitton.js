@@ -176,39 +176,6 @@ PEEKS.registerPage('louisvuitton', function() {
                 viewBgColor: [.96, .96, .96],
             });
 
-            var product = this.product;
-            if (product) {
-                /*
-                var url = 'https://redsky.target.com/v2/pdp/tcin/' + product;
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var data = JSON.parse(this.responseText);
-
-                        productPane.addText({
-                            viewBgColor: page.fontColorBold,
-                            position: [0, .4, .01],
-                            size: [.9, .2, 1],
-                            fontSize: 52,
-                            fontColor: [.3, .3, .3],
-                            text: data.product.item.product_brand.brand,
-                        });
-
-                        productPane.addText({
-                            viewBgColor: page.fontColorBold,
-                            position: [-.3, -.3, .01],
-                            size: [.3, .2, 1],
-                            fontSize: 52,
-                            fontColor: [.3, .3, .3],
-                            text: data.product.price.listPrice.formattedPrice,
-                        });
-                    }
-                };
-                xhttp.open("GET", url, true);
-                xhttp.send();
-                */
-            }
-
             productPane.addText({
                 viewBgColor: page.fontColorBold,
                 position: [0, .3, .01],
@@ -586,7 +553,7 @@ PEEKS.registerPage('louisvuitton', function() {
     });
     var doorLeftPane = doorLeft.addView({
         position: [1, 0, 0],
-        viewBgColor: [0, 0, 0],
+        viewBgColor: colorDark,
         size: [2, 4, 2],
     });
     doorLeftPane.addView({
@@ -603,7 +570,6 @@ PEEKS.registerPage('louisvuitton', function() {
         geometry: '/assets/lv_logo.obj',
         position: [0, -.3, -2],
         size: .015,
-        //color: page.backgroundImageColor,
         color: colorGold,
         material: {
             shininess: 50,
@@ -631,7 +597,7 @@ PEEKS.registerPage('louisvuitton', function() {
     });
     var doorRightPane = doorRight.addView({
         position: [-1, 0, 0],
-        viewBgColor: [0, 0, 0],
+        viewBgColor: colorDark,
         size: [2, 4, 2],
     });
     doorRightPane.addView({
