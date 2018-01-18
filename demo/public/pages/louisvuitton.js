@@ -287,7 +287,7 @@ PEEKS.registerPage('louisvuitton', function() {
 
     var foreground = page.addAsset();
 
-    var imagePath = 'http://us.louisvuitton.com/images/is/image/lv/1/';
+    var imagePath = 'http://52.25.54.6/?url=http://us.louisvuitton.com/images/is/image/lv/1/';
 
     page.setAssetPath(imagePath);
     page.addSiteMapItem('LV NOW', { icon: 'PP_VP_AS/VE_FB_VISUAL9_L/louis-vuitton--909_MONUMENTA_01_VISUAL9.jpg'});
