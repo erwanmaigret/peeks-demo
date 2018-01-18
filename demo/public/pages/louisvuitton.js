@@ -1,13 +1,264 @@
+var analytics = function (event, action, params) {
+    return;
+
+    console.log(event + ': ' + action + (params ? params.toString() : ''));
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", 'http://52.25.54.6:9000/peeks/analytics/', true);
+    xhr.setRequestHeader("Authorization", "Basic ZXJ3YW46ZXJ3QG4xMjM=");
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.onreadystatechange = function() {//Call a function when the state changes.
+        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            console.log('done');
+            consold.log(xhr);
+            // Request finished. Do processing here.
+        }
+    }
+    xhr.send(
+        //{"title":"test","action":"xhr" , "timeEpoc":"1212"}
+        "foo=bar&lorem=ipsum"
+    );
+};
+
+PEEKS.Screen.prototype.onLayout = function() {
+    if (this.currentItems === undefined) {
+        this.currentItems = [];
+    }
+
+    var page = this.getPage();
+
+    var getAsset = function(path) {
+        if (path) {
+            if (path.search('http') === -1) {
+                path = imagePath + path;
+            }
+        }
+        return path;
+    };
+
+    var screen = this;
+    var onClick = function() {
+        if (page.siteMapPathIsLeaf(this.path)) {
+            page.setSiteMapPath(this.path);
+        } else {
+            page.setSiteMapMenuPath(this.path);
+        }
+        screen.onLayout();
+    };
+
+    var onPageClick = function() {
+        if (this.page) {
+            page.getScene().loadPage(this.page);
+        }
+    };
+
+    var onToggleProduct = function() {
+        if (this.productPane === undefined) {
+            var productPane = this.parent.addView({
+                position: [0, .75, -.1],
+                size: [.8, .4, 1],
+                viewBgColor: [.96, .96, .96],
+            });
+
+            productPane.addText({
+                viewBgColor: page.fontColorBold,
+                position: [0, .3, .01],
+                size: [.3, .2, 1],
+                fontSize: 42,
+                fontColor: [.3, .3, .3],
+                text: 'Sizes',
+            });
+
+            for (var i = 0; i < 5; i++) {
+                productPane.addButton({
+                    position: [-.36 + .18 * i, .1, .01],
+                    size: [.15, .2, 1],
+                    viewBgColor: [1, 1, 1],
+                }).addText({
+                    position: [0, 0, .01],
+                    fontSize: 52,
+                    fontColor: [.3, .3, .3],
+                    text: (6 + i * 2).toString(),
+                });
+            }
+
+            productPane.addButton({
+                viewBgColor: page.fontColorBold,
+                position: [0, -.3, .01],
+                size: [.4, .2, 1],
+            }).addText({
+                position: [0, 0, .01],
+                fontSize: 52,
+                fontColor: [0, 0, 0],
+                text: 'try on',
+                onClick: function() {
+                    page.getScene().loadPage('mannequin');
+                }
+            });
+
+            productPane.animate({
+                duration: .6,
+                delay: .5,
+                begin: [0, -1, 0],
+                end: [0, 0, 0],
+                attribute: 'position'
+            });
+
+            this.productPane = productPane;
+        } else {
+            this.productPane.destroy();
+            this.productPane = undefined;
+        }
+    };
+
+    // Remove previous items
+    var itemCount = this.currentItems.length;
+    for (var itemI = 0; itemI < itemCount; itemI++) {
+        this.currentItems[itemI].destroy();
+    }
+    this.currentItems = [];
+
+    //
+    // Update elements
+    //
+
+    var itemCountMax = 18;
+    var itemStep = .055;
+
+    var items = page.querySiteMapMenuAssets();
+
+    // Current navigation level
+    if (items) {
+        var itemCount = items.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            var item = items[itemI];
+            var xIndex = itemI;
+            var yOffset = .3;
+            while (xIndex >= 8) {
+                yOffset += .2;
+                xIndex -= 8;
+            }
+            var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
+            var asset = this.addAsset({
+                position: [xOffset, yOffset, 0],
+                size: .4,
+            });
+            var image = this.getAssetPath(item.image);
+            var shelve = asset.addView({
+                position: [0, -0.5, 0],
+                rotation: [-90, 0, 0],
+                size: [2.5, 1, 1],
+                viewBgColor: page.colorDark,
+            });
+            /* Support
+            shelve.addView({
+                position: [0, .1, .25],
+                rotation: [90, 0, 0],
+                size: [.01, .5, 1],
+                viewBgColor: page.colorDark,
+            });
+            */
+            var label = shelve.addView({
+                position: [0, -.5, -.15],
+                rotation: [90, 0, 0],
+                size: [1, .3, 1],
+                viewBgColor: page.colorDark,
+            });
+            shelve.addView({
+                position: [0, -.51, 0],
+                rotation: [90, 0, 0],
+                size: [1, .01, 1],
+                viewBgColor: page.colorLight,
+            });
+            var button = asset.addButton({
+                image: image,
+                path: item.path,
+                imageDetour: true,
+                alpha: image ? 1 : 0,
+                onClick: onClick,
+            })
+            label.addText({
+                position: [0, 0, .1],
+                fontSize: 60,
+                size: [.3, .1, 1],
+                fontColor: page.colorLight,
+                text: item.name,
+                path: item.path,
+                onClick: onClick,
+            });
+
+            this.currentItems.push(asset);
+        }
+    }
+
+    items = page.querySiteMapAssets();
+
+    if (items) {
+        var itemCount = items.length;
+        for (var itemI = 0; itemI < itemCount; itemI++) {
+            var item = items[itemI];
+            var asset = this.addAsset({
+                position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, 0, 0],
+            });
+            var image = item.image;
+            var imageBack = item.isProduct ? item.image.replace('_PM2_Front', '_PM1_Other') : undefined;
+            var button = asset.addButton({
+                image: this.getAssetPath(image),
+                imageBack: this.getAssetPath(imageBack),
+                imageDetour: true,
+                path: item.path,
+                valign: 'bottom',
+                page: item.page,
+                onClick: item.isProduct ? 'animateFlip' : onPageClick,
+            });
+            var yOffset = -.6
+            if (item.isProduct) {
+                asset.addText({
+                    position: [0, yOffset, .1],
+                    fontSize: 64,
+                    text: 'details',
+                    fontColor: page.fontColorBold,
+                    product: item.icon,
+                    onClick: onToggleProduct,
+                });
+                yOffset -= .2;
+            } else {
+                if (item.name) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 64,
+                        fontColor: page.fontColorBold,
+                        text: item.name,
+                    });
+                    yOffset -= .1;
+                }
+                if (item.description) {
+                    asset.addText({
+                        position: [0, yOffset, .1],
+                        fontSize: 40,
+                        text: item.description,
+                    });
+                    yOffset -= .1;
+                }
+            }
+            this.currentItems.push(asset);
+        }
+    }
+};
+
 PEEKS.registerPage('louisvuitton', function() {
     var useEntranceAnimation = true;
     var useBalloons = false;
 
-	var page = new PEEKS.Asset({
+	var page = new PEEKS.Page({
         fontColor: [0, 0, 0],
         fontColorBold: [191/255, 166/255, 154/255],
         fontOutlineStyle: '',
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
+        colorLight: [1, .85, 0],
+        colorDark: [.1, .05, 0],
         category: 'white',
         //groundImage: '/ui/gradient_radial.png',
         groundImage: '/assets/lv_ground.jpg',
@@ -16,8 +267,12 @@ PEEKS.registerPage('louisvuitton', function() {
         backgroundImageColor: [224/255, 219/255, 213/255],
     });
 
-    var colorGold = [1, .85, 0];
-    var colorDark = [.1, .05, 0];
+    page.analytics = analytics;
+
+    page.analytics('event', 'loadpage');
+
+    var colorGold = page.colorLight;
+    var colorDark = page.colorDark;
 
 	var balloonsAsset = page.addAsset();
     var otherAssets = page.addAsset();
@@ -153,213 +408,16 @@ PEEKS.registerPage('louisvuitton', function() {
     page.addSiteMapItem("HOME/THE ART OF GIFTING", { icon: 'VE_DI1_L/louis-vuitton-the-art-of-gifting--Lv_Now_THEARTOFGIFTING_DI1.jpg' } );
     page.addSiteMapItem("HOME/MEN'S BAGS", { icon: 'VE_DI1_L/louis-vuitton-men%E2%80%99s-bags--HP_US_Pushes7_M34408_DI1.jpg' } );
 
-    var currentItems = [];
-
     page.onUpdateSiteMapPath = function() {
-        refresh();
+        screen.onLayout();
     };
-
-    var onClick = function() {
-        if (page.siteMapPathIsLeaf(this.path)) {
-            page.setSiteMapPath(this.path);
-        } else {
-            page.setSiteMapMenuPath(this.path);
-        }
-        refresh();
-    };
-
-    var onToggleProduct = function() {
-        if (this.productPane === undefined) {
-            var productPane = this.parent.addView({
-                position: [0, .75, -.1],
-                size: [.8, .4, 1],
-                viewBgColor: [.96, .96, .96],
-            });
-
-            productPane.addText({
-                viewBgColor: page.fontColorBold,
-                position: [0, .3, .01],
-                size: [.3, .2, 1],
-                fontSize: 42,
-                fontColor: [.3, .3, .3],
-                text: 'Sizes',
-            });
-
-            for (var i = 0; i < 5; i++) {
-                productPane.addButton({
-                    position: [-.36 + .18 * i, .1, .01],
-                    size: [.15, .2, 1],
-                    viewBgColor: [1, 1, 1],
-                }).addText({
-                    position: [0, 0, .01],
-                    fontSize: 52,
-                    fontColor: [.3, .3, .3],
-                    text: (6 + i * 2).toString(),
-                });
-            }
-
-            productPane.addButton({
-                viewBgColor: page.fontColorBold,
-                position: [0, -.3, .01],
-                size: [.4, .2, 1],
-            }).addText({
-                position: [0, 0, .01],
-                fontSize: 52,
-                fontColor: [0, 0, 0],
-                text: 'try on',
-                onClick: function() {
-                    page.getScene().loadPage('mannequin');
-                }
-            });
-
-            productPane.animate({
-                duration: .6,
-                delay: .5,
-                begin: [0, -1, 0],
-                end: [0, 0, 0],
-                attribute: 'position'
-            });
-
-            this.productPane = productPane;
-        } else {
-            this.productPane.destroy();
-            this.productPane = undefined;
-        }
-    };
-
-    var subMenuY = .3;
-    var highlightsY = 0;
 
     var menuPopup;
 
     var onHome = function(path) {
         page.setSiteMapMenuPath('');
         page.setSiteMapPath('HOME');
-        refresh();
-    };
-
-    var getAsset = function(path) {
-        if (path) {
-            if (path.search('http') === -1) {
-                path = imagePath + path;
-            }
-        }
-        return path;
-    };
-
-    var onPageClick = function() {
-        if (this.page) {
-            page.getScene().loadPage(this.page);
-        }
-    };
-
-    var refresh = function() {
-        //
-        // Remove previous items
-        //
-
-        var itemCount = currentItems.length;
-        for (var itemI = 0; itemI < itemCount; itemI++) {
-            currentItems[itemI].destroy();
-        }
-        currentItems = [];
-
-        //
-        // Update elements
-        //
-
-        var itemCountMax = 18;
-        var itemStep = .055;
-
-        var items = page.querySiteMapMenuAssets();
-
-        // Current navigation level
-        if (items) {
-            var itemCount = items.length;
-            for (var itemI = 0; itemI < itemCount; itemI++) {
-                var item = items[itemI];
-                var xIndex = itemI;
-                var yOffset = subMenuY;
-                while (xIndex >= 8) {
-                    yOffset += .2;
-                    xIndex -= 8;
-                }
-                var xOffset = (xIndex % 2 === 0) ? (-xIndex * itemStep) : (xIndex + 1) * itemStep;
-                var asset = screen.addAsset({
-                    position: [xOffset, yOffset, 0],
-                    size: .4,
-                });
-                var image = getAsset(item.image);
-                var button = asset.addButton({
-                    image: image,
-                    path: item.path,
-                    imageDetour: true,
-                    alpha: image ? 1 : 0,
-                    onClick: onClick,
-                })
-                asset.addText({
-                    position: [0, -.6, .1],
-                    fontSize: 80,
-                    text: item.name,
-                    path: item.path,
-                    onClick: onClick,
-                });
-                currentItems.push(asset);
-            }
-        }
-
-        items = page.querySiteMapAssets();
-
-        if (items) {
-            var itemCount = items.length;
-            for (var itemI = 0; itemI < itemCount; itemI++) {
-                var item = items[itemI];
-                var asset = screen.addAsset({
-                    position: [(itemI % 2 === 0) ? (-itemI * itemStep) : (itemI + 1) * itemStep, highlightsY, 0],
-                });
-                var image = item.image;
-                var imageBack = item.isProduct ? item.image.replace('_PM2_Front', '_PM1_Other') : undefined;
-                var button = asset.addButton({
-                    image: getAsset(image),
-                    imageBack: getAsset(imageBack),
-                    imageDetour: true,
-                    path: item.path,
-                    valign: 'bottom',
-                    page: item.page,
-                    onClick: item.isProduct ? 'animateFlip' : onPageClick,
-                });
-                var yOffset = -.6
-                if (item.isProduct) {
-                    asset.addText({
-                        position: [0, yOffset, .1],
-                        fontSize: 40,
-                        text: 'details',
-                        product: item.icon,
-                        onClick: onToggleProduct,
-                    });
-                    yOffset -= .2;
-                } else {
-                    if (item.name) {
-                        asset.addText({
-                            position: [0, yOffset, .1],
-                            fontSize: 64,
-                            fontColor: page.fontColorBold,
-                            text: item.name,
-                        });
-                        yOffset -= .1;
-                    }
-                    if (item.description) {
-                        asset.addText({
-                            position: [0, yOffset, .1],
-                            fontSize: 40,
-                            text: item.description,
-                        });
-                        yOffset -= .1;
-                    }
-                }
-                currentItems.push(asset);
-            }
-        }
+        screen.onLayout();
     };
 
     onHome();
@@ -540,7 +598,7 @@ PEEKS.registerPage('louisvuitton', function() {
             duration: 2.5,
             delay: 1,
             begin: [0, 0, 0],
-            end: [0, 360, 0],
+            end: [30, 360, 0],
             attribute: 'rotation',
         });
     }

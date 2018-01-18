@@ -875,13 +875,12 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 
         getAssetPath: function(url) {
             if (url) {
+                var assetPath = assetPath || this.getPage().assetPath;
                 if (url.search('://') !== -1 || url.substr(0, 1) === '/') {
                     return url;
                 } else {
-                    return this.assetPath + url;
+                    return assetPath + url;
                 }
-            } else {
-                return this.assetPath;
             }
 		},
 
@@ -1399,6 +1398,14 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 				scene = scene.parent;
 			}
 			return scene;
+		},
+
+        getPage: function() {
+            var page = this;
+			while (page && page.type != 'Page') {
+				page = page.parent;
+			}
+			return page;
 		},
 
         getScreen: function() {
@@ -2008,6 +2015,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		getVideo: function() {
 			return this.video;
+		},
+
+        getPage: function() {
+			return this.page;
 		},
 
         toggleGyroscope: function() {
@@ -2923,6 +2934,18 @@ Screen.prototype = Object.assign(Object.create(Asset.prototype),
 	}
 );
 
+function Page(params) {
+	Asset.call(this);
+	this.name = "Page";
+    this.type = "Page";
+    this.initAsset(this, params);
+}
+Page.prototype = Object.assign(Object.create(Asset.prototype),
+	{
+		constructor: Page,
+	}
+);
+
 function Animation(data) {
 	Asset.call( this );
     this.primitive = Asset.PrimitiveAnimation;
@@ -3077,6 +3100,7 @@ exports.Scene = Scene;
 exports.Camera = Camera;
 exports.Canvas = Canvas;
 exports.Screen = Screen;
+exports.Page = Page;
 exports.Plane = Plane;
 exports.Animation = Animation;
 
