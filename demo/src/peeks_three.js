@@ -280,7 +280,20 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 		var video;
 		var scene = this.getScene();
 		if (scene) {
-			var video = scene.getVideo();
+            if (this.video === undefined) {
+                this.video = document.createElement('video');
+                var ratio = this.size[0] / this.size[1];
+                this.video.width = 1024;
+                this.video.height = 1024 / ratio;
+                this.video.autoplay = true;
+                this.video.setAttribute('autoplay', '');
+                this.video.setAttribute('playsinline', '');
+                if (this.videoUrl === undefined) {
+                    this.video.setAttribute('muted', '');
+                }
+            }
+
+			var video = this.video;
 			var window = scene.window;
 			var navigator = window.navigator;
 			if (video && navigator) {
@@ -292,27 +305,32 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 						video.texture = new THREE.Texture(video);
                         video.texture.minFilter = THREE.NearestFilter;
                         video.texture.magFilter = THREE.NearestFilter;
-						navigator.getUserMedia = (
-							navigator.getUserMedia ||
-							navigator.webkitGetUserMedia ||
-							navigator.mozGetUserMedia ||
-							navigator.msGetUserMedia
-						);
-						if (navigator.getUserMedia) {
-							var facingMode = "user";
-							var constraints = {
-							  audio: false,
-							  video: {
-							   facingMode: facingMode
-							  }
-							};
-							navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
-							  video.srcObject = stream;
-								video.play();
-							});
-						} else {
-							 this.error("getUserMedia not supported");
-						}
+
+                        if (this.videoUrl !== undefined) {
+                            video.src = this.videoUrl;
+                        } else {
+                            // This is a camera stream by default
+                            navigator.getUserMedia = (
+    							navigator.getUserMedia ||
+    							navigator.webkitGetUserMedia ||
+    							navigator.mozGetUserMedia ||
+    							navigator.msGetUserMedia
+    						);
+    						if (navigator.getUserMedia) {
+    							var facingMode = "user";
+    							var constraints = {
+                                    audio: false,
+                                    video: { facingMode: facingMode }
+                                };
+    							navigator.mediaDevices.getUserMedia(constraints).
+                                    then(function success(stream) {
+                                        video.srcObject = stream;
+                                        video.play();
+                                    });
+    						} else {
+    							 this.error("getUserMedia not supported");
+    						}
+                        }
 					}
 					threeObject.material.map = video.texture;
 				}
@@ -1044,7 +1062,6 @@ PEEKS.Scene.prototype.onResize = function() {
 
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
-
     var scene = new THREE.Scene();
     var a_scene = document.querySelector('a-scene')
     if (a_scene) {
@@ -1063,7 +1080,10 @@ PEEKS.Scene.prototype.onStart = function() {
 
     var renderer = new THREE.WebGLRenderer({
         alpha: true,
-        antialias: true
+        antialias: true,
+        // This improves performances a lot of course, we may want this
+        //  as an option in case we're just dealing with textured elements
+        // antialias: false,
     });
     renderer.sortObjects = false;
 	renderer.setClearColor(0xffffff, 1);

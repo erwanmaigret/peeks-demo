@@ -15,3 +15,4 @@ require("./pages/mannequin.js");
 require("./pages/shoe.js");
 require("./pages/sportrade.js");
 require("./pages/tron.js");
+require("./pages/movie.js");

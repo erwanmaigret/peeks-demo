@@ -395,6 +395,26 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             return asset;
         },
 
+        addVideo: function (params) {
+            var asset = this.addButton(params);
+			asset.useVideoTexture = true;
+            if (params) {
+				if (params.url) asset.videoUrl = params.url;
+			}
+            asset.onClick = function() {
+                if (this.video) {
+                    if (this.isPlaying) {
+                        this.isPlaying = false;
+                        this.video.pause();
+                    } else {
+                        this.isPlaying = true;
+                        this.video.play();
+                    }
+                }
+            };
+			return asset;
+        },
+
         addImage: function (params) {
 			var asset = this.addView(params);
 			if (params) {
@@ -1217,10 +1237,6 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 			this.textureBackUrl = url;
 		},
 
-		setUseVideoTexture: function() {
-			this.useVideoTexture = true;
-		},
-
 		setGeometry: function(url) {
 			this.geometryUrl = url;
 		},
@@ -1376,7 +1392,7 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.animate({
 				duration: .3,
                 begin: [1, 1, 1],
-                end: [1.1, 1.1, 1.1],
+                end: [1.05, 1.05, 1.05],
 				attribute: 'size'
 			});
             this.animate({
@@ -1391,7 +1407,7 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.animate({
 				duration: .3,
                 begin: [1, 1, 1],
-                end: [1 / 1.1, 1 / 1.1, 1 / 1.1],
+                end: [1 / 1.05, 1 / 1.05, 1 / 1.05],
 				attribute: 'size'
 			});
             this.animate({
@@ -1921,10 +1937,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		onSynch: function () {
 		},
 
-		getVideo: function() {
-			return this.video;
-		},
-
         getPage: function() {
 			return this.page;
 		},
@@ -2304,7 +2316,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         valign: 'bottom',
                     });
                     var asset = new PEEKS.Plane();
-                    asset.setUseVideoTexture(true);
+                    asset.useVideoTexture = true;
                     canvas.add(asset);
                     this.arImage = canvas;
 				}
@@ -2742,14 +2754,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         mainScene.onMouseMove(event);
                     }
                 );
-
-				this.video = document.createElement('video');
-				this.video.width = 1024;
-				this.video.height = 1024;
-				this.video.autoplay = true;
-				this.video.setAttribute('autoplay', '');
-				this.video.setAttribute('muted', '');
-				this.video.setAttribute('playsinline', '');
 			}
 
 			var animate = function () {

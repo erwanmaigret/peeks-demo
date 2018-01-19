@@ -6,7 +6,7 @@ var analytics = function (event, action, params) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", 'http://52.25.54.6:9000/peeks/analytics/', true);
     xhr.setRequestHeader("Authorization", "Basic ZXJ3YW46ZXJ3QG4xMjM=");
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
     xhr.onreadystatechange = function() {//Call a function when the state changes.
         if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
@@ -17,6 +17,7 @@ var analytics = function (event, action, params) {
     }
     xhr.send(
         //{"title":"test","action":"xhr" , "timeEpoc":"1212"}
+        //'{"title":"firstMessage","action":"scroll left" , "timeEpoc":"1212"}'
         "foo=bar&lorem=ipsum"
     );
 };
@@ -248,7 +249,7 @@ PEEKS.Screen.prototype.onLayout = function() {
 };
 
 PEEKS.registerPage('louisvuitton', function() {
-    var useEntranceAnimation = true;
+    var useEntranceAnimation = false;
     var useBalloons = false;
 
 	var page = new PEEKS.Page({

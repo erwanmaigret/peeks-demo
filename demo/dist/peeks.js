@@ -84,6 +84,7 @@ __webpack_require__(10);
 __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
+__webpack_require__(14);
 
 
 /***/ }),
@@ -485,6 +486,26 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             asset.primitive = Asset.PrimitiveCircle;
 
             return asset;
+        },
+
+        addVideo: function (params) {
+            var asset = this.addButton(params);
+			asset.useVideoTexture = true;
+            if (params) {
+				if (params.url) asset.videoUrl = params.url;
+			}
+            asset.onClick = function() {
+                if (this.video) {
+                    if (this.isPlaying) {
+                        this.isPlaying = false;
+                        this.video.pause();
+                    } else {
+                        this.isPlaying = true;
+                        this.video.play();
+                    }
+                }
+            };
+			return asset;
         },
 
         addImage: function (params) {
@@ -1309,10 +1330,6 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 			this.textureBackUrl = url;
 		},
 
-		setUseVideoTexture: function() {
-			this.useVideoTexture = true;
-		},
-
 		setGeometry: function(url) {
 			this.geometryUrl = url;
 		},
@@ -1468,7 +1485,7 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.animate({
 				duration: .3,
                 begin: [1, 1, 1],
-                end: [1.1, 1.1, 1.1],
+                end: [1.05, 1.05, 1.05],
 				attribute: 'size'
 			});
             this.animate({
@@ -1483,7 +1500,7 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.animate({
 				duration: .3,
                 begin: [1, 1, 1],
-                end: [1 / 1.1, 1 / 1.1, 1 / 1.1],
+                end: [1 / 1.05, 1 / 1.05, 1 / 1.05],
 				attribute: 'size'
 			});
             this.animate({
@@ -2013,10 +2030,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		onSynch: function () {
 		},
 
-		getVideo: function() {
-			return this.video;
-		},
-
         getPage: function() {
 			return this.page;
 		},
@@ -2396,7 +2409,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         valign: 'bottom',
                     });
                     var asset = new PEEKS.Plane();
-                    asset.setUseVideoTexture(true);
+                    asset.useVideoTexture = true;
                     canvas.add(asset);
                     this.arImage = canvas;
 				}
@@ -2834,14 +2847,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         mainScene.onMouseMove(event);
                     }
                 );
-
-				this.video = document.createElement('video');
-				this.video.width = 1024;
-				this.video.height = 1024;
-				this.video.autoplay = true;
-				this.video.setAttribute('autoplay', '');
-				this.video.setAttribute('muted', '');
-				this.video.setAttribute('playsinline', '');
 			}
 
 			var animate = function () {
@@ -49349,7 +49354,20 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 		var video;
 		var scene = this.getScene();
 		if (scene) {
-			var video = scene.getVideo();
+            if (this.video === undefined) {
+                this.video = document.createElement('video');
+                var ratio = this.size[0] / this.size[1];
+                this.video.width = 1024;
+                this.video.height = 1024 / ratio;
+                this.video.autoplay = true;
+                this.video.setAttribute('autoplay', '');
+                this.video.setAttribute('playsinline', '');
+                if (this.videoUrl === undefined) {
+                    this.video.setAttribute('muted', '');
+                }
+            }
+
+			var video = this.video;
 			var window = scene.window;
 			var navigator = window.navigator;
 			if (video && navigator) {
@@ -49361,27 +49379,32 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 						video.texture = new THREE.Texture(video);
                         video.texture.minFilter = THREE.NearestFilter;
                         video.texture.magFilter = THREE.NearestFilter;
-						navigator.getUserMedia = (
-							navigator.getUserMedia ||
-							navigator.webkitGetUserMedia ||
-							navigator.mozGetUserMedia ||
-							navigator.msGetUserMedia
-						);
-						if (navigator.getUserMedia) {
-							var facingMode = "user";
-							var constraints = {
-							  audio: false,
-							  video: {
-							   facingMode: facingMode
-							  }
-							};
-							navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
-							  video.srcObject = stream;
-								video.play();
-							});
-						} else {
-							 this.error("getUserMedia not supported");
-						}
+
+                        if (this.videoUrl !== undefined) {
+                            video.src = this.videoUrl;
+                        } else {
+                            // This is a camera stream by default
+                            navigator.getUserMedia = (
+    							navigator.getUserMedia ||
+    							navigator.webkitGetUserMedia ||
+    							navigator.mozGetUserMedia ||
+    							navigator.msGetUserMedia
+    						);
+    						if (navigator.getUserMedia) {
+    							var facingMode = "user";
+    							var constraints = {
+                                    audio: false,
+                                    video: { facingMode: facingMode }
+                                };
+    							navigator.mediaDevices.getUserMedia(constraints).
+                                    then(function success(stream) {
+                                        video.srcObject = stream;
+                                        video.play();
+                                    });
+    						} else {
+    							 this.error("getUserMedia not supported");
+    						}
+                        }
 					}
 					threeObject.material.map = video.texture;
 				}
@@ -50113,7 +50136,6 @@ PEEKS.Scene.prototype.onResize = function() {
 
 PEEKS.Scene.prototype.onStart = function() {
 	this.three = {};
-
     var scene = new THREE.Scene();
     var a_scene = document.querySelector('a-scene')
     if (a_scene) {
@@ -50132,7 +50154,10 @@ PEEKS.Scene.prototype.onStart = function() {
 
     var renderer = new THREE.WebGLRenderer({
         alpha: true,
-        antialias: true
+        antialias: true,
+        // This improves performances a lot of course, we may want this
+        //  as an option in case we're just dealing with textured elements
+        // antialias: false,
     });
     renderer.sortObjects = false;
 	renderer.setClearColor(0xffffff, 1);
@@ -51567,6 +51592,27 @@ PEEKS.registerPage('tron', function() {
             moto.setRotation([0, 90 + sign * Math.acos(cos) * 180 / Math.PI, 0]);
         }
     };
+
+	return page;
+});
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('Movie', function() {
+    var page = new PEEKS.Asset({
+        category: 'entertainment',
+        gyroscope: 'off',
+    });
+
+    page.addVideo({
+        url: '/assets/video_sintel.mp4',
+        position: [0, 0, -3],
+        rotation: [0, 0, 0],
+        size: [4.8, 2.4, 1],
+    });
 
 	return page;
 });
