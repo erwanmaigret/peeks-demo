@@ -241,7 +241,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 		},
 
 		addPage: function (name) {
-			var page = PEEKS.loadPage(name);
+			var page = PEEKS.navigateToPage(name);
 			if (page) {
 				this.add(page);
 			} else {
@@ -663,7 +663,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                                     var win = window.open(this.page.url, '_blank');
                                     win.focus();
                                 } else if (this.page.page) {
-                                    loadPage(this.page.page);
+                                    navigateToPage(this.page.page);
                                 }
                             }
                         };
@@ -1529,7 +1529,7 @@ function analytics() {
     }
 }
 
-function loadPage(name) {
+function navigateToPage(name) {
 	if (pages[name]) {
 		var page = pages[name]();
 		page.name = name;
@@ -2371,7 +2371,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 					}
                     analytics('event', 'scene.loadPage', {'name': name} );
 					logDebug("Registering " + name);
-					var page = loadPage(name);
+					var page = navigateToPage(name);
 					this.add(page);
 					this.page = page;
 
@@ -2392,7 +2392,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 						logError("Unloading current page");
 						this.page.destroy();
 					}
-					var page = loadPage(name);
+					var page = navigateToPage(name);
 						this.add(page);
 						this.page = page;
 						this.pageIndex = pageIndex;
@@ -3023,7 +3023,7 @@ exports.logInfo = logInfo;
 exports.logWarning = logWarning;
 exports.logError = logError;
 exports.registerPage = registerPage;
-exports.loadPage = loadPage;
+exports.navigateToPage = navigateToPage;
 exports.isPhone = isPhone;
 exports.v3 = utils.v3;
 exports.color = utils.color;

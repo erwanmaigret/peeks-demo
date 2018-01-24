@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    script(src="/peeks.js")
+    script(src="/pages/face.js")
+    script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
+    video(id='myVideo', width='400', height='300', preload, autoplay, loop, muted)
+    script.
+        var peeks = new PEEKS.Scene();
+        peeks.start(window);

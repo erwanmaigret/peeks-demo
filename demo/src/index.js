@@ -9,6 +9,8 @@ global.THREE = require('./three.js');
 require('./three/loaders/OBJLoader.js');
 require('./peeks_three.js');
 
+require('./tracking/tracking-min.js');
+
 require("./pages/assets.js");
 require("./pages/fashion.js");
 require("./pages/mannequin.js");
