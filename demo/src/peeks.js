@@ -415,6 +415,21 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 			return asset;
         },
 
+        DOMcreateElementVideo: function(name) {
+            this.video = document.createElement(name || 'video');
+            var ratio = this.size[0] / this.size[1];
+            this.video.width = 1024;
+            this.video.height = 1024 / ratio;
+            this.video.autoplay = true;
+            this.video.setAttribute('autoplay', '');
+            this.video.setAttribute('playsinline', '');
+            if (this.videoUrl === undefined) {
+                this.video.setAttribute('muted', '');
+                this.video.setAttribute('id', 'peeksCamera');
+            }
+            console.log(this.video);
+        },
+
         addImage: function (params) {
 			var asset = this.addView(params);
 			if (params) {
@@ -663,7 +678,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                                     var win = window.open(this.page.url, '_blank');
                                     win.focus();
                                 } else if (this.page.page) {
-                                    navigateToPage(this.page.page);
+                                    navigateToPage(this.page.page, this);
                                 }
                             }
                         };
@@ -1529,14 +1544,14 @@ function analytics() {
     }
 }
 
-function navigateToPage(name) {
+function navigateToPage(name, scene) {
 	if (pages[name]) {
-		var page = pages[name]();
+		var page = pages[name](scene);
 		page.name = name;
 
         if (page.onLoad) {
             logDebug('Calling onLoad on page ' + name);
-            page.onLoad();
+            page.onLoad(scene);
         }
 
 		return page;
@@ -2311,15 +2326,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 return;
             }
 			if (state) {
-				if (!this.arImage) {
-                    var canvas = this.arAsset.addCanvas({
-                        valign: 'bottom',
-                    });
-                    var asset = new PEEKS.Plane();
-                    asset.useVideoTexture = true;
-                    canvas.add(asset);
-                    this.arImage = canvas;
-				}
+                this.DOMarGetElement();
 				this.arImage.show();
 			} else {
 				if (this.arImage) {
@@ -2335,6 +2342,22 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
             this.gyroscope = this.arMode;
 		},
+
+        DOMarGetElement: function() {
+            if (!this.arImage) {
+                var canvas = this.arAsset.addCanvas({
+                    valign: 'bottom',
+                });
+                var asset = new PEEKS.Plane();
+                asset.useVideoTexture = true;
+                canvas.add(asset);
+                this.arImage = canvas;
+
+                // Create it right away so it's immediatelly available
+                this.arImage.DOMcreateElementVideo();
+            }
+            return this.arImage.video;
+        },
 
         toggleVrMode: function() {
 			this.setVrMode(!this.vrMode);
@@ -2370,11 +2393,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 						this.page.destroy();
 					}
                     analytics('event', 'scene.loadPage', {'name': name} );
-					logDebug("Registering " + name);
-					var page = navigateToPage(name);
+					logDebug("Loading " + name);
+					var page = navigateToPage(name, this);
 					this.add(page);
 					this.page = page;
-
 					this.pageIndex++;
 					if (this.pageIndex < (this.pagesHistory.length - 1)) {
 						this.pagesHistory.push(name);
@@ -2392,7 +2414,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 						logError("Unloading current page");
 						this.page.destroy();
 					}
-					var page = navigateToPage(name);
+					var page = navigateToPage(name, this);
 						this.add(page);
 						this.page = page;
 						this.pageIndex = pageIndex;

@@ -281,16 +281,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 		var scene = this.getScene();
 		if (scene) {
             if (this.video === undefined) {
-                this.video = document.createElement('video');
-                var ratio = this.size[0] / this.size[1];
-                this.video.width = 1024;
-                this.video.height = 1024 / ratio;
-                this.video.autoplay = true;
-                this.video.setAttribute('autoplay', '');
-                this.video.setAttribute('playsinline', '');
-                if (this.videoUrl === undefined) {
-                    this.video.setAttribute('muted', '');
-                }
+                this.DOMcreateElementVideo();
             }
 
 			var video = this.video;
