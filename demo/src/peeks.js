@@ -417,15 +417,18 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 
         DOMcreateElementVideo: function(name) {
             this.video = document.createElement(name || 'video');
-            var ratio = this.size[0] / this.size[1];
-            this.video.width = 512;
-            this.video.height = 512 / ratio;
             this.video.autoplay = true;
             this.video.setAttribute('autoplay', '');
             this.video.setAttribute('playsinline', '');
             if (this.videoUrl === undefined) {
+                this.video.width = 512;
+                this.video.height = 512;
                 this.video.setAttribute('muted', '');
                 this.video.setAttribute('id', 'peeksCamera');
+            } else {
+                var ratio = this.size[0] / this.size[1];
+                this.video.width = 512;
+                this.video.height = 512 / ratio;
             }
         },
 
