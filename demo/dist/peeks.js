@@ -516,8 +516,8 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
         DOMcreateElementVideo: function(name) {
             this.video = document.createElement(name || 'video');
             var ratio = this.size[0] / this.size[1];
-            this.video.width = 1024;
-            this.video.height = 1024 / ratio;
+            this.video.width = 512;
+            this.video.height = 512 / ratio;
             this.video.autoplay = true;
             this.video.setAttribute('autoplay', '');
             this.video.setAttribute('playsinline', '');
