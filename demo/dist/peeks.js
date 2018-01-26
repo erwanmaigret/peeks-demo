@@ -525,7 +525,6 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                 this.video.setAttribute('muted', '');
                 this.video.setAttribute('id', 'peeksCamera');
             }
-            console.log(this.video);
         },
 
         addImage: function (params) {
@@ -2415,6 +2414,19 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             // In case:
             this.hideSiteMapMenu();
 		},
+
+        setTracker: function(tracker) {
+            if (tracker) {
+                this.setArMode(true);
+                this.arImage.tracker = tracker;
+            } else {
+                this.arImage.tracker = false;
+            }
+        },
+
+        getTracker: function() {
+            return this.arImage ? this.arImage.tracker : undefined;
+        },
 
 		setArMode: function(state) {
 			if (state === undefined) {
