@@ -9,7 +9,10 @@ global.THREE = require('./three.js');
 require('./three/loaders/OBJLoader.js');
 require('./peeks_three.js');
 
-//require('./tracking/tracking-min.js');
+require('./tracking/tracking-min.js');
+require('./tracking/data/eye-min.js');
+require('./tracking/data/face-min.js');
+require('./tracking/data/mouth-min.js');
 
 require("./pages/assets.js");
 require("./pages/fashion.js");

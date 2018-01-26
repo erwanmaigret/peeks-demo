@@ -3,9 +3,11 @@ extends layout
 block content
     script(src="/peeks.js")
     script(src="/pages/face.js")
-    script(src="/pages/tracking.js")
+    //script(src="/pages/tracking.js")
+    //script(src="/pages/tracking_face.js")
+    //script(src="/pages/tracking_eye.js")
+    //script(src="/pages/tracking_mouth.js")
     script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
-    //video(id='peeksCamera', width='400', height='300', preload, autoplay, loop, muted)
     script.
         var peeks = new PEEKS.Scene();
         peeks.start(window);

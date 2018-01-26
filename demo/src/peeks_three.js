@@ -327,6 +327,26 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 				}
 
 				if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
+                    var tracker = this.tracker || this.parent.tracker;
+                    if (tracker) {
+                        if (tracker.canvas === undefined) {
+                            var canvas = document.createElement('canvas');
+                            canvas.width = video.width;
+                            canvas.height = video.height;
+                            tracker.canvas = canvas;
+                        }
+
+                        var width = video.width;
+                        var height = video.height;
+
+                        var context = tracker.canvas.getContext('2d');
+                        context.clearRect(0, 0, width, height);
+                        context.drawImage(video.texture.image, 0, 0);
+
+                        var imageData = context.getImageData(0, 0, width, height);
+                        tracker.track(imageData.data, width, height);
+                    }
+
 					video.texture.needsUpdate = true;
 					return true;
 				}
