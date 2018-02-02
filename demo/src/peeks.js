@@ -227,7 +227,6 @@ function EventDispatcher() {}
 
 // Root class
 function Node() {
-	this.name = '';
 	this.type = 'Node';
 	this.children = [];
 }
@@ -296,6 +295,46 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 			}
 			return asset;
 		},
+
+        addStateButton: function (params) {
+            var asset = this.addButton(params);
+            asset.onClick = function() {
+                this.toggleButtonState();
+            };
+            return asset;
+        },
+
+        toggleButtonState: function() {
+            this.setButtonState(!this.buttonPressed);
+        },
+
+        getButtonState: function() {
+            return this.buttonPressed;
+        },
+
+        setButtonState: function(state) {
+            var previousState = this.buttonPressed || false;
+            this.buttonPressed = state;
+            if (this.buttonPressed !== previousState) {
+                if (this.onButtonStateChange) {
+                    this.onButtonStateChange(this.buttonPressed);
+                }
+            }
+
+            // Update the look of the icon
+            if (this.buttonPressed) {
+                if (!this.selectionIcon) {
+                    this.selectionIcon = this.addImage({
+                        image:'/images/icon_selected.png'
+                    });
+                }
+            } else {
+                if (this.selectionIcon) {
+                    this.selectionIcon.destroy();
+                    this.selectionIcon = undefined;
+                }
+            }
+        },
 
         addCube: function (params) {
 			var asset = this.addButton(params);
@@ -1828,11 +1867,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
 		onClick: function (mouse) {
-            analytics('event', 'scene.onClick');
-			logDebug('onClick');
-
 			var asset = this.onPickNode(mouse);
 			if (asset) {
+                analytics('event', 'scene.onClick');
+    			logDebug('onClick' + (asset.name ? (' on ' + asset.name) : ''));
+
 				if (asset.onClick) {
 					//asset[`animateClick`]();
 					if (typeof asset.onClick === 'string') {
@@ -2323,14 +2362,18 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         setTracker: function(tracker) {
             if (tracker) {
                 this.setArMode(true);
-                this.arImage.tracker = tracker;
+                this.arView.tracker = tracker;
             } else {
-                this.arImage.tracker = false;
+                this.arView.tracker = false;
             }
         },
 
+        getArView: function() {
+            return this.arView;
+        },
+
         getTracker: function() {
-            return this.arImage ? this.arImage.tracker : undefined;
+            return this.arView ? this.arView.tracker : undefined;
         },
 
 		setArMode: function(state) {
@@ -2342,10 +2385,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
 			if (state) {
                 this.DOMarGetElement();
-				this.arImage.show();
+				this.arView.show();
 			} else {
-				if (this.arImage) {
-					this.arImage.hide();
+				if (this.arView) {
+					this.arView.hide();
 				}
 			}
 			this.arMode = state;
@@ -2359,19 +2402,20 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
         DOMarGetElement: function() {
-            if (!this.arImage) {
+            if (!this.arView) {
                 var canvas = this.arAsset.addCanvas({
                     valign: 'bottom',
                 });
                 var asset = new PEEKS.Plane();
                 asset.useVideoTexture = true;
                 canvas.add(asset);
-                this.arImage = canvas;
+                this.arView = canvas;
+                this.arView.name = 'AR View';
 
                 // Create it right away so it's immediatelly available
-                this.arImage.DOMcreateElementVideo();
+                this.arView.DOMcreateElementVideo();
             }
-            return this.arImage.video;
+            return this.arView.video;
         },
 
         toggleVrMode: function() {
@@ -2683,7 +2727,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
                 this.loadPage('Christmas');
                 //this.setArMode(true);
-                //this.arImage.alpha = 1;
+                //this.arView.alpha = 1;
             } else {
                 var page = document.title;
                 if (page === 'Peeks') {
