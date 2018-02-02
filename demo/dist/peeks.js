@@ -397,9 +397,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
         addStateButton: function (params) {
             var asset = this.addButton(params);
             asset.onClick = function() {
-                console.log('there!!!!');
                 this.toggleButtonState();
-                console.log('here!!!!');
             };
             return asset;
         },
@@ -2511,9 +2509,16 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 canvas.add(asset);
                 this.arView = canvas;
                 this.arView.name = 'AR View';
+                this.arView.videoAsset = asset;
 
                 // Create it right away so it's immediatelly available
                 this.arView.DOMcreateElementVideo();
+
+                // Allow to play/pause the camera on click
+                this.arView.onClick = function() {
+                    this.videoAsset.stopVideoTexture = !this.videoAsset.stopVideoTexture;
+                }
+                this.arView.onFocus = function() {}
             }
             return this.arView.video;
         },
@@ -49450,25 +49455,22 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 			var window = scene.window;
 			var navigator = window.navigator;
 			if (video && navigator) {
-				if (threeObject.material &&
-					(threeObject.material.map === null ||
-						threeObject.material.map !== video.texture))
-				{
-					if (!video.texture) {
+                if (this.checkVideoTexture && !this.stopVideoTexture) {
+                    // Now we need to restart it like the very first time
+                    this.checkVideoTexture = false;
+                    video.texture = null;
+                }
+
+				if (threeObject.material && (threeObject.material.map === null || threeObject.material.map !== video.texture)) {
+					if (!video.texture && !this.stopVideoTexture) {
 						video.texture = new THREE.Texture(video);
                         video.texture.minFilter = THREE.NearestFilter;
                         video.texture.magFilter = THREE.NearestFilter;
-
                         if (this.videoUrl !== undefined) {
                             video.src = this.videoUrl;
                         } else {
                             // This is a camera stream by default
-                            navigator.getUserMedia = (
-    							navigator.getUserMedia ||
-    							navigator.webkitGetUserMedia ||
-    							navigator.mozGetUserMedia ||
-    							navigator.msGetUserMedia
-    						);
+                            navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia );
     						if (navigator.getUserMedia) {
     							var facingMode = "user";
     							var constraints = {
@@ -49485,10 +49487,29 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
     						}
                         }
 					}
+
 					threeObject.material.map = video.texture;
 				}
 
-				if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
+                if (this.stopVideoTexture) {
+                    if (video.srcObject) {
+                        if (video.srcObject.stop) {
+                            video.srcObject.stop();
+                        }
+                        var tracks = video.srcObject.getTracks();
+                        if (tracks) {
+                            for (var trackI = 0; trackI < tracks.length; trackI++) {
+                                var track = tracks[trackI];
+                                if (track.stop) {
+                                    track.stop();
+                                }
+                            }
+                        }
+                    }
+                    this.checkVideoTexture = true;
+                    // Still the texture is valid, just does not need to be updated (frozen)
+                    return true;
+                } else if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
                     var tracker = this.tracker || this.parent.tracker;
                     if (tracker) {
                         if (tracker.canvas === undefined) {

@@ -60,7 +60,7 @@ PEEKS.registerPage('Face', function(scene) {
             arView.addStateButton({
                 name: 'faceTrackingButton',
                 image: '/images/icon_face_tracking.png',
-                position: [0, -.43],
+                position: [.42, .42],
                 size: .1,
                 onButtonStateChange: function(state) {
                     if (state) {
