@@ -53,7 +53,7 @@ PEEKS.registerPage('Face', function(scene) {
         gyroscope: 'off',
     });
 
-    if (scene) {
+     if (scene) {
         scene.setArMode(true);
         var arView = scene.getArView();
         if (arView) {
@@ -72,6 +72,10 @@ PEEKS.registerPage('Face', function(scene) {
             });
         }
     };
+
+    PEEKS.addExtensionListener('cv', function(cv) {
+        console.log(cv);
+    });
 
 	return page;
 });

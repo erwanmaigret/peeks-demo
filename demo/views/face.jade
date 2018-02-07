@@ -7,6 +7,27 @@ block content
     //script(src="/pages/tracking_face.js")
     //script(src="/pages/tracking_eye.js")
     //script(src="/pages/tracking_mouth.js")
+
+    //script(src="/javascripts/haar-detector.min.js")
+    //script(src="/javascripts/haarcascade_frontalface_alt.js")
+    //script(src="/javascripts/dat.gui.js")
+    //script(src="/javascripts/parallel.min.js")
+    //script(src="/javascripts/main.js")
+
+    script.
+        var Module = {
+            wasmBinaryFile: '/javascripts/cv/wasm/opencv_js.wasm',
+            _main: function() {
+                opencvIsReady();
+            }
+        };
+        function opencvIsReady() {
+            PEEKS.registerExtension('cv', cv);
+            console.log('OpenCV.js is ready');
+        }
+
+    script(src="/javascripts/cv/wasm/opencv.js" async)
+
     script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
     script.
         var peeks = new PEEKS.Scene();

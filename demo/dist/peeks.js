@@ -1650,6 +1650,49 @@ Camera.prototype = Object.assign(Object.create( Asset.prototype ),
 	}
 );
 
+var extensions = {
+};
+
+function registerExtension(name, extension, onLoad) {
+    if (extensions[name] === undefined) {
+        extensions[name] = {
+            listeners: [],
+        };
+    }
+
+    if (onLoad) {
+        if (extensions[name].extension) {
+            onLoad(extensions[name].extension);
+        } else {
+            extensions[name].listeners.push(onLoad);
+        }
+    }
+
+    if (extension && extensions[name].extension === undefined) {
+        extensions[name].extension = extension;
+        for (var listenerI = 0; listenerI < extensions[name].listeners.length; listenerI++) {
+            extensions[name].listeners[listenerI](extension);
+        }
+    }
+}
+
+function getExtension(name) {
+    return registerExtension(name).extension;
+}
+
+function addExtensionListener(name, listener) {
+    return registerExtension(name, undefined, listener);
+}
+
+function cvSupported() {
+    if (!window.WebAssembly) {
+        console.log("Your web browser doesn't support WebAssembly");
+        return false;
+    }
+
+    return true;
+}
+
 var pages = {};
 function registerPage(name, ctor) {
     if (ctor) {
@@ -3209,6 +3252,13 @@ exports.logInfo = logInfo;
 exports.logWarning = logWarning;
 exports.logError = logError;
 exports.registerPage = registerPage;
+
+exports.cvSupported = cvSupported;
+
+exports.registerExtension = registerExtension;
+exports.getExtension = getExtension;
+exports.addExtensionListener = addExtensionListener;
+
 exports.navigateToPage = navigateToPage;
 exports.isPhone = isPhone;
 exports.v3 = utils.v3;
