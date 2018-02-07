@@ -2402,15 +2402,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             this.hideSiteMapMenu();
 		},
 
-        setTracker: function(tracker) {
-            if (tracker) {
-                this.setArMode(true);
-                this.arView.tracker = tracker;
-            } else {
-                this.arView.tracker = false;
-            }
-        },
-
         getArView: function() {
             return this.arView;
         },
@@ -2423,13 +2414,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     this.arView.canvas.height = this.arView.video.height;
                 }
 
-                var context = this.arView.canvas.getContext('2d');
-                return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
+                if (this.arView.canvasUpdated) {
+                    var context = this.arView.canvas.getContext('2d');
+                    return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
+                    this.arView.canvasUpdated = false;
+                }
             }
-        },
-
-        getTracker: function() {
-            return this.arView ? this.arView.tracker : undefined;
         },
 
 		setArMode: function(state) {

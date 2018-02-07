@@ -2500,15 +2500,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             this.hideSiteMapMenu();
 		},
 
-        setTracker: function(tracker) {
-            if (tracker) {
-                this.setArMode(true);
-                this.arView.tracker = tracker;
-            } else {
-                this.arView.tracker = false;
-            }
-        },
-
         getArView: function() {
             return this.arView;
         },
@@ -2521,13 +2512,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     this.arView.canvas.height = this.arView.video.height;
                 }
 
-                var context = this.arView.canvas.getContext('2d');
-                return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
+                if (this.arView.canvasUpdated) {
+                    var context = this.arView.canvas.getContext('2d');
+                    return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
+                    this.arView.canvasUpdated = false;
+                }
             }
-        },
-
-        getTracker: function() {
-            return this.arView ? this.arView.tracker : undefined;
         },
 
 		setArMode: function(state) {
@@ -49573,31 +49563,12 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                     // Still the texture is valid, just does not need to be updated (frozen)
                     return true;
                 } else if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
-                    var canvas = this.canvas || this.parent.canvas;
+                    var canvas = this.parent.canvas;
                     if (canvas) {
                         var context = canvas.getContext('2d');
                         context.clearRect(0, 0, canvas.width, canvas.height);
                         context.drawImage(video.texture.image, 0, 0);
-                    }
-
-                    var tracker = this.tracker || this.parent.tracker;
-                    if (tracker) {
-                        if (tracker.canvas === undefined) {
-                            var canvas = document.createElement('canvas');
-                            canvas.width = video.width;
-                            canvas.height = video.height;
-                            tracker.canvas = canvas;
-                        }
-
-                        var width = video.width;
-                        var height = video.height;
-
-                        var context = tracker.canvas.getContext('2d');
-                        context.clearRect(0, 0, width, height);
-                        context.drawImage(video.texture.image, 0, 0);
-
-                        var imageData = context.getImageData(0, 0, width, height);
-                        tracker.track(imageData.data, width, height);
+                        this.parent.canvasUpdated = true;
                     }
 
 					video.texture.needsUpdate = true;

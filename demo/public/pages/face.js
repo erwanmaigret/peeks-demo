@@ -57,19 +57,16 @@ PEEKS.registerPage('Face', function(scene) {
         scene.setArMode(true);
         var arView = scene.getArView();
         if (arView) {
+            var tracking = false;
             arView.addStateButton({
                 name: 'faceTrackingButton',
                 image: '/images/icon_face_tracking.png',
                 position: [.42, .42],
                 size: .1,
                 onButtonStateChange: function(state) {
-                    if (state) {
-                        addTracker(scene);
-                    } else {
-                        clearTracker(scene);
-                    }
+                    tracking = state;
                 },
-            });
+            }).setButtonState(true);
 
             var video = scene.DOMarGetElement();
             if (video) {
@@ -80,57 +77,74 @@ PEEKS.registerPage('Face', function(scene) {
                     if (videoWidth > 0 && videoHeight > 0) {
                         var srcMat = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
                         var grayMat = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC1);
-
                         var faceClassifier = new cv.CascadeClassifier();
                         faceClassifier.load('haarcascade_frontalface_default.xml');
 
                         var eyeClassifier = new cv.CascadeClassifier();
                         eyeClassifier.load('haarcascade_eye.xml');
 
-                        var canvasInput = document.createElement('canvas');
-                        canvasInput.width = videoWidth;
-                        canvasInput.height = videoHeight;
-                        var canvasInputCtx = canvasInput.getContext('2d');
                         page.onUpdate = function() {
-                            canvasInputCtx.drawImage(video, 0, 0, videoWidth, videoHeight);
-                            let imageData = scene.getArImageData();
-                            srcMat.data.set(imageData.data);
-                            cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
+                            if (tracking) {
+                                var imageData = scene.getArImageData();
+                                if (imageData) {
+                                    srcMat.data.set(imageData.data);
+                                    cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
 
-                            let faces = [];
-                            let eyes = [];
-                            let size;
-                            let faceVect = new cv.RectVector();
-                            let faceMat = new cv.Mat();
-                            var trackEyes = false;
-                            if (trackEyes) {
-                                cv.pyrDown(grayMat, faceMat);
-                                size = faceMat.size();
-                            } else {
-                                cv.pyrDown(grayMat, faceMat);
-                                if (videoWidth > 320) {
-                                    cv.pyrDown(faceMat, faceMat);
-                                }
-                                size = faceMat.size();
-                            }
-                            faceClassifier.detectMultiScale(faceMat, faceVect);
-                            for (let i = 0; i < faceVect.size(); i++) {
-                                let face = faceVect.get(i);
-                                faces.push(new cv.Rect(face.x, face.y, face.width, face.height));
-                                if (trackEyes) {
-                                    let eyeVect = new cv.RectVector();
-                                    let eyeMat = faceMat.roi(face);
-                                    eyeClassifier.detectMultiScale(eyeMat, eyeVect);
-                                    for (let i = 0; i < eyeVect.size(); i++) {
-                                        let eye = eyeVect.get(i);
-                                        eyes.push(new cv.Rect(face.x + eye.x, face.y + eye.y, eye.width, eye.height));
+                                    var faces = [];
+                                    var eyes = [];
+                                    var size;
+                                    var faceVect = new cv.RectVector();
+                                    var faceMat = new cv.Mat();
+                                    var trackEyes = false;
+                                    if (trackEyes) {
+                                        cv.pyrDown(grayMat, faceMat);
+                                        size = faceMat.size();
+                                    } else {
+                                        cv.pyrDown(grayMat, faceMat);
+                                        if (videoWidth > 320) {
+                                            cv.pyrDown(faceMat, faceMat);
+                                        }
+                                        size = faceMat.size();
                                     }
-                                    eyeMat.delete();
-                                    eyeVect.delete();
+                                    faceClassifier.detectMultiScale(faceMat, faceVect);
+
+                                    var faceCount = faceVect.size() > 1 ? 1 : faceVect.size();
+                                    for (var i = 0; i < faceCount; i++) {
+                                        var face = faceVect.get(i);
+                                        faces.push(new cv.Rect(face.x, face.y, face.width, face.height));
+
+                                        if (!arView.faceMask) {
+                                            arView.faceMask = arView.addRing();
+                                        }
+
+                                        imageWidth = faceMat.size().width;
+                                        imageHeight = faceMat.size().height;
+                                        var position = [ face.x / imageWidth - .5,
+                                                        -(face.y + face.height / 2) / imageHeight + .5,
+                                                        0];
+                                        var size = [face.width / imageWidth,
+                                                    face.height / imageHeight,
+                                                    1];
+
+                                        arView.faceMask.setPosition(position);
+                                        arView.faceMask.setSize(size);
+
+                                        if (trackEyes) {
+                                            var eyeVect = new cv.RectVector();
+                                            var eyeMat = faceMat.roi(face);
+                                            eyeClassifier.detectMultiScale(eyeMat, eyeVect);
+                                            for (var i = 0; i < eyeVect.size(); i++) {
+                                                var eye = eyeVect.get(i);
+                                                eyes.push(new cv.Rect(face.x + eye.x, face.y + eye.y, eye.width, eye.height));
+                                            }
+                                            eyeMat.delete();
+                                            eyeVect.delete();
+                                        }
+                                    }
+                                    faceMat.delete();
+                                    faceVect.delete();
                                 }
                             }
-                            faceMat.delete();
-                            faceVect.delete();
                         }
                     }
                 });
