@@ -343,6 +343,13 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                     // Still the texture is valid, just does not need to be updated (frozen)
                     return true;
                 } else if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
+                    var canvas = this.canvas || this.parent.canvas;
+                    if (canvas) {
+                        var context = canvas.getContext('2d');
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        context.drawImage(video.texture.image, 0, 0);
+                    }
+
                     var tracker = this.tracker || this.parent.tracker;
                     if (tracker) {
                         if (tracker.canvas === undefined) {

@@ -2415,6 +2415,19 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             return this.arView;
         },
 
+        getArImageData: function() {
+            if (this.arView && this.arView.video) {
+                if (this.arView.canvas === undefined) {
+                    this.arView.canvas = document.createElement('canvas');
+                    this.arView.canvas.width = this.arView.video.width;
+                    this.arView.canvas.height = this.arView.video.height;
+                }
+
+                var context = this.arView.canvas.getContext('2d');
+                return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
+            }
+        },
+
         getTracker: function() {
             return this.arView ? this.arView.tracker : undefined;
         },
