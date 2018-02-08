@@ -314,6 +314,9 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                                     then(function success(stream) {
                                         video.srcObject = stream;
                                         video.play();
+                                        video.addEventListener("playing", function () {
+                                            // Do something that is needed when video is ready
+                                        });
                                     });
     						} else {
     							 this.error("getUserMedia not supported");
@@ -344,8 +347,21 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                     return true;
                 } else if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
                     var canvas = this.parent.canvas;
-                    if (canvas) {
+                    if (canvas && video.videoWidth !== 0 && video.videoHeight !== 0) {
                         var context = canvas.getContext('2d');
+                        if (video.videoWidth !== canvas.width || video.videoHeight !== canvas.height) {
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            var newRatio = canvas.width / canvas.height;
+                            var oldRatio = this.parent.size[0] / this.parent.size[1];
+                            if (newRatio > oldRatio) {
+                                this.parent.setSize([this.parent.size[0] * (newRatio / oldRatio), this.parent.size[1], 1]);
+                            } else {
+                                this.parent.setSize([this.parent.size[0], this.parent.size[1] * (oldRatio / newRatio), 1]);
+                            }
+                        }
+                        this.parent.sides = 'back';
+                        this.parent.setRotation([0, 180, 0]);
                         context.clearRect(0, 0, canvas.width, canvas.height);
                         context.drawImage(video.texture.image, 0, 0);
                         this.parent.canvasUpdated = true;

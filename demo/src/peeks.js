@@ -2450,7 +2450,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         DOMarGetElement: function() {
             if (!this.arView) {
                 var canvas = this.arAsset.addCanvas({
-                    valign: 'bottom',
+                    // Leave it centered, this is if we want it bottom aligned
+                    //valign: 'bottom',
                 });
                 var asset = new PEEKS.Plane();
                 asset.useVideoTexture = true;
