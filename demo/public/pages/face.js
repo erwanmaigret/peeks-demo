@@ -1,47 +1,25 @@
-function addTracker(scene) {
-    var arView = scene.getArView();
-    var tracker = new tracking.ObjectTracker(['face']);
-    //var tracker = new tracking.ObjectTracker(['face'/*, 'eye', 'mouth'*/]);
-    tracker.setInitialScale(4);
-    tracker.setStepSize(2);
-    tracker.setEdgesDensity(0.1);
-    tracker.on('track', function(event) {
-        if (event.data.length >= 1) {
-            if (!arView.bbox) {
-                arView.bbox = arView.addView({
-                   alpha: .8,
-               });
-            }
-
-            var rect = event.data[0];
-            var position = [ (rect.x) / this.canvas.width - .5,
-                            -(rect.y + rect.height / 2) / this.canvas.height + .5,
-                            0];
-            var size = [rect.width / this.canvas.width,
-                        rect.height / this.canvas.height,
-                        1];
-
-            if (Math.abs(position[0]) < .4 &&
-                Math.abs(position[1]) < .4) {
-
-                arView.bbox.setPosition(position);
-                arView.bbox.setSize(size);
-            }
-        }
-    });
-    scene.setTracker(tracker);
+function PeeksTracker(width, height) {
+    if (width !== 0 && height !== 0) {
+        var tracker = {
+            init: PeeksTrackerInit,
+            update: PeeksTrackerUpdate,
+        };
+        tracker.init(width, height);
+        return tracker;
+    }
 }
 
-function clearTracker(scene) {
-    var tracker = scene.getTracker();
-    var arView = scene.getArView();
-    if (tracker && arView) {
-        if (arView.bbox) {
-            arView.bbox.destroy();
-            arView.bbox = undefined;
-        }
-        scene.setTracker(null);
-    }
+
+function PeeksTrackerInit(width, height) {
+    this.videoCapture;
+    this.srcMat;
+    this.grayMat;
+    this.faceClassifier;
+    this.eyeClassifier;
+}
+
+function PeeksTrackerUpdate(image) {
+    return true;
 }
 
 PEEKS.registerPage('Face', function(scene) {
@@ -50,7 +28,22 @@ PEEKS.registerPage('Face', function(scene) {
         gyroscope: 'off',
     });
 
-     if (scene) {
+    page.initTracker = function(imageData) {
+        if (imageData && !page.tracker) {
+            page.tracker = PeeksTracker();
+        }
+
+        return page.tracker !== undefined;
+    };
+
+    page.updateTracker = function(imageData) {
+        this.initTracker(imageData);
+        if (this.tracker) {
+            return this.tracker.update(imageData);
+        }
+    };
+
+    if (scene) {
         scene.setArMode(true);
         var arView = scene.getArView();
         if (arView) {
@@ -76,7 +69,7 @@ PEEKS.registerPage('Face', function(scene) {
                     page.onUpdate = function() {
                         if (tracking) {
                             var imageData = scene.getArImageData();
-                            if (imageData) {
+                            if (this.updateTracker(imageData)) {
                                 var videoWidth = imageData.width;
                                 var videoHeight = imageData.height;
                                 if (videoCapture === undefined) {
