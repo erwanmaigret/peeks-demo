@@ -49535,6 +49535,9 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                                     then(function success(stream) {
                                         video.srcObject = stream;
                                         video.play();
+                                        video.addEventListener("playing", function () {
+                                            // Do something that is needed when video is ready
+                                        });
                                     });
     						} else {
     							 this.error("getUserMedia not supported");

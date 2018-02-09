@@ -49,16 +49,18 @@ function PeeksTrackerUpdate(video, image) {
     imageWidth = faceMat.size().width;
     imageHeight = faceMat.size().height;
     var faceCount = faceVect.size() > 1 ? 1 : faceVect.size();
+    var xFactor = (imageWidth > imageHeight) ? imageWidth / imageHeight : 1;
+    var yFactor = (imageWidth < imageHeight) ? imageHeight / imageWidth : 1;
     for (var i = 0; i < faceCount; i++) {
         var face = faceVect.get(i);
         this.faces.push({
             position: [
-                (face.x + face.width / 2) / imageWidth - .5,
-                -(face.y + face.height / 2) / imageHeight + .5,
+                xFactor * (-(face.x + face.width / 2) / imageWidth + .5),
+                yFactor * (-(face.y + face.height / 2) / imageHeight + .5),
                 0],
             size: [
-                face.width / imageWidth,
-                face.height / imageHeight,
+                xFactor * face.width / imageWidth,
+                yFactor * face.height / imageHeight,
                 1],
         });
 
@@ -103,6 +105,8 @@ PEEKS.registerPage('Face', function(scene) {
         }
     };
 
+    var head;
+
     if (scene) {
         scene.setArMode(true);
         var arView = scene.getArView();
@@ -128,12 +132,8 @@ PEEKS.registerPage('Face', function(scene) {
                                 var faceCount = this.tracker.faces.length;
                                 faceCount = faceCount > 1 ? 1 : faceCount;
                                 for (var i = 0; i < faceCount; i++) {
-                                    if (!arView.faceMask) {
-                                        arView.faceMask = arView.addRing();
-                                    }
-
-                                    arView.faceMask.setPosition(this.tracker.faces[i].position);
-                                    arView.faceMask.setSize(this.tracker.faces[i].size);
+                                    head.setPosition(this.tracker.faces[i].position);
+                                    head.setSize(this.tracker.faces[i].size);
                                 }
                             }
                         }
@@ -142,6 +142,15 @@ PEEKS.registerPage('Face', function(scene) {
             }
         }
     };
+
+    var canvas = page.addCanvas();
+    head = canvas.addAsset({
+    });
+    var glasses = head.addMesh({
+        geometry: '/assets/glasses_2_frame_front.obj',
+        rotation: [0, -90, 0],
+        size: .15,
+    });
 
 	return page;
 });
