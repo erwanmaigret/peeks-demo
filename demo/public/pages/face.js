@@ -48,7 +48,7 @@ function PeeksTrackerUpdate(video, image) {
 
     imageWidth = faceMat.size().width;
     imageHeight = faceMat.size().height;
-    var faceCount = faceVect.size() > 1 ? 1 : faceVect.size();
+    var faceCount = faceVect.size();
     var xFactor = (imageWidth > imageHeight) ? imageWidth / imageHeight : 1;
     var yFactor = (imageWidth < imageHeight) ? imageHeight / imageWidth : 1;
     for (var i = 0; i < faceCount; i++) {
@@ -106,6 +106,8 @@ PEEKS.registerPage('Face', function(scene) {
     };
 
     var head;
+    var faces = [];
+    var canvas;
 
     if (scene) {
         scene.setArMode(true);
@@ -130,10 +132,26 @@ PEEKS.registerPage('Face', function(scene) {
                             var imageData = scene.getArImageData();
                             if (this.updateTracker(video, imageData)) {
                                 var faceCount = this.tracker.faces.length;
-                                faceCount = faceCount > 1 ? 1 : faceCount;
-                                for (var i = 0; i < faceCount; i++) {
-                                    head.setPosition(this.tracker.faces[i].position);
-                                    head.setSize(this.tracker.faces[i].size);
+                                var faceAssetCount = faces.length;
+                                var faceI = 0;
+                                while (faceI < faceCount || faceI < faceAssetCount) {
+                                    if (faceI >= faceCount) {
+                                        faces[faceI].hide();
+                                    } else {
+                                        if (faceI >= faceAssetCount) {
+                                            faces.push(canvas.addAsset({}));
+                                            faces[faceI].addMesh({
+                                                geometry: '/assets/glasses_2_frame_front.obj',
+                                                rotation: [0, -90, 0],
+                                                size: .15,
+                                            });
+                                        } else {
+                                            faces[faceI].show();
+                                        }
+                                        faces[faceI].setPosition(this.tracker.faces[faceI].position);
+                                        faces[faceI].setSize(this.tracker.faces[faceI].size);
+                                    }
+                                    faceI++;
                                 }
                             }
                         }
@@ -143,14 +161,14 @@ PEEKS.registerPage('Face', function(scene) {
         }
     };
 
-    var canvas = page.addCanvas();
-    head = canvas.addAsset({
-    });
-    var glasses = head.addMesh({
-        geometry: '/assets/glasses_2_frame_front.obj',
-        rotation: [0, -90, 0],
-        size: .15,
-    });
+    canvas = page.addCanvas();
+//    head = canvas.addAsset({
+//    });
+//    var glasses = head.addMesh({
+//        geometry: '/assets/glasses_2_frame_front.obj',
+//        rotation: [0, -90, 0],
+//        size: .15,
+//    });
 
 	return page;
 });
