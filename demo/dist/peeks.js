@@ -2562,9 +2562,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.arView.DOMcreateElementVideo();
 
                 // Allow to play/pause the camera on click
+                /*
                 this.arView.onClick = function() {
                     this.videoAsset.stopVideoTexture = !this.videoAsset.stopVideoTexture;
                 }
+                */
                 this.arView.onFocus = function() {}
             }
             return this.arView.video;
