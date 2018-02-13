@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  background-image: url("/background-shape1.png");
+  background-position: right top;
+  background-repeat: no-repeat;
 }
 
 .logo {
@@ -55,4 +58,26 @@
 }
 .copyright {
   font-size: 0.5em;
+}
+.textSmall {
+  font-size: 0.7em;
+  color: #1F176C;
+}
+.textHighlight {
+  font-size: 1.2em;
+  color: #D6006C;
+}
+.textGray {
+  font-size: 1.0em;
+  color: #bbbbbb;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 20px;
+    width: 250px;
+    height: 350px;
+    text-align: center;
+    padding: 10px;
 }
