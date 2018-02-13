@@ -46,6 +46,7 @@
 
 .h1 {
   font-size: 1.5em;
+  color: #1F176C;
 }
 .h2 {
   font-size: 1.3em;
@@ -61,15 +62,25 @@
 }
 .textSmall {
   font-size: 0.7em;
-  color: #1F176C;
+  color: #85A0B7;
 }
 .textHighlight {
   font-size: 1.2em;
   color: #D6006C;
 }
+.textTitle {
+  font-size: 1.2em;
+  color: #1F176C;
+  padding: 10px;
+}
+.textDescription {
+  font-size: 1.0em;
+  color: #85A0B7;
+  padding: 10px;
+}
 .textGray {
   font-size: 1.0em;
-  color: #bbbbbb;
+  color: #85A0B7;
 }
 
 .card {

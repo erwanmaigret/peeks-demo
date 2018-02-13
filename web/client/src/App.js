@@ -73,13 +73,29 @@ class App extends Component {
                 <td align="right"><MenuBar/></td>
                 </tr></tbody></table></div>
                 <div><table width='100%'><tbody><tr>
-                <td>
-                <div className="h1">We make VR a reality.</div>
-                <p>Immersive web and mobile VR/AR technology now made available to the retail industry.</p>
+                <td width='40%' valign='top'>
+                <div className="textTitle" align="left"><br/><br/><br/><br/><br/>We make VR a reality.</div>
+                <div className="textDescription" align="left">Immersive web and mobile VR/AR technology now made available to the retail industry.</div>
+                <div className="textDescription" align="left">Customers have fun purchasing online using our AR tool. It brings the fitting room into their hands.</div>
+                </td>
+                <td><img src="snapshot-product-1.png" alt="product1" width='80%'/></td>
+                </tr></tbody></table></div>
+                <div><table width='100%'><tbody><tr>
+                <td><img src="snapshot-product-2.png" alt="product2" width='100%'/></td>
+                <td width='40%'>
+                <div className="textTitle" align="left"><br/>Web-browser friendly.</div>
+                <div className="textDescription" align="left">Wether your store is accessible from the web or a native application, our technology brings VR to all software environments.</div>
                 </td>
                 </tr></tbody></table></div>
+                <div><table width='100%'><tbody><tr>
+                <td width='40%'>
+                <div className="textTitle" align="left"><br/>Headset compatible.</div>
+                <div className="textDescription" align="left">If you have a VR Headset, you can make it even more immersive.</div>
+                </td>
+                <td><img src="snapshot-product-3.png" alt="product3" width='80%'/></td>
+                </tr></tbody></table></div>
                 <div>
-                <div className="h1">Meet our team!</div>
+                <div className="h1"><br/><br/><br/>Meet our team!<br/><br/></div>
                 <table width='100%'><tbody><tr>
                 <td align='center'>
                 <div className="card">
