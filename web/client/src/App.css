@@ -6,7 +6,7 @@
 }
 
 .logo {
-  height: 45px;
+  height: 30px;
 }
 
 .header {
@@ -17,7 +17,7 @@
 }
 
 .title {
-  font-size: 1.5em;
+  font-size: 1em;
 }
 
 .intro {
@@ -29,6 +29,13 @@
 }
 
 .menuItem {
+    align: right;
+    border-radius: 20px;
+    border-width: 0;
+    margin: 10px;
+}
+
+.roundButton {
     align: right;
     border-radius: 20px;
     border-width: 0;
@@ -69,12 +76,12 @@
   color: #D6006C;
 }
 .textTitle {
-  font-size: 1.2em;
+  font-size: 2.0em;
   color: #1F176C;
   padding: 10px;
 }
 .textDescription {
-  font-size: 1.0em;
+  font-size: 0.9em;
   color: #85A0B7;
   padding: 10px;
 }
