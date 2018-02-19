@@ -53,12 +53,12 @@ PEEKS.Tracker.prototype.updateEnd = function() {
 }
 
 // Update the most appropriate face
-PEEKS.Tracker.prototype.updateFace = function(position, size) {
-    var faceI = 0;
-    if (this.trackedFaces.length === 0) {
+PEEKS.Tracker.prototype.updateFace = function(faceI, position, size) {
+    while (faceI >= this.trackedFaces.length) {
         this.trackedFaces.push(new PEEKS.TrackerFace());
     }
     var face = this.trackedFaces[faceI];
+    this.trackedFaces[faceI].isHidden = false;
     face.update(position, size);
 }
 
@@ -86,6 +86,10 @@ PEEKS.Tracker.prototype.update = function(video, image) {
     }
     this.faceClassifier.detectMultiScale(faceMat, faceVect);
 
+    for (var i = 0; i < this.trackedFaces.length; i++) {
+        this.trackedFaces[i].isHidden = true;
+    }
+
     var imageWidth = faceMat.size().width;
     var imageHeight = faceMat.size().height;
     var faceCount = faceVect.size();
@@ -104,7 +108,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
             size: faceSize,
         });
 
-        this.updateFace(facePosition, faceSize);
+        this.updateFace(i, facePosition, faceSize);
 
         /*
         if (trackEyes) {
@@ -127,6 +131,31 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
     return true;
 }
+
+var assetDb = [
+    {
+        geometry: '/assets/glasses_2_frame_front.obj',
+        rotation: [0, -90, 0],
+        position: [0, -.05, 0],
+        size: .13,
+    },
+    {
+        image: '/assets/glasses/glasses_photo1.png',
+        position: [0, .1, 0],
+        size: .8,
+    },
+    {
+        geometry: '/assets/glasses/glasses1_frame.obj',
+        rotation: [0, 0, 0],
+        position: [0, .1, 0],
+        size: 5,
+    },
+    {
+        image: '/assets/glasses/glasses_photo2.png',
+        position: [0, .1, 0],
+        size: .75,
+    },
+];
 
 PEEKS.registerPage('Face', function(scene) {
 	var page = new PEEKS.Asset({
@@ -172,8 +201,19 @@ PEEKS.registerPage('Face', function(scene) {
 
             var video = scene.DOMarGetElement();
             if (video) {
+                var timerStart = (new Date()).getTime();
+                var assetI = 0;
                 PEEKS.addExtensionListener('cv', function(cv) {
                     page.onUpdate = function() {
+                        var timerEnd = (new Date()).getTime();
+                        if ((timerEnd - timerStart) > 5000) {
+                            // Reset geometries every 5 seconds
+                            timerStart = timerEnd;
+                            for (var faceI = 0; faceI < faces.length; faceI++) {
+                                faces[faceI].destroy();
+                            }
+                            faces = [];
+                        }
                         if (tracking) {
                             var imageData = scene.getArImageData();
                             if (this.updateTracker(video, imageData)) {
@@ -185,14 +225,22 @@ PEEKS.registerPage('Face', function(scene) {
                                         faces[faceI].hide();
                                     } else {
                                         if (faceI >= faceAssetCount) {
-                                            faces.push(canvas.addAsset({}));
-                                            faces[faceI].addMesh({
-                                                geometry: '/assets/glasses_2_frame_front.obj',
-                                                rotation: [0, -90, 0],
-                                                size: .15,
-                                            });
+                                            faces.push(canvas.addAsset());
+                                            if (assetDb[assetI].geometry) {
+                                                faces[faceI].addMesh(assetDb[assetI]);
+                                            } else {
+                                                faces[faceI].addImage(assetDb[assetI]);
+                                            }
+                                            assetI++;
+                                            if (assetI >= assetDb.length) {
+                                                assetI = 0;
+                                            }
                                         } else {
-                                            faces[faceI].show();
+                                            if (this.tracker.trackedFaces[faceI].isHidden) {
+                                                faces[faceI].hide();
+                                            } else {
+                                                faces[faceI].show();
+                                            }
                                         }
                                         faces[faceI].setPosition(this.tracker.trackedFaces[faceI].position);
                                         faces[faceI].setSize(this.tracker.trackedFaces[faceI].size);
@@ -208,6 +256,19 @@ PEEKS.registerPage('Face', function(scene) {
     };
 
     canvas = page.addCanvas();
+
+    /*
+    page.addMesh({
+        geometry: '/assets/glasses/glasses.obj',
+        // rotation: [0, -90, 0],
+        position: [0, 0, -3],
+        size: 3,
+    });
+    */
+    page.addImage({
+        image: '/assets/glasses/glasses_photo1.png',
+    });
+
 
 	return page;
 });

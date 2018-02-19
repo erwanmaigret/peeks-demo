@@ -49450,7 +49450,12 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                 }
             }
 
-            threeObject.position.z -= distance;
+            var depthFactor = 10;
+            threeObject.position.z -= distance * depthFactor;
+            threeObject.scale.set(
+                threeObject.scale.x * depthFactor,
+                threeObject.scale.y * depthFactor,
+                threeObject.scale.z * depthFactor);
 		} else {
             this.threeObjectPivot.rotation.set(
                 THREE.Math.degToRad(this.pivotRotation[0]),
