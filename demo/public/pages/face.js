@@ -95,6 +95,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
     var faceCount = faceVect.size();
     var xFactor = (imageWidth > imageHeight) ? imageWidth / imageHeight : 1;
     var yFactor = (imageWidth < imageHeight) ? imageHeight / imageWidth : 1;
+    var faceI = 0;
     for (var i = 0; i < faceCount; i++) {
         var face = faceVect.get(i);
         var facePosition = [
@@ -103,12 +104,15 @@ PEEKS.Tracker.prototype.update = function(video, image) {
         var faceSize = [
             xFactor * face.width / imageWidth,
             yFactor * face.height / imageHeight, 1];
-        this.faces.push({
-            position: facePosition,
-            size: faceSize,
-        });
 
-        this.updateFace(i, facePosition, faceSize);
+        if (faceSize[0] > .2 && faceSize[1] > .2) {
+            this.faces.push({
+                position: facePosition,
+                size: faceSize,
+            });
+
+            this.updateFace(faceI++, facePosition, faceSize);
+        }
 
         /*
         if (trackEyes) {
@@ -133,6 +137,11 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 }
 
 var assetDb = [
+    {
+        image: '/assets/asset_glasses_1.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
     {
         image: '/assets/asset_shirt_2.png',
         position: [.05, -1.75, 0],
@@ -181,6 +190,11 @@ var assetDb = [
         size: .82,
     },
     {
+        image: '/assets/asset_glasses_5.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
+    {
         image: '/assets/asset_hat_2.png',
         position: [0, .65, 0],
         size: 1.6,
@@ -200,13 +214,11 @@ var assetDb = [
         position: [0, .15, 0],
         size: .82,
     },
-    /*
     {
         image: '/assets/asset_shirt_1.png',
         position: [.05, -1.8, 0],
         size: 3.2,
     },
-    */
     /*
     {
         image: '/assets/asset_beard_1.png',
