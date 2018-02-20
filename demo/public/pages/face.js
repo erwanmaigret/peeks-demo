@@ -198,16 +198,19 @@ var assetDb = [
         position: [0, .15, 0],
         size: .82,
     },
+    /*
     {
         image: '/assets/asset_shirt_1.png',
         position: [.05, -1.8, 0],
         size: 3.2,
     },
+    */
+    /*
     {
         image: '/assets/asset_beard_1.png',
         position: [0, -.25, 0],
         size: 0.7,
-    },
+    },*/
     {
         image: '/assets/asset_bowtie_1.png',
         position: [0, -.7, 0],
@@ -290,7 +293,7 @@ PEEKS.registerPage('Face', function(scene) {
                 PEEKS.addExtensionListener('cv', function(cv) {
                     page.onUpdate = function() {
                         var timerEnd = (new Date()).getTime();
-                        if ((timerEnd - timerStart) > 5000) {
+                        if ((timerEnd - timerStart) > 10000) {
                             // Reset geometries every 5 seconds
                             timerStart = timerEnd;
                             for (var faceI = 0; faceI < faces.length; faceI++) {
