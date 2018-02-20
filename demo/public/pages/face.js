@@ -168,11 +168,13 @@ var assetDb = [
         position: [0, -.15, 0],
         size: .7,
     },
+    /*
     {
         image: '/assets/asset_headset_1.png',
         position: [0, .15, 0],
         size: .9,
     },
+    */
     {
         image: '/assets/asset_glasses_3.png',
         position: [0, .15, 0],
