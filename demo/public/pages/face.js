@@ -105,7 +105,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
             xFactor * face.width / imageWidth,
             yFactor * face.height / imageHeight, 1];
 
-        if (faceSize[0] > .2 && faceSize[1] > .2) {
+        if (faceSize[0] > .07 && faceSize[1] > .07) {
             this.faces.push({
                 position: facePosition,
                 size: faceSize,
