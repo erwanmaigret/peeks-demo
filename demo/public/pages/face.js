@@ -134,10 +134,9 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 var assetDb = [
     {
-        geometry: '/assets/glasses_2_frame_front.obj',
-        rotation: [0, -90, 0],
-        position: [0, -.05, 0],
-        size: .13,
+        image: '/assets/asset_shirt_2.png',
+        position: [.05, -1.75, 0],
+        size: 2.8,
     },
     {
         image: '/assets/glasses/glasses_photo1.png',
@@ -145,16 +144,101 @@ var assetDb = [
         size: .8,
     },
     {
+        image: '/assets/asset_moustache_2.png',
+        position: [0, -.15, 0],
+        size: .7,
+    },
+    {
+        image: '/assets/asset_glasses_5.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
+    {
+        image: '/assets/asset_hat_4.png',
+        position: [0, .65, 0],
+        size: 1.3,
+    },
+    {
+        image: '/assets/asset_glasses_4.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
+    {
+        image: '/assets/asset_moustache_1.png',
+        position: [0, -.15, 0],
+        size: .7,
+    },
+    {
+        image: '/assets/asset_headset_1.png',
+        position: [0, .15, 0],
+        size: .9,
+    },
+    {
+        image: '/assets/asset_glasses_3.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
+    {
+        image: '/assets/asset_hat_2.png',
+        position: [0, .65, 0],
+        size: 1.6,
+    },
+    {
+        image: '/assets/asset_glasses_2.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
+    {
+        image: '/assets/asset_hat_1.png',
+        position: [0, .6, 0],
+        size: 1.2,
+    },
+    {
+        image: '/assets/asset_glasses_1.png',
+        position: [0, .15, 0],
+        size: .82,
+    },
+    {
+        image: '/assets/asset_shirt_1.png',
+        position: [.05, -1.8, 0],
+        size: 3.2,
+    },
+    {
+        image: '/assets/asset_beard_1.png',
+        position: [0, -.25, 0],
+        size: 0.7,
+    },
+    {
+        image: '/assets/asset_bowtie_1.png',
+        position: [0, -.7, 0],
+        size: .6,
+    },
+
+
+
+
+    /*
+    {
+        geometry: '/assets/glasses_2_frame_front.obj',
+        rotation: [0, -90, 0],
+        position: [0, -.05, 0],
+        size: .13,
+    },
+    */
+    /*
+    {
         geometry: '/assets/glasses/glasses1_frame.obj',
         rotation: [0, 0, 0],
         position: [0, .1, 0],
         size: 5,
     },
+    */
+    /*
     {
         image: '/assets/glasses/glasses_photo2.png',
         position: [0, .1, 0],
         size: .75,
-    },
+    },*/
 ];
 
 PEEKS.registerPage('Face', function(scene) {
