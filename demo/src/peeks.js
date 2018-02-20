@@ -1520,6 +1520,12 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
                 }
             }
         },
+
+        clearChildren: function() {
+            while (this.children.length > 0) {
+                this.children[0].destroy();
+            }
+        },
 	}
 );
 

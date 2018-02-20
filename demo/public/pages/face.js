@@ -159,8 +159,9 @@ var assetDb = [
     },
     {
         image: '/assets/asset_glasses_5.png',
-        position: [0, .15, 0],
+        position: [.01, .15, 0],
         size: .82,
+        alpha: .9,
     },
     {
         image: '/assets/asset_hat_4.png',
@@ -258,6 +259,24 @@ var assetDb = [
     },*/
 ];
 
+var assetI = 0;
+
+function faceAddARandomAsset(face, clear) {
+    if (clear) {
+        face.clearChildren();
+    }
+
+    if (assetDb[assetI].geometry) {
+        face.addMesh(assetDb[assetI]);
+    } else {
+        face.addImage(assetDb[assetI]);
+    }
+    assetI++;
+    if (assetI >= assetDb.length) {
+        assetI = 0;
+    }
+}
+
 PEEKS.registerPage('Face', function(scene) {
 	var page = new PEEKS.Asset({
         backgroundImage: '',
@@ -303,7 +322,6 @@ PEEKS.registerPage('Face', function(scene) {
             var video = scene.DOMarGetElement();
             if (video) {
                 var timerStart = (new Date()).getTime();
-                var assetI = 0;
                 PEEKS.addExtensionListener('cv', function(cv) {
                     page.onUpdate = function() {
                         var timerEnd = (new Date()).getTime();
@@ -311,9 +329,8 @@ PEEKS.registerPage('Face', function(scene) {
                             // Reset geometries every 5 seconds
                             timerStart = timerEnd;
                             for (var faceI = 0; faceI < faces.length; faceI++) {
-                                faces[faceI].destroy();
+                                faceAddARandomAsset(faces[faceI], true);
                             }
-                            faces = [];
                         }
                         if (tracking) {
                             var imageData = scene.getArImageData();
@@ -327,15 +344,7 @@ PEEKS.registerPage('Face', function(scene) {
                                     } else {
                                         if (faceI >= faceAssetCount) {
                                             faces.push(canvas.addAsset());
-                                            if (assetDb[assetI].geometry) {
-                                                faces[faceI].addMesh(assetDb[assetI]);
-                                            } else {
-                                                faces[faceI].addImage(assetDb[assetI]);
-                                            }
-                                            assetI++;
-                                            if (assetI >= assetDb.length) {
-                                                assetI = 0;
-                                            }
+                                            faceAddARandomAsset(faces[faceI]);
                                         } else {
                                             if (this.tracker.trackedFaces[faceI].isHidden) {
                                                 faces[faceI].hide();
@@ -357,19 +366,6 @@ PEEKS.registerPage('Face', function(scene) {
     };
 
     canvas = page.addCanvas();
-
-    /*
-    page.addMesh({
-        geometry: '/assets/glasses/glasses.obj',
-        // rotation: [0, -90, 0],
-        position: [0, 0, -3],
-        size: 3,
-    });
-    */
-    page.addImage({
-        image: '/assets/glasses/glasses_photo1.png',
-    });
-
 
 	return page;
 });
