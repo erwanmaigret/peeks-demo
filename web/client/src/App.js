@@ -1,58 +1,59 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 
-class MenuItem extends React.Component {
-  render() {
-    return (
-      <button className="menuItem">
-        {this.props.title}
-      </button>
-    );
-  }
+class Team extends React.Component {
+    render() {
+        return (
+            <div>
+                <div className="textTitle">Meet our team!</div>
+                <table align="center"><tbody><tr>
+                    <td align='center'>
+                        <div className="card">
+                            <img src="/team-ryan.png" alt="ryan"/>
+                            <p className="textGray">CEO</p>
+                            <p className="textHighlight">Ryan</p>
+                            <p className="textSmall">Seasoned hyper growth entrepreneur. Expert in building products, commercializing products and IP, and business development. Executive leader responsible for AR platforms at Blippar. Early strategy leader (first 250 employees) at Uber. MBA from Johns Hopkins University.</p>
+                            <a href="https://www.linkedin.com/in/ryanschmaltz/"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
+                        </div>
+                    </td>
+                    <td align='center'>
+                        <div className="card">
+                        <img src="/team-erwan.png" alt="erwan"/>
+                        <p className="textGray">CTO</p>
+                        <p className="textHighlight">Erwan</p>
+                        <p className="textSmall">20+ years experience in 3D software/full stack and engineering leadership. Extensive early stage startup experience (Blippar, Toytalk, Loom.ai). Former Dreamworks Animation R&D engineering lead for feature films (Shrek, Madagascar) and the internal tools used for moviemaking.</p>
+                        <a href="https://www.linkedin.com/in/erwanmaigret/"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
+                        </div>
+                    </td>
+                </tr></tbody></table></div>
+    )}
 }
 
-const Team = ({ match }) => (
-  <div>
-    <h2>Topics</h2>
-    <ul>
-      <li>
-        <Link to={`${match.url}/rendering`}>Rendering with React</Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/components`}>Components</Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/props-v-state`}>Props v. State</Link>
-      </li>
-    </ul>
-  </div>
-);
+class MenuItem extends React.Component {
+    onClick() {
+        let pageName = this.props.title.toLowerCase();
+        if (pageName === 'home') {
+            window.location.href = '/';
+        } else {
+            window.location.href = '/' + pageName;
+        }
+    }
+    render() {
+        return (
+            <button className="menuItem"
+                onClick={(e) => this.onClick(e)}
+            >
+                {this.props.title}
+            </button>
+        );
+    }
+}
 
 class MenuBar extends React.Component {
     renderMenuItem(title) {
       return <MenuItem title={title}/>;
-    }
-
-    renderRoutes() {
-      return (
-          <div>
-              <Route exact path="/" component={Home} />
-              <Route path="/team" component={Team} />
-          </div>
-      );
-    }
-
-    renderMenu() {
-        return (
-            <div>
-                <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/team">Team</Link></li>
-                </ul>
-            </div>
-        );
     }
 
     render() {
@@ -83,17 +84,6 @@ class Pages extends React.Component {
       );
     }
 
-    renderMenu() {
-        return (
-            <div>
-                <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/team">Team</Link></li>
-                </ul>
-            </div>
-        );
-    }
-
     render() {
       return (
         <Router>
@@ -105,6 +95,7 @@ class Pages extends React.Component {
     }
 }
 
+/*
 class RequestTrialForm extends React.Component {
   constructor(props) {
     super(props);
@@ -144,6 +135,7 @@ class RoundButton extends React.Component {
     );
   }
 }
+*/
 
 class Home extends Component {
     render() {
@@ -175,35 +167,7 @@ class Home extends Component {
                 <td><img src="snapshot-product-3.png" alt="product3" width='100%'/></td>
                 </tr></tbody></table></div>
                 <div>
-                <div className="textTitle"><br/><br/><br/>Meet our team!<br/><br/></div>
-                <table align="center"><tbody><tr>
-                <td align='center'>
-                <div className="card">
-                <img src="/team-ryan.png" alt="ryan"/>
-                <p className="textGray">CEO</p>
-                <p className="textHighlight">Ryan</p>
-                <p></p>
-                <p className="textSmall">Seasoned hyper growth entrepreneur. Expert in building products, commercializing products and IP, and business development. Executive leader responsible for AR platforms at Blippar. Early strategy leader (first 250 employees) at Uber. MBA from Johns Hopkins University.</p>
-                <a href="https://www.linkedin.com/in/ryanschmaltz/"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
                 </div>
-                </td>
-                <td align='center'>
-                <div className="card">
-                <img src="/team-erwan.png" alt="erwan"/>
-                <p className="textGray">CTO</p>
-                <p className="textHighlight">Erwan</p>
-                <p></p>
-                <p className="textSmall">20+ years experience in 3D software/full stack and engineering leadership. Extensive early stage startup experience (Blippar, Toytalk, Loom.ai). Former Dreamworks Animation R&D engineering lead for feature films (Shrek, Madagascar) and the internal tools used for moviemaking.</p>
-                <a href="https://www.linkedin.com/in/erwanmaigret/"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
-                </div>
-                </td>
-                </tr></tbody></table></div>
-                <footer className="footer">
-                <h1>We bring your inventory to life</h1>
-                <p>Our VR technology is ultra easy to implement. Try it!</p>
-                <a href="mailto:info@peeks.io"><p>Request Trial</p></a>
-                <p className="copyright">&copy; All rights reserved - Peeks Technologies 2018</p>
-                </footer>
             </div>
         );
         // <RequestTrialForm/>
@@ -228,6 +192,12 @@ class App extends Component {
         <td align="right"><MenuBar/></td>
         </tr></tbody></table></div>
         <Pages/>
+        <footer className="footer">
+        <h1>We bring your inventory to life</h1>
+        <p>Our VR technology is ultra easy to implement. Try it!</p>
+        <a href="mailto:info@peeks.io"><p>Request Trial</p></a>
+        <p className="copyright">&copy; All rights reserved - Peeks Technologies 2018</p>
+        </footer>
         </div>
     );
   }
