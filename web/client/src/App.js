@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 
@@ -12,25 +13,95 @@ class MenuItem extends React.Component {
   }
 }
 
+const Team = ({ match }) => (
+  <div>
+    <h2>Topics</h2>
+    <ul>
+      <li>
+        <Link to={`${match.url}/rendering`}>Rendering with React</Link>
+      </li>
+      <li>
+        <Link to={`${match.url}/components`}>Components</Link>
+      </li>
+      <li>
+        <Link to={`${match.url}/props-v-state`}>Props v. State</Link>
+      </li>
+    </ul>
+  </div>
+);
+
 class MenuBar extends React.Component {
     renderMenuItem(title) {
       return <MenuItem title={title}/>;
     }
 
-    render() {
-      let showMenu = false;
-      if (showMenu) {
-          return (
+    renderRoutes() {
+      return (
+          <div>
+              <Route exact path="/" component={Home} />
+              <Route path="/team" component={Team} />
+          </div>
+      );
+    }
+
+    renderMenu() {
+        return (
             <div>
-              <div className="menuBar">
-                {this.renderMenuItem('PRODUCT')}
-                {this.renderMenuItem('TEAM')}
-              </div>
+                <ul>
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/team">Team</Link></li>
+                </ul>
             </div>
-          );
-      } else {
-          return (<div/>);
-      }
+        );
+    }
+
+    render() {
+      return (
+        <Router>
+        <div>
+            <div className="menuBar">
+              {this.renderMenuItem('HOME')}
+              {this.renderMenuItem('TEAM')}
+            </div>
+        </div>
+        </Router>
+      );
+    }
+}
+
+class Pages extends React.Component {
+    renderMenuItem(title) {
+      return <MenuItem title={title}/>;
+    }
+
+    renderRoutes() {
+      return (
+          <div>
+              <Route exact path="/" component={Home} />
+              <Route path="/team" component={Team} />
+          </div>
+      );
+    }
+
+    renderMenu() {
+        return (
+            <div>
+                <ul>
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/team">Team</Link></li>
+                </ul>
+            </div>
+        );
+    }
+
+    render() {
+      return (
+        <Router>
+        <div>
+            {this.renderRoutes()}
+        </div>
+        </Router>
+      );
     }
 }
 
@@ -74,23 +145,10 @@ class RoundButton extends React.Component {
   }
 }
 
-class App extends Component {
+class Home extends Component {
     render() {
         return (
-            <div className="App">
-                <div><table width='100%'><tbody><tr>
-                <td align="left">
-                    <table><tbody>
-                    <tr height="10px"></tr>
-                    <tr>
-                    <td width="10px"></td>
-                    <td><img src={logo} className="logo" alt="logo"/></td>
-                    <td><div className="title"> Peeks</div></td>
-                    </tr>
-                    </tbody></table>
-                </td>
-                <td align="right"><MenuBar/></td>
-                </tr></tbody></table></div>
+            <div>
                 <div><table width='100%'><tbody><tr>
                 <td width='10%'></td>
                 <td width='40%'>
@@ -150,6 +208,29 @@ class App extends Component {
         );
         // <RequestTrialForm/>
     }
+}
+
+class App extends Component {
+  render() {
+    return (
+        <div className="App">
+        <div><table width='100%'><tbody><tr>
+        <td align="left">
+            <table><tbody>
+            <tr height="10px"></tr>
+            <tr>
+            <td width="10px"></td>
+            <td><img src={logo} className="logo" alt="logo"/></td>
+            <td><div className="title"> Peeks</div></td>
+            </tr>
+            </tbody></table>
+        </td>
+        <td align="right"><MenuBar/></td>
+        </tr></tbody></table></div>
+        <Pages/>
+        </div>
+    );
+  }
 }
 
 export default App;
