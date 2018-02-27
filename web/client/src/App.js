@@ -4,32 +4,149 @@ import logo from './logo.svg';
 import './App.css';
 
 class Team extends React.Component {
+    renderTeamMember(member) {
+        return (
+            <td align='center'>
+            <div className="cardPortrait">
+                <img src={member.photo} alt={member.name}/>
+                <p className="textGray">{member.title}</p>
+                <p className="textHighlight">{member.name}</p>
+                <p className="textSmall">{member.blurb}</p>
+                <a href={member.linkedin} target="_blank"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
+            </div>
+            </td>
+        );
+    }
+
+    render() {
+        const members = {
+            'ryan': {
+                name: 'Ryan',
+                title: 'CEO',
+                photo: '/team-ryan.png',
+                blurb: 'Seasoned hyper growth entrepreneur. Expert in building products, commercializing products and IP, and business development. Executive leader responsible for AR platforms at Blippar. Early strategy leader (first 250 employees) at Uber. MBA from Johns Hopkins University.',
+                linkedin: 'https://www.linkedin.com/in/ryanschmaltz/',
+            },
+            'erwan': {
+                name: 'Erwan',
+                title: 'CTO',
+                photo: '/team-erwan.png',
+                blurb: '20+ years experience in 3D software/full stack and engineering leadership. Extensive early stage startup experience (Blippar, Toytalk, Loom.ai). Former Dreamworks Animation R&D engineering lead for feature films (Shrek, Madagascar) and the internal tools used for moviemaking.',
+                linkedin: 'https://www.linkedin.com/in/erwanmaigret/',
+            },
+        };
+
+        if (window.innerWidth < 650) {
+            return (
+                <div>
+                <div className="textTitle">Meet our team!</div>
+                <table align="center"><tbody><tr>
+                    {this.renderTeamMember(members['ryan'])}
+                </tr><tr>
+                    {this.renderTeamMember(members['erwan'])}
+                </tr></tbody></table>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                <div className="textTitle">Meet our team!</div>
+                <table align="center"><tbody><tr>
+                    {this.renderTeamMember(members['ryan'])}
+                    {this.renderTeamMember(members['erwan'])}
+                </tr></tbody></table>
+                </div>
+            )
+        }
+    }
+}
+
+class Products extends React.Component {
+    renderElement(element) {
+        return (
+            <td align='center'>
+            <div className="cardSquare">
+                <p className="textHighlight">{element.title}</p>
+                <p className="textSmall" dangerouslySetInnerHTML={{__html: element.description}}></p>
+            </div>
+            </td>
+        );
+    }
+
+    render() {
+        const elements = {
+            'widget': {
+                title: 'Peeks Widget',
+                description: 'Enable AR and VR within your digital properties. Embed peeks viewer as a widget into your webpage. Websites, Apps, Online ads TBD',
+            },
+            'tryon': {
+                title: 'Fitting Room',
+                description: 'Enter the virtual <b>fitting</b> room and try-on products on yourself. Photo-booth fitting example (looping gif).',
+            },
+            'browser': {
+                title: 'VR Explorer',
+                description: 'Customizable user profile and avatar for optimal virtual shopping experience. Explore your product line within Virtuyal Reality. Enter a URL, try it!.',
+            },
+            'user': {
+                title: 'User Profile',
+                description: 'Customizable user profile and avatar for optimal virtual shopping experience. Size examples....',
+            },
+        };
+
+        if (window.innerWidth < 650) {
+            return (
+                <div>
+                    <table align="center"><tbody>
+                    <tr>
+                    {this.renderElement(elements['widget'])}
+                    </tr><tr>
+                    {this.renderElement(elements['tryon'])}
+                    </tr><tr>
+                    {this.renderElement(elements['browser'])}
+                    </tr><tr>
+                    {this.renderElement(elements['user'])}
+                    </tr>
+                </tbody></table></div>
+            );
+        } else if (window.innerWidth < 1300) {
+            return (
+                <div>
+                    <table align="center"><tbody>
+                    <tr>
+                    {this.renderElement(elements['widget'])}
+                    {this.renderElement(elements['tryon'])}
+                    </tr><tr>
+                    {this.renderElement(elements['browser'])}
+                    {this.renderElement(elements['user'])}
+                    </tr>
+                </tbody></table></div>
+            );
+        } else {
+            return (
+                <div>
+                    <table align="center"><tbody>
+                    <tr>
+                    {this.renderElement(elements['widget'])}
+                    {this.renderElement(elements['tryon'])}
+                    {this.renderElement(elements['browser'])}
+                    {this.renderElement(elements['user'])}
+                    </tr>
+                </tbody></table></div>
+            );
+        }
+    }
+}
+
+class Api extends React.Component {
     render() {
         return (
             <div>
-                <div className="textTitle">Meet our team!</div>
-                <table align="center"><tbody><tr>
-                    <td align='center'>
-                        <div className="card">
-                            <img src="/team-ryan.png" alt="ryan"/>
-                            <p className="textGray">CEO</p>
-                            <p className="textHighlight">Ryan</p>
-                            <p className="textSmall">Seasoned hyper growth entrepreneur. Expert in building products, commercializing products and IP, and business development. Executive leader responsible for AR platforms at Blippar. Early strategy leader (first 250 employees) at Uber. MBA from Johns Hopkins University.</p>
-                            <a href="https://www.linkedin.com/in/ryanschmaltz/"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
-                        </div>
-                    </td>
-                    <td align='center'>
-                        <div className="card">
-                        <img src="/team-erwan.png" alt="erwan"/>
-                        <p className="textGray">CTO</p>
-                        <p className="textHighlight">Erwan</p>
-                        <p className="textSmall">20+ years experience in 3D software/full stack and engineering leadership. Extensive early stage startup experience (Blippar, Toytalk, Loom.ai). Former Dreamworks Animation R&D engineering lead for feature films (Shrek, Madagascar) and the internal tools used for moviemaking.</p>
-                        <a href="https://www.linkedin.com/in/erwanmaigret/"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
-                        </div>
-                    </td>
-                </tr></tbody></table></div>
+                <div className="textTitle">Developer API</div>
+                <p>Get direct access to services for building your own virtual shopping experience based on your products photographs.</p>
+            </div>
     )}
 }
+
 
 class MenuItem extends React.Component {
     onClick() {
@@ -62,6 +179,8 @@ class MenuBar extends React.Component {
         <div>
             <div className="menuBar">
               {this.renderMenuItem('HOME')}
+              {this.renderMenuItem('PRODUCTS')}
+              {this.renderMenuItem('API')}
               {this.renderMenuItem('TEAM')}
             </div>
         </div>
@@ -80,6 +199,8 @@ class Pages extends React.Component {
           <div>
               <Route exact path="/" component={Home} />
               <Route path="/team" component={Team} />
+              <Route path="/products" component={Products} />
+              <Route path="/api" component={Api} />
           </div>
       );
     }
@@ -175,7 +296,19 @@ class Home extends Component {
 }
 
 class App extends Component {
-  render() {
+    resize = () => {
+        this.forceUpdate();
+    }
+
+    componentDidMount() {
+      window.addEventListener('resize', this.resize)
+    }
+
+    componentWillUnmount() {
+      window.removeEventListener('resize', this.resize)
+    }
+
+    render() {
     return (
         <div className="App">
         <div><table width='100%'><tbody><tr>
