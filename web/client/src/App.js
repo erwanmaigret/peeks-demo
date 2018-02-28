@@ -11,7 +11,7 @@ class Team extends React.Component {
                 <img src={member.photo} alt={member.name}/>
                 <p className="textGray">{member.title}</p>
                 <p className="textHighlight">{member.name}</p>
-                <p className="textSmall">{member.blurb}</p>
+                <div className="cardPortraitDescription"><p className="textSmall">{member.blurb}</p></div>
                 <a href={member.linkedin} target="_blank"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
             </div>
             </td>
@@ -62,78 +62,73 @@ class Team extends React.Component {
 }
 
 class Products extends React.Component {
-    renderElement(element) {
-        return (
-            <td align='center'>
-            <div className="cardSquare">
-                <p className="textHighlight">{element.title}</p>
-                <p className="textSmall" dangerouslySetInnerHTML={{__html: element.description}}></p>
-            </div>
-            </td>
-        );
+    renderSection(element, isRight, section) {
+        if (window.innerWidth < 650) {
+            return (
+                <div className={section}>
+                <table align="center" width="100%"><tbody><tr><td>
+                    <p className="textTitle">{element.title}</p>
+                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                </td></tr>
+                <tr><td width="50%" className="box">
+                </td></tr>
+                </tbody></table></div>
+            );
+        } else {
+            if (isRight) {
+                return (
+                    <div className={section}><table align="center"><tbody><tr>
+                    <td width="50%" className="box">
+                    </td><td width="50%">
+                        <p className="textTitle">{element.title}</p>
+                        <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    </td>
+                    </tr></tbody></table></div>
+                );
+            } else {
+                return (
+                    <div className={section}><table align="center"><tbody><tr>
+                    <td width="50%">
+                        <p className="textTitle">{element.title}</p>
+                        <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    </td><td width="50%" className="box">
+                    </td>
+                    </tr></tbody></table></div>
+                );
+            }
+        }
     }
 
     render() {
         const elements = {
             'widget': {
                 title: 'Peeks Widget',
-                description: 'Enable AR and VR within your digital properties. Embed peeks viewer as a widget into your webpage. Websites, Apps, Online ads TBD',
+                description: 'Enable <b>Augmented Reality</b> and <b>Virtual Reality</b> within your digital properties.<br><br>Embed peeks viewer as a widget into your webpage.<br><ul align="left"><li>Websites</li><li>Applications</li><li>Online ads</li></ul>',
             },
             'tryon': {
                 title: 'Fitting Room',
-                description: 'Enter the virtual <b>fitting</b> room and try-on products on yourself. Photo-booth fitting example (looping gif).',
+                description: 'Enter the virtual <b>fitting</b> room and try-on products on yourself. <b>Photo-booth fitting example (looping gif)</b>.',
             },
             'browser': {
                 title: 'VR Explorer',
-                description: 'Customizable user profile and avatar for optimal virtual shopping experience. Explore your product line within Virtuyal Reality. Enter a URL, try it!.',
+                description: 'Customizable user profile and avatar for optimal virtual shopping experience. Explore your product line within Virtuyal Reality. Enter a URL<br><b>try it!.</b>',
             },
             'user': {
                 title: 'User Profile',
-                description: 'Customizable user profile and avatar for optimal virtual shopping experience. Size examples....',
+                description: 'Customizable user profile and avatar for optimal virtual shopping experience.<br><br>Size examples....',
             },
         };
 
-        if (window.innerWidth < 650) {
-            return (
-                <div>
-                    <table align="center"><tbody>
-                    <tr>
-                    {this.renderElement(elements['widget'])}
-                    </tr><tr>
-                    {this.renderElement(elements['tryon'])}
-                    </tr><tr>
-                    {this.renderElement(elements['browser'])}
-                    </tr><tr>
-                    {this.renderElement(elements['user'])}
-                    </tr>
-                </tbody></table></div>
-            );
-        } else if (window.innerWidth < 1300) {
-            return (
-                <div>
-                    <table align="center"><tbody>
-                    <tr>
-                    {this.renderElement(elements['widget'])}
-                    {this.renderElement(elements['tryon'])}
-                    </tr><tr>
-                    {this.renderElement(elements['browser'])}
-                    {this.renderElement(elements['user'])}
-                    </tr>
-                </tbody></table></div>
-            );
-        } else {
-            return (
-                <div>
-                    <table align="center"><tbody>
-                    <tr>
-                    {this.renderElement(elements['widget'])}
-                    {this.renderElement(elements['tryon'])}
-                    {this.renderElement(elements['browser'])}
-                    {this.renderElement(elements['user'])}
-                    </tr>
-                </tbody></table></div>
-            );
-        }
+        return (
+            <div>
+            <div className="textTitle">A solution for everyone</div>
+            <div className="textDescription">Extend your brand with the right XR experience for your clients.</div>
+            {this.renderSection(elements['widget'], false, 'sectionBlank')}
+            {this.renderSection(elements['tryon'], true, 'sectionBlank')}
+            {this.renderSection(elements['browser'], false, 'sectionBlank')}
+            {this.renderSection(elements['user'], true, 'sectionBlank')}
+            </div>
+        );
     }
 }
 
@@ -141,7 +136,12 @@ class Api extends React.Component {
     render() {
         return (
             <div>
+                <div className="sectionTitle">Developer API</div>
                 <div className="textTitle">Developer API</div>
+                <div className="sectionA">Direct access to Computer Vision processing for your own custom use</div>
+                <div className="section2">Developer API</div>
+                <div className="section3">Developer API</div>
+                <div className="section4">Developer API</div>
                 <p>Get direct access to services for building your own virtual shopping experience based on your products photographs.</p>
             </div>
     )}
@@ -180,7 +180,6 @@ class MenuBar extends React.Component {
             <div className="menuBar">
               {this.renderMenuItem('HOME')}
               {this.renderMenuItem('PRODUCTS')}
-              {this.renderMenuItem('API')}
               {this.renderMenuItem('TEAM')}
             </div>
         </div>
@@ -327,8 +326,10 @@ class App extends Component {
         <Pages/>
         <footer className="footer">
         <h1>We bring your inventory to life</h1>
+        <br/>
         <p>Our VR technology is ultra easy to implement. Try it!</p>
         <a href="mailto:info@peeks.io"><p>Request Trial</p></a>
+        <br/><br/>
         <p className="copyright">&copy; All rights reserved - Peeks Technologies 2018</p>
         </footer>
         </div>

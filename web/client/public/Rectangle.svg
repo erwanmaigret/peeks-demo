@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="603px" height="518px" viewBox="0 0 603 518" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Rectangle</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="85.0135721%" y1="50%" x2="0%" y2="85.2018283%" id="linearGradient-1">
+            <stop stop-color="#F9004A" offset="0%"></stop>
+            <stop stop-color="#4900F4" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Peeks.io" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-837.000000, 0.000000)">
+        <g id="Group-3" transform="translate(837.000000, -14.000000)" fill="url(#linearGradient-1)">
+            <path d="M61.7086631,-2.97687032e-13 L669.909873,-7.2819418e-07 C725.138349,-7.2819419e-07 769.909874,44.7715246 769.909874,100 C769.909874,102.019261 769.848713,104.038058 769.726475,106.053616 C747.694306,469.336692 699.999023,619.501111 626.640625,556.546875 C506.445313,453.398438 598.609375,221.328125 522.523437,147.757812 C446.4375,74.1875 124.921875,162.556278 33.9765625,116.78125 C33.9765625,116.78125 33.9765625,116.78125 33.9765625,116.78125 L33.9765625,116.78125 C3.5468728,101.465234 -8.70518032,64.3810119 6.61083591,33.9513222 C17.0884495,13.1345167 38.4037328,3.80030672e-05 61.7086631,3.80030672e-05 Z" id="Rectangle"></path>
+        </g>
+    </g>
+</svg>

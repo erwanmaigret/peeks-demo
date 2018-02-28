@@ -1,8 +1,9 @@
 .App {
   text-align: center;
-  background-image: url("/background-shape1.png");
+  background-image: url("/ui-menubar.svg");
   background-position: right top;
   background-repeat: no-repeat;
+  background-size: 250px auto;
 }
 
 .logo {
@@ -42,9 +43,130 @@
     margin: 10px;
 }
 
+.section {
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.sectionBlank {
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.sectionShapeBg {
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  background-image: url("/ui-shape-wide.svg");
+  background-position: right top;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.sectionLeft {
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  background-image: url("/ui-circle.svg");
+  background-position: -50px;
+  background-repeat: no-repeat;
+  background-size: 150px;
+}
+
+.sectionRight {
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  background-image: url("/ui-circle.svg");
+  background-position: 120%;
+  background-repeat: no-repeat;
+  background-size: 150px;
+}
+
+.sectionFirst {
+  padding: 20px;
+  color: #fff;
+  background-color: #ddd;
+  text-align: center;
+}
+
+.sectionA {
+  padding: 20px;
+  color: #fff;
+  background-color-: #efccFF;
+  text-align: center;
+}
+
+.sectionB {
+  padding: 20px;
+  color: #000;
+  background-color-: #fff;
+  text-align: center;
+}
+
+.sectionC {
+  padding: 20px;
+  color: #fff;
+  background-color-: #FDcddd;
+  text-align: center;
+}
+
+.sectionD {
+  padding: 20px;
+  color: #000;
+  background-color-: #fff;
+  text-align: center;
+}
+
+.sectionLast {
+  padding: 20px;
+  color: #000;
+  background-color: #fff;
+  text-align: center;
+}
+
+.section1 {
+  padding: 20px;
+  color: #ffffff;
+  background-color: #FD3279;
+  text-align: center;
+  background: linear-gradient(-30deg, #FF7556 , #FD3279);
+}
+
+.section2 {
+  padding: 20px;
+  color: #ffffff;
+  background-color: #6F01FF;
+  text-align: center;
+  background: linear-gradient(90deg, #6F01FF , #FD3279);
+}
+
+.section3 {
+  padding: 20px;
+  color: #fff;
+  background-color: #333;
+  text-align: center;
+}
+
+.section4 {
+  padding: 20px;
+  color: #000;
+  background-color: #fff;
+  text-align: center;
+}
+
+.sectionTitle {
+  padding: 20px;
+  color: #fff;
+  background-color: #333;
+  text-align: center;
+  font-size: 2.0em;
+}
+
 .footer {
   padding: 20px;
-  margin-top: 20px;
   color: #ffffff;
   background-color: #FD3279;
   text-align: center;
@@ -80,6 +202,11 @@
   color: #1F176C;
   padding: 10px;
 }
+.textTitleInverted {
+  font-size: 2.0em;
+  color: #eee;
+  padding: 10px;
+}
 .textDescription {
   font-size: 0.9em;
   color: #85A0B7;
@@ -90,6 +217,14 @@
   color: #85A0B7;
 }
 
+.box {
+    border-radius: 0px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 20px;
+    padding: 10px;
+    background-color: #fff;
+}
+
 .cardPortrait {
     border-radius: 10px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -98,6 +233,14 @@
     height: 350px;
     text-align: center;
     padding: 10px;
+    background-color: #fff;
+}
+
+.cardPortraitDescription {
+    margin: 5px;
+    height: 100px;
+    text-align: center;
+    padding: 0px;
     background-color: #fff;
 }
 
