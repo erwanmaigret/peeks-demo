@@ -11,7 +11,7 @@ class Team extends React.Component {
                 <img src={member.photo} alt={member.name}/>
                 <p className="textGray">{member.title}</p>
                 <p className="textHighlight">{member.name}</p>
-                <div className="cardPortraitDescription"><p className="textSmall">{member.blurb}</p></div>
+                <div className="cardPortraitDescription"><p className="textSmall" align="justify">{member.blurb}</p></div>
                 <a href={member.linkedin} target="_blank"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
             </div>
             </td>
@@ -62,6 +62,18 @@ class Team extends React.Component {
 }
 
 class Products extends React.Component {
+    renderImage(element) {
+        if (element.imageShadows) {
+            return (
+                <img src={element.image} alt="product" width="300px" className="box"/>
+            );
+        } else {
+            return (
+                <img src={element.image} alt="product" width="300px"/>
+            );
+        }
+    }
+
     renderSection(element, isRight, section) {
         if (window.innerWidth < 650) {
             return (
@@ -70,29 +82,29 @@ class Products extends React.Component {
                     <p className="textTitle">{element.title}</p>
                     <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
                 </td></tr>
-                <tr><td width="50%" className="box">
-                </td></tr>
+                <tr><td width="50%">{this.renderImage(element)}</td></tr>
                 </tbody></table></div>
             );
         } else {
             if (isRight) {
                 return (
                     <div className={section}><table align="center"><tbody><tr>
-                    <td width="50%" className="box">
-                    </td><td width="50%">
-                        <p className="textTitle">{element.title}</p>
-                        <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <td width="50%">{this.renderImage(element)}</td>
+                    <td width="5%"></td>
+                    <td width="45%" align="left">
+                        <div className="textTitle">{element.title}</div>
+                        <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
                     </td>
                     </tr></tbody></table></div>
                 );
             } else {
                 return (
                     <div className={section}><table align="center"><tbody><tr>
-                    <td width="50%">
-                        <p className="textTitle">{element.title}</p>
-                        <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
-                    </td><td width="50%" className="box">
-                    </td>
+                    <td width="5%" ></td>
+                    <td width="45%" align="left">
+                        <div className="textTitle">{element.title}</div>
+                        <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
+                    </td><td width="50%">{this.renderImage(element)}</td>
                     </tr></tbody></table></div>
                 );
             }
@@ -102,27 +114,49 @@ class Products extends React.Component {
     render() {
         const elements = {
             'widget': {
-                title: 'Peeks Widget',
-                description: 'Enable <b>Augmented Reality</b> and <b>Virtual Reality</b> within your digital properties.<br><br>Embed peeks viewer as a widget into your webpage.<br><ul align="left"><li>Websites</li><li>Applications</li><li>Online ads</li></ul>',
+                title: 'Peeks Widget.',
+                description: '<p>Enable <b>Augmented Reality</b> and <b>Virtual Reality</b> within your digital properties.</p><p>The peeks player can be embedded as a widget inside your own solution:'+
+                '<table width="100%" cellspacing="10"><tbody>' +
+                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a DOM widget inside your own <b>website</b></td><td width="10%"/>' +
+                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a GUI component of a native <b>mobile</b> application.</td><td width="10%"/>' +
+                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a <b>customizable ad</b> with video, AR, 3d and animations!</td><td width="10%"/>' +
+                '</tbody></table></p>',
+                image: 'snapshot-widget.png',
+                imageShadows: true,
             },
             'tryon': {
-                title: 'Fitting Room',
-                description: 'Enter the virtual <b>fitting</b> room and try-on products on yourself. <b>Photo-booth fitting example (looping gif)</b>.',
+                title: 'Fitting Room.',
+                description: '<p>Enter the virtual fitting room and try-on products on yourself.</p>'+
+                    '<p>Use the best solution adapted to your products:' +
+                    '<table width="100%" cellspacing="10"><tbody>' +
+                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">AR <b>Face tracking</b> for head wearables (glasses, hats).</td><td width="10%"/>' +
+                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">2D photo montages from simple photographs.</td><td width="10%"/>' +
+                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Full body <b>3D avatar</b> mapping.</td><td width="10%"/>' +
+                    '</tbody></table></p>',
+                image: 'snapshot-face-tracking.png',
             },
             'browser': {
-                title: 'VR Explorer',
-                description: 'Customizable user profile and avatar for optimal virtual shopping experience. Explore your product line within Virtuyal Reality. Enter a URL<br><b>try it!.</b>',
+                title: 'VR Browser.',
+                description: '<p>Explore and navigate through all your inventory inside an <b>immersive 3d</b> environment using a Virtual Reality heaset.</p>' +
+                    '<p>Expose your products in our VR browser and get more exposure.</p>',
+                image: 'snapshot-browser.png',
+                imageShadows: true,
             },
             'user': {
-                title: 'User Profile',
-                description: 'Customizable user profile and avatar for optimal virtual shopping experience.<br><br>Size examples....',
+                title: 'User Profile.',
+                description:
+                    '<p>Let your customers setup their user profile and <b>virtual mannequin</b> for optimized shopping experience.</p>' +
+                    '<p>Collect new types of <b>analytics</b> for a more targeted product recommendation.</p>',
+                image: 'snapshot-user.png',
+                imageShadows: true,
             },
         };
 
         return (
             <div>
             <div className="textTitle">A solution for everyone</div>
-            <div className="textDescription">Extend your brand with the right XR experience for your clients.</div>
+            <div className="textDescription">Extend your brand with the right Mixed Reality experience for your clients.</div>
+            <img src="/ui-shape-underline.svg" alt="underline" width="50%"/>
             {this.renderSection(elements['widget'], false, 'sectionBlank')}
             {this.renderSection(elements['tryon'], true, 'sectionBlank')}
             {this.renderSection(elements['browser'], false, 'sectionBlank')}
@@ -258,39 +292,89 @@ class RoundButton extends React.Component {
 */
 
 class Home extends Component {
+    renderExample(element) {
+        if (element.image) {
+            return (
+                <img src={element.image} alt="product1" height='400px'/>
+            );
+        } else {
+            return (
+                <div></div>
+            );
+        }
+    }
+
+    renderSection(element, isRight, section) {
+        if (window.innerWidth < 650) {
+            return (
+                <div>
+                <table align="center" width="100%"><tbody>
+                <tr>
+                <td width="10%"></td>
+                <td width="80%">
+                    <p className="textTitle">{element.title}</p>
+                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                </td>
+                <td width="10%"></td>
+                </tr>
+                <tr></tr>
+                </tbody></table>{this.renderExample(element)}</div>
+            );
+        } else {
+            if (isRight) {
+                return (
+                    <div><table align="center"><tbody><tr>
+                    <td width="50%">{this.renderExample(element)}</td>
+                    <td width="40%">
+                        <p className="textTitle" align="left">{element.title}</p>
+                        <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    </td>
+                    <td width="10%"></td>
+                    </tr></tbody></table></div>
+                );
+            } else {
+                return (
+                    <div><table align="center"><tbody><tr>
+                    <td width="10%"></td>
+                    <td width="40%">
+                        <p className="textTitle" align="left">{element.title}</p>
+                        <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    </td>
+                    <td width="50%">{this.renderExample(element)}</td>
+                    </tr></tbody></table></div>
+                );
+            }
+        }
+    }
+
     render() {
+        const elements = {
+            'intro': {
+                title: 'We make AR and VR a reality.',
+                description: '<p>Immersive web and mobile VR/AR technology now made available to the retail industry.</p><p>Turn all your inventory into AR. Customers have fun purchasing online using our AR tool. It brings the fitting room into their hands.</p>',
+                image: "snapshot-product-1.png",
+            },
+            'browser': {
+                title: 'Web-browser friendly.',
+                description: '<p>Wether your store is accessible from the web or a native application, our technology brings VR to all software environments.</p>' +
+                    '<p>We support all inventories, no kidding. Food, furniture, clothes, buildings, cars.. all!</p>',
+                image: "snapshot-product-2.png",
+            },
+            'headset': {
+                title: 'Headset compatible.',
+                description: '<p>If you have a VR Headset, you can make it even more immersive.</p>' +
+                    '<p>We are compatible with all VR headsets from the simplest <b>Google Cardboard</b></p>',
+                image: "snapshot-product-3.png",
+            },
+        };
+
         return (
             <div>
-                <div><table width='100%'><tbody><tr>
-                <td width='10%'></td>
-                <td width='40%'>
-                <div className="textTitle" align="left">We make AR and VR a reality.</div>
-                <div className="textDescription" align="left">Immersive web and mobile VR/AR technology now made available to the retail industry.</div>
-                <div className="textDescription" align="left">Turn all your inventory into AR. Customers have fun purchasing online using our AR tool. It brings the fitting room into their hands.</div>
-                </td>
-                <td><img src="snapshot-product-1.png" alt="product1" width='100%'/></td>
-                </tr></tbody></table></div>
-                <div><table width='100%'><tbody><tr>
-                <td><img src="snapshot-product-2.png" alt="product2" width='100%'/></td>
-                <td width='40%'>
-                <div className="textTitle" align="left">Web-browser friendly.</div>
-                <div className="textDescription" align="left">Wether your store is accessible from the web or a native application, our technology brings VR to all software environments.</div>
-                </td>
-                <td width='10%'></td>
-                </tr></tbody></table></div>
-                <div><table width='100%'><tbody><tr>
-                <td width='10%'></td>
-                <td width='40%'>
-                <div className="textTitle" align="left"><br/>Headset compatible.</div>
-                <div className="textDescription" align="left">If you have a VR Headset, you can make it even more immersive.</div>
-                </td>
-                <td><img src="snapshot-product-3.png" alt="product3" width='100%'/></td>
-                </tr></tbody></table></div>
-                <div>
-                </div>
+            {this.renderSection(elements['intro'], false, 'sectionBlank')}
+            {this.renderSection(elements['browser'], true, 'sectionBlank')}
+            {this.renderSection(elements['headset'], false, 'sectionBlank')}
             </div>
         );
-        // <RequestTrialForm/>
     }
 }
 
