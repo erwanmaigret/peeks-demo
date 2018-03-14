@@ -128,7 +128,7 @@ PEEKS.registerPage('sportrade', function() {
                     viewBgColor: [0, 0, 0],
                 });
 
-                var button = asset.addButton({
+                asset.addButton({
                     image: item.image ? page.getAssetPath(item.image) : undefined,
                     path: item.path,
                     onClick: onClick,

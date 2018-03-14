@@ -669,7 +669,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
                         material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
                         material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
-                        var color = asset.getAttrColor('color', [1, 1, 1, 1]);
+                        asset.getAttrColor('color', [1, 1, 1, 1]);
                         material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         material.side = THREE.FrontSide;
                     }

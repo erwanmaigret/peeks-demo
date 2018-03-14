@@ -2422,8 +2422,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
                 if (this.arView.canvasUpdated) {
                     var context = this.arView.canvas.getContext('2d');
-                    return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
                     this.arView.canvasUpdated = false;
+                    return context.getImageData(0, 0, this.arView.canvas.width, this.arView.canvas.height);
                 }
             }
         },
@@ -2745,61 +2745,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             analytics('js', new Date());
             analytics('config', 'UA-109650112-1');
 
-            var paramsI = url.search("\\?");
-            if (paramsI !== -1) {
-                this.urlParams = [];
-                var items = [];
-
-                var paramStr = url.substring(paramsI + 1);
-                var params = paramStr.split('&');
-                for (var paramI = 0; paramI < params.length; paramI++) {
-                    var param = params[paramI].split('=');
-                    items.push([param[0], param[1]]);
-                    this.urlParams.push([param[0], param[1]]);
-                }
-
-                PEEKS.registerPage('Christmas', function() {
-                	var page = new PEEKS.Asset({
-                        category: 'winter',
-                    });
-                    var canvas = page.addCanvas();
-
-                    var screen = page.addScreen({
-                        radius: 2,
-                    });
-
-                    for (var itemI = 0; itemI < items.length; itemI++) {
-                        var fontSize = 50;
-                        screen.addTextButton({
-                            label: items[itemI][0].replace('_', ' '),
-                            position: [(itemI - items.length * .5) * .2, 0, 0],
-                            fontSize: fontSize,
-                        }).animate({
-                    		duration: 20,
-                    		delay: 0,
-                    		begin: [1, 0, 0],
-                    		end: [-1, 0, 0],
-                    		attribute: 'position',
-                            loop: true,
-                    	});
-                    }
-
-                	return page;
-                });
-
-                this.loadPage('Christmas');
-                //this.setArMode(true);
-                //this.arView.alpha = 1;
-            } else {
-                var page = document.title;
-                if (page === 'Peeks') {
-                    var urlSplit = url.split('.');
-                    if (urlSplit.length > 2) {
-                        page = urlSplit[1];
-                    }
-                }
-                this.loadPage(page);
-            }
+            var page = document.title;
+            this.loadPage(page);
 
             analytics('event', 'scene.start');
             logDebug('Scene.start');

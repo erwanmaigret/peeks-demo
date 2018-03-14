@@ -26,8 +26,6 @@ PEEKS.registerPage('2D Assets', function() {
 		['9513483_fpx.png', '9513484_fpx.png'],
 	];
 
-	var panel = page.addAsset();
-
     var hideInfo = function () {
         var infoPage = this.parent;
         infoPage.animate({

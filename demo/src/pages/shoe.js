@@ -16,19 +16,6 @@ function createAsset(page, position) {
 
     var mannequin = model.mannequin;
 
-    var panel = femaleHigh.addAsset({
-        position: [.5, 1, -3],
-    });
-
-    var outfit = "pants";
-    var size = "M";
-    var sizeDefault = "M";
-    var chestSize = "M";
-    var breastSize = "M";
-    var hipsSize = "M";
-    var skin = [1, 1, 1];
-    var modelName = "woman";
-    var pose = "pose1";
     var poseDefault = "pose1";
     var fabric = undefined;
 

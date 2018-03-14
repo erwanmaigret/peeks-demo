@@ -15,13 +15,8 @@ function createMannequin(page, position) {
 
     var mannequin = model.mannequin;
 
-    var panel = femaleHigh.addAsset({
-        position: [.5, 1, -3],
-    });
-
     var outfit = "skirt";
     var size = "M";
-    var sizeDefault = "M";
     var chestSize = "M";
     var breastSize = "M";
     var hipsSize = "M";
