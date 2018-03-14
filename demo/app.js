@@ -40,6 +40,7 @@ app.use('/movie', require('./routes/movie'));
 app.use('/wgtiootb', require('./routes/demo'));
 app.use('/greetings', require('./routes/greetings'));
 app.use('/face', require('./routes/face'));
+app.use('/widget', require('./routes/widget'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

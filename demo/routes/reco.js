@@ -4,6 +4,8 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     var data = { pages: [] };
 
+    data.pages.push({ name: 'Widget', page: 'widget', url: '/widget' });
+
     data.pages.push({ name: 'Target', url: '/target' });
     //data.pages.push({ name: 'Fortinet' });
 
@@ -73,6 +75,8 @@ router.get('/', function(req, res, next) {
     data.pages.push({ name: 'Shoe', page: 'shoe', url: '/shoe' });
     //data.pages.push({ name: '2D Assets', page: '2D Assets' });
     //data.pages.push({ name: '3D Assets' });
+
+    data.pages.push({ name: 'Face', page: 'face', url: '/face' });
 
     res.send(JSON.stringify(data));
 });
