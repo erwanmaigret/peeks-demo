@@ -2831,7 +2831,17 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
         },
 
-		start: function (window, animate) {
+		start: function (domElement, animate) {
+            if (domElement === window) {
+                // In case a window is passed instead,
+                //  which we don't care much about. This was done before but
+                //  never really used and not relevant anymore
+                // Eventuallly this could be retired once no existing examples
+                //  are calling this or better check on the type of the incoming
+                //  object to deal with this properly based on cases.
+                domElement = undefined;
+            }
+
             var document = window.document;
 
             var url = document.URL;
@@ -2855,6 +2865,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			this.window = window;
             this.width = this.window.innerWidth;
             this.height = this.window.innerHeight;
+
+            this.domElement = domElement || document.createElement('peeks-scene');
 
 			this.onStart();
 
@@ -3229,7 +3241,20 @@ exports.math = utils.math;
 exports.setAnimationSpeed = setAnimationSpeed;
 
 var global = Function('return this')();
-global.PEEKS = global.PEEKS || exports;
+
+if (global.PEEKS === undefined) {
+    // Singleton to be called only once
+    global.PEEKS = exports;
+
+    var peeksSceneProto = Object.create(HTMLElement.prototype);
+    peeksSceneProto.createdCallback = function() {
+    };
+    peeksSceneProto.attachedCallback = function() {
+        var peeks = new PEEKS.Scene();
+        peeks.start(this);
+    };
+    document.registerElement('peeks-scene', {prototype: peeksSceneProto});
+}
 
 
 /***/ }),
@@ -50292,9 +50317,11 @@ PEEKS.Scene.prototype.onStart = function() {
 	directionalLight.position.set(0, 0, 1);
 	scene.add( directionalLight );
 
+    var canvas = this.domElement || document.createElement('canvas');
     var renderer = new THREE.WebGLRenderer({
         alpha: true,
         antialias: true,
+        domElement: canvas,
         // This improves performances a lot of course, we may want this
         //  as an option in case we're just dealing with textured elements
         // antialias: false,
