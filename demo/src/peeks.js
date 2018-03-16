@@ -3091,6 +3091,7 @@ if (global.PEEKS === undefined) {
     // Singleton to be called only once
     global.PEEKS = exports;
 
+    /*
     var peeksSceneProto = Object.create(HTMLElement.prototype);
     peeksSceneProto.createdCallback = function() {
     };
@@ -3098,5 +3099,7 @@ if (global.PEEKS === undefined) {
         var peeks = new PEEKS.Scene();
         peeks.start(this.getAttribute('canvas'));
     };
-    document.registerElement('peeks-view', {prototype: peeksSceneProto});
+    */
+    
+    //document.registerElement('peeks-view', {prototype: peeksSceneProto});
 }
