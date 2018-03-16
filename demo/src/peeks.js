@@ -2732,20 +2732,18 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         },
 
 		start: function (domElement, animate) {
-            if (domElement === window) {
-                // In case a window is passed instead,
-                //  which we don't care much about. This was done before but
-                //  never really used and not relevant anymore
-                // Eventuallly this could be retired once no existing examples
-                //  are calling this or better check on the type of the incoming
-                //  object to deal with this properly based on cases.
+            if (typeof domElement === 'string') {
+                domElement = document.getElementById(domElement);
+            }
+            if (domElement &&
+                domElement.nodeName &&
+                domElement.nodeName.toLowerCase() === "canvas")
+            {
+                // This is all good actually
+            } else {
+                logError("Invalid element passed to the peeks scene. Expecting a canvas");
                 domElement = undefined;
             }
-
-            var document = window.document;
-
-            var defaultDomElement = document.getElementById("peeksWidget");
-            domElement = defaultDomElement || domElement;
 
             var url = document.URL;
             if (url.search('127.0.0.1:3000') != -1) {
@@ -2768,8 +2766,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			this.window = window;
 
             if (domElement === undefined) {
+                logDebug('Creating default canvas element');
                 domElement = document.createElement('canvas');
-                this.isWindowSized = true;
+                this.isFullScreen = true;
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
                 document.body.appendChild(domElement);
@@ -2784,95 +2783,29 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 			this.onStart();
 
-			if (document) {
-                window.addEventListener('orientationchange',
-                    function() {
-                        mainScene.screenOrientation = window.orientation || 0;
-                    }
-                );
+			if (this.isFullScreen) {
+                document.addEventListener('keydown', function(event) { mainScene.onKeyDown(event); } );
+                document.addEventListener('keyup', function(event) { mainScene.onKeyUp(event); } );
+            }
 
-        		window.addEventListener('deviceorientation',
-                    function(event) {
-                        if (event.alpha != null) {
-                            mainScene.deviceOrientation = event;
-                        }
-                    }
-                );
+            window.addEventListener('orientationchange', function() { mainScene.screenOrientation = window.orientation || 0; } );
+    		window.addEventListener('deviceorientation', function(event) { if (event.alpha != null) { mainScene.deviceOrientation = event; } } );
 
-                document.addEventListener('mousemove',
-                    function(event) {
-                        mainScene.onMouseMove(event);
-                    }
-                );
+            document.addEventListener('mousemove', function(event) { mainScene.onMouseMove(event); } );
+            document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseDown(event); } } );
+            document.addEventListener('mouseup', function(event) { mainScene.onMouseUp(event); } );
 
-                document.addEventListener('mousedown',
-                    function(event) {
-                        if (event.target.nodeName === 'CANVAS') {
-                            mainScene.onMouseDown(event);
-                        }
-                    }
-                );
-
-                document.addEventListener('mouseup',
-                    function(event) {
-                        mainScene.onMouseUp(event);
-                    }
-                );
-
-                document.addEventListener('keydown',
-                    function(event) {
-                        mainScene.onKeyDown(event);
-                    }
-                );
-
-                document.addEventListener('keyup',
-                    function(event) {
-                        mainScene.onKeyUp(event);
-                    }
-                );
-
-                document.addEventListener('mousewheel',
-                    function(event) {
-                        if (event.target.nodeName === 'CANVAS') {
-                            mainScene.onMouseWheel(event);
-                        }
-                    }
-                );
-
-                document.addEventListener('MozMousePixelScroll',
-                    function(event) {
-                        if (event.target.nodeName === 'CANVAS') {
-                            mainScene.onMouseWheel(event);
-                        }
-                    }
-                );
-
-                document.addEventListener('touchstart',
-                    function(event) {
-                        if (event.target.nodeName === 'CANVAS') {
-                            mainScene.onMouseDown(event);
-                        }
-                    }
-                );
-
-                document.addEventListener('touchend',
-                    function(event) {
-                        mainScene.onMouseUp(event);
-                    }
-                );
-
-                document.addEventListener('touchmove',
-                    function(event) {
-                        mainScene.onMouseMove(event);
-                    }
-                );
-			}
+            document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseWheel(event); } } );
+            document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseWheel(event); } } );
+            document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseDown(event); } } );
+            document.addEventListener('touchend', function(event) { mainScene.onMouseUp(event); } );
+            document.addEventListener('touchmove', function(event) { mainScene.onMouseMove(event); } );
 
 			var animate = function () {
                 if (mainScene) {
 					requestAnimationFrame(animate);
 
-                    if (mainScene.isWindowSized) {
+                    if (mainScene.isFullScreen) {
                         if (mainScene.width !== mainScene.window.innerWidth ||
                             mainScene.height !== mainScene.window.innerHeight)
                         {
@@ -3163,7 +3096,7 @@ if (global.PEEKS === undefined) {
     };
     peeksSceneProto.attachedCallback = function() {
         var peeks = new PEEKS.Scene();
-        peeks.start(this);
+        peeks.start(this.getAttribute('canvas'));
     };
-    document.registerElement('peeks-scene', {prototype: peeksSceneProto});
+    document.registerElement('peeks-view', {prototype: peeksSceneProto});
 }
