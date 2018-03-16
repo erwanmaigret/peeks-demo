@@ -2731,7 +2731,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
         },
 
-		start: function (domElement, animate) {
+		start: function (domElement, page) {
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
             }
@@ -2756,13 +2756,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             analytics('js', new Date());
             analytics('config', 'UA-109650112-1');
 
-            var page = document.title;
+            // If the page is not specified, load the page that correspond
+            //  to the title of the document
+            page = page || document.title;
             this.loadPage(page);
 
             analytics('event', 'scene.start');
             logDebug('Scene.start');
 
-			this.resetCamera(animate);
+			this.resetCamera();
 			this.window = window;
 
             if (domElement === undefined) {
@@ -3100,6 +3102,6 @@ if (global.PEEKS === undefined) {
         peeks.start(this.getAttribute('canvas'));
     };
     */
-    
+
     //document.registerElement('peeks-view', {prototype: peeksSceneProto});
 }
