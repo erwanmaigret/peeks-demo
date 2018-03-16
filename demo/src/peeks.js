@@ -2773,6 +2773,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
                 document.body.appendChild(domElement);
+            } else {
+                this.width = domElement.width;
+                this.height = domElement.height;
             }
 
             this.domElement = domElement;

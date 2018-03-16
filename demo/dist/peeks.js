@@ -2873,6 +2873,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
                 document.body.appendChild(domElement);
+            } else {
+                this.width = domElement.width;
+                this.height = domElement.height;
             }
 
             this.domElement = domElement;
@@ -2977,6 +2980,17 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                             mainScene.height = mainScene.window.innerHeight;
 
                             mainScene.onResize();
+                        }
+                    } else if (mainScene.domElement && mainScene.domElement.width !== undefined) {
+                        if (mainScene.width !== mainScene.domElement.width ||
+                            mainScene.height !== mainScene.domElement.height)
+                        {
+                            //console.log(mainScene.domElement.width);
+                            //console.log(mainScene.domElement.height);
+                            //mainScene.width = mainScene.domElement.width;
+                            //mainScene.height = mainScene.domElement.height;
+
+                            //mainScene.onResize();
                         }
                     }
 
