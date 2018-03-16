@@ -4,10 +4,10 @@ PEEKS.registerPage('Peeks', function() {
     var canvas = page.addCanvas();
 
     canvas.addTextButton({
-        label: 'Coming soon....',
+        label: 'We make AR and VR and Reality!',
         position: [0, -.3, 0],
         size: [.9, .15, 1],
-        fontSize: 50,
+        fontSize: 40,
     }).animate({
         duration: 3,
         delay: 2,

@@ -4,7 +4,17 @@ block content
     script(src="/peeks.js")
     script(src="/pages/widget.js")
     script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
-    h1(align="center") Here is an example of a simple widget
-    canvas(id="peeksWidget" width="500" height="20" style="border:10px solid #3333aa;")
+    h1(align="center") Example of embedded Peeks widget
+    table(width="100%")
+        tr
+            td
+            td(align="center")
+                canvas(
+                    id="peeksWidget"
+                    width=400
+                    height=150
+                    style="border-radius:20px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
+                )
+            td
     peeks-scene(id="peeks" width="300" height="200")
-    h1(align="center") Here is an example of a simple widget done
+    h3(align="center") It's easy, all you need is Peeks!

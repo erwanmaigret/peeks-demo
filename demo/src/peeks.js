@@ -2744,6 +2744,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             var document = window.document;
 
+            var defaultDomElement = document.getElementById("peeksWidget");
+            domElement = defaultDomElement || domElement;
+
             var url = document.URL;
             if (url.search('127.0.0.1:3000') != -1) {
                 doAnalytics = false;
@@ -2763,18 +2766,22 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 			this.resetCamera(animate);
 			this.window = window;
-            this.width = this.window.innerWidth;
-            this.height = this.window.innerHeight;
 
-            this.domElement = domElement || document.createElement('peeks-scene');
+            if (domElement === undefined) {
+                domElement = document.createElement('canvas');
+                this.isWindowSized = true;
+                this.width = this.window.innerWidth;
+                this.height = this.window.innerHeight;
+                document.body.appendChild(domElement);
+            }
+
+            this.domElement = domElement;
+
+            mainScene = this;
 
 			this.onStart();
 
-			mainScene = this;
-
 			if (document) {
-				document.body.appendChild(mainScene.domElement);
-
                 window.addEventListener('orientationchange',
                     function() {
                         mainScene.screenOrientation = window.orientation || 0;
@@ -2862,13 +2869,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 if (mainScene) {
 					requestAnimationFrame(animate);
 
-                    if (mainScene.width !== mainScene.window.innerWidth ||
-                        mainScene.height !== mainScene.window.innerHeight)
-                    {
-                        mainScene.width = mainScene.window.innerWidth;
-                        mainScene.height = mainScene.window.innerHeight;
+                    if (mainScene.isWindowSized) {
+                        if (mainScene.width !== mainScene.window.innerWidth ||
+                            mainScene.height !== mainScene.window.innerHeight)
+                        {
+                            mainScene.width = mainScene.window.innerWidth;
+                            mainScene.height = mainScene.window.innerHeight;
 
-                        mainScene.onResize();
+                            mainScene.onResize();
+                        }
                     }
 
                     // Update global UI components

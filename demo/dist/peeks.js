@@ -2844,6 +2844,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             var document = window.document;
 
+            var defaultDomElement = document.getElementById("peeksWidget");
+            domElement = defaultDomElement || domElement;
+
             var url = document.URL;
             if (url.search('127.0.0.1:3000') != -1) {
                 doAnalytics = false;
@@ -2863,18 +2866,22 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 			this.resetCamera(animate);
 			this.window = window;
-            this.width = this.window.innerWidth;
-            this.height = this.window.innerHeight;
 
-            this.domElement = domElement || document.createElement('peeks-scene');
+            if (domElement === undefined) {
+                domElement = document.createElement('canvas');
+                this.isWindowSized = true;
+                this.width = this.window.innerWidth;
+                this.height = this.window.innerHeight;
+                document.body.appendChild(domElement);
+            }
+
+            this.domElement = domElement;
+
+            mainScene = this;
 
 			this.onStart();
 
-			mainScene = this;
-
 			if (document) {
-				document.body.appendChild(mainScene.domElement);
-
                 window.addEventListener('orientationchange',
                     function() {
                         mainScene.screenOrientation = window.orientation || 0;
@@ -2962,13 +2969,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 if (mainScene) {
 					requestAnimationFrame(animate);
 
-                    if (mainScene.width !== mainScene.window.innerWidth ||
-                        mainScene.height !== mainScene.window.innerHeight)
-                    {
-                        mainScene.width = mainScene.window.innerWidth;
-                        mainScene.height = mainScene.window.innerHeight;
+                    if (mainScene.isWindowSized) {
+                        if (mainScene.width !== mainScene.window.innerWidth ||
+                            mainScene.height !== mainScene.window.innerHeight)
+                        {
+                            mainScene.width = mainScene.window.innerWidth;
+                            mainScene.height = mainScene.window.innerHeight;
 
-                        mainScene.onResize();
+                            mainScene.onResize();
+                        }
                     }
 
                     // Update global UI components
@@ -3353,10 +3362,10 @@ PEEKS.registerPage('Peeks', function() {
     var canvas = page.addCanvas();
 
     canvas.addTextButton({
-        label: 'Coming soon....',
+        label: 'We make AR and VR and Reality!',
         position: [0, -.3, 0],
         size: [.9, .15, 1],
-        fontSize: 50,
+        fontSize: 40,
     }).animate({
         duration: 3,
         delay: 2,
@@ -50317,11 +50326,15 @@ PEEKS.Scene.prototype.onStart = function() {
 	directionalLight.position.set(0, 0, 1);
 	scene.add( directionalLight );
 
-    var canvas = this.domElement || document.createElement('canvas');
+    var canvas = this.domElement;
+    if (canvas === undefined) {
+        canvas = document.createElement('canvas');
+        document.body.appendChild(canvas);
+    }
     var renderer = new THREE.WebGLRenderer({
         alpha: true,
         antialias: true,
-        domElement: canvas,
+        canvas: canvas,
         // This improves performances a lot of course, we may want this
         //  as an option in case we're just dealing with textured elements
         // antialias: false,

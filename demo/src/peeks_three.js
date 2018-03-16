@@ -1114,11 +1114,15 @@ PEEKS.Scene.prototype.onStart = function() {
 	directionalLight.position.set(0, 0, 1);
 	scene.add( directionalLight );
 
-    var canvas = this.domElement || document.createElement('canvas');
+    var canvas = this.domElement;
+    if (canvas === undefined) {
+        canvas = document.createElement('canvas');
+        document.body.appendChild(canvas);
+    }
     var renderer = new THREE.WebGLRenderer({
         alpha: true,
         antialias: true,
-        domElement: canvas,
+        canvas: canvas,
         // This improves performances a lot of course, we may want this
         //  as an option in case we're just dealing with textured elements
         // antialias: false,
