@@ -240,7 +240,6 @@ PEEKS.registerPage('frye', function() {
                             text: item.description,
                         });
                         yOffset -= .1;
-                        console.log('there!');
                     }
                     asset.addText({
                         position: [0, yOffset, .1],
