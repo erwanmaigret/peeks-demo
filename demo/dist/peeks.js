@@ -2909,9 +2909,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             document.addEventListener('mousedown', function(event) { if (event.target === scene.domElement) { scene.onMouseDown(event); } } );
             document.addEventListener('mouseup', function(event) { scene.onMouseUp(event); } );
 
-            document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } } );
-            document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } } );
-            document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
+            document.addEventListener('mousewheel', function(event) { if (event.target === scene.domElement) { scene.onMouseWheel(event); } } );
+            document.addEventListener('MozMousePixelScroll', function(event) { if (event.target === scene.domElement) { scene.onMouseWheel(event); } } );
+            document.addEventListener('touchstart', function(event) { if (event.target === scene.domElement) { scene.onMouseDown(event); } } );
             document.addEventListener('touchend', function(event) { scene.onMouseUp(event); } );
             document.addEventListener('touchmove', function(event) { scene.onMouseMove(event); } );
 
