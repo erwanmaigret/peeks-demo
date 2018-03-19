@@ -1782,7 +1782,7 @@ function Scene() {
         userAgent.search('android') !== -1;
 
     this.gyroscope = this.isPhone;
-    this.vrMode = this.isPhone;
+    this.vrMode = false;
 
 	this.pagesHistory = []; // Make this the default first page
 	this.pageIndex = -1;
@@ -2592,6 +2592,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
         setVrMode: function(state) {
+            if (!this.isFullScreen) {
+                // Forbid VRMode when in a widget
+                state = false;
+            }
+
 			if (state === undefined) {
 				state = true;
 			}
@@ -2885,6 +2890,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.width = domElement.width;
                 this.height = domElement.height;
             }
+
+            this.setVrMode(this.isPhone)
 
             this.domElement = domElement;
 
