@@ -282,8 +282,6 @@ utils.rgba = function() {
     }
 };
 
-var mainScene;
-
 function EventDispatcher() {}
 	Object.assign( EventDispatcher.prototype, {
 		addEventListener: function ( type, listener ) {
@@ -2895,79 +2893,79 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             this.domElement = domElement;
 
-            mainScene = this;
+            var scene = this;
 
 			this.onStart();
 
 			if (this.isFullScreen) {
-                document.addEventListener('keydown', function(event) { mainScene.onKeyDown(event); } );
-                document.addEventListener('keyup', function(event) { mainScene.onKeyUp(event); } );
+                document.addEventListener('keydown', function(event) { scene.onKeyDown(event); } );
+                document.addEventListener('keyup', function(event) { scene.onKeyUp(event); } );
             }
 
-            window.addEventListener('orientationchange', function() { mainScene.screenOrientation = window.orientation || 0; } );
-    		window.addEventListener('deviceorientation', function(event) { if (event.alpha != null) { mainScene.deviceOrientation = event; } } );
+            window.addEventListener('orientationchange', function() { scene.screenOrientation = window.orientation || 0; } );
+    		window.addEventListener('deviceorientation', function(event) { if (event.alpha != null) { scene.deviceOrientation = event; } } );
 
-            document.addEventListener('mousemove', function(event) { mainScene.onMouseMove(event); } );
-            document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseDown(event); } } );
-            document.addEventListener('mouseup', function(event) { mainScene.onMouseUp(event); } );
+            document.addEventListener('mousemove', function(event) { scene.onMouseMove(event); } );
+            document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
+            document.addEventListener('mouseup', function(event) { scene.onMouseUp(event); } );
 
-            document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseWheel(event); } } );
-            document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseWheel(event); } } );
-            document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { mainScene.onMouseDown(event); } } );
-            document.addEventListener('touchend', function(event) { mainScene.onMouseUp(event); } );
-            document.addEventListener('touchmove', function(event) { mainScene.onMouseMove(event); } );
+            document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } } );
+            document.addEventListener('MozMousePixelScroll', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } } );
+            document.addEventListener('touchstart', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
+            document.addEventListener('touchend', function(event) { scene.onMouseUp(event); } );
+            document.addEventListener('touchmove', function(event) { scene.onMouseMove(event); } );
 
 			var animate = function () {
-                if (mainScene) {
+                if (scene) {
 					requestAnimationFrame(animate);
 
-                    if (mainScene.isFullScreen) {
-                        if (mainScene.width !== mainScene.window.innerWidth ||
-                            mainScene.height !== mainScene.window.innerHeight)
+                    if (scene.isFullScreen) {
+                        if (scene.width !== scene.window.innerWidth ||
+                            scene.height !== scene.window.innerHeight)
                         {
-                            mainScene.width = mainScene.window.innerWidth;
-                            mainScene.height = mainScene.window.innerHeight;
+                            scene.width = scene.window.innerWidth;
+                            scene.height = scene.window.innerHeight;
 
-                            mainScene.onResize();
+                            scene.onResize();
                         }
                     }
 
                     // Update global UI components
-                    if (mainScene.isVrMode()) {
-                        if (mainScene.vrReticle !== undefined) {
-                            mainScene.vrReticle.destroy();
-                            delete mainScene.vrReticle;
+                    if (scene.isVrMode()) {
+                        if (scene.vrReticle !== undefined) {
+                            scene.vrReticle.destroy();
+                            delete scene.vrReticle;
                         }
 
-                        if (mainScene.vrReticle === undefined) {
-                            mainScene.vrReticle = mainScene.addCanvas({
+                        if (scene.vrReticle === undefined) {
+                            scene.vrReticle = scene.addCanvas({
                                 // valign: 'bottom',
                             });
 
-                            mainScene.vrReticle.vrFixed = true;
+                            scene.vrReticle.vrFixed = true;
 
-                            mainScene.vrReticle.addRing({
+                            scene.vrReticle.addRing({
                                 viewBgColor: [1, 1, 1],
                                 size: .025
                             });
-                            mainScene.vrReticle.addRing({
+                            scene.vrReticle.addRing({
                                 viewBgColor: [.3, .3, .3],
                                 size: .02
                             });
                         }
 
                         // Update focus all the time when in VR mode
-                        mainScene.onFocusChange();
-                    } else if (mainScene.vrReticle) {
-                        mainScene.vrReticle.destroy();
-                        delete mainScene.vrReticle;
+                        scene.onFocusChange();
+                    } else if (scene.vrReticle) {
+                        scene.vrReticle.destroy();
+                        delete scene.vrReticle;
                     }
 
-					mainScene.update();
+					scene.update();
 
-                    mainScene.background.setPosition(mainScene.camera.position);
+                    scene.background.setPosition(scene.camera.position);
 
-					mainScene.render();
+					scene.render();
                 }
 			};
 
