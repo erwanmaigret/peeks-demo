@@ -2804,7 +2804,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
     		window.addEventListener('deviceorientation', function(event) { if (event.alpha != null) { scene.deviceOrientation = event; } } );
 
             document.addEventListener('mousemove', function(event) { scene.onMouseMove(event); } );
-            document.addEventListener('mousedown', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseDown(event); } } );
+            document.addEventListener('mousedown', function(event) { if (event.target === scene.domElement) { scene.onMouseDown(event); } } );
             document.addEventListener('mouseup', function(event) { scene.onMouseUp(event); } );
 
             document.addEventListener('mousewheel', function(event) { if (event.target.nodeName === 'CANVAS') { scene.onMouseWheel(event); } } );

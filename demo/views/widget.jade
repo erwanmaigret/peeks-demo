@@ -4,7 +4,7 @@ block content
     script(src="/peeks.js")
     script(src="/pages/widget.js")
     script(src="https://www.googletagmanager.com/gtag/js?id=UA-109650112-1")
-    h1(align="center") Want a widget in your own page?
+    h1(align="center") Want a Peeks widget in your own Web page?
     table(width="100%")
         tr
             td
@@ -16,7 +16,21 @@ block content
                     style="border-radius:40px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
                 )
             td
+    h3(align="center") And another one?
+    table(width="100%")
+        tr
+            td
+            td(align="center")
+                canvas(
+                    id="peeksView2"
+                    width=500
+                    height=100
+                    style="border-radius:10px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
+                )
+            td
     h3(align="center") It's easy, all you need is Peeks!
     script.
         var peeks = new PEEKS.Scene();
         peeks.start('peeksView', 'widget');
+        var peeks2 = new PEEKS.Scene();
+        peeks2.start('peeksView2', 'widget2');

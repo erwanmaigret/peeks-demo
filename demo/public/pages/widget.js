@@ -4,3 +4,11 @@ PEEKS.registerPage('widget', function() {
 
 	return page;
 });
+
+PEEKS.registerPage('widget2', function() {
+	var page = new PEEKS.Asset({
+        category: 'winter',
+    });
+
+	return page;
+});
