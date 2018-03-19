@@ -62,8 +62,23 @@ class Team extends React.Component {
 }
 
 class Products extends React.Component {
+    componentDidMount () {
+        //const script = document.createElement('script');
+        //script.async = true;
+        //script.src = "/widgets_load_products.js";
+        //document.body.appendChild(script);
+    }
+
     renderImage(element) {
-        if (element.imageShadows) {
+        if (typeof (element.canvas) === 'string') {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = "/widgets_load_products.js";
+            document.body.appendChild(script);
+            return (
+                <canvas id={element.canvas} width="250px" height="300px" className="box"/>
+            );
+        } else if (element.imageShadows) {
             return (
                 <img src={element.image} alt="product" width="300px" className="box"/>
             );
@@ -123,6 +138,7 @@ class Products extends React.Component {
                 '</tbody></table></p>',
                 image: 'snapshot-widget.png',
                 imageShadows: true,
+                canvas: 'peeks_shoe',
             },
             'tryon': {
                 title: 'Fitting Room.',
