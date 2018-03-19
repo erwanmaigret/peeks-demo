@@ -18,6 +18,8 @@ PEEKS.ThreeLoadTexture = function(material, textureUrl, textureRepeat, flipX, fl
         }
 
 		var loader = new THREE.TextureLoader();
+        //loader.setCrossOrigin(textureUrl);
+        //loader.setCrossOrigin('');
         var mat = material;
         var detour = removeBackground;
 		material.map = loader.load(textureUrl,

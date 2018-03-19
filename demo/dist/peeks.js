@@ -1728,6 +1728,11 @@ function registerPage(name, ctor) {
     }
 }
 
+function getAsset(name) {
+    //return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
+    return "http://dev.peeks.io/" + name;
+}
+
 window.dataLayer = window.dataLayer || [];
 var doAnalytics = true;
 function analytics() {
@@ -2713,7 +2718,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     } else if (category === 'white') {
                     } else if (category === '') {
                     } else {
-                        backgroundFilename = '/images/bg_360_canyon.jpg';
+                        backgroundFilename = getAsset('images/bg_360_canyon.jpg');
                     }
                 }
                 if (backgroundFilename) {
@@ -2843,7 +2848,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             {
                 // This is all good actually
             } else {
-                logError("Invalid element passed to the peeks scene. Expecting a canvas");
+                logDebug("Invalid element passed to the peeks scene. Expecting a canvas");
                 domElement = undefined;
             }
 
@@ -3174,6 +3179,7 @@ exports.logInfo = logInfo;
 exports.logWarning = logWarning;
 exports.logError = logError;
 exports.registerPage = registerPage;
+exports.getAsset = getAsset;
 
 exports.cvSupported = cvSupported;
 
@@ -49173,6 +49179,8 @@ PEEKS.ThreeLoadTexture = function(material, textureUrl, textureRepeat, flipX, fl
         }
 
 		var loader = new THREE.TextureLoader();
+        //loader.setCrossOrigin(textureUrl);
+        //loader.setCrossOrigin('');
         var mat = material;
         var detour = removeBackground;
 		material.map = loader.load(textureUrl,
