@@ -325,7 +325,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             if (this.buttonPressed) {
                 if (!this.selectionIcon) {
                     this.selectionIcon = this.addImage({
-                        image:'/images/icon_selected.png'
+                        image:getAsset('images/icon_selected.png')
                     });
                 }
             } else {
@@ -1627,8 +1627,8 @@ function registerPage(name, ctor) {
 }
 
 function getAsset(name) {
-    //return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
-    return "http://dev.peeks.io/" + name;
+    return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
+    //return "https://dev.peeks.io/" + name;
 }
 
 window.dataLayer = window.dataLayer || [];
@@ -2564,12 +2564,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 var groundAlpha = 1;
                 if (groundFilename === undefined) {
                     if (category === 'fashion') {
-                        groundFilename = '/images/floor_marble_1.jpg';
+                        groundFilename = getAsset('images/floor_marble_1.jpg');
                         //groundColor = [.4, .4, .4];
                     } else if (category === 'shopping') {
-                        groundFilename = '/images/floor_marble_4.jpg';
+                        groundFilename = getAsset('images/floor_marble_4.jpg');
                     } else if (category === 'entertainment') {
-                        groundFilename = '/images/floor_dot_1.jpg';
+                        groundFilename = getAsset('images/floor_dot_1.jpg');
                     }
                 } else {
                     if (this.page.groundImageRepeat) {
@@ -2602,17 +2602,17 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 var backgroundColor = page.backgroundImageColor || [1, 1, 1];
                 if (backgroundFilename === undefined) {
                     if (category === 'fashion') {
-                        backgroundFilename = '/images/bg_360_place.jpg';
+                        backgroundFilename = getAsset('images/bg_360_place.jpg');
                     } else if (category === 'winter') {
-                        backgroundFilename = '/images/bg_360_winter.jpg';
+                        backgroundFilename = getAsset('images/bg_360_winter.jpg');
                     } else if (category === 'shopping') {
-                        backgroundFilename = '/images/bg_360_interior2.jpg';
+                        backgroundFilename = getAsset('images/bg_360_interior2.jpg');
                     } else if (category === 'entertainment') {
-                        backgroundFilename = '/images/bg_360_interior1.jpg';
+                        backgroundFilename = getAsset('images/bg_360_interior1.jpg');
                     } else if (category === 'outdoor') {
-                        backgroundFilename = '/images/bg_360_bridge.jpg';
+                        backgroundFilename = getAsset('images/bg_360_bridge.jpg');
                     } else if (category === 'soccer') {
-                        backgroundFilename = '/images/bg_360_soccer.jpg';
+                        backgroundFilename = getAsset('images/bg_360_soccer.jpg');
                     } else if (category === 'white') {
                     } else if (category === '') {
                     } else {
