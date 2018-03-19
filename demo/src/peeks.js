@@ -3096,6 +3096,7 @@ var global = Function('return this')();
 if (global.PEEKS === undefined) {
     // Singleton to be called only once
     global.PEEKS = exports;
+    window.PEEKS = exports;
 
     /*
     var peeksSceneProto = Object.create(HTMLElement.prototype);
