@@ -6,21 +6,23 @@
     <body>
         <header>
         </header>
+        <h1 align="center">Peeks widget</h1>
+        <table width="100%"><tr><td/><td align="center">
+            <canvas id="peeksView" width=400 height=250 style="border-radius:40px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"/>
+        </td><td/></tr></table>
         <section id="wrapper">
             <script src="http://dev.peeks.io/peeks.js"></script>
             <script>
-                var peeks = new PEEKS.Scene();
-
-                // Create the page (make the page-name match the document-title)
+                // Declare the behavior of your peeks page:
                 PEEKS.registerPage('widget', function() {
                     var page = new PEEKS.Asset({
-                        category: 'white', // Don't use any background
+                        category: 'winter',
                     });
-
                     return page;
                 });
 
-                peeks.start(window, 'widget');
+                // Run that page into a canvas
+                PEEKS.start("peeksView", 'widget');
             </script>
         </section>
     </body>

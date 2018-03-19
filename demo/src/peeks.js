@@ -1624,6 +1624,11 @@ function registerPage(name, ctor) {
     }
 }
 
+function start(domElement, page) {
+    var peeks = new PEEKS.Scene();
+    peeks.start(domElement, page);
+}
+
 function getAsset(name) {
     return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
     //return "https://dev.peeks.io/" + name;
@@ -3069,6 +3074,7 @@ exports.logInfo = logInfo;
 exports.logWarning = logWarning;
 exports.logError = logError;
 exports.registerPage = registerPage;
+exports.start = start;
 exports.getAsset = getAsset;
 
 exports.cvSupported = cvSupported;
