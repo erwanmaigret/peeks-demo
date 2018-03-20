@@ -1083,13 +1083,13 @@ PEEKS.Scene.prototype.onResize = function(width, height) {
         if (width === this.width && height === this.height) {
             return;
         }
-        console.log('Resizing Canvas from ' + this.width.toString() + 'x' + this.height.toString() + ' to ' + width.toString() + 'x' + height.toString());
+        //console.log('Resizing Canvas from ' + this.width.toString() + 'x' + this.height.toString() + ' to ' + width.toString() + 'x' + height.toString());
         this.width = width;
         this.height = height;
     } else {
         width = (this.width) ? this.width : 500;
     	height = (this.height) ? this.height : 500;
-        console.log('Setting initial size to ' + this.width.toString() + 'x' + this.height.toString());
+        //console.log('Setting initial size to ' + this.width.toString() + 'x' + this.height.toString());
     }
     this.three.camera.aspect = width / height;
     this.three.camera.updateProjectionMatrix();
