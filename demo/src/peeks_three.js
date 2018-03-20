@@ -1105,13 +1105,13 @@ PEEKS.Scene.prototype.onStart = function() {
         console.log(a_scene);
         scene = a_scene.object3D;
     }
-	var ambient = new THREE.AmbientLight( 0x101010 );
+	var ambient = new THREE.AmbientLight( 0x777777 );
 	scene.add(ambient);
 	var directionalLight = new THREE.DirectionalLight( 0xdddddd );
-	directionalLight.position.set(0, 0, -1);
+	directionalLight.position.set(1, 1, -1);
 	scene.add( directionalLight );
-    var directionalLight = new THREE.DirectionalLight( 0xdddddd );
-	directionalLight.position.set(0, 0, 1);
+    var directionalLight = new THREE.DirectionalLight( 0x888888 );
+	directionalLight.position.set(-1, -.5, 1);
 	scene.add( directionalLight );
 
     var canvas = this.domElement;
