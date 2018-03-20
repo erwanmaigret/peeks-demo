@@ -69,7 +69,7 @@ class Products extends React.Component {
             script.src = "/widgets_load_products.js";
             document.body.appendChild(script);
             return (
-                <canvas id={element.canvas} width="300px" height="250px" className="box"/>
+                <canvas id={element.canvas} width="300px" height="250px" className="widget"/>
             );
         } else if (element.imageShadows) {
             return (
