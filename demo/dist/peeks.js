@@ -2861,7 +2861,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
 
             var url = document.URL;
-            if (url.search('127.0.0.1:3000') != -1) {
+            if (url.search('127.0.0.1') != -1) {
                 doAnalytics = false;
                 PEEKS.setLogLevel(1);
             } else {
@@ -2924,11 +2924,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 				requestAnimationFrame(animate);
 
                 if (scene.isFullScreen) {
-                    if (scene.width !== scene.window.innerWidth || scene.height !== scene.window.innerHeight) {
-                        scene.width = scene.window.innerWidth;
-                        scene.height = scene.window.innerHeight;
-                        scene.onResize();
-                    }
+                    scene.onResize(scene.window.innerWidth, scene.window.innerHeight);
+                } else {
+                    scene.onResize(scene.domElement.width / window.devicePixelRatio, scene.domElement.height / window.devicePixelRatio);
                 }
 
                 // Update global UI components
@@ -48822,7 +48820,7 @@ THREE.OBJLoader = ( function () {
 
 		parse: function ( text ) {
 
-			console.time( 'OBJLoader' );
+			// console.time( 'OBJLoader' );
 
 			var state = new ParserState();
 
@@ -49607,20 +49605,13 @@ PEEKS.Scene.prototype.onRender = function() {
         var height = (this.height) ? this.height : 500;
         this.three.camera.aspect = (width / 2) / height;
         this.three.camera.updateProjectionMatrix();
-        //this.three.renderer.setSize(width, height);
 
         three.renderer.render(three.scene, three.camera);
-        if (three.cssRenderer) {
-            three.cssRenderer.render(three.cssScene, three.camera);
-        }
 
         three.renderer.setViewport(0, 0, width / 2, height);
         three.renderer.setScissor(0, 0, width / 2, height);
 
         three.renderer.render(three.scene, three.camera);
-        if (three.cssRenderer) {
-            three.cssRenderer.render(three.cssScene, three.camera);
-        }
     } else {
         this.three.renderer.setViewport(0, 0, width, height);
         this.three.renderer.setScissor(0, 0, width, height);
@@ -49632,9 +49623,6 @@ PEEKS.Scene.prototype.onRender = function() {
         this.three.camera.updateProjectionMatrix();
 
         this.three.renderer.render(this.three.scene, this.three.camera);
-        if (this.three.cssRenderer) {
-            this.three.cssRenderer.render(this.three.cssScene, this.three.camera);
-        }
     }
 },
 
@@ -50247,15 +50235,23 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 	}
 }
 
-PEEKS.Scene.prototype.onResize = function() {
-    var width = (this.width) ? this.width : 500;
-	var height = (this.height) ? this.height : 500;
+PEEKS.Scene.prototype.onResize = function(width, height) {
+    if (width && height) {
+        // If dimensions are specified, make sure update is required
+        if (width === this.width && height === this.height) {
+            return;
+        }
+        console.log('Resizing Canvas from ' + this.width.toString() + 'x' + this.height.toString() + ' to ' + width.toString() + 'x' + height.toString());
+        this.width = width;
+        this.height = height;
+    } else {
+        width = (this.width) ? this.width : 500;
+    	height = (this.height) ? this.height : 500;
+        console.log('Setting initial size to ' + this.width.toString() + 'x' + this.height.toString());
+    }
     this.three.camera.aspect = width / height;
     this.three.camera.updateProjectionMatrix();
     this.three.renderer.setSize(width, height);
-    if (this.three.cssRenderer) {
-        this.three.cssRenderer.setSize(width, height);
-    }
 }
 
 PEEKS.Scene.prototype.onStart = function() {

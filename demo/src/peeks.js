@@ -2759,7 +2759,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
 
             var url = document.URL;
-            if (url.search('127.0.0.1:3000') != -1) {
+            if (url.search('127.0.0.1') != -1) {
                 doAnalytics = false;
                 PEEKS.setLogLevel(1);
             } else {
@@ -2822,11 +2822,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 				requestAnimationFrame(animate);
 
                 if (scene.isFullScreen) {
-                    if (scene.width !== scene.window.innerWidth || scene.height !== scene.window.innerHeight) {
-                        scene.width = scene.window.innerWidth;
-                        scene.height = scene.window.innerHeight;
-                        scene.onResize();
-                    }
+                    scene.onResize(scene.window.innerWidth, scene.window.innerHeight);
+                } else {
+                    scene.onResize(scene.domElement.width / window.devicePixelRatio, scene.domElement.height / window.devicePixelRatio);
                 }
 
                 // Update global UI components

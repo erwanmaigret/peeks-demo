@@ -19,16 +19,18 @@ block content
     h3(align="center") And another one?
     table(width="100%")
         tr
-            td
-            td(align="center")
+            td(width="100%" align="center")
                 canvas(
                     id="peeksView2"
-                    width=500
                     height=100
                     style="border-radius:10px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
                 )
-            td
     h3(align="center") It's easy, all you need is Peeks!
     script.
         PEEKS.start('peeksView', 'widget');
         PEEKS.start('peeksView2', 'widget2');
+        var animate = function () {
+            requestAnimationFrame(animate);
+            document.getElementById('peeksView2').width = window.innerWidth * window.devicePixelRatio * .8;
+        }
+        animate();

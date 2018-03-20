@@ -62,13 +62,6 @@ class Team extends React.Component {
 }
 
 class Products extends React.Component {
-    componentDidMount () {
-        //const script = document.createElement('script');
-        //script.async = true;
-        //script.src = "/widgets_load_products.js";
-        //document.body.appendChild(script);
-    }
-
     renderImage(element) {
         if (typeof (element.canvas) === 'string') {
             const script = document.createElement('script');
@@ -76,7 +69,7 @@ class Products extends React.Component {
             script.src = "/widgets_load_products.js";
             document.body.appendChild(script);
             return (
-                <canvas id={element.canvas} width="250px" height="300px" className="box"/>
+                <canvas id={element.canvas} width="300px" height="250px" className="box"/>
             );
         } else if (element.imageShadows) {
             return (
