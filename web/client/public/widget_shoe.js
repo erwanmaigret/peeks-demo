@@ -67,48 +67,24 @@ function createAsset(page, position) {
     };
 
     var canvas = page.addCanvas({valign: 'top'});
-    var y = .45;
+    var y = .3;
     canvas.addText({
         position: [.35, y, 0],
         text: 'Finish',
-        fontSize: 40,
+        fontSize: 60,
         fontOutlineStyle: '',
     });
     canvas.addView({
-        position: [.35, y - .03, 0],
+        position: [.35, y - .05, 0],
         size: [.2, .001, 1],
+        bgColor:  page.getAttr('fontColor'),
+        viewBgColor:  page.getAttr('fontColor'),
     });
-    y-= .08;
-    canvas.addDisc({
-        texture: '/assets/material_red_satin.jpg',
-        position: [.3, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.1,.1,.1],
-            shininess: 10,
-            normalMap: undefined,
-            map: '/assets/material_red_satin.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    canvas.addDisc({
-        texture: '/assets/material_nubuk.jpg',
-        position: [.4, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.1,0,0],
-            shininess: 2,
-            map: '/assets/material_nubuk.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    y-= .08;
+    y-= .12;
     canvas.addDisc({
         texture: '/assets/material_suede.jpg',
-        position: [.3, y, 0],
-        size: .05,
+        position: [.35, y, 0],
+        size: .1,
         material: {
             type: 'velvet',
             emissive: [.1,.1,.1],
@@ -119,24 +95,11 @@ function createAsset(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    canvas.addDisc({
-        texture: '/assets/material_blue_satin.jpg',
-        position: [.4, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.05,.05,.1],
-            shininess: 5,
-            normalMap: '/assets/material_suede_normal.jpg',
-            map: '/assets/material_blue_satin.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    y-= .08;
+    y-= .12;
     var defaultMaterial = canvas.addDisc({
         texture: '/assets/frye_boot_diffuse.jpg',
-        position: [.3, y, 0],
-        size: .05,
+        position: [.35, y, 0],
+        size: .1,
         material: {
             emissive: [.1,.0,.0],
             shininess: 2,
@@ -145,10 +108,11 @@ function createAsset(page, position) {
         },
         onClick: onSetClothMaterial,
     });
+    y-= .12;
     canvas.addDisc({
         texture: '/assets/material_dark.jpg',
-        position: [.4, y, 0],
-        size: .05,
+        position: [.35, y, 0],
+        size: .1,
         material: {
             type: 'velvet',
             emissive: [.0,.0,.1],
@@ -167,6 +131,7 @@ PEEKS.registerPage('widget_shoe', function() {
     var page = new PEEKS.Asset({
         category: 'white',
         bgColor: [226/255, 220/255, 209/255],
+        fontColor: [0, 0, 0],
         gyroscope: 'off',
     });
 
