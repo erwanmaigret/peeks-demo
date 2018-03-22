@@ -1943,10 +1943,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         },
 
 		onMouseMove: function (event) {
-			event.preventDefault();
-			// logDebug('onMouseMove');
-
 			if (this.mouseDown) {
+                event.preventDefault();
                 if (this.touchPinch(event)) {
                     this.mouseDownCanClick = false;
                 }
@@ -1990,10 +1988,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
 		onMouseUp: function (event) {
-			logVerbose('onMouseUp');
-            event.preventDefault();
-
 			if (this.mouseDown) {
+                logVerbose('onMouseUp');
+                event.preventDefault();
 				if (this.mouseDownCanClick) {
 					this.mouseUp = this.getMouse(event);
 					if (this.mouseUp === undefined) {
