@@ -4,6 +4,35 @@ import logo from './logo.svg';
 import './App.css';
 //import store from "./store.js";
 
+function isPhone() {
+    var userAgent = navigator.userAgent.toLowerCase();
+    var value =
+        userAgent.search('iphone') !== -1 ||
+        userAgent.search('ipod') !== -1 ||
+        userAgent.search('android') !== -1;
+    return value;
+}
+
+function getLayoutWidth() {
+    if (isPhone()) {
+        // Always display in portrait mode even if the phone is landscape
+        return 0;
+        /*
+        if (window.orientation !== -90 && window.orientation !== 90) {
+            return 0;
+        } else {
+            return 1;
+        }
+        */
+    } else {
+        if (window.innerWidth < 650) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+}
+
 class Team extends React.Component {
     renderTeamMember(member) {
         return (
@@ -37,7 +66,8 @@ class Team extends React.Component {
             },
         };
 
-        if (window.innerWidth < 650) {
+        const layout = getLayoutWidth();
+        if (layout === 0) {
             return (
                 <div>
                 <div className="textTitle">Meet our team!</div>
@@ -69,22 +99,29 @@ class Products extends React.Component {
             script.async = true;
             script.src = "/widgets_load_products.js";
             document.body.appendChild(script);
-            return (
-                <canvas id={element.canvas} width="300px" height="250px" className="widget"/>
-            );
+            if (isPhone()) {
+                return (<canvas id={element.canvas} width="200px" height="180px" className="widget"/>);
+            } else {
+                return (<canvas id={element.canvas} width="300px" height="250px" className="widget"/>);
+            }
         } else if (element.imageShadows) {
-            return (
-                <img src={element.image} alt="product" width="300px" className="box"/>
-            );
+            if (isPhone() && getLayoutWidth() === 0) {
+                return (<img src={element.image} alt="product" width="250px" className="box"/>);
+            } else {
+                return (<img src={element.image} alt="product" width="300px" className="box"/>);
+            }
         } else {
-            return (
-                <img src={element.image} alt="product" width="300px"/>
-            );
+            if (isPhone() && getLayoutWidth() === 0) {
+                return (<img src={element.image} alt="product" width="250px"/>);
+            } else {
+                return (<img src={element.image} alt="product" width="300px"/>);
+            }
         }
     }
 
     renderSection(element, isRight, section) {
-        if (window.innerWidth < 650) {
+        const layout = getLayoutWidth();
+        if (layout === 0) {
             return (
                 <div className={section}>
                 <table align="center" width="100%"><tbody><tr><td>
@@ -421,7 +458,7 @@ class App extends Component {
     render() {
     return (
         <div className="App">
-        <div><table width='100%'><tbody><tr>
+        <div><table width='100%' cellPadding="0" cellSpacing="5"><tbody><tr>
         <td align="left">
             <table><tbody>
             <tr height="10px"></tr>
@@ -432,7 +469,7 @@ class App extends Component {
             </tr>
             </tbody></table>
         </td>
-        <td align="right"><MenuBar/></td>
+        <td align="right" valign="top"><MenuBar/></td>
         </tr></tbody></table></div>
         <Pages/>
         <footer className="footer">
