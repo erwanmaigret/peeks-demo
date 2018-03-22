@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
+//import store from "./store.js";
 
 class Team extends React.Component {
     renderTeamMember(member) {
@@ -200,14 +201,31 @@ class MenuItem extends React.Component {
             window.location.href = '/' + pageName;
         }
     }
+
     render() {
-        return (
-            <button className="menuItem"
-                onClick={(e) => this.onClick(e)}
-            >
-                {this.props.title}
-            </button>
-        );
+        const paths = window.location.pathname.split("/");
+        let path = paths[paths.length - 1];
+        if (path === '') {
+            path = 'home';
+        }
+        const page = this.props.title.toLowerCase();
+        if (page === path) {
+            return (
+                <button className="menuItemSelected"
+                    onClick={(e) => this.onClick(e)}
+                >
+                    {this.props.title}
+                </button>
+            );
+        } else {
+            return (
+                <button className="menuItem"
+                    onClick={(e) => this.onClick(e)}
+                >
+                    {this.props.title}
+                </button>
+            );
+        }
     }
 }
 

@@ -34,6 +34,19 @@
     border-radius: 20px;
     border-width: 0;
     margin: 10px;
+    color: #fff;
+    background-color: #0000;
+}
+
+.menuItemSelected {
+    align: right;
+    border-radius: 20px;
+    border-width: 0;
+    margin: 5px;
+    padding: 5px;
+    font-weight: bold;
+    color: #6100DF;
+    background-color: #fff;
 }
 
 .roundButton {
