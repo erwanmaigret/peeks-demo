@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
+import Products from './Products.js'
+import Sdk from './Sdk.js'
+import Home from './Home.js'
 //import store from "./store.js";
 
 function isPhone() {
@@ -92,143 +95,6 @@ class Team extends React.Component {
     }
 }
 
-class Products extends React.Component {
-    renderImage(element) {
-        if (typeof (element.canvas) === 'string') {
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = "/widgets_load_products.js";
-            document.body.appendChild(script);
-            if (isPhone()) {
-                return (<canvas id={element.canvas} width="200px" height="180px" className="widget"/>);
-            } else {
-                return (<canvas id={element.canvas} width="300px" height="250px" className="widget"/>);
-            }
-        } else if (element.imageShadows) {
-            if (isPhone() && getLayoutWidth() === 0) {
-                return (<img src={element.image} alt="product" width="250px" className="box"/>);
-            } else {
-                return (<img src={element.image} alt="product" width="300px" className="box"/>);
-            }
-        } else {
-            if (isPhone() && getLayoutWidth() === 0) {
-                return (<img src={element.image} alt="product" width="250px"/>);
-            } else {
-                return (<img src={element.image} alt="product" width="300px"/>);
-            }
-        }
-    }
-
-    renderSection(element, isRight, section) {
-        const layout = getLayoutWidth();
-        if (layout === 0) {
-            return (
-                <div className={section}>
-                <table align="center" width="100%"><tbody><tr><td>
-                    <p className="textTitle">{element.title}</p>
-                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
-                </td></tr>
-                <tr><td width="50%">{this.renderImage(element)}</td></tr>
-                </tbody></table></div>
-            );
-        } else {
-            if (isRight) {
-                return (
-                    <div className={section}><table align="center"><tbody><tr>
-                    <td width="50%">{this.renderImage(element)}</td>
-                    <td width="5%"></td>
-                    <td width="45%" align="left">
-                        <div className="textTitle">{element.title}</div>
-                        <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
-                    </td>
-                    </tr></tbody></table></div>
-                );
-            } else {
-                return (
-                    <div className={section}><table align="center"><tbody><tr>
-                    <td width="5%" ></td>
-                    <td width="45%" align="left">
-                        <div className="textTitle">{element.title}</div>
-                        <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
-                    </td><td width="50%">{this.renderImage(element)}</td>
-                    </tr></tbody></table></div>
-                );
-            }
-        }
-    }
-
-    render() {
-        const elements = {
-            'widget': {
-                title: 'Peeks Widget.',
-                description: '<p>Enable <b>Augmented Reality</b> and <b>Virtual Reality</b> within your digital properties.</p><p>The peeks player can be embedded as a widget inside your own solution:'+
-                '<table width="100%" cellspacing="10"><tbody>' +
-                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a DOM widget inside your own <b>website</b></td><td width="10%"/>' +
-                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a GUI component of a native <b>mobile</b> application.</td><td width="10%"/>' +
-                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a <b>customizable ad</b> with video, AR, 3d and animations!</td><td width="10%"/>' +
-                '</tbody></table></p>',
-                image: 'snapshot-widget.png',
-                imageShadows: true,
-                canvas: 'peeks_shoe',
-            },
-            'tryon': {
-                title: 'Fitting Room.',
-                description: '<p>Enter the virtual fitting room and try-on products on yourself.</p>'+
-                    '<p>Use the best solution adapted to your products:' +
-                    '<table width="100%" cellspacing="10"><tbody>' +
-                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">AR <b>Face tracking</b> for head wearables (glasses, hats).</td><td width="10%"/>' +
-                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">2D photo montages from simple photographs.</td><td width="10%"/>' +
-                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Full body <b>3D avatar</b> mapping.</td><td width="10%"/>' +
-                    '</tbody></table></p>',
-                image: 'snapshot-face-tracking.png',
-            },
-            'browser': {
-                title: 'VR Browser.',
-                description: '<p>Explore and navigate through all your inventory inside an <b>immersive 3d</b> environment using a Virtual Reality heaset.</p>' +
-                    '<p>Expose your products in our VR browser and get more exposure.</p>',
-                image: 'snapshot-browser.png',
-                imageShadows: true,
-            },
-            'user': {
-                title: 'User Profile.',
-                description:
-                    '<p>Let your customers setup their user profile and <b>virtual mannequin</b> for optimized shopping experience.</p>' +
-                    '<p>Collect new types of <b>analytics</b> for a more targeted product recommendation.</p>',
-                image: 'snapshot-user.png',
-                imageShadows: true,
-            },
-        };
-
-        return (
-            <div>
-            <div className="textTitle">A solution for everyone</div>
-            <div className="textDescription">Extend your brand with the right Mixed Reality experience for your clients.</div>
-            <img src="/ui-shape-underline.svg" alt="underline" width="50%"/>
-            {this.renderSection(elements['widget'], false, 'sectionBlank')}
-            {this.renderSection(elements['tryon'], true, 'sectionBlank')}
-            {this.renderSection(elements['browser'], false, 'sectionBlank')}
-            {this.renderSection(elements['user'], true, 'sectionBlank')}
-            </div>
-        );
-    }
-}
-
-class Api extends React.Component {
-    render() {
-        return (
-            <div>
-                <div className="sectionTitle">Developer API</div>
-                <div className="textTitle">Developer API</div>
-                <div className="sectionA">Direct access to Computer Vision processing for your own custom use</div>
-                <div className="section2">Developer API</div>
-                <div className="section3">Developer API</div>
-                <div className="section4">Developer API</div>
-                <p>Get direct access to services for building your own virtual shopping experience based on your products photographs.</p>
-            </div>
-    )}
-}
-
-
 class MenuItem extends React.Component {
     onClick() {
         let pageName = this.props.title.toLowerCase();
@@ -247,21 +113,9 @@ class MenuItem extends React.Component {
         }
         const page = this.props.title.toLowerCase();
         if (page === path) {
-            return (
-                <button className="menuItemSelected"
-                    onClick={(e) => this.onClick(e)}
-                >
-                    {this.props.title}
-                </button>
-            );
+            return (<button className="menuItemSelected" onClick={(e) => this.onClick(e)}>{this.props.title}</button>);
         } else {
-            return (
-                <button className="menuItem"
-                    onClick={(e) => this.onClick(e)}
-                >
-                    {this.props.title}
-                </button>
-            );
+            return (<button className="menuItem" onClick={(e) => this.onClick(e)}>{this.props.title}</button>);
         }
     }
 }
@@ -297,7 +151,7 @@ class Pages extends React.Component {
               <Route exact path="/" component={Home} />
               <Route path="/team" component={Team} />
               <Route path="/products" component={Products} />
-              <Route path="/api" component={Api} />
+              <Route path="/sdk" component={Sdk} />
           </div>
       );
     }
@@ -310,135 +164,6 @@ class Pages extends React.Component {
         </div>
         </Router>
       );
-    }
-}
-
-/*
-class RequestTrialForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {value: ''};
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
-  }
-
-  handleSubmit(event) {
-    alert('Thanks for your interest in Peeks!');
-    event.preventDefault();
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
-        </label>
-        <RoundButton title="Request Trial" />
-      </form>
-    );
-  }
-}
-
-class RoundButton extends React.Component {
-  render() {
-    return (
-      <button className="menuItem">
-        {this.props.title}
-      </button>
-    );
-  }
-}
-*/
-
-class Home extends Component {
-    renderExample(element) {
-        if (element.image) {
-            return (
-                <img src={element.image} alt="product1" height='400px'/>
-            );
-        } else {
-            return (
-                <div></div>
-            );
-        }
-    }
-
-    renderSection(element, isRight, section) {
-        if (window.innerWidth < 650) {
-            return (
-                <div>
-                <table align="center" width="100%"><tbody>
-                <tr>
-                <td width="10%"></td>
-                <td width="80%">
-                    <p className="textTitle">{element.title}</p>
-                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
-                </td>
-                <td width="10%"></td>
-                </tr>
-                <tr></tr>
-                </tbody></table>{this.renderExample(element)}</div>
-            );
-        } else {
-            if (isRight) {
-                return (
-                    <div><table align="center"><tbody><tr>
-                    <td width="50%">{this.renderExample(element)}</td>
-                    <td width="40%">
-                        <p className="textTitle" align="left">{element.title}</p>
-                        <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
-                    </td>
-                    <td width="10%"></td>
-                    </tr></tbody></table></div>
-                );
-            } else {
-                return (
-                    <div><table align="center"><tbody><tr>
-                    <td width="10%"></td>
-                    <td width="40%">
-                        <p className="textTitle" align="left">{element.title}</p>
-                        <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
-                    </td>
-                    <td width="50%">{this.renderExample(element)}</td>
-                    </tr></tbody></table></div>
-                );
-            }
-        }
-    }
-
-    render() {
-        const elements = {
-            'intro': {
-                title: 'We make AR and VR a reality.',
-                description: '<p>Immersive web and mobile VR/AR technology now made available to the retail industry.</p><p>Turn all your inventory into AR. Customers have fun purchasing online using our AR tool. It brings the fitting room into their hands.</p>',
-                image: "snapshot-product-1.png",
-            },
-            'browser': {
-                title: 'Web-browser friendly.',
-                description: '<p>Wether your store is accessible from the web or a native application, our technology brings VR to all software environments.</p>' +
-                    '<p>We support all inventories, no kidding. Food, furniture, clothes, buildings, cars.. all!</p>',
-                image: "snapshot-product-2.png",
-            },
-            'headset': {
-                title: 'Headset compatible.',
-                description: '<p>If you have a VR Headset, you can make it even more immersive.</p>' +
-                    '<p>We are compatible with all VR headsets from the simplest <b>Google Cardboard</b></p>',
-                image: "snapshot-product-3.png",
-            },
-        };
-
-        return (
-            <div>
-            {this.renderSection(elements['intro'], false, 'sectionBlank')}
-            {this.renderSection(elements['browser'], true, 'sectionBlank')}
-            {this.renderSection(elements['headset'], false, 'sectionBlank')}
-            </div>
-        );
     }
 }
 

@@ -50,6 +50,27 @@
     background-color: #fff;
 }
 
+.menuItem2 {
+    align: right;
+    border-width: 0;
+    margin: 6px;
+    padding: 10px;
+    font-size: 1.0em;
+    color: #6100DF;
+    background-color: #0000;
+}
+
+.menuItem2Selected {
+    align: right;
+    border-radius: 20px;
+    border-width: 0;
+    margin: 6px;
+    padding: 6px;
+    font-size: 1.0em;
+    color: #FFF;
+    background-color: #6100DF;
+}
+
 .roundButton {
     align: right;
     border-radius: 20px;
@@ -108,9 +129,16 @@
 
 .sectionA {
   padding: 20px;
-  color: #fff;
+  color: #000;
   background-color-: #efccFF;
   text-align: center;
+}
+
+.sectionDocumentation {
+  padding: 20px;
+  color: #000;
+  background-color-: #efccFF;
+  text-align: left;
 }
 
 .sectionB {
@@ -215,6 +243,26 @@
   font-size: 2.0em;
   color: #1F176C;
   padding: 10px;
+}
+.textTitle2 {
+  font-size: 1.6em;
+  color: #1F176C;
+  padding: 10px;
+}
+.textDocumentation {
+  font-size: 1.0em;
+  color: #666;
+  padding: 10px;
+}
+.textCode {
+  font-size: 1.0em;
+  color: #333;
+  margin: 20px;
+  padding: 12px;
+  background-color: #eee;
+}
+.codeIndent {
+  margin: 0px;
 }
 b {
   color: #1F176C;
