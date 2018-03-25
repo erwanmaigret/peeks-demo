@@ -17,8 +17,9 @@
   color: black;
 }
 
-.title {
-  font-size: 1em;
+.logoText {
+  font-size: .95em;
+  color: #1F176C;
 }
 
 .intro {
@@ -249,17 +250,48 @@
   color: #1F176C;
   padding: 10px;
 }
+.textTitle3 {
+  font-size: 1.2em;
+  color: #1F176C;
+  padding: 10px;
+}
 .textDocumentation {
   font-size: 1.0em;
   color: #666;
   padding: 10px;
 }
 .textCode {
+  border-radius: 10px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   font-size: 1.0em;
   color: #333;
   margin: 20px;
   padding: 12px;
   background-color: #eee;
+}
+.javascript {
+  color: #a00;
+}
+.textJsString {
+  color: #a00;
+}
+.textJs {
+  color: #000;
+}
+.textJsVar {
+  color: #700;
+}
+.textJsComment {
+  color: #5f5;
+}
+.textJsFunction {
+  color: #00b;
+}
+.textHtmlTag {
+  color: #555;
+}
+.textHtml {
+  color: #555;
 }
 .codeIndent {
   margin: 0px;

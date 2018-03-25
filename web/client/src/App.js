@@ -186,11 +186,10 @@ class App extends Component {
         <div><table width='100%' cellPadding="0" cellSpacing="5"><tbody><tr>
         <td align="left">
             <table><tbody>
-            <tr height="10px"></tr>
             <tr>
-            <td width="10px"></td>
-            <td><img src={logo} className="logo" alt="logo"/></td>
-            <td><div className="title"> Peeks</div></td>
+            <td width="2px"></td>
+            <td><img src={logo} className="logo" alt="logo" width="20px"/></td>
+            <td><div className="logoText">Peeks</div></td>
             </tr>
             </tbody></table>
         </td>
