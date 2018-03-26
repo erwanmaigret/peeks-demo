@@ -18,6 +18,161 @@ const code = {
     comment: function(value) { return (<span className="textJsComment">{value}</span>); },
 };
 
+function isPhone() {
+    var userAgent = navigator.userAgent.toLowerCase();
+    var value =
+        userAgent.search('iphone') !== -1 ||
+        userAgent.search('ipod') !== -1 ||
+        userAgent.search('android') !== -1;
+    return value;
+}
+
+function getLayoutWidth() {
+    if (isPhone()) {
+        // Always display in portrait mode even if the phone is landscape
+        return 0;
+        /*
+        if (window.orientation !== -90 && window.orientation !== 90) {
+            return 0;
+        } else {
+            return 1;
+        }
+        */
+    } else {
+        if (window.innerWidth < 650) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+}
+
+class Examples extends React.Component {
+    renderImage(element) {
+        if (isPhone() && getLayoutWidth() === 0) {
+            return (<img src={element.image} alt="product" width="150px" className="box"/>);
+        } else {
+            return (<img src={element.image} alt="product" width="200px" className="box"/>);
+        }
+    }
+
+    renderSection(element, isRight, section) {
+        const layout = getLayoutWidth();
+        if (layout === 0) {
+            return (
+                <div className={section}>
+                <table align="center" width="100%"><tbody><tr><td>
+                    <p className="textTitle2">{element.title}</p>
+                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                </td></tr>
+                <tr><td width="50%">{this.renderImage(element)}</td></tr>
+                </tbody></table></div>
+            );
+        } else {
+            if (isRight) {
+                return (
+                    <div className={section}><table align="center" width="100%">
+                    <tbody><tr>
+                    <td width="50%">{this.renderImage(element)}</td>
+                    <td width="5%"></td>
+                    <td width="45%" align="left">
+                        <div className="textTitle2">{element.title}</div>
+                        <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
+                    </td>
+                    </tr></tbody></table>
+                    </div>
+                );
+            } else {
+                return (
+                    <div className={section}>
+                    <table align="center" width="100%"><tbody><tr>
+                        <td width="5%" ></td>
+                        <td width="45%" align="left">
+                            <div className="textTitle2">{element.title}</div>
+                            <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
+                        </td>
+                        <td width="50%">{this.renderImage(element)}</td>
+                    </tr></tbody></table>
+                    </div>
+                );
+            }
+        }
+    }
+
+    render() {
+        const elements = {
+            'face': {
+                title: 'Face Tracking.',
+                description:
+                    '<p>Add face tracking in <b>10 lines of code</b>!</p>'+
+                    '<p>Allow the user to see themselves inside of a viewer and attach any 3d assets to their face</p>' +
+                    "<p>This can be used for creating fun experiences of virtually trying products on one's head.</p>" +
+                    "<p><a href='https://dev.peeks.io/pages/face.js' target='_blank'>See the code</a> <a href='https://dev.peeks.io/face' target='_blank'>Try it</a></p>"+
+                    "",
+                image: 'examples/example-face.png',
+            },
+            'carVR': {
+                title: 'Car VR.',
+                description:
+                '<p>Explore the interior of a car in 360'+
+                '</p>',
+                image: 'examples/example-car-vr.png',
+            },
+            'furtinureAR': {
+                title: 'Furniture AR.',
+                description: '<p>Explore the interior of a car in 360</p>',
+                image: 'examples/example-furniture-ar.png',
+            },
+            'scan3D': {
+                title: '3d Scan.',
+                description:
+                '<p>Explore the interior of a car in 360'+
+                '</p>',
+                image: 'examples/example-scane-3d.png',
+            },
+            'visitVR': {
+                title: 'VR visit.',
+                description:
+                '<p>Explore the interior of a car in 360'+
+                '</p>',
+                image: 'examples/example-visit-vr.png',
+            },
+            'objectDesigner': {
+                title: 'Virtual Designer.',
+                description:
+                '<p>Create a 3d Object and allow to customize it'+
+                '</p>',
+                image: 'examples/example-object-designer.png',
+            },
+            'movies': {
+                title: 'Play movies.',
+                description:
+                    '<p>Integrate movie streams into your experience.</p>',
+                image: 'examples/example-movie.png',
+            },
+            'image360': {
+                title: '360 images.',
+                description:
+                    '<p>Easily create Virtual experiences using 360 images.</p>',
+                image: 'examples/example-image360.png',
+            },
+        };
+
+        return (
+            <div>
+            {this.renderSection(elements['face'], false, 'sectionBlank')}
+            {this.renderSection(elements['carVR'], true, 'sectionBlank')}
+            {this.renderSection(elements['furtinureAR'], false, 'sectionBlank')}
+            {this.renderSection(elements['scan3D'], true, 'sectionBlank')}
+            {this.renderSection(elements['visitVR'], false, 'sectionBlank')}
+            {this.renderSection(elements['objectDesigner'], true, 'sectionBlank')}
+            {this.renderSection(elements['movies'], false, 'sectionBlank')}
+            {this.renderSection(elements['image360'], true, 'sectionBlank')}
+            </div>
+        );
+    }
+}
+
 class Sdk extends React.Component {
     constructor(props) {
         super(props)
@@ -165,20 +320,7 @@ class Sdk extends React.Component {
             case menuExamples:
                 return (
                     <div>
-                    <table align="center" width ='80%'><tbody>
-                    <tr>
-                    <td>Object Designer</td>
-                    <td>Virtual visit</td>
-                    </tr>
-                    <tr>
-                    <td>Face Tracking</td>
-                    <td>Movie</td>
-                    </tr>
-                    <tr>
-                    <td>360 images</td>
-                    <td>Gaming</td>
-                    </tr>
-                    </tbody></table>
+                    <Examples/>
                     </div>
                 );
         }
@@ -200,13 +342,12 @@ class Sdk extends React.Component {
         return (
             <div>
                 <div className="textTitle">Developer SDK</div>
-                <p>Integrate Peeks player into your website or webapp</p>
                 <div>
                     {this.addButton(menuGettingStarted)}
                     {this.addButton(menuReference)}
                     {this.addButton(menuExamples)}
                 </div>
-                <div className="sectionA">
+                <div>
                     {this.getBody()}
                 </div>
             </div>
