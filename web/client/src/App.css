@@ -72,6 +72,15 @@
     background-color: #6100DF;
 }
 
+.buttonLink {
+    align: center;
+    border-width: 0;
+    margin: 2px;
+    padding: 2px;
+    color: #6100DF;
+    background-color: #0000;
+}
+
 .roundButton {
     align: right;
     border-radius: 20px;

@@ -173,12 +173,110 @@ class Examples extends React.Component {
     }
 }
 
+function SdkGetDocumentation()
+{
+    var doc = {
+        classes: {},
+        classNames: [],
+        rootClass: '',
+    };
+    var sdk = window.PEEKS;
+    if (sdk) {
+        console.log('SDK present');
+        for (let name in sdk) {
+            let sdkItem = sdk[name];
+            if (typeof sdkItem === 'function') {
+                if (name[0] === name[0].toUpperCase()) {
+                    // Ignore Three wrappers
+                    if (name.substr(0, 5) === 'Three') {
+                        continue;
+                    }
+                    // Ignore others
+                    if (name === 'EventDispatcher') {
+                        continue;
+                    }
+                    doc.classes[name] = {
+                        name: name,
+                        class: sdkItem,
+                    };
+                    doc.classNames.push(name);
+                }
+            }
+        }
+
+        // Evaluate the ranking of each class
+        for (let class1 in doc.classes) {
+            doc.classes[class1].rank = 0;
+            for (let class2 in doc.classes) {
+                if (class1 !== class2) {
+                    if (doc.classes[class1].class.prototype instanceof doc.classes[class2].class) {
+                        doc.classes[class1].rank = doc.classes[class1].rank + 1;
+                    }
+                }
+            }
+        }
+
+        // Solve the class hierarhcy
+        for (let class1 in doc.classes) {
+            if (doc.classes[class1].rank === 0) {
+                doc.rootClass = class1;
+            } else {
+                for (let class2 in doc.classes) {
+                    if (doc.classes[class1].rank === (doc.classes[class2].rank + 1)) {
+                        doc.classes[class1].superclass = class2;
+                    }
+                }
+            }
+        }
+    }
+    return doc;
+}
+
 class Sdk extends React.Component {
     constructor(props) {
         super(props)
+        let doc = SdkGetDocumentation();
         this.state = {
             menu: menuGettingStarted,
+            doc: doc,
+            currentClass: doc.rootClass,
         }
+
+        console.log(this.state.doc);
+    }
+
+    renderClassList() {
+        return (
+            <div>
+                Peeks classes available
+                <ul>
+                    {this.state.doc.classNames.map((name) => {
+                        return <button key={name} className="buttonLink" onClick={(e) => console.log({name})}>{name}</button>;
+                    })}
+                </ul>
+            </div>
+        );
+    }
+
+    renderCurrentClass() {
+        if (this.state.currentClass !== '') {
+            return (
+                <div>
+                {this.state.currentClass}
+                </div>
+            );
+        } else {
+            return (<div></div>);
+        }
+    }
+
+    renderReference() {
+        return (
+            <div>
+            {this.renderClassList()}
+            {this.renderCurrentClass()}
+            </div>
+        );
     }
 
     getBody() {
@@ -187,6 +285,7 @@ class Sdk extends React.Component {
             case menuGettingStarted:
                 return (
                     <div className="sectionDocumentation">
+                        {this.renderReference()}
                         <div className="textTitle2">Quickstart</div>
                         <div className="textDocumentation">
                             Here is the simplest example to get a Peeks viewer into an html page
