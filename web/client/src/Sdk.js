@@ -205,15 +205,15 @@ class Sdk extends React.Component {
             return (
                 <div>
                 <div className="textTitle3">PEEKS.{currentClass.name}</div>
-                <div className="textDocumentation">{currentClass.doc.description}</div>
+                <div className="textDocumentation" dangerouslySetInnerHTML={{__html: currentClass.doc.description}}/>
                 {currentClass.methodNames.map((name) => {
                     return <div key={name} className="textTitle4">
                         {name}({currentClass.methods[name].args})
                         <ul>
-                        <div className="textDocumentation2">{currentClass.methods[name].description}</div>
+                        <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: currentClass.methods[name].description}}/>
                         <div className="textDocumentation2">Returns: {currentClass.methods[name].returnValue}</div>
-                        <div className="textDocumentation2">{currentClass.methods[name].usage}</div>
-                        <div className="textDocumentation2">{currentClass.methods[name].example}</div>
+                        <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: currentClass.methods[name].usage}}/>
+                        <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: currentClass.methods[name].example}}/>
                         </ul>
                     </div>;
                 })}
