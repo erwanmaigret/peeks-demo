@@ -1,4 +1,5 @@
 import React from 'react';
+import './Doc.js';
 
 const menuGettingStarted = 'Getting Started';
 const menuReference = 'Reference';
@@ -173,96 +174,49 @@ class Examples extends React.Component {
     }
 }
 
-function SdkGetDocumentation()
-{
-    var doc = {
-        classes: {},
-        classNames: [],
-        rootClass: '',
-    };
-    var sdk = window.PEEKS;
-    if (sdk) {
-        console.log('SDK present');
-        for (let name in sdk) {
-            let sdkItem = sdk[name];
-            if (typeof sdkItem === 'function') {
-                if (name[0] === name[0].toUpperCase()) {
-                    // Ignore Three wrappers
-                    if (name.substr(0, 5) === 'Three') {
-                        continue;
-                    }
-                    // Ignore others
-                    if (name === 'EventDispatcher') {
-                        continue;
-                    }
-                    doc.classes[name] = {
-                        name: name,
-                        class: sdkItem,
-                    };
-                    doc.classNames.push(name);
-                }
-            }
-        }
-
-        // Evaluate the ranking of each class
-        for (let class1 in doc.classes) {
-            doc.classes[class1].rank = 0;
-            for (let class2 in doc.classes) {
-                if (class1 !== class2) {
-                    if (doc.classes[class1].class.prototype instanceof doc.classes[class2].class) {
-                        doc.classes[class1].rank = doc.classes[class1].rank + 1;
-                    }
-                }
-            }
-        }
-
-        // Solve the class hierarhcy
-        for (let class1 in doc.classes) {
-            if (doc.classes[class1].rank === 0) {
-                doc.rootClass = class1;
-            } else {
-                for (let class2 in doc.classes) {
-                    if (doc.classes[class1].rank === (doc.classes[class2].rank + 1)) {
-                        doc.classes[class1].superclass = class2;
-                    }
-                }
-            }
-        }
-    }
-    return doc;
-}
-
 class Sdk extends React.Component {
     constructor(props) {
         super(props)
-        let doc = SdkGetDocumentation();
+        let doc = window.PEEKS.generateDoc();
         this.state = {
             menu: menuGettingStarted,
             doc: doc,
             currentClass: doc.rootClass,
         }
+    }
 
-        console.log(this.state.doc);
+    onClickClass(name) {
+        this.setState({currentClass: name.name});
     }
 
     renderClassList() {
         return (
             <div>
-                Peeks classes available
-                <ul>
-                    {this.state.doc.classNames.map((name) => {
-                        return <button key={name} className="buttonLink" onClick={(e) => console.log({name})}>{name}</button>;
-                    })}
-                </ul>
+                {this.state.doc.classNames.map((name) => {
+                    return (<button key={name} className="buttonLink" onClick={(e) => this.onClickClass({name})}>{name}</button>);
+                })}
             </div>
         );
     }
 
     renderCurrentClass() {
         if (this.state.currentClass !== '') {
+            var currentClass = this.state.doc.classes[this.state.currentClass];
             return (
                 <div>
-                {this.state.currentClass}
+                <div className="textTitle3">PEEKS.{currentClass.name}</div>
+                <div className="textDocumentation">{currentClass.doc.description}</div>
+                {currentClass.methodNames.map((name) => {
+                    return <div key={name} className="textTitle4">
+                        {name}({currentClass.methods[name].args})
+                        <ul>
+                        <div className="textDocumentation2">{currentClass.methods[name].description}</div>
+                        <div className="textDocumentation2">Returns: {currentClass.methods[name].returnValue}</div>
+                        <div className="textDocumentation2">{currentClass.methods[name].usage}</div>
+                        <div className="textDocumentation2">{currentClass.methods[name].example}</div>
+                        </ul>
+                    </div>;
+                })}
                 </div>
             );
         } else {
@@ -274,7 +228,9 @@ class Sdk extends React.Component {
         return (
             <div>
             {this.renderClassList()}
-            {this.renderCurrentClass()}
+            <div className="sectionDocumentation">
+                {this.renderCurrentClass()}
+            </div>
             </div>
         );
     }
@@ -284,8 +240,8 @@ class Sdk extends React.Component {
             default:
             case menuGettingStarted:
                 return (
-                    <div className="sectionDocumentation">
-                        {this.renderReference()}
+                    <div>
+                        <div className="sectionDocumentation">
                         <div className="textTitle2">Quickstart</div>
                         <div className="textDocumentation">
                             Here is the simplest example to get a Peeks viewer into an html page
@@ -387,33 +343,13 @@ class Sdk extends React.Component {
                                 </ul>
                                 {code.html('/script')}
                             </div>
+                            </div>
                         </div>
                 );
             case menuReference:
                 return (
-                    <div className="sectionDocumentation">
-
-                        <div className="textTitle2">Asset</div>
-                        <div className="textDocumentation">
-                            Root class definition.
-                        </div>
-                        <div className="textTitle3">addCanvas(params)</div>
-                        <ul>
-                            Attach and return a 2D Canvas Asset.
-                        </ul>
-                        <div className="textTitle3">addImage(params)</div>
-                        <ul>
-                            Attach and return a 2D image asset.
-                        </ul>
-                        <div className="textTitle3">destroy()</div>
-                        <ul>
-                            Detach, destroy along with all its child assets.
-                        </ul>
-
-                        <div className="textTitle2">Canvas</div>
-                        <div className="textDocumentation">
-                            2D Asset space fitting into the view, used for screen space assets.
-                        </div>
+                    <div>
+                        {this.renderReference()}
                     </div>
                 );
             case menuExamples:

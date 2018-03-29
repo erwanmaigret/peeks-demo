@@ -262,12 +262,22 @@
 .textTitle3 {
   font-size: 1.2em;
   color: #1F176C;
-  padding: 10px;
+  padding: 4px;
+}
+.textTitle4 {
+  font-size: 1.0em;
+  color: #1F176C;
+  padding: 2px;
 }
 .textDocumentation {
   font-size: 1.0em;
   color: #666;
-  padding: 10px;
+  padding: 4px;
+}
+.textDocumentation2 {
+  font-size: 0.8em;
+  color: #444;
+  padding: 2px;
 }
 .textCode {
   border-radius: 10px;
