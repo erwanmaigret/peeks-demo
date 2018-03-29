@@ -199,6 +199,58 @@ class Sdk extends React.Component {
         );
     }
 
+    renderMethodDescription(value) {
+        if (value && value !== "") {
+            return <div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/>;
+        } else {
+            return <div/>;
+        }
+    }
+
+    renderMethodReturnValue(value) {
+        if (value && value !== "") {
+            return <div className="textDocumentation2">
+                Returns<ul><div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/></ul>
+            </div>;
+        } else {
+            return <div/>;
+        }
+    }
+
+    renderMethodArgs(value) {
+        if (typeof value === typeof []) {
+            return <div className="textDocumentation2">
+                Arguments<ul>
+                    {value.map((value) => {
+                        return (<div key={value} className="textDocumentation3">{value[0]} {value[1]}</div>);
+                    })}
+                </ul>
+            </div>;
+        } else {
+            return <div/>;
+        }
+    }
+
+    renderMethodUsage(value) {
+        if (value && value !== "") {
+            return <div className="textDocumentation2">
+                Usage<ul><div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/></ul>
+            </div>;
+        } else {
+            return <div/>;
+        }
+    }
+
+    renderMethodExample(value) {
+        if (value && value !== "") {
+            return <div className="textDocumentation2">
+                Example<ul><div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/></ul>
+            </div>;
+        } else {
+            return <div/>;
+        }
+    }
+
     renderCurrentClass() {
         if (this.state.currentClass !== '') {
             var currentClass = this.state.doc.classes[this.state.currentClass];
@@ -210,10 +262,11 @@ class Sdk extends React.Component {
                     return <div key={name} className="textTitle4">
                         {name}({currentClass.methods[name].args})
                         <ul>
-                        <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: currentClass.methods[name].description}}/>
-                        <div className="textDocumentation2">Returns: {currentClass.methods[name].returnValue}</div>
-                        <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: currentClass.methods[name].usage}}/>
-                        <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: currentClass.methods[name].example}}/>
+                        {this.renderMethodDescription(currentClass.methods[name].description)}
+                        {this.renderMethodArgs(currentClass.methods[name].args)}
+                        {this.renderMethodReturnValue(currentClass.methods[name].returnValue)}
+                        {this.renderMethodUsage(currentClass.methods[name].usage)}
+                        {this.renderMethodExample(currentClass.methods[name].example)}
                         </ul>
                     </div>;
                 })}

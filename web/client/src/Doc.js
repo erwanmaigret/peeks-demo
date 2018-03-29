@@ -8,15 +8,15 @@ function addDoc(node, method, doc) {
     }
 }
 window.PEEKS.Node.doc = {
-    description: 'Root class. It defines the default behaviors for all Peeks objects.',
+    description: '<p>This is the root class. It defines the default behaviors for all Peeks objects.</p>',
 };
 addDoc('Node', 'DOMcreateElementVideo', {internal: true});
 addDoc('Node', 'add', {internal: true});
 addDoc('Node', 'addPage', {
-    description: '',
-    args: '',
+    description: 'Create and attach a Page Node to this node',
+    args: [['parameters', 'values']],
     returnValue: 'The created Page object',
-    usage: '',
+    usage: 'asset.addPage(params);',
     example: '',
 });
 addDoc('Node', 'destroy', {
