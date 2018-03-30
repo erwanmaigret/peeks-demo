@@ -3260,8 +3260,8 @@ PEEKS.registerPage('peeks.toolbar', function() {
 
 	canvas.animate({
 		duration: 1,
-		delay: .2,
-		begin: [0, -.3, 0],
+		delay: 1,
+		begin: [0, -1, 0],
 		end: [0, 0, 0],
 		attribute: 'position'
 	});
@@ -49362,18 +49362,18 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             var scene = this.getScene();
             var tan = Math.tan(THREE.Math.degToRad(scene.cameraAngle / 2));
             var distance = h / tan;
+            var depthFactor = 10;
             if (scene.width < scene.height) {
                 distance *= scene.height / scene.width;
 
                 var valign = this.getAttr('valign');
                 if (valign === 'bottom') {
-                    pivot.position.y -= .5 * (scene.height - scene.width) / scene.width;
+                    pivot.position.y -= .5 * depthFactor * (scene.height - scene.width) / scene.width;
                 } else if (valign === 'top') {
-                    pivot.position.y += .5 * (scene.height - scene.width) / scene.width;
+                    pivot.position.y += .5 * depthFactor * (scene.height - scene.width) / scene.width;
                 }
             }
 
-            var depthFactor = 10;
             threeObject.position.z -= distance * depthFactor;
             threeObject.scale.set(
                 threeObject.scale.x * depthFactor,
