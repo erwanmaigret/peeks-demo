@@ -1655,6 +1655,10 @@ function registerExtension(name, extension, onLoad) {
         extensions[name] = {
             listeners: [],
         };
+
+        if (name === 'cv') {
+            loadScript("/js/cv/wasm/opencv.js", function() { } );
+        }
     }
 
     if (onLoad) {
@@ -1713,6 +1717,24 @@ function registerPage(name, ctor) {
             return page;
         });
     }
+}
+
+function loadScript(src, callback)
+{
+    var read = false;
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = src;
+    script.onload = script.onreadystatechange = function() {
+        if (!read && (!this.readyState || this.readyState == 'complete')) {
+            read = true;
+            if (callback) {
+                callback();
+            }
+        }
+    };
+    var node = document.getElementsByTagName('script')[0];
+    node.parentNode.insertBefore(script, node);
 }
 
 function start(domElement, page) {
@@ -3160,6 +3182,7 @@ exports.logInfo = logInfo;
 exports.logWarning = logWarning;
 exports.logError = logError;
 exports.registerPage = registerPage;
+exports.loadScript = loadScript;
 exports.start = start;
 exports.getAsset = getAsset;
 
