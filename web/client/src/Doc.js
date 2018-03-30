@@ -1,5 +1,17 @@
+function addClassDoc(node, doc) {
+    if (window.PEEKS === undefined) {
+        console.log('PEEKS is missing');
+    } else if (window.PEEKS[node] === undefined) {
+        console.log('PEEKS class ' + node + ' missing');
+    } else {
+        window.PEEKS[node].doc = doc;
+    }
+}
+
 function addDoc(node, method, doc) {
-    if (window.PEEKS[node] === undefined) {
+    if (window.PEEKS === undefined) {
+        console.log('PEEKS is missing');
+    } else if (window.PEEKS[node] === undefined) {
         console.log('PEEKS class ' + node + ' missing');
     } else if (window.PEEKS[node].prototype[method] === undefined) {
         console.log('PEEKS method ' + node + '.' + method + ' missing');
@@ -7,9 +19,10 @@ function addDoc(node, method, doc) {
         window.PEEKS[node].prototype[method].doc = doc;
     }
 }
-window.PEEKS.Node.doc = {
+
+addClassDoc('Node', {
     description: '<p>This is the root class. It defines the default behaviors for all Peeks objects.</p>',
-};
+});
 addDoc('Node', 'DOMcreateElementVideo', {internal: true});
 addDoc('Node', 'add', {internal: true});
 addDoc('Node', 'addPage', {
@@ -207,9 +220,9 @@ addDoc('Node', 'info', {internal: true});
 addDoc('Node', 'warn', {internal: true});
 addDoc('Node', 'error', {internal: true});
 
-window.PEEKS.Scene.doc = {
+addClassDoc('Scene', {
     description: 'class.',
-};
+});
 addDoc('Scene', 'convertMouse', {internal: true});
 addDoc('Scene', 'isVrMode', {internal: true});
 addDoc('Scene', 'isGyroMode', {internal: true});
@@ -318,9 +331,9 @@ addDoc('Scene', 'updateFullScreen', {internal: true});
 addDoc('Scene', 'start', {internal: true});
 addDoc('Scene', 'onRender', {internal: true});
 
-window.PEEKS.Camera.doc = { internal: true, };
+addClassDoc('Camera', { internal: true, });
 
-window.PEEKS.Asset.doc = { description: 'Asset class', };
+addClassDoc('Asset', { description: 'Asset class', });
 addDoc('Asset', 'isInCanvas', {internal: true});
 addDoc('Asset', 'resetToInitial', {internal: true});
 addDoc('Asset', 'updateInitial', {internal: true});
@@ -431,117 +444,120 @@ addDoc('Asset', 'clearAnimations', {
 addDoc('Asset', 'clearChildren', {internal: true});
 addDoc('Asset', 'onUnload', {internal: true});
 
-window.PEEKS.Canvas.doc = { description: 'Asset class', };
+addClassDoc('Canvas', { description: 'Asset class', });
 
-window.PEEKS.Screen.doc = { description: 'Asset class', };
+addClassDoc('Screen', { description: 'Asset class', });
 
-window.PEEKS.Page.doc = { description: 'Asset class', };
+addClassDoc('Page', { description: 'Asset class', });
 
-window.PEEKS.Plane.doc = { internal: true, };
+addClassDoc('Plane', { internal: true, });
 
-window.PEEKS.Animation.doc = {
+addClassDoc('Animation', {
     description:
         '<p>Animations are objects that update values of their owners with time.</p>' +
         ' They are attached to a Node using the animate({}) methods with the appropriate values.' +
         '',
-};
+});
 addDoc('Animation', 'interpolateEaseIn', {internal: true});
 addDoc('Animation', 'interpolateEaseOut', {internal: true});
 addDoc('Animation', 'interpolateEaseInOut', {internal: true});
 addDoc('Animation', 'update', {internal: true});
 
+if (window.PEEKS) {
+
 window.PEEKS.generateDoc = function()
-{
-    var doc = {
-        classes: {},
-        classNames: [],
-        rootClass: '',
-    };
-    var sdk = window.PEEKS;
-    if (sdk) {
-        for (let name in sdk) {
-            let sdkItem = sdk[name];
-            if (typeof sdkItem === 'function') {
-                if (name[0] === name[0].toUpperCase()) {
-                    // Ignore Three wrappers
-                    if (name.substr(0, 5) === 'Three') {
-                        continue;
-                    }
-                    // Ignore others
-                    if (name === 'EventDispatcher') {
-                        continue;
-                    }
-                    if (sdkItem.doc) {
-                        if (!sdkItem.doc.internal) {
-                            doc.classes[name] = {
-                                name: name,
-                                class: sdkItem,
-                                methods: {},
-                                methodNames: [],
-                                doc: sdkItem.doc,
-                            };
-                            doc.classNames.push(name);
+    {
+        var doc = {
+            classes: {},
+            classNames: [],
+            rootClass: '',
+        };
+        var sdk = window.PEEKS;
+        if (sdk) {
+            for (let name in sdk) {
+                let sdkItem = sdk[name];
+                if (typeof sdkItem === 'function') {
+                    if (name[0] === name[0].toUpperCase()) {
+                        // Ignore Three wrappers
+                        if (name.substr(0, 5) === 'Three') {
+                            continue;
                         }
-                    } else {
-                        if (!sdkItem.internal) {
-                            console.log('missing doc for Class ' + name);
+                        // Ignore others
+                        if (name === 'EventDispatcher') {
+                            continue;
                         }
-                    }
-                }
-            }
-        }
-
-        doc.classNames.sort();
-
-        // Evaluate the ranking of each class
-        for (let class1 in doc.classes) {
-            doc.classes[class1].rank = 0;
-            for (let class2 in doc.classes) {
-                if (class1 !== class2) {
-                    if (doc.classes[class1].class.prototype instanceof doc.classes[class2].class) {
-                        doc.classes[class1].rank = doc.classes[class1].rank + 1;
-                    }
-                }
-            }
-        }
-
-        // Solve the class hierarhcy
-        for (let class1 in doc.classes) {
-            if (doc.classes[class1].rank === 0) {
-                doc.rootClass = class1;
-            } else {
-                for (let class2 in doc.classes) {
-                    if (doc.classes[class1].rank === (doc.classes[class2].rank + 1)) {
-                        doc.classes[class1].superclass = class2;
-                    }
-                }
-            }
-        }
-
-        // Extract the methds
-        for (let className in doc.classes) {
-            let proto = doc.classes[className].class.prototype;
-            for (let methodName in proto) {
-                let method =  proto[methodName];
-                if (typeof method === `function` && proto.hasOwnProperty(methodName)) {
-                    if (methodName !== 'constructor' &&
-                        methodName.search("three") !== 0 &&
-                        methodName.search("Event") === -1)
-                    {
-                        if (method.doc) {
-                            if (!method.doc.internal) {
-                                method.doc.name = methodName;
-                                doc.classes[className].methods[methodName] = method.doc;
-                                doc.classes[className].methodNames.push(methodName);
+                        if (sdkItem.doc) {
+                            if (!sdkItem.doc.internal) {
+                                doc.classes[name] = {
+                                    name: name,
+                                    class: sdkItem,
+                                    methods: {},
+                                    methodNames: [],
+                                    doc: sdkItem.doc,
+                                };
+                                doc.classNames.push(name);
                             }
                         } else {
-                            console.log('missing doc for ' + className + '.' + methodName);
+                            if (!sdkItem.internal) {
+                                console.log('missing doc for Class ' + name);
+                            }
                         }
                     }
                 }
             }
-            doc.classes[className].methodNames.sort();
+
+            doc.classNames.sort();
+
+            // Evaluate the ranking of each class
+            for (let class1 in doc.classes) {
+                doc.classes[class1].rank = 0;
+                for (let class2 in doc.classes) {
+                    if (class1 !== class2) {
+                        if (doc.classes[class1].class.prototype instanceof doc.classes[class2].class) {
+                            doc.classes[class1].rank = doc.classes[class1].rank + 1;
+                        }
+                    }
+                }
+            }
+
+            // Solve the class hierarhcy
+            for (let class1 in doc.classes) {
+                if (doc.classes[class1].rank === 0) {
+                    doc.rootClass = class1;
+                } else {
+                    for (let class2 in doc.classes) {
+                        if (doc.classes[class1].rank === (doc.classes[class2].rank + 1)) {
+                            doc.classes[class1].superclass = class2;
+                        }
+                    }
+                }
+            }
+
+            // Extract the methds
+            for (let className in doc.classes) {
+                let proto = doc.classes[className].class.prototype;
+                for (let methodName in proto) {
+                    let method =  proto[methodName];
+                    if (typeof method === `function` && proto.hasOwnProperty(methodName)) {
+                        if (methodName !== 'constructor' &&
+                            methodName.search("three") !== 0 &&
+                            methodName.search("Event") === -1)
+                        {
+                            if (method.doc) {
+                                if (!method.doc.internal) {
+                                    method.doc.name = methodName;
+                                    doc.classes[className].methods[methodName] = method.doc;
+                                    doc.classes[className].methodNames.push(methodName);
+                                }
+                            } else {
+                                console.log('missing doc for ' + className + '.' + methodName);
+                            }
+                        }
+                    }
+                }
+                doc.classes[className].methodNames.sort();
+            }
         }
+        return doc;
     }
-    return doc;
 }
