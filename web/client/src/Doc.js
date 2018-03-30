@@ -26,12 +26,14 @@ addClassDoc('Node', {
 addDoc('Node', 'DOMcreateElementVideo', {internal: true});
 addDoc('Node', 'add', {internal: true});
 addDoc('Node', 'addPage', {
-    description: 'Create and attach a Page',
+    description: '<p>Load and attach a new instance of a named page into the current page.</p>'
+    + '<p>You may use this to create your own registered pages previoulsy registered to organize multiple pages using shared widgets declarations.</p>'
+    + '<p>There is also a set of predefined system pages that can be used to quickly populate a page with standard widgets. All these pages will be prefixed with "peeks.": <b>peeks.toolbar</b> (Standard navigation toolbar at the bottom of the screen)</p>',
     args: [
-        ['parameters', 'Initial parameter values'],
+        ['name', 'The string describing the name of the registered page to load'],
     ],
     returnValue: 'A new Page',
-    usage: 'asset.addPage({});',
+    usage: 'asset.addPage("peeks_toolbar");',
     example: '',
 });
 addDoc('Node', 'destroy', {
@@ -42,16 +44,18 @@ addDoc('Node', 'destroy', {
 });
 addDoc('Node', 'unload', {internal: true});
 addDoc('Node', 'addCanvas', {
-    description: 'Create and attach a 2D Canvas',
+    description: '<p>Create and attach a 2D Canvas</p>'
+        +'<p>A Canvas is a square 2d Assets following the screen orientation and size</p>',
     args: [
         ['parameters', 'Initial parameter values'],
     ],
     returnValue: 'A new Canvas',
-    usage: 'page.addCanvas({});',
+    usage: "page.addCanvas({valign: 'top'});",
     example: '',
 });
 addDoc('Node', 'addScreen', {
-    description: 'Create and attach a 3D sperical Screen',
+    description: '<p>Create and attach a 3D sperical Screen</p>'
+        +'<p>A Screen is an invisible sphere on which other Assets can be attached using their x/y positions values as 2D coordinates on the sphere.</p>',
     args: [
         ['parameters', 'Initial parameter values'],
     ],
@@ -444,15 +448,16 @@ addDoc('Asset', 'clearAnimations', {
 addDoc('Asset', 'clearChildren', {internal: true});
 addDoc('Asset', 'onUnload', {internal: true});
 
-addClassDoc('Canvas', { description: 'Asset class', });
+addClassDoc('Canvas', { internal: true, description: 'Asset class', });
 
-addClassDoc('Screen', { description: 'Asset class', });
+addClassDoc('Screen', { internal: true, description: 'Asset class', });
 
-addClassDoc('Page', { description: 'Asset class', });
+addClassDoc('Page', { internal: true, description: 'Asset class', });
 
 addClassDoc('Plane', { internal: true, });
 
 addClassDoc('Animation', {
+    internal: true,
     description:
         '<p>Animations are objects that update values of their owners with time.</p>' +
         ' They are attached to a Node using the animate({}) methods with the appropriate values.' +
