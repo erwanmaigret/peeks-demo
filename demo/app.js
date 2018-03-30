@@ -1,3 +1,4 @@
+const cors = require('cors');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,6 +8,8 @@ var stylus = require('stylus');
 var logger = require('morgan');
 
 var app = express();
+app.use(cors());
+app.options('*', cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,6 +42,8 @@ app.use('/wgtiootb', require('./routes/demo'));
 app.use('/face', require('./routes/face'));
 app.use('/widget', require('./routes/widget'));
 
+/*
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -70,5 +75,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+*/
 
 module.exports = app;
