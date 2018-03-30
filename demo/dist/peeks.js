@@ -78,13 +78,6 @@ global.THREE = __webpack_require__(5);
 __webpack_require__(6);
 __webpack_require__(7);
 
-// We don't use this pure JS tracking, it's way too slow
-//  but it was an interesting experiment
-//require('./tracking/tracking-min.js');
-//require('./tracking/data/eye-min.js');
-//require('./tracking/data/face-min.js');
-//require('./tracking/data/mouth-min.js');
-
 __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
