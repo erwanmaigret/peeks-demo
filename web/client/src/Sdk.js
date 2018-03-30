@@ -189,6 +189,18 @@ class Sdk extends React.Component {
         this.setState({currentClass: name.name});
     }
 
+    onClickMethod(name) {
+        let method = this.state.doc.classes[this.state.currentClass].methods[name];
+        if (method) {
+            if (method.isOpen) {
+                method.isOpen = false;
+            } else {
+                method.isOpen = true;
+            }
+        }
+        this.setState({doc: this.state.doc});
+    }
+
     renderClassList() {
         return (
             <div>
@@ -201,7 +213,7 @@ class Sdk extends React.Component {
 
     renderMethodDescription(value) {
         if (value && value !== "") {
-            return <div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/>;
+            return <div className="textDocumentation2" dangerouslySetInnerHTML={{__html: value}}/>;
         } else {
             return <div/>;
         }
@@ -210,31 +222,51 @@ class Sdk extends React.Component {
     renderMethodReturnValue(value) {
         if (value && value !== "") {
             return <div className="textDocumentation2">
-                Returns<ul><div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/></ul>
+                <div className="textTitle4">Return value</div>
+                <div className="textCode2" dangerouslySetInnerHTML={{__html: value}}/>
             </div>;
         } else {
             return <div/>;
         }
     }
 
-    renderMethodArgs(value) {
-        if (typeof value === typeof []) {
+    renderMethodArgs(values) {
+        if (typeof values === typeof []) {
             return <div className="textDocumentation2">
-                Arguments<ul>
-                    {value.map((value) => {
-                        return (<div key={value} className="textDocumentation3">{value[0]} {value[1]}</div>);
+                <div className="textTitle4">Arguments</div>
+                <div className="textCode2"><table border="0" cellPadding="5" cellSpacing="0"><tbody>
+                    {
+                    values.map((value) => {
+                        return (<tr key={value}><td><i>{value[0]}</i></td><td>{value[1]}</td></tr>);
                     })}
-                </ul>
+                </tbody></table></div>
             </div>;
         } else {
             return <div/>;
+        }
+    }
+
+    renderMethodArgsSignature(values) {
+        if (typeof values === typeof []) {
+            return <span>
+                {values.map((value) => {
+                    if (value[0] !== values[0][0]) {
+                        return (<span key={value}>, {value[0]}</span>);
+                    } else {
+                        return (<span key={value}>{value[0]}</span>);
+                    }
+                })}
+            </span>;
+        } else {
+            return <span/>;
         }
     }
 
     renderMethodUsage(value) {
         if (value && value !== "") {
             return <div className="textDocumentation2">
-                Usage<ul><div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/></ul>
+                <div className="textTitle4">Usage</div>
+                <div className="textCode2" dangerouslySetInnerHTML={{__html: value}}/>
             </div>;
         } else {
             return <div/>;
@@ -244,8 +276,32 @@ class Sdk extends React.Component {
     renderMethodExample(value) {
         if (value && value !== "") {
             return <div className="textDocumentation2">
-                Example<ul><div className="textDocumentation3" dangerouslySetInnerHTML={{__html: value}}/></ul>
+                <div className="textTitle4">Example of use</div>
+                <div className="textCode2" dangerouslySetInnerHTML={{__html: value}}/>
             </div>;
+        } else {
+            return <div/>;
+        }
+    }
+
+    renderMethodButton(method) {
+        let name = method.name;
+        if (method.isOpen) {
+            return <button className="buttonIcon" onClick={(e) => this.onClickMethod(name)}>-</button>;
+        } else {
+            return <button className="buttonIcon" onClick={(e) => this.onClickMethod(name)}>+</button>;
+        }
+    }
+
+    renderMethodDoc(method) {
+        if (method.isOpen) {
+            return <ul>
+                {this.renderMethodDescription(method.description)}
+                {this.renderMethodArgs(method.args)}
+                {this.renderMethodReturnValue(method.returnValue)}
+                {this.renderMethodUsage(method.usage)}
+                {this.renderMethodExample(method.example)}
+            </ul>;
         } else {
             return <div/>;
         }
@@ -260,14 +316,9 @@ class Sdk extends React.Component {
                 <div className="textDocumentation" dangerouslySetInnerHTML={{__html: currentClass.doc.description}}/>
                 {currentClass.methodNames.map((name) => {
                     return <div key={name} className="textTitle4">
-                        {name}({currentClass.methods[name].args})
-                        <ul>
-                        {this.renderMethodDescription(currentClass.methods[name].description)}
-                        {this.renderMethodArgs(currentClass.methods[name].args)}
-                        {this.renderMethodReturnValue(currentClass.methods[name].returnValue)}
-                        {this.renderMethodUsage(currentClass.methods[name].usage)}
-                        {this.renderMethodExample(currentClass.methods[name].example)}
-                        </ul>
+                        {this.renderMethodButton(currentClass.methods[name])}
+                        {name}({this.renderMethodArgsSignature(currentClass.methods[name].args)})
+                        {this.renderMethodDoc(currentClass.methods[name])}
                     </div>;
                 })}
                 </div>

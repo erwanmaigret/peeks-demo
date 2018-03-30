@@ -72,6 +72,17 @@
     background-color: #6100DF;
 }
 
+.buttonIcon {
+    align: right;
+    border-radius: 4px;
+    border-width: 0;
+    margin: 4px;
+    padding: 5px;
+    font-size: 0.9em;
+    color: #FFF;
+    background-color: #6100DF;
+}
+
 .buttonLink {
     align: center;
     border-width: 0;
@@ -292,6 +303,15 @@
   margin: 20px;
   padding: 12px;
   background-color: #eee;
+}
+.textCode2 {
+  border-radius: 4px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.1);
+  font-size: 1.0em;
+  color: #333;
+  margin: 3px;
+  padding: 8px;
+  background-color: #f4f4f4;
 }
 .javascript {
   color: #a00;

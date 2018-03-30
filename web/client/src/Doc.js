@@ -13,72 +13,88 @@ window.PEEKS.Node.doc = {
 addDoc('Node', 'DOMcreateElementVideo', {internal: true});
 addDoc('Node', 'add', {internal: true});
 addDoc('Node', 'addPage', {
-    description: 'Create and attach a Page Node to this node',
-    args: [['parameters', 'values']],
-    returnValue: 'The created Page object',
-    usage: 'asset.addPage(params);',
+    description: 'Create and attach a Page',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Page',
+    usage: 'asset.addPage({});',
     example: '',
 });
 addDoc('Node', 'destroy', {
-    description: '',
-    args: '',
-    returnValue: 'Nothing',
-    usage: '',
+    description: 'Detach and destroy the node along with all its children if any',
+    returnValue: '',
+    usage: 'asset.destroy()',
     example: '',
 });
 addDoc('Node', 'unload', {internal: true});
 addDoc('Node', 'addCanvas', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach a 2D Canvas',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Canvas',
+    usage: 'page.addCanvas({});',
     example: '',
 });
 addDoc('Node', 'addScreen', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach a 3D sperical Screen',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Screen',
+    usage: 'page.addScreen({});',
     example: '',
 });
 addDoc('Node', 'addButton', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach a 2D Button',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Button',
+    usage: 'page.addButton({});',
     example: '',
 });
 addDoc('Node', 'addStateButton', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    internal: true,
+    description: 'Create and attach a 2D State Button',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Button',
+    usage: 'page.addStateButton({});',
     example: '',
 });
 addDoc('Node', 'toggleButtonState', {
-    description: '',
+    internal: true,
+    description: 'Toggle the pressed state of a button',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'button.toggleButtonState()',
     example: '',
 });
 addDoc('Node', 'getButtonState', {
+    internal: true,
     description: '',
     args: '',
-    returnValue: '',
-    usage: '',
+    returnValue: 'A boolean value',
+    usage: 'var isPressed = button.getButtonState()',
     example: '',
 });
 addDoc('Node', 'setButtonState', {
-    description: '',
-    args: '',
+    internal: true,
+    description: 'Force the state of a button',
+    args: [
+        ['state', 'A boolean value indicating if the button is pressed or not'],
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'button.setButtonState(true)',
     example: '',
 });
 addDoc('Node', 'addCube', {internal: true});
 addDoc('Node', 'addRibbon', {internal: true});
 addDoc('Node', 'addSphere', {
+    internal: true,
     description: '',
     args: '',
     returnValue: '',
@@ -94,25 +110,31 @@ addDoc('Node', 'addRoundTextButton', {internal: true});
 addDoc('Node', 'addIconButton', {internal: true});
 addDoc('Node', 'addRoundIconButton', {internal: true});
 addDoc('Node', 'addVideo', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach a Video',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Video',
+    usage: 'asset.addVideo({});',
     example: '',
 });
 addDoc('Node', 'addImage', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach an Image',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Image',
+    usage: 'asset.addImage({});',
     example: '',
 });
 addDoc('Node', 'toString', {internal: true});
 addDoc('Node', 'addText', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach a Text',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Text',
+    usage: 'asset.addText({});',
     example: '',
 });
 addDoc('Node', 'applyParams', {internal: true});
@@ -123,10 +145,12 @@ addDoc('Node', 'getAttr', {internal: true});
 addDoc('Node', 'addAttrAlias', {internal: true});
 addDoc('Node', 'initAsset', {internal: true});
 addDoc('Node', 'addView', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach a View with background',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new View',
+    usage: 'asset.addView({});',
     example: '',
 });
 addDoc('Node', 'progressStart', {internal: true});
@@ -147,16 +171,20 @@ addDoc('Node', 'querySiteMapItemAssets', {internal: true});
 addDoc('Node', 'setAssetPath', {internal: true});
 addDoc('Node', 'getAssetPath', {internal: true});
 addDoc('Node', 'addAsset', {
-    description: '',
-    args: '',
-    returnValue: '',
-    usage: '',
+    description: 'Create and attach an Asset. This is useful when you need to create new generic containers in your scene hierarchy.',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'The new Asset',
+    usage: "page.addAsset({ position: [0, 0, -3], rotation: [0, 0, 45] })",
     example: '',
 });
 addDoc('Node', 'addMesh', {
-    description: '',
-    args: '',
-    returnValue: '',
+    description: 'Create and attach a 3d Mesh. Supported format is limited to OBJ.',
+    args: [
+        ['parameters', 'Initial parameter values.'],
+    ],
+    returnValue: 'The new Mesh',
     usage: '',
     example: '',
 });
@@ -164,7 +192,15 @@ addDoc('Node', 'initShapeWeights', {internal: true});
 addDoc('Node', 'validateShapeWeights', {internal: true});
 addDoc('Node', 'setShape', {internal: true});
 addDoc('Node', 'setProperties', {internal: true});
-addDoc('Node', 'animate', {internal: true});
+addDoc('Node', 'animate', {
+    description: 'Attach a new animation to the node',
+    args: [
+        ['parameters', 'Initial parameter values.'],
+    ],
+    returnValue: '',
+    usage: 'node.animate({})',
+    example: '',
+});
 addDoc('Node', 'verbose', {internal: true});
 addDoc('Node', 'debug', {internal: true});
 addDoc('Node', 'info', {internal: true});
@@ -198,17 +234,17 @@ addDoc('Scene', 'onAnimate', {internal: true});
 addDoc('Scene', 'onSynch', {internal: true});
 addDoc('Scene', 'getPage', {internal: true});
 addDoc('Scene', 'toggleGyroscope', {
-    description: '',
+    description: 'Invert the state of the Gyroscope',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'scene.toggleGyroscope()',
     example: '',
 });
 addDoc('Scene', 'toggleArMode', {
-    description: '',
+    description: 'Toggle the AR View. Note that this will require access to the Camera so it can only work in https mode.',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'scene.toggleArMode()',
     example: '',
 });
 addDoc('Scene', 'open2D', {internal: true});
@@ -217,54 +253,60 @@ addDoc('Scene', 'showSiteMapMenu', {internal: true});
 addDoc('Scene', 'refreshSiteMapMenu', {internal: true});
 addDoc('Scene', 'hideSiteMapMenu', {internal: true});
 addDoc('Scene', 'showKeyboard', {
-    description: '',
+    description: 'Make the Keyboard appear',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'scene.showKeyboard()',
     example: '',
 });
 addDoc('Scene', 'hideKeyboard', {
-    description: '',
+    description: 'Make the Keyboard disappear',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'scene.hideKeyboard()',
     example: '',
 });
 addDoc('Scene', 'getArView', {internal: true});
 addDoc('Scene', 'getArImageData', {
-    description: '',
+    description: 'Query the image data from the AR View. This is especially useful when you want to run Computer Vision algorythms on a live video feed to create Augmented Reality experiences.',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'vat data = scene.getArImageData()',
     example: '',
 });
 addDoc('Scene', 'setArMode', {
-    description: '',
-    args: '',
+    description: 'Set the state of the Augmented Reality view to activate / deactivate it.',
+    args: [
+        ['state', 'A boolean value']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'scene.setArMode(true)',
     example: '',
 });
 addDoc('Scene', 'DOMarGetElement', {internal: true});
 addDoc('Scene', 'toggleVrMode', {
-    description: '',
+    description: 'Toggle the VR Rendering mode.',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'scene.toggleVrMode()',
     example: '',
 });
 addDoc('Scene', 'setVrMode', {
-    description: '',
-    args: '',
+    description: 'Set the state of the Virtual Reality rendering mode to activate/deactive stereoscopic views.',
+    args: [
+        ['state', 'A boolean value']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'scene.setVrMode(true)',
     example: '',
 });
 addDoc('Scene', 'loadPage', {
-    description: '',
-    args: '',
+    description: 'Load a named page into the current one.',
+    args: [
+        ['name', 'The name of a reagistered page to load']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'page.loadPage("banner")',
     example: '',
 });
 addDoc('Scene', 'loadPreviousPage', {internal: true});
@@ -283,25 +325,31 @@ addDoc('Asset', 'isInCanvas', {internal: true});
 addDoc('Asset', 'resetToInitial', {internal: true});
 addDoc('Asset', 'updateInitial', {internal: true});
 addDoc('Asset', 'setPosition', {
-    description: '',
-    args: '',
+    description: 'Sets the xyz position of the Asset',
+    args: [
+        ['vector', 'An array of 3 numeric values']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'asset.setPosition([0, 0, -5])',
     example: '',
 });
 addDoc('Asset', 'setRotation', {
-    description: '',
-    args: '',
+    description: 'Sets the xyz rotation euler angles of the Asset',
+    args: [
+        ['vector', 'An array of 3 numeric values']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'asset.setRotation([0, 0, 45])',
     example: '',
 });
 addDoc('Asset', 'getPropagatedSize', {internal: true});
 addDoc('Asset', 'setSize', {
-    description: '',
-    args: '',
+    description: 'Sets the xyz size of the Asset',
+    args: [
+        ['vector', 'An array of 3 numeric values']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'asset.setSize([2, 1, 1])',
     example: '',
 });
 addDoc('Asset', 'measureText', {internal: true});
@@ -311,10 +359,12 @@ addDoc('Asset', 'setTexture', {internal: true});
 addDoc('Asset', 'setTextureBack', {internal: true});
 addDoc('Asset', 'setGeometry', {internal: true});
 addDoc('Asset', 'onUpdate', {
-    description: '',
-    args: '',
+    description: 'This method is called at each update of the Frame',
+    args: [
+        ['function', 'The function to invoke at each Frame']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'asset.onUpdate(function(){})',
     example: '',
 });
 addDoc('Asset', 'update', {internal: true});
@@ -323,20 +373,21 @@ addDoc('Asset', 'render', {internal: true});
 addDoc('Asset', 'onRender', {internal: true});
 addDoc('Asset', 'onUpdateSiteMapPath', {internal: true});
 addDoc('Asset', 'getScene', {
-    description: '',
+    description: 'Query the root Scene in which this Asset belongs',
     args: '',
-    returnValue: '',
-    usage: '',
+    returnValue: 'A Scene',
+    usage: 'var scene = asset.getScene()',
     example: '',
 });
 addDoc('Asset', 'getPage', {
-    description: '',
+    description: 'Query the root Page in which this Asset belongs',
     args: '',
-    returnValue: '',
-    usage: '',
+    returnValue: 'A Page',
+    usage: 'var page = asset.getPage()',
     example: '',
 });
 addDoc('Asset', 'getScreen', {
+    internal: true,
     description: '',
     args: '',
     returnValue: '',
@@ -346,20 +397,22 @@ addDoc('Asset', 'getScreen', {
 addDoc('Asset', 'getDocument', {internal: true});
 addDoc('Asset', 'getCamera', {internal: true});
 addDoc('Asset', 'setVisible', {
-    description: '',
-    args: '',
+    description: 'Set the visibility state',
+    args: [
+        ['state', 'A boolean value']
+    ],
     returnValue: '',
-    usage: '',
+    usage: 'asset.setVisible(true)',
     example: '',
 });
 addDoc('Asset', 'show', {internal: true});
 addDoc('Asset', 'hide', {internal: true});
 addDoc('Asset', 'toggleVisible', {internal: true});
 addDoc('Asset', 'animateFlip', {
-    description: '',
+    description: 'Fire the flip front-to-back animation on the Asset',
     args: '',
     returnValue: '',
-    usage: '',
+    usage: 'asset.animateFlip()',
     example: '',
 });
 addDoc('Asset', 'animateRotate90', {internal: true});
@@ -368,6 +421,7 @@ addDoc('Asset', 'animateFocusEnd', {internal: true});
 addDoc('Asset', 'animateClick', {internal: true});
 addDoc('Asset', 'animateInFromFar', {internal: true});
 addDoc('Asset', 'clearAnimations', {
+    internal: true,
     description: '',
     args: '',
     returnValue: '',
