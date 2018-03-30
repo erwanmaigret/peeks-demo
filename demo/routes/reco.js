@@ -74,7 +74,7 @@ router.get('/', function(req, res, next) {
     data.pages.push({ name: 'Mannequin', page: 'mannequin', url: '/mannequin' });
     data.pages.push({ name: 'Shoe', page: 'shoe', url: '/shoe' });
     //data.pages.push({ name: '2D Assets', page: '2D Assets' });
-    //data.pages.push({ name: '3D Assets' });
+    //data.pages.push({ name: 'peeks.demo.assets' });
 
     data.pages.push({ name: 'Face', page: 'face', url: '/face' });
 

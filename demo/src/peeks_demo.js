@@ -1,8 +1,8 @@
-PEEKS.registerPage('Demo', function() {
+PEEKS.registerPage('peeks.demo', function() {
 	var page = new PEEKS.Asset();
 
     page.addRecommendationsView();
 
-	page.addPage('peeks_toolbar');
+	page.addPage('peeks.toolbar');
 	return page;
 });

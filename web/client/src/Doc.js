@@ -33,7 +33,7 @@ addDoc('Node', 'addPage', {
         ['name', 'The string describing the name of the registered page to load'],
     ],
     returnValue: 'A new Page',
-    usage: 'asset.addPage("peeks_toolbar");',
+    usage: 'asset.addPage("peeks.toolbar");',
     example: '',
 });
 addDoc('Node', 'destroy', {

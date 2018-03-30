@@ -21,7 +21,3 @@ require("./pages/fashion.js");
 require("./pages/mannequin.js");
 require("./pages/shoe.js");
 require("./pages/movie.js");
-
-// Just for testing, should not be released:
-//require("./pages/sportrade.js");
-//require("./pages/tron.js");

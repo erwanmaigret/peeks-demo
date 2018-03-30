@@ -1,4 +1,4 @@
-PEEKS.registerPage('Movie', function() {
+PEEKS.registerPage('peeks.demo.movie', function() {
     var page = new PEEKS.Asset({
         category: 'entertainment',
         gyroscope: 'off',

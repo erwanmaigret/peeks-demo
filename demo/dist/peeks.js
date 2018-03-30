@@ -91,10 +91,6 @@ __webpack_require__(10);
 __webpack_require__(11);
 __webpack_require__(12);
 
-// Just for testing, should not be released:
-//require("./pages/sportrade.js");
-//require("./pages/tron.js");
-
 
 /***/ }),
 /* 1 */
@@ -1719,7 +1715,7 @@ function registerPage(name, ctor) {
 
             page.addExternalView(pageUrl);
 
-            page.addPage('peeks_toolbar');
+            page.addPage('peeks.toolbar');
 
             return page;
         });
@@ -2774,7 +2770,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
         loadHomePage: function() {
             analytics('event', 'scene.loadHomePage');
-            this.loadPage('Peeks');
+            this.loadPage('peeks.home');
 		},
 
         searchPage: function() {
@@ -3213,7 +3209,7 @@ if (global.PEEKS === undefined) {
 /* 2 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('peeks_toolbar', function() {
+PEEKS.registerPage('peeks.toolbar', function() {
     var page = new PEEKS.Asset();
 
     var canvas = page.addCanvas({
@@ -3285,12 +3281,12 @@ PEEKS.registerPage('peeks_toolbar', function() {
 /* 3 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('Demo', function() {
+PEEKS.registerPage('peeks.demo', function() {
 	var page = new PEEKS.Asset();
 
     page.addRecommendationsView();
 
-	page.addPage('peeks_toolbar');
+	page.addPage('peeks.toolbar');
 	return page;
 });
 
@@ -3299,7 +3295,7 @@ PEEKS.registerPage('Demo', function() {
 /* 4 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('Peeks', function() {
+PEEKS.registerPage('peeks.home', function() {
 	var page = new PEEKS.Asset();
 
     var canvas = page.addCanvas();
@@ -50611,12 +50607,12 @@ THREE.ShaderPeeks = {
 /* 8 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('3D Assets', function() {
+PEEKS.registerPage('peeks.demo.assets', function() {
     var page = new PEEKS.Asset({
         category: 'fashion',
     });
 
-    page.addPage('peeks_toolbar');
+    page.addPage('peeks.toolbar');
 
     page.addCurvedPanel({
         size: 5,
@@ -50674,7 +50670,7 @@ PEEKS.registerPage('3D Assets', function() {
 /* 9 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('2D Assets', function() {
+PEEKS.registerPage('peeks.demo.fashion', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
         category: 'fashion',
@@ -50765,7 +50761,7 @@ PEEKS.registerPage('2D Assets', function() {
         });
     }
 
-	page.addPage('peeks_toolbar');
+	page.addPage('peeks.toolbar');
 
 	return page;
 });
@@ -51249,7 +51245,7 @@ function createMannequin(page, position) {
     return femaleHigh;
 }
 
-PEEKS.registerPage('mannequin', function() {
+PEEKS.registerPage('peeks.demo.mannequin', function() {
     var page = new PEEKS.Asset({
         category: 'white',
         gyroscope: 'off',
@@ -51427,7 +51423,7 @@ function createAsset(page, position) {
     return femaleHigh;
 }
 
-PEEKS.registerPage('shoe', function() {
+PEEKS.registerPage('peeks.demo.shoe', function() {
     var page = new PEEKS.Asset({
         category: 'white',
         bgColor: [226/255, 220/255, 209/255],
@@ -51444,7 +51440,7 @@ PEEKS.registerPage('shoe', function() {
 /* 12 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('Movie', function() {
+PEEKS.registerPage('peeks.demo.movie', function() {
     var page = new PEEKS.Asset({
         category: 'entertainment',
         gyroscope: 'off',

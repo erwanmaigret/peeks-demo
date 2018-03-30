@@ -277,7 +277,7 @@ function faceAddARandomAsset(face, clear) {
     }
 }
 
-PEEKS.registerPage('Face', function(scene) {
+PEEKS.registerPage('peeks.demo.face', function(scene) {
 	var page = new PEEKS.Asset({
         backgroundImage: '',
         gyroscope: 'off',

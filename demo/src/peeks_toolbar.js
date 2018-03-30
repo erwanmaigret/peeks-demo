@@ -1,4 +1,4 @@
-PEEKS.registerPage('peeks_toolbar', function() {
+PEEKS.registerPage('peeks.toolbar', function() {
     var page = new PEEKS.Asset();
 
     var canvas = page.addCanvas({

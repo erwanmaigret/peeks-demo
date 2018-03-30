@@ -472,7 +472,7 @@ function createMannequin(page, position) {
     return femaleHigh;
 }
 
-PEEKS.registerPage('mannequin', function() {
+PEEKS.registerPage('peeks.demo.mannequin', function() {
     var page = new PEEKS.Asset({
         category: 'white',
         gyroscope: 'off',

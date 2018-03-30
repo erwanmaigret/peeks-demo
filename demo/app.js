@@ -26,10 +26,8 @@ app.use('/users', require('./routes/users'));
 app.use('/scrap', require('./routes/scrap'));
 app.use('/scrape', require('./routes/scrape'));
 app.use('/reco', require('./routes/reco'));
+
 app.use('/target', require('./routes/target'));
-app.use('/fortinet', require('./routes/fortinet'));
-app.use('/tron', require('./routes/tron'));
-app.use('/sportrade', require('./routes/sportrade'));
 app.use('/mannequin', require('./routes/mannequin'));
 app.use('/shoe', require('./routes/shoe'));
 app.use('/kirkwood', require('./routes/kirkwood'));
@@ -38,7 +36,6 @@ app.use('/louisvuitton', require('./routes/louisvuitton'));
 app.use('/frye', require('./routes/frye'));
 app.use('/movie', require('./routes/movie'));
 app.use('/wgtiootb', require('./routes/demo'));
-app.use('/greetings', require('./routes/greetings'));
 app.use('/face', require('./routes/face'));
 app.use('/widget', require('./routes/widget'));
 

@@ -1,4 +1,4 @@
-PEEKS.registerPage('tron', function() {
+PEEKS.registerPage('peeks.demo.tron', function() {
     var gridImage = '/images/floor_network.jpg';
     var gridRepeat = 200;
 

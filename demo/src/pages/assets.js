@@ -1,9 +1,9 @@
-PEEKS.registerPage('3D Assets', function() {
+PEEKS.registerPage('peeks.demo.assets', function() {
     var page = new PEEKS.Asset({
         category: 'fashion',
     });
 
-    page.addPage('peeks_toolbar');
+    page.addPage('peeks.toolbar');
 
     page.addCurvedPanel({
         size: 5,

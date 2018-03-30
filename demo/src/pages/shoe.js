@@ -160,7 +160,7 @@ function createAsset(page, position) {
     return femaleHigh;
 }
 
-PEEKS.registerPage('shoe', function() {
+PEEKS.registerPage('peeks.demo.shoe', function() {
     var page = new PEEKS.Asset({
         category: 'white',
         bgColor: [226/255, 220/255, 209/255],

@@ -1617,7 +1617,7 @@ function registerPage(name, ctor) {
 
             page.addExternalView(pageUrl);
 
-            page.addPage('peeks_toolbar');
+            page.addPage('peeks.toolbar');
 
             return page;
         });
@@ -2672,7 +2672,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
         loadHomePage: function() {
             analytics('event', 'scene.loadHomePage');
-            this.loadPage('Peeks');
+            this.loadPage('peeks.home');
 		},
 
         searchPage: function() {

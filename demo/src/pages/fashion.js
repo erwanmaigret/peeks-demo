@@ -1,4 +1,4 @@
-PEEKS.registerPage('2D Assets', function() {
+PEEKS.registerPage('peeks.demo.fashion', function() {
 	var page = new PEEKS.Asset({
         fontColor: [0, 0, 0],
         category: 'fashion',
@@ -89,7 +89,7 @@ PEEKS.registerPage('2D Assets', function() {
         });
     }
 
-	page.addPage('peeks_toolbar');
+	page.addPage('peeks.toolbar');
 
 	return page;
 });

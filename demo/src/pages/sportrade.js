@@ -1,4 +1,4 @@
-PEEKS.registerPage('sportrade', function() {
+PEEKS.registerPage('peeks.demo.sportrade', function() {
 	var page = new PEEKS.Asset({
         category: 'soccer',
         gyroscope: 'off',
@@ -163,8 +163,6 @@ PEEKS.registerPage('sportrade', function() {
     }
 
     refresh();
-
-    //page.addPage('peeks_toolbar');
 
 	return page;
 });
