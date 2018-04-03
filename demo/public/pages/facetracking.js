@@ -5,22 +5,8 @@ PEEKS.TrackerFace = function() {
 }
 
 PEEKS.TrackerFace.prototype.update = function(position, size) {
-    var time = (new Date()).getTime();
-    var weight = (this.lastUpdateTime === 0) ? 1 : ((5 * (time - this.lastUpdateTime) / 1000));
-    if (weight > 1) {
-        weight = 1;
-    }
-    this.position = [
-        this.position[0] * (1 - weight) + position[0] * weight,
-        this.position[1] * (1 - weight) + position[1] * weight,
-        this.position[2] * (1 - weight) + position[2] * weight
-    ];
-    this.size = [
-        this.size[0] * (1 - weight / 2) + size[0] * weight / 2,
-        this.size[1] * (1 - weight / 2) + size[1] * weight / 2,
-        this.size[2] * (1 - weight / 2) + size[2] * weight / 2
-    ];
-    this.lastUpdateTime = time;
+    this.position = position;
+    this.size = size;
 }
 
 PEEKS.Tracker = function(video, image) {
@@ -34,8 +20,6 @@ PEEKS.Tracker = function(video, image) {
             this.grayMat = new cv.Mat(image.height, image.width, cv.CV_8UC1);
             this.faceClassifier = new cv.CascadeClassifier();
             this.faceClassifier.load('haarcascade_frontalface_default.xml');
-            this.eyeClassifier = new cv.CascadeClassifier();
-            this.eyeClassifier.load('haarcascade_eye.xml');
         }
     }
 
@@ -124,49 +108,21 @@ PEEKS.registerPage('peeks.demo.facetracking', function(scene) {
         }
     };
 
-    var head;
-    var faces = [];
-    var canvas;
-
+    var canvas = page.addCanvas();
+    var face = canvas.addAsset();
+    face.addView({ alpha: .5 });
     if (scene) {
         scene.setArMode(true);
         var arView = scene.getArView();
         if (arView) {
-            var tracking = true;
-
             var video = scene.DOMarGetElement();
             if (video) {
                 PEEKS.addExtensionListener('cv', function(cv) {
                     page.onUpdate = function() {
-                        if (tracking) {
-                            var imageData = scene.getArImageData();
-                            if (this.updateTracker(video, imageData)) {
-                                var faceCount = this.tracker.trackedFaces.length;
-                                var faceAssetCount = faces.length;
-                                var faceI = 0;
-                                while (faceI < faceCount || faceI < faceAssetCount) {
-                                    if (faceI >= faceCount) {
-                                        faces[faceI].hide();
-                                    } else {
-                                        if (faceI >= faceAssetCount) {
-                                            faces.push(canvas.addAsset());
-                                            faces[faceI].addImage({
-                                                image: '/assets/asset_glasses_1.png',
-                                                position: [0, .15, 0],
-                                                size: .82,
-                                            });
-                                        } else {
-                                            if (this.tracker.trackedFaces[faceI].isHidden) {
-                                                faces[faceI].hide();
-                                            } else {
-                                                faces[faceI].show();
-                                            }
-                                        }
-                                        faces[faceI].setPosition(this.tracker.trackedFaces[faceI].position);
-                                        faces[faceI].setSize(this.tracker.trackedFaces[faceI].size);
-                                    }
-                                    faceI++;
-                                }
+                        if (this.updateTracker(video, scene.getArImageData())) {
+                            if (this.tracker.trackedFaces.length > 0) {
+                                face.setPosition(this.tracker.trackedFaces[0].position);
+                                face.setSize(this.tracker.trackedFaces[0].size);
                             }
                         }
                     };
@@ -175,7 +131,6 @@ PEEKS.registerPage('peeks.demo.facetracking', function(scene) {
         }
     };
 
-    canvas = page.addCanvas();
 
 	return page;
 });
