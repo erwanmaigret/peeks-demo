@@ -1652,8 +1652,8 @@ function start(domElement, page) {
 }
 
 function getAsset(name) {
-    return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
-    //return "https://dev.peeks.io/" + name;
+    //return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
+    return "https://dev.peeks.io/" + name;
 }
 
 window.dataLayer = window.dataLayer || [];
