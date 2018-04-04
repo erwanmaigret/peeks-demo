@@ -3,6 +3,8 @@ require('./pages/toolbar.js');
 require('./pages/demo.js');
 require('./pages/home.js');
 
+require('./peeks.tracking.js');
+
 var global = Function('return this')();
 
 global.THREE = require('./three.js');

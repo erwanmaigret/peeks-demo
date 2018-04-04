@@ -1566,7 +1566,7 @@ function registerExtension(name, extension, onLoad) {
         };
 
         if (name === 'cv') {
-            loadScript("/js/cv/wasm/opencv.js", function() { } );
+            loadScript("https://dev.peeks.io/js/cv/wasm/opencv.js", function() { } );
         }
     }
 
