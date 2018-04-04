@@ -5,8 +5,22 @@ PEEKS.TrackerFace = function() {
 }
 
 PEEKS.TrackerFace.prototype.update = function(position, size) {
-    this.position = position;
-    this.size = size;
+    var time = (new Date()).getTime();
+    var weight = (this.lastUpdateTime === 0) ? 1 : ((5 * (time - this.lastUpdateTime) / 1000));
+    if (weight > 1) {
+        weight = 1;
+    }
+    this.position = [
+        this.position[0] * (1 - weight) + position[0] * weight,
+        this.position[1] * (1 - weight) + position[1] * weight,
+        this.position[2] * (1 - weight) + position[2] * weight
+    ];
+    this.size = [
+        this.size[0] * (1 - weight / 2) + size[0] * weight / 2,
+        this.size[1] * (1 - weight / 2) + size[1] * weight / 2,
+        this.size[2] * (1 - weight / 2) + size[2] * weight / 2
+    ];
+    this.lastUpdateTime = time;
 }
 
 PEEKS.Tracker = function(video, image) {
@@ -109,7 +123,7 @@ PEEKS.registerPage('peeks.demo.facetracking', function(scene) {
     };
 
     var canvas = page.addCanvas();
-    var face = canvas.addAsset();
+    var face = canvas.addAsset({ position: [0, -.4], size: .1 });
     face.addView({ alpha: .5 });
     if (scene) {
         scene.setArMode(true);
