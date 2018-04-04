@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Face Tracking</title>
+        <link rel="stylesheet" href="http://dev.peeks.io/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="http://dev.peeks.io/peeks.js"></script>
+            <script src="http://dev.peeks.io/peeks.cv.js"></script>
+            <script src="http://dev.peeks.io/pages/face.js"></script>
+            <script>
+                PEEKS.registerPage('widget', function() {
+                    var page = new PEEKS.Asset({
+                        category: 'winter',
+                    });
+                    return page;
+                });
+
+                PEEKS.start(window, 'peeks.demo.face');
+            </script>
+        </section>
+    </body>
+</html>
