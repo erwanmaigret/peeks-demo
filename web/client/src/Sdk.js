@@ -105,11 +105,15 @@ class Examples extends React.Component {
             'face': {
                 title: 'Face Tracking.',
                 description:
-                    '<p>Add face tracking in <b>10 lines of code</b>!</p>'+
+                    "<span>"+
+                    '<p>Add face tracking in <b>50 lines of code</b>!</p>'+
                     '<p>Allow the user to see themselves inside of a viewer and attach any 3d assets to their face</p>' +
                     "<p>This can be used for creating fun experiences of virtually trying products on one's head.</p>" +
-                    "<p><a href='https://dev.peeks.io/pages/face.js' target='_blank'>See the code</a> <a href='https://dev.peeks.io/face' target='_blank'>Try it</a></p>"+
-                    "",
+                    '</span>'+
+                    "<table width='100%'><tr>" +
+                    "<td align='left'><a href='/examples/example-facetracking.js' target='_blank'>Javascript code</a></td>"+
+                    "<td align='right'><a href='/examples/example-facetracking.html' target='_blank'>Run</td>"+
+                    "</tr></table>",
                 image: 'examples/example-face.png',
             },
             'carVR': {
@@ -148,27 +152,47 @@ class Examples extends React.Component {
             'movies': {
                 title: 'Play movies.',
                 description:
-                    '<p>Integrate movie streams into your experience.</p>',
+                    "<span>"+
+                    '<p>Integrate movie streams into your 3D experience.</p>'+
+                    '</span>'+
+                    "<table width='100%'><tr>" +
+                    "<td align='left'><a href='/examples/example-movie.js' target='_blank'>Javascript code</a></td>"+
+                    "<td align='right'><a href='/examples/example-movie.html' target='_blank'>Run</td>"+
+                    "</tr></table>",
                 image: 'examples/example-movie.png',
             },
             'image360': {
                 title: '360 images.',
                 description:
-                    '<p>Easily create Virtual experiences using 360 images.</p>',
+                    "<span>"+
+                    '<p>Easily create Virtual experiences using 360 images.</p>'+
+                    '</span>'+
+                    "<table width='100%'><tr>" +
+                    "<td align='left'><a href='/examples/example-360.js' target='_blank'>Javascript code</a></td>"+
+                    "<td align='right'><a href='/examples/example-360.html' target='_blank'>Run</td>"+
+                    "</tr></table>",
                 image: 'examples/example-image360.png',
             },
         };
 
+        //{this.renderSection(elements['carVR'], true, 'sectionBlank')}
+        //{this.renderSection(elements['furtinureAR'], false, 'sectionBlank')}
+        //{this.renderSection(elements['scan3D'], true, 'sectionBlank')}
+        //{this.renderSection(elements['visitVR'], false, 'sectionBlank')}
+        //{this.renderSection(elements['objectDesigner'], true, 'sectionBlank')}
         return (
             <div>
-            {this.renderSection(elements['face'], false, 'sectionBlank')}
-            {this.renderSection(elements['carVR'], true, 'sectionBlank')}
-            {this.renderSection(elements['furtinureAR'], false, 'sectionBlank')}
-            {this.renderSection(elements['scan3D'], true, 'sectionBlank')}
-            {this.renderSection(elements['visitVR'], false, 'sectionBlank')}
-            {this.renderSection(elements['objectDesigner'], true, 'sectionBlank')}
-            {this.renderSection(elements['movies'], false, 'sectionBlank')}
-            {this.renderSection(elements['image360'], true, 'sectionBlank')}
+                <div className="sectionDocumentation">
+                    <div className="textTitle2">Examples</div>
+                    <div className="textDocumentation">
+                        <p>Forget aout the documentation. Learn by the example, it is much simpler!</p>
+                        <p>All the following snipets are as simple as possible so they can be quickly integrated into your code.</p>
+                    </div>
+                </div>
+
+                {this.renderSection(elements['face'], false, 'sectionBlank')}
+                {this.renderSection(elements['image360'], true, 'sectionBlank')}
+                {this.renderSection(elements['movies'], false, 'sectionBlank')}
             </div>
         );
     }
@@ -354,7 +378,7 @@ class Sdk extends React.Component {
                             {code.htmlOpen('script')}
                                 {code.var('src')}
                                 {code.body('=')}
-                                {code.string('http://dev.peeks.io/peeks.js')}
+                                {code.string('https://dev.peeks.io/peeks.js')}
                             {code.htmlClose(true)}
                             {code.html('script')}
                             <ul className="codeIndent">
@@ -417,7 +441,7 @@ class Sdk extends React.Component {
                                 {code.htmlOpen('script')}
                                     {code.var('src')}
                                     {code.body('=')}
-                                    {code.string('http://dev.peeks.io/peeks.js')}
+                                    {code.string('https://dev.peeks.io/peeks.js')}
                                 {code.htmlClose(true)}
                                 {code.html('script')}
                                 <ul className="codeIndent">

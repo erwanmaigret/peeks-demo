@@ -3,7 +3,7 @@
   background-image: url("/ui-menubar.svg");
   background-position: right top;
   background-repeat: no-repeat;
-  background-size: 220px auto;
+  background-size: 230px auto;
 }
 
 .logo {
@@ -33,7 +33,7 @@
 .menuItem {
     align: right;
     border-width: 0;
-    margin: 6px;
+    margin: 3px;
     font-size: 0.6em;
     color: #fff;
     background-color: #0000;
@@ -43,8 +43,8 @@
     align: right;
     border-radius: 20px;
     border-width: 0;
-    margin: 6px;
-    padding: 5px;
+    margin: 3px;
+    padding: 4px;
     font-weight: bold;
     font-size: 0.6em;
     color: #6100DF;

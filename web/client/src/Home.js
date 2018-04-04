@@ -4,7 +4,7 @@ class Home extends Component {
     renderExample(element) {
         if (element.image) {
             return (
-                <img src={element.image} alt="product1" height='400px'/>
+                <img src={element.image} alt="product1" width='300px'/>
             );
         } else {
             return (
