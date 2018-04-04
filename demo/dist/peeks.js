@@ -2734,9 +2734,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     } else if (category === 'soccer') {
                         backgroundFilename = getAsset('images/bg_360_soccer.jpg');
                     } else if (category === 'white') {
-                    } else if (category === '') {
-                    } else {
+                    } else if (category === 'canyon') {
                         backgroundFilename = getAsset('images/bg_360_canyon.jpg');
+                    } else if (category === '') {
                     }
                 }
                 if (backgroundFilename) {
@@ -3481,54 +3481,6 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
     return true;
 }
-
-PEEKS.registerPage('peeks.demo.facetracking', function(scene) {
-	var page = new PEEKS.Asset({
-        backgroundImage: '',
-        gyroscope: 'off',
-    });
-
-    page.initTracker = function(video, imageData) {
-        if (imageData && !page.tracker) {
-            page.tracker = new PEEKS.Tracker(video, imageData);
-        }
-
-        return page.tracker !== undefined;
-    };
-
-    page.updateTracker = function(video, imageData) {
-        this.initTracker(video, imageData);
-        if (this.tracker) {
-            return this.tracker.update(video, imageData);
-        }
-    };
-
-    var canvas = page.addCanvas();
-    var face = canvas.addAsset({ position: [0, -.4], size: .1 });
-    face.addView({ alpha: .5 });
-    if (scene) {
-        scene.setArMode(true);
-        var arView = scene.getArView();
-        if (arView) {
-            var video = scene.DOMarGetElement();
-            if (video) {
-                PEEKS.addExtensionListener('cv', function(cv) {
-                    page.onUpdate = function() {
-                        if (this.updateTracker(video, scene.getArImageData())) {
-                            if (this.tracker.trackedFaces.length > 0) {
-                                face.setPosition(this.tracker.trackedFaces[0].position);
-                                face.setSize(this.tracker.trackedFaces[0].size);
-                            }
-                        }
-                    };
-                });
-            }
-        }
-    };
-
-
-	return page;
-});
 
 
 /***/ }),

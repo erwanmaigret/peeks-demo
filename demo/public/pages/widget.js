@@ -1,5 +1,6 @@
 PEEKS.registerPage('widget', function() {
 	var page = new PEEKS.Asset({
+        category: 'canyon',
     });
 
 	return page;

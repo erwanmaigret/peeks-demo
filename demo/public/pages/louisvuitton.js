@@ -94,7 +94,7 @@ PEEKS.Screen.prototype.onLayout = function() {
                 fontColor: [0, 0, 0],
                 text: 'try on',
                 onClick: function() {
-                    page.getScene().loadPage('mannequin');
+                    page.getScene().loadPage('peeks.demo.mannequin');
                 }
             });
 

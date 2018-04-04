@@ -122,7 +122,7 @@ PEEKS.registerPage('frye', function() {
                 position: [0, -.25, .02],
                 size: [.45, .2, 1],
                 onClick: function() {
-                    page.getScene().loadPage('shoe');
+                    page.getScene().loadPage('peeks.demo.shoe');
                 }
             }).addText({
                 position: [0, 0, .02],

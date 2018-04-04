@@ -2641,9 +2641,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     } else if (category === 'soccer') {
                         backgroundFilename = getAsset('images/bg_360_soccer.jpg');
                     } else if (category === 'white') {
-                    } else if (category === '') {
-                    } else {
+                    } else if (category === 'canyon') {
                         backgroundFilename = getAsset('images/bg_360_canyon.jpg');
+                    } else if (category === '') {
                     }
                 }
                 if (backgroundFilename) {
