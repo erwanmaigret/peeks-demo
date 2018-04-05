@@ -116,6 +116,19 @@ class Examples extends React.Component {
                     "</tr></table>",
                 image: 'examples/example-face.png',
             },
+            'image-processing': {
+                title: 'Dynamic Image Processing.',
+                description:
+                    "<span>"+
+                    '<p>Dynamically change loaded images with super-simple pixel operations.</p>'+
+                    '<p>This is very useful when using external assets that you need to reference from your Peeks scene.</p>' +
+                    '</span>'+
+                    "<table width='100%'><tr>" +
+                    "<td align='left'><a href='/examples/example-image-processing.js' target='_blank'>Javascript code</a></td>"+
+                    "<td align='right'><a href='/examples/example-image-processing.html' target='_blank'>Run</td>"+
+                    "</tr></table>",
+                image: 'examples/example-image-processing.png',
+            },
             'carVR': {
                 title: 'Car VR.',
                 description:
@@ -193,6 +206,7 @@ class Examples extends React.Component {
                 {this.renderSection(elements['face'], false, 'sectionBlank')}
                 {this.renderSection(elements['image360'], true, 'sectionBlank')}
                 {this.renderSection(elements['movies'], false, 'sectionBlank')}
+                {this.renderSection(elements['image-processing'], true, 'sectionBlank')}
             </div>
         );
     }
