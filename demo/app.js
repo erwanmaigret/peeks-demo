@@ -40,6 +40,7 @@ app.use('/frye', require('./routes/frye'));
 app.use('/movie', require('./routes/movie'));
 app.use('/wgtiootb', require('./routes/demo'));
 app.use('/face', require('./routes/face'));
+app.use('/opencv', require('./routes/opencv'));
 app.use('/facetracking', require('./routes/facetracking'));
 app.use('/widget', require('./routes/widget'));
 

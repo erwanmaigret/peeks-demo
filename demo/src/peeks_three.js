@@ -1,7 +1,7 @@
 PEEKS.texturesCache = {
 };
 
-PEEKS.ThreeLoadTexture = function(material, textureUrl, textureRepeat, flipX, flipY,
+PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, flipX, flipY,
     removeBackground, useCache)
 {
 	if (textureUrl != '') {
@@ -22,6 +22,7 @@ PEEKS.ThreeLoadTexture = function(material, textureUrl, textureRepeat, flipX, fl
         //loader.setCrossOrigin('');
         var mat = material;
         var detour = removeBackground;
+        var loadingAsset = asset;
 		material.map = loader.load(textureUrl,
             function (texture) {
                 var width = texture.image.width;
@@ -75,6 +76,28 @@ PEEKS.ThreeLoadTexture = function(material, textureUrl, textureRepeat, flipX, fl
                                 mat.map = texture;
                             }
                         }
+                    }
+                }
+
+                if (loadingAsset && loadingAsset.onImageLoaded) {
+                    var texture = mat.map
+                    var width = texture.image.width;
+                    var height = texture.image.height;
+
+                    var canvas = document.createElement('canvas');
+                    var context = canvas.getContext('2d');
+                    canvas.width = width;
+                    canvas.height = height;
+                    context.clearRect(0, 0, width, height);
+                    context.drawImage(texture.image, 0, 0);
+
+                    var imgd = context.getImageData(0, 0, width, height);
+                    if (loadingAsset.onImageLoaded(imgd)) {
+                        context.putImageData(imgd, 0, 0);
+                        texture = new THREE.Texture(canvas);
+                        texture.needsUpdate = true;
+                        texture.premultiplyAlpha = true;
+                        mat.map = texture;
                     }
                 }
             },
@@ -720,7 +743,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
-                PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'), this.textureRepeat);
+                PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'), this.textureRepeat);
             } else if (this.primitive === PEEKS.Asset.PrimitiveCurvedPanel) {
                 var geometry = new THREE.SphereGeometry(1, 32, 32,
                     Math.PI * 1.45, Math.PI * .1,
@@ -733,7 +756,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
-                PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'), this.textureRepeat, true);
+                PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'), this.textureRepeat, true);
             } else if (this.primitive === PEEKS.Asset.PrimitiveDisc) {
                 var geometry = new THREE.CircleGeometry(.5, 32);
                 var material = new THREE.MeshBasicMaterial({
@@ -741,7 +764,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     transparent: true,
                     depthTest: isScreenSpace ? false : true,
                 });
-                PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'),
+                PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'),
                     this.textureRepeat,
                     false, false,
                     this.imageDetour
@@ -872,7 +895,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						});
 						backSide = new THREE.Mesh(geometry, material);
 						backSide.rotation.y = THREE.Math.degToRad(180);
-						PEEKS.ThreeLoadTexture(material, this.textureBackUrl,
+						PEEKS.ThreeLoadTexture(this, material, this.textureBackUrl,
                             this.textureRepeat,
                             false, false,
                             this.imageDetour
@@ -890,7 +913,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 					var plane = new THREE.Mesh(geometry, material);
 					this.threeObject = plane;
 
-                    PEEKS.ThreeLoadTexture(material, this.getAttr('textureUrl'),
+                    PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'),
                         this.textureRepeat,
                         false, false,
                         this.imageDetour
