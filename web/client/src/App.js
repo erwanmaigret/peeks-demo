@@ -202,7 +202,12 @@ class App extends Component {
         <br/>
         <p>Our VR technology is ultra easy to implement. Try it!</p>
         <a href="mailto:info@peeks.io"><p>Request Trial</p></a>
-        <br/><br/>
+        <br/>
+        <div>
+            <a href="https://www.facebook.com/peeks.io/" target="_blank" rel="noopener noreferrer"><img src="/icon_facebook.png" alt="facebook" width="25px"/></a>&nbsp;&nbsp;
+            <a href="https://twitter.com/PeeksIo" target="_blank" rel="noopener noreferrer"><img src="/icon_twitter.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
+            <a href="https://www.linkedin.com/company/peeks-technologies/" target="_blank" rel="noopener noreferrer"><img src="/icon_linkedin.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
+        </div>
         <p className="copyright">&copy; All rights reserved - Peeks Technologies 2018</p>
         </footer>
         </div>

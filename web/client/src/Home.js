@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Timeline } from 'react-twitter-widgets'
 
 class Home extends Component {
     renderExample(element) {
@@ -79,9 +80,28 @@ class Home extends Component {
 
         return (
             <div>
-            {this.renderSection(elements['intro'], false, 'sectionBlank')}
-            {this.renderSection(elements['browser'], true, 'sectionBlank')}
-            {this.renderSection(elements['headset'], false, 'sectionBlank')}
+                {this.renderSection(elements['intro'], false, 'sectionBlank')}
+                {this.renderSection(elements['browser'], true, 'sectionBlank')}
+                {this.renderSection(elements['headset'], false, 'sectionBlank')}
+                <table align="center" width="100%"><tbody>
+                    <tr>
+                    <td width="10%"></td>
+                    <td width="80%">
+                        <Timeline
+                            dataSource={{
+                            sourceType: 'profile',
+                            screenName: 'peeksio'
+                            }}
+                            options={{
+                            username: 'PeeksIo',
+                            height: '300'
+                            }}
+                        />
+                    </td>
+                    <td width="10%"></td>
+                    </tr>
+                    <tr></tr>
+                </tbody></table>
             </div>
         );
     }
