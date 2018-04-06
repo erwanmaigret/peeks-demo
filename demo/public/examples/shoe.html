@@ -13,73 +13,49 @@
         <section id="wrapper">
             <script src="http://dev.peeks.io/peeks.js"></script>
             <script>
-            PEEKS.registerPage('example', function() {
-                var page = new PEEKS.Asset({
-                    bgColor: [226/255, 220/255, 209/255],
-                    gyroscope: 'off',
-                });
+                PEEKS.registerPage('example', function() {
+                    var page = new PEEKS.Asset({
+                        bgColor: [226/255, 220/255, 209/255],
+                        gyroscope: 'off',
+                    });
 
-                var model = page.addAsset({
-                    position: [0, 0, -2],
-                    rotation: [0, -110, 0],
-                    onClick: 'animateRotate90',
-                    size: .03,
-                    onFocus: '',
-                });
+                    var model = page.addAsset({
+                        position: [0, 0, -2],
+                        rotation: [0, -110, 0],
+                        onClick: 'animateRotate90',
+                        size: .03,
+                        onFocus: '', // Disable default focus zoom-in effect
+                    });
 
-                model.mannequin = {
-                };
+                    var getGeometryUrl = function (part) {
+                        return "https://dev.peeks.io/assets/frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
+                    };
 
-                var mannequin = model.mannequin;
-
-                var poseDefault = "pose1";
-                var fabric = undefined;
-
-                var getGeometryUrl = function (part) {
-                    return "/assets/frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
-                };
-
-                var updateGeometry = function(node, mesh, properties) {
-                    if (node === undefined) {
-                        node = model.addMesh({
-                            geometry: getGeometryUrl(mesh, poseDefault),
+                    var addGeometry = function(mesh, properties) {
+                        var node = model.addMesh({
+                            geometry: getGeometryUrl(mesh),
                             position: [-20, -20, 20],
                         });
-                    }
-                    node.setProperties(properties);
-                    return node;
-                };
+                        node.setProperties(properties);
+                        return node;
+                    };
 
-
-                    mannequin.boot = updateGeometry(mannequin.boot, "", {
-                        texture: '/assets/frye_boot_diffuse.jpg',
+                    addGeometry("", {
+                        texture: 'https://dev.peeks.io/assets/frye_boot_diffuse.jpg',
                         material: {
                             emissive: [.1,.0,.0],
                             shininess: 2,
-                            map: '/assets/frye_boot_diffuse.jpg',
-                            bumpMap: '/assets/frye_boot_bump.jpg',
+                            bumpMap: 'https://dev.peeks.io//assets/frye_boot_bump.jpg',
                         },
                     });
-                    mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
-                        texture: '/assets/frye_boot_diffuse.jpg',
-                    });
-                    mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
-                        texture: '/assets/frye_boot_diffuse.jpg',
-                    });
-                    mannequin.boot_inside = updateGeometry(mannequin.boot_inside, "inside", {
-                        texture: '/assets/material_suede.jpg',
-                    });
-                    mannequin.boot_sole = updateGeometry(mannequin.boot_sole, "sole", {
-                        texture: '/assets/frye_sole.jpg',
-                    });
-                    mannequin.boot_sole_top = updateGeometry(mannequin.boot_sole_top, "sole_top", {
-                        texture: '/assets/frye_sole.jpg',
-                    });
+                    addGeometry("buckle", { texture: 'https://dev.peeks.io//assets/frye_boot_diffuse.jpg' });
+                    addGeometry("inside", { texture: 'https://dev.peeks.io//assets/material_suede.jpg' });
+                    addGeometry("sole", { texture: 'https://dev.peeks.io//assets/frye_sole.jpg' });
+                    addGeometry("sole_top", { texture: 'https://dev.peeks.io//assets/frye_sole.jpg' });
 
-            	return page;
-            });
+                	return page;
+                });
 
-                // Run that page into a canvas
                 PEEKS.start("peeksView", 'example');
             </script>
         </section>
