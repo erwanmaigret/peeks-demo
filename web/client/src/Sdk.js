@@ -102,6 +102,19 @@ class Examples extends React.Component {
 
     render() {
         const elements = {
+            '3d-model': {
+                title: '3d Product.',
+                description:
+                    "<span>"+
+                    '<p>Import 3d models</p>'+
+                    '<p>You can use standard material properties</p>' +
+                    '</span>'+
+                    "<table width='100%'><tr>" +
+                    "<td align='left'><a href='/widget_shoe.js' target='_blank'>Javascript code</a></td>"+
+                    "<td align='right'><a href='/examples/example-3d-model.html' target='_blank'>Run</td>"+
+                    "</tr></table>",
+                image: 'examples/example-3d-model.png',
+            },
             'face': {
                 title: 'Face Tracking.',
                 description:
@@ -202,7 +215,7 @@ class Examples extends React.Component {
                         <p>All the following snipets are as simple as possible so they can be quickly integrated into your code.</p>
                     </div>
                 </div>
-
+                {this.renderSection(elements['3d-model'], true, 'sectionBlank')}
                 {this.renderSection(elements['face'], false, 'sectionBlank')}
                 {this.renderSection(elements['image360'], true, 'sectionBlank')}
                 {this.renderSection(elements['movies'], false, 'sectionBlank')}
