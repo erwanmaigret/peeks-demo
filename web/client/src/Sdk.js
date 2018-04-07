@@ -211,7 +211,7 @@ class Examples extends React.Component {
                 <div className="sectionDocumentation">
                     <div className="textTitle2">Examples</div>
                     <div className="textDocumentation">
-                        <p>Forget aout the documentation. Learn by the example, it is much simpler!</p>
+                        <p>Forget about the documentation. Learn by the example, it is much simpler!</p>
                         <p>All the following snipets are as simple as possible so they can be quickly integrated into your code.</p>
                     </div>
                 </div>
@@ -230,7 +230,7 @@ class Sdk extends React.Component {
         super(props)
         let doc = window.PEEKS.generateDoc();
         this.state = {
-            menu: menuGettingStarted,
+            menu: menuExamples,
             doc: doc,
             currentClass: doc.rootClass,
         }
