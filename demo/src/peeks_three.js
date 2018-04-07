@@ -684,6 +684,8 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
                         material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
                         material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
+                        material.bumpScale = PEEKS.ThreeFloat(refMat.bumpScale, 1);
+                        console.log('there!!');
                         asset.getAttrColor('color', [1, 1, 1, 1]);
                         material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         material.side = THREE.FrontSide;
@@ -1128,13 +1130,13 @@ PEEKS.Scene.prototype.onStart = function() {
         console.log(a_scene);
         scene = a_scene.object3D;
     }
-	var ambient = new THREE.AmbientLight( 0x777777 );
+	var ambient = new THREE.AmbientLight( 0x333333 );
 	scene.add(ambient);
-	var directionalLight = new THREE.DirectionalLight( 0xdddddd );
-	directionalLight.position.set(1, 1, -1);
+	var directionalLight = new THREE.DirectionalLight( 0xEEEEEE );
+	directionalLight.position.set(1, 1, 1);
 	scene.add( directionalLight );
-    var directionalLight = new THREE.DirectionalLight( 0x888888 );
-	directionalLight.position.set(-1, -.5, 1);
+    var directionalLight = new THREE.DirectionalLight( 0xCCCCCC );
+	directionalLight.position.set(-1, .5, 1);
 	scene.add( directionalLight );
 
     var canvas = this.domElement;

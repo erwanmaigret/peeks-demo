@@ -6,12 +6,12 @@
     <body>
         <header>
         </header>
-        <h1 align="center">Shoe</h1>
+        <h1 align="center">Boot</h1>
         <table width="100%"><tr><td/><td align="center">
-            <canvas id="peeksView" width=400 height=400 style="border-radius:40px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"/>
+            <canvas id="peeksView" width=400 height=400 style="border-radius:10px; border:1px solid #333333; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"/>
         </td><td/></tr></table>
         <section id="wrapper">
-            <script src="http://dev.peeks.io/peeks.js"></script>
+            <script src="/peeks.js"></script>
             <script>
                 PEEKS.registerPage('example', function() {
                     var page = new PEEKS.Asset({
@@ -27,8 +27,11 @@
                         onFocus: '', // Disable default focus zoom-in effect
                     });
 
+                    var assetPath = "https://dev.peeks.io/assets/";
+                    assetPath = "/assets/";
+
                     var getGeometryUrl = function (part) {
-                        return "https://dev.peeks.io/assets/frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
+                        return assetPath + "frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
                     };
 
                     var addGeometry = function(mesh, properties) {
@@ -41,17 +44,20 @@
                     };
 
                     addGeometry("", {
-                        texture: 'https://dev.peeks.io/assets/frye_boot_diffuse.jpg',
+                        texture: assetPath + 'frye_boot_diffuse.jpg',
                         material: {
-                            emissive: [.1,.0,.0],
-                            shininess: 2,
-                            bumpMap: 'https://dev.peeks.io//assets/frye_boot_bump.jpg',
+                            reflectivity: .2,
+                            shininess: 15,
+                            emissive: [0,.0,.0],
+                            specular: [.1, .1, .1],
+                            bumpMap: assetPath + 'frye_boot_bump.jpg',
+                            bumpScale: .005,
                         },
                     });
-                    addGeometry("buckle", { texture: 'https://dev.peeks.io//assets/frye_boot_diffuse.jpg' });
-                    addGeometry("inside", { texture: 'https://dev.peeks.io//assets/material_suede.jpg' });
-                    addGeometry("sole", { texture: 'https://dev.peeks.io//assets/frye_sole.jpg' });
-                    addGeometry("sole_top", { texture: 'https://dev.peeks.io//assets/frye_sole.jpg' });
+
+                    addGeometry("buckle", { texture: assetPath + 'frye_boot_diffuse.jpg' });
+                    addGeometry("sole", { texture: assetPath + 'frye_sole.jpg' });
+                    addGeometry("sole_top", { texture: assetPath + 'frye_sole.jpg' });
 
                 	return page;
                 });
