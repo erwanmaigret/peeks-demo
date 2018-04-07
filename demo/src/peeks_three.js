@@ -685,7 +685,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
                         material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
                         material.bumpScale = PEEKS.ThreeFloat(refMat.bumpScale, 1);
-                        console.log('there!!');
                         asset.getAttrColor('color', [1, 1, 1, 1]);
                         material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         material.side = THREE.FrontSide;
