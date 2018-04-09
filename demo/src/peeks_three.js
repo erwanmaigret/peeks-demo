@@ -215,6 +215,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
         if (this === camera) {
             if (scene && scene.deviceOrientation !== undefined && scene.isGyroMode()) {
+                this.orientation = [alpha, beta, gamma, orient];
                 var alpha = scene.deviceOrientation.alpha;
                 var beta = scene.deviceOrientation.beta;
                 var gamma = scene.deviceOrientation.gamma;
@@ -461,32 +462,37 @@ PEEKS.Scene.prototype.onRender = function() {
 	var height = (this.height) ? this.height : 500;
 
     if (this.isVrMode()) {
+        var separatorWidth = 2;
+        var eyeSpacing = .06;
+        var eyeFocalDistance = .2;
+        var angle = Math.atan(eyeSpacing * .5 / eyeFocalDistance);
+        this.three.camera.aspect = ((width / 2) - separatorWidth) / height;
+        this.three.camera.updateProjectionMatrix();
         three.renderer.setScissorTest(true);
 
-        three.renderer.setViewport(width / 2, 0, width / 2, height);
-        three.renderer.setScissor(width / 2, 0, width / 2, height);
+        three.renderer.setViewport(0, 0, width / 2 - separatorWidth, height);
+        three.renderer.setScissor(0, 0, width / 2 - separatorWidth, height);
+        this.three.cameraPivot.position.x = eyeSpacing;
+        this.three.cameraPivot.rotation.y = angle;
+        three.renderer.render(three.scene, this.three.camera);
 
-        var width = (this.width) ? this.width : 500;
-        var height = (this.height) ? this.height : 500;
-        this.three.camera.aspect = (width / 2) / height;
-        this.three.camera.updateProjectionMatrix();
-
+        three.renderer.setViewport(width / 2 + separatorWidth, 0, width / 2 - separatorWidth, height);
+        three.renderer.setScissor(width / 2 + separatorWidth, 0, width / 2 - separatorWidth, height);
+        this.three.cameraPivot.position.x = -eyeSpacing;
+        this.three.cameraPivot.rotation.y = -angle;
         three.renderer.render(three.scene, three.camera);
 
-        three.renderer.setViewport(0, 0, width / 2, height);
-        three.renderer.setScissor(0, 0, width / 2, height);
+        this.three.cameraPivot.position.x = 0;
+        this.three.cameraPivot.rotation.y = 0;
+    }
 
-        three.renderer.render(three.scene, three.camera);
-    } else {
-        this.three.renderer.setViewport(0, 0, width, height);
-        this.three.renderer.setScissor(0, 0, width, height);
-        this.three.renderer.setScissorTest(false);
+    this.three.renderer.setViewport(0, 0, width, height);
+    this.three.renderer.setScissor(0, 0, width, height);
+    this.three.renderer.setScissorTest(false);
+    this.three.camera.aspect = width / height;
+    this.three.camera.updateProjectionMatrix();
 
-        var width = (this.width) ? this.width : 500;
-        var height = (this.height) ? this.height : 500;
-        this.three.camera.aspect = width / height;
-        this.three.camera.updateProjectionMatrix();
-
+    if (!this.isVrMode()) {
         this.three.renderer.render(this.three.scene, this.three.camera);
     }
 },
@@ -1159,32 +1165,20 @@ PEEKS.Scene.prototype.onStart = function() {
     renderer.setPixelRatio(window.devicePixelRatio);
 
     this.cameraAngle = 55;
-	var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
-    var a_camera = document.querySelector('a-camera')
-    if (a_camera) {
-        // Use A-Frame's scene instead
-        console.log(a_camera);
-        if (a_camera.object3D && a_camera.object3D.children[0]) {
-            var perspectiveCamera = a_camera.object3D.children[0]
-            if (perspectiveCamera.type === 'PerspectiveCamera') {
-                camera = perspectiveCamera;
-            }
-        }
-        //camera = a_camera.object3D;
-    }
+    var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
 
     this.three.scene = scene;
-	this.three.camera = camera;
+    this.three.camera = camera;
 	this.three.renderer = renderer;
 	this.domElement = this.three.renderer.domElement;
 
     // For camera debug and added pivot
     //var cameraHelper = new THREE.CameraHelper( camera );
     //scene.add( cameraHelper );
-    //var camPivot = new THREE.Object3D();
-    //scene.add(camPivot);
-    //camPivot.add(camera);
-    //camPivot.rotation.x = THREE.Math.degToRad(10);
+
+    this.three.cameraPivot = new THREE.Object3D();
+    scene.add(this.three.cameraPivot);
+    this.three.cameraPivot.add(camera);
 
     this.three.scene.add(this.threeGetNode());
 

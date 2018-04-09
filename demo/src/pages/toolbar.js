@@ -7,6 +7,10 @@ PEEKS.registerPage('peeks.toolbar', function() {
 
     var height = -.44;
 
+    /*
+    // These should be dynamic based on the navigation, and only apply
+    // when in a FullScreen mode
+    
     canvas.addRoundIconButton({
 		icon: '/ui/icon_previous.png',
 		position: [-.45, height],
@@ -20,39 +24,32 @@ PEEKS.registerPage('peeks.toolbar', function() {
 		size: .08,
 		onClick: 'loadNextPage',
 	});
+    */
 
-    canvas.addRoundTextButton({
-        position: [.45, height],
-		size: .08,
-        label: 'AR',
-        fontSize: 40,
-        onClick: function() { this.getScene().toggleArMode(); },
+    canvas.addButton({
+        image: '/ui/icon_vr.png',
+        position: [.45, -.45],
+        size: .08,
+        color: page.fontColorBold,
+        onClick: function() { peeks.toggleVrMode(); },
     });
 
-    if (PEEKS.isPhone()) {
+    /*
         canvas.addRoundIconButton({
-    		icon: '/ui/icon_gyroscope.png',
-    		position: [.35, height],
-    		size: .08,
-    		onClick: function() { this.getScene().toggleGyroscope(); },
-    	});
-    } else {
-        canvas.addRoundTextButton({
+            icon: '/ui/icon_gyroscope.png',
             position: [.35, height],
-    		size: .08,
-            label: 'VR',
-            fontSize: 40,
-            onClick: function() { this.getScene().toggleVrMode(); },
+            size: .08,
+            onClick: function() { this.getScene().toggleGyroscope(); },
         });
-    }
 
-    canvas.addTextButton({
-        position: [0, height],
-        fontSize: 40,
-        text: 'search',
-        size: .08,
-        onClick: 'searchPage',
-    })
+        canvas.addTextButton({
+            position: [0, height],
+            fontSize: 40,
+            text: 'search',
+            size: .08,
+            onClick: 'searchPage',
+        })
+    */
 
 	canvas.animate({
 		duration: 1,

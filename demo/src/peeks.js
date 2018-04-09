@@ -274,6 +274,12 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             return this.add(asset);
 		},
 
+        addOverlay: function (params) {
+			var asset = new PEEKS.Overlay();
+			this.applyParams(asset, params);
+            return this.add(asset);
+		},
+
         addScreen: function (params) {
 			var asset = new PEEKS.Screen();
 			this.applyParams(asset, params);
@@ -2854,9 +2860,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     }
 
                     if (scene.vrReticle === undefined) {
-                        scene.vrReticle = scene.addCanvas({
-                            // valign: 'bottom',
-                        });
+                        scene.vrReticle = scene.addCanvas({});
 
                         scene.vrReticle.vrFixed = true;
 
@@ -2899,6 +2903,17 @@ function Canvas() {
 Canvas.prototype = Object.assign(Object.create(Asset.prototype),
 	{
 		constructor: Canvas,
+	}
+);
+
+function Overlay() {
+	Asset.call(this);
+	this.name = "Overlay";
+	this.type = "Overlay";
+}
+Overlay.prototype = Object.assign(Object.create(Asset.prototype),
+	{
+		constructor: Overlay,
 	}
 );
 
@@ -3080,6 +3095,7 @@ exports.Scene = Scene;
 exports.Camera = Camera;
 exports.Canvas = Canvas;
 exports.Screen = Screen;
+exports.Overlay = Overlay;
 exports.Page = Page;
 exports.Plane = Plane;
 exports.Animation = Animation;
