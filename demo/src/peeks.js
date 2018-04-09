@@ -2528,7 +2528,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
         setVrMode: function(state) {
-            if (!this.isFullScreen) {
+            if (!this.isWidget) {
                 // Forbid VRMode when in a widget
                 state = false;
             }
@@ -2542,8 +2542,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			this.vrMode = state;
             if (this.vrMode) {
                 analytics('event', 'scene.setVrModeOn');
+                //this.requestFullScreen();
                 this.setArMode(false);
             } else {
+                //this.exitFullScreen();
                 analytics('event', 'scene.setVrModeOff');
             }
             this.gyroscope = this.vrMode;
@@ -2733,20 +2735,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			}
 		},
 
-        updateFullScreen: function () {
+        requestFullScreen: function () {
             var document = this.getDocument();
 			if (document) {
-                if (document.fullscreenEnabled ||
-                    document.webkitFullscreenEnabled ||
-                    document.mozFullScreenEnabled ||
-                    document.msFullscreenEnabled)
-                {
+                if (document.fullscreenEnabled || document.webkitFullscreenEnabled || document.mozFullScreenEnabled || document.msFullscreenEnabled) {
                     if (this.isVrMode()) {
-                        if (document.fullscreenElement ||
-                            document.webkitFullscreenElement ||
-                            document.mozFullscreenElement ||
-                            document.msFullscreenElement
-                        ) {
+                        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
                         } else {
                             if (this.domElement.requestFullscreen) {
                                 this.domElement.requestFullscreen();
@@ -2758,12 +2752,17 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                                 this.domElement.msRequestFullscreen();
                             }
                         }
-                    } else {
-                        if (document.fullscreenElement ||
-                            document.webkitFullscreenElement ||
-                            document.mozFullscreenElement ||
-                            document.msFullscreenElement
-                        ) {
+                    }
+                }
+            }
+        },
+
+        exitFullScreen: function () {
+            var document = this.getDocument();
+			if (document) {
+                if (document.fullscreenEnabled || document.webkitFullscreenEnabled || document.mozFullScreenEnabled || document.msFullscreenEnabled) {
+                    if (!this.isVrMode()) {
+                        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
                             if (document.exitFullscreen) {
                                 document.exitFullscreen();
                             } else if (document.webkitExitFullscreen) {
@@ -2818,7 +2817,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             if (domElement === undefined) {
                 logDebug('Creating default canvas element');
                 domElement = document.createElement('canvas');
-                this.isFullScreen = true;
+                this.isWidget = true;
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
                 document.body.appendChild(domElement);
@@ -2827,7 +2826,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.height = domElement.height;
             }
 
-            this.setVrMode(this.isPhone)
+            this.setVrMode(this.isPhone);
 
             this.domElement = domElement;
 
@@ -2835,7 +2834,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 			this.onStart();
 
-			if (this.isFullScreen) {
+			if (this.isWidget) {
                 document.addEventListener('keydown', function(event) { scene.onKeyDown(event); } );
                 document.addEventListener('keyup', function(event) { scene.onKeyUp(event); } );
             }
@@ -2856,7 +2855,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			var animate = function () {
 				requestAnimationFrame(animate);
 
-                if (scene.isFullScreen) {
+                if (scene.isWidget) {
                     scene.onResize(scene.window.innerWidth, scene.window.innerHeight);
                 } else {
                     scene.onResize(scene.domElement.width / window.devicePixelRatio, scene.domElement.height / window.devicePixelRatio);
