@@ -1541,11 +1541,16 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 			});
 		},
 
-        animateFocusStart: function() {
+        animateFocusStart: function(size) {
+            if (size === undefined) {
+                size = 1.05;
+            } else {
+                size = 1 + size;
+            }
             this.animate({
 				duration: .3,
                 begin: [1, 1, 1],
-                end: [1.05, 1.05, 1.05],
+                end: [size, size, size],
 				attribute: 'size'
 			});
             this.animate({
@@ -1556,12 +1561,17 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 			});
 		},
 
-        animateFocusEnd: function() {
+        animateFocusEnd: function(size) {
+            if (size === undefined) {
+                size = 1 / 1.05;
+            } else {
+                size = 1 / (1 + size);
+            }
             this.animate({
 				duration: .3,
                 begin: [1, 1, 1],
-                end: [1 / 1.05, 1 / 1.05, 1 / 1.05],
-				attribute: 'size'
+                end: [size, size, size],
+                attribute: 'size'
 			});
             this.animate({
 				duration: .3,
@@ -2947,22 +2957,36 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
                 // Update global UI components
                 if (scene.isVrMode()) {
-                    if (scene.vrReticle !== undefined) {
-                        scene.vrReticle.destroy();
-                        delete scene.vrReticle;
-                    }
-
                     if (scene.vrReticle === undefined) {
                         scene.vrReticle = scene.addCanvas({});
 
                         scene.vrReticle.vrFixed = true;
 
-                        scene.vrReticle.addRing({ viewBgColor: [1, 1, 1], size: .025 });
-                        scene.vrReticle.addRing({ viewBgColor: [.3, .3, .3], size: .02 });
+                        scene.vrReticle.highlight = false;
+                        scene.vrReticle.ring =
+                            scene.vrReticle.addRing({ viewBgColor: [.8, .8, .8], size: .0125 });
+                        scene.vrReticle.ring2 =
+                            scene.vrReticle.addRing({ viewBgColor: [.3, .3, .3], size: .01 });
                     }
 
                     // Update focus all the time when in VR mode
                     scene.onFocusChange();
+
+                    if (scene.assetOver) {
+                        if (!scene.vrReticle.highlight) {
+                            scene.vrReticle.ring.viewBgColor = [.9, .9, .7];
+                            scene.vrReticle.ring2.viewBgColor = [.4, .4, .2];
+                            scene.vrReticle.highlight = true;
+                            scene.vrReticle.animateFocusStart(.4);
+                        }
+                    } else {
+                        if (scene.vrReticle.highlight) {
+                            scene.vrReticle.ring.viewBgColor = [.8, .8, .8];
+                            scene.vrReticle.ring2.viewBgColor = [.3, .3, .3];
+                            scene.vrReticle.highlight = false;
+                            scene.vrReticle.animateFocusEnd(.4);
+                        }
+                    }
                 } else if (scene.vrReticle) {
                     scene.vrReticle.destroy();
                     delete scene.vrReticle;
