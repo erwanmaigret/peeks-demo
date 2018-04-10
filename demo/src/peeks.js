@@ -3,40 +3,6 @@ function setAnimationSpeed(speed) {
 	animationSpeed = speed;
 };
 
-// General logging, 2 == info, 3 == warning, 4 == error
-var logLevel = 2;
-function setLogLevel(level) {
-	logLevel = level;
-};
-function logVerboseOk() {
-    return logLevel <= 0;
-}
-function logVerbose(message) {
-	if (logVerboseOk()) {
-		console.log("Peeks (verbose): " + message);
-	}
-};
-function logDebug(message) {
-	if (logLevel <= 1) {
-		console.log("Peeks (debug): " + message);
-	}
-};
-function logInfo(message) {
-	if (logLevel <= 2) {
-		console.log("Peeks (info): " + message);
-	}
-};
-function logWarning(message) {
-	if (logLevel <= 3) {
-		console.log("Peeks (warning): " + message);
-	}
-};
-function logError(message) {
-	if (logLevel <= 4) {
-		console.log("Peeks (error): " + message);
-	}
-};
-
 var startTime = Date.now();
 
 var utils = {};
@@ -237,12 +203,12 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 			return node;
 		},
 
-		addPage: function (name) {
-			var page = PEEKS.navigateToPage(name);
+		addPage: function (name, scene) {
+			var page = PEEKS.navigateToPage(name, scene);
 			if (page) {
 				this.add(page);
 			} else {
-				logDebug('Can not add missing page ' + name);
+				this.logDebug('Can not add missing page ' + name);
 			}
 			return page;
 		},
@@ -718,7 +684,6 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                     if (data && data.pages) {
                         var openPage = function() {
                             if (this.page) {
-                                console.log(this.page);
                                 if (this.page.url) {
                                     var win = window.open(this.page.url, '_blank');
                                     win.focus();
@@ -951,22 +916,6 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                 anim.update(this.time);
             }
             return this;
-		},
-
-		verbose: function(message) {
-			logVerbose(message);
-		},
-		debug: function(message) {
-			logDebug(message);
-		},
-		info: function(message) {
-			logInfo(message);
-		},
-		warn: function(message) {
-			logWarning(message);
-		},
-		error: function(message) {
-			logError(message);
 		},
 	}
 );
@@ -1220,25 +1169,10 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 				texture.canvas.width = canvasWidth;
 				texture.canvas.height = canvasHeight;
                 texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
-                var yOffset = (canvasHeight - height) / 2 + (height / 2);
-                var xOffset;
-                switch (this.textAlign) {
-                    case 'left': {
-                        xOffset = 0;
-                        break;
-                    }
-                    case 'right': {
-                        xOffset = canvasWidth - width;
-                        break;
-                    }
-                    default: {
-                        xOffset = (canvasWidth - width) / 2;
-                        break;
-                    }
-                }
+
                 // Force it to be centered and let the caller adjust position if needed
-                xOffset = (canvasWidth - width) / 2;
-                yOffset = canvasHeight / 2;
+                var xOffset = (canvasWidth - width) / 2;
+                var yOffset = canvasHeight / 2;
 
                 var bgColor = this.getAttrRgba('fontBgColor');
                 texture.context.fillStyle = 'rgba(' +
@@ -1686,13 +1620,13 @@ function navigateToPage(name, scene) {
 		page.name = name;
 
         if (page.onLoad) {
-            logDebug('Calling onLoad on page ' + name);
+            this.logDebug('Calling onLoad on page ' + name);
             page.onLoad(scene);
         }
 
 		return page;
 	} else {
-		logError("Can't load unregistered page " + name);
+		this.logError("Can't load unregistered page " + name);
 	}
 }
 
@@ -1713,6 +1647,7 @@ function Scene() {
     this.ground = this.add(new PEEKS.Asset());
     this.background = this.add(new PEEKS.Asset());
     this.arAsset = this.add(new PEEKS.Asset());
+    this.logLevel = 2;
 
     var userAgent = navigator.userAgent.toLowerCase();
     this.isPhone =
@@ -1789,7 +1724,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onPickNode: function(mouse) {
             analytics('event', 'scene.onPickNode');
-			logDebug('onPickNode');
+			this.logDebug('onPickNode');
 		},
 
         computeOffsetFromCamera: function(offset) {
@@ -1908,7 +1843,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
 		onMouseDown: function (event) {
-			logVerbose('onMouseDown');
+			this.logVerbose('onMouseDown');
             event.preventDefault();
 
 			this.mouseDown = this.getMouse(event);
@@ -1925,7 +1860,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onMouseUp: function (event) {
 			if (this.mouseDown) {
-                logVerbose('onMouseUp');
+                this.logVerbose('onMouseUp');
                 event.preventDefault();
 				if (this.mouseDownCanClick) {
 					this.mouseUp = this.getMouse(event);
@@ -1962,7 +1897,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			var asset = this.onPickNode(mouse);
 			if (asset) {
                 analytics('event', 'scene.onClick');
-    			logDebug('onClick' + (asset.name ? (' on ' + asset.name) : ''));
+    			this.logDebug('onClick' + (asset.name ? (' on ' + asset.name) : ''));
 
 				if (asset.onClick) {
 					//asset[`animateClick`]();
@@ -1987,7 +1922,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onKeyDown: function (event) {
             analytics('event', 'scene.onKeyDown');
-            logDebug('onKeyDown');
+            this.logDebug('onKeyDown');
 
 			event.preventDefault();
 
@@ -2057,12 +1992,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onKeyUp: function (event) {
             analytics('event', 'scene.onKeyUp');
-			logDebug('onKeyUp');
+			this.logDebug('onKeyUp');
             event.preventDefault();
 		},
 
 		onMouseWheel: function (event) {
-            logDebug('onMouseWheel');
+            this.logDebug('onMouseWheel');
 			event.preventDefault();
             var position = this.camera.position;
             var offset = this.onGetCameraTranslation([0, 0, event.deltaY * .01]);
@@ -2560,11 +2495,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 }
 				if (pages[name]) {
 					if (this.page) {
-						logError("Unloading current page");
+						this.logError("Unloading current page");
 						this.page.destroy();
 					}
                     analytics('event', 'scene.loadPage', {'name': name} );
-					logDebug("Loading " + name);
+					this.logDebug("Loading " + name);
 					var page = navigateToPage(name, this);
 					this.add(page);
 					this.page = page;
@@ -2575,14 +2510,14 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 						this.pagesHistory[this.pageIndex] = name;
 					}
 				} else {
-					logError("Can't load unregistered page " + name);
+					this.logError("Can't load unregistered page " + name);
 				}
 			} else {
 				var pageIndex = page;
 				if (pageIndex >= 0 && pageIndex < this.pagesHistory.length) {
 					var name = this.pagesHistory[pageIndex];
 					if (this.page) {
-						logError("Unloading current page");
+						this.logError("Unloading current page");
 						this.page.destroy();
 					}
 					var page = navigateToPage(name, this);
@@ -2778,7 +2713,49 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
         },
 
-		start: function (domElement, page) {
+        onLog: function(level, message) {
+        },
+
+        setLogLevel: function(level) {
+        	this.logLevel = level;
+        },
+
+        logVerbose: function(message) {
+        	if (this.logLevel <= 0) {
+        		console.log("Peeks (verbose): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logDebug: function(message) {
+        	if (this.logLevel <= 1) {
+        		console.log("Peeks (debug): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logInfo: function(message) {
+        	if (this.logLevel <= 2) {
+        		console.log("Peeks (info): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logWarning: function(message) {
+        	if (this.logLevel <= 3) {
+        		console.log("Peeks (warning): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logError: function(message) {
+        	if (this.logLevel <= 4) {
+        		console.log("Peeks (error): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        start: function (domElement, page) {
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
             }
@@ -2788,16 +2765,17 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             {
                 // This is all good actually
             } else {
-                logDebug("Invalid element passed to the peeks scene. Expecting a canvas");
+                this.logDebug("Invalid element passed to the peeks scene. Expecting a canvas");
                 domElement = undefined;
             }
 
             var url = document.URL;
-            if (url.search('127.0.0.1') != -1) {
+            var debugMode = (url.search('192.') != -1);
+            if (debugMode || url.search('127.0.0.1') != -1) {
                 doAnalytics = false;
-                PEEKS.setLogLevel(1);
+                this.setLogLevel(1);
             } else {
-                PEEKS.setLogLevel(3);
+                this.setLogLevel(3);
             }
 
             analytics('js', new Date());
@@ -2808,14 +2786,18 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             page = page || document.title;
             this.loadPage(page);
 
+            if (debugMode) {
+                this.page.addPage('peeks.debug', this);
+            }
+
             analytics('event', 'scene.start');
-            logDebug('Scene.start');
+            this.logDebug('Scene.start');
 
 			this.resetCamera();
 			this.window = window;
 
             if (domElement === undefined) {
-                logDebug('Creating default canvas element');
+                this.logDebug('Creating default full-screen canvas');
                 domElement = document.createElement('canvas');
                 this.isWidget = true;
                 this.width = this.window.innerWidth;
@@ -3094,13 +3076,6 @@ Animation.prototype = Object.assign(Object.create( Asset.prototype ),
 						this.parent[this.attribute][2] += p[2];
 					}
 				}
-                if (this.parent.name && t > 0 && t < 1) {
-                    if (logVerboseOk()) {
-                        logVerbose('Animation update at ' + t.toString() +
-                            ': ' + this.parent.name + '[' + this.attribute +
-                            '] = ' + this.parent[this.attribute].toString());
-                    }
-                }
 			}
 
             if (t >= 1 && !this.loop && !this.ended) {
@@ -3123,12 +3098,6 @@ exports.Page = Page;
 exports.Plane = Plane;
 exports.Animation = Animation;
 
-exports.setLogLevel = setLogLevel;
-exports.logLevel = logLevel;
-exports.logDebug = logDebug;
-exports.logInfo = logInfo;
-exports.logWarning = logWarning;
-exports.logError = logError;
 exports.registerPage = registerPage;
 exports.loadScript = loadScript;
 exports.start = start;

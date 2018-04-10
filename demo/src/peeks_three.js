@@ -28,10 +28,6 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
                 var width = texture.image.width;
                 var height = texture.image.height;
                 if (width !== 0 && height !== 0) {
-                    //console.log('Loaded texture ' + textureUrl + ' ' +
-                    //    width.toString() + 'x' + height.toString());
-
-                    //detour = false;
                     if (detour) {
                         var canvas = document.createElement('canvas');
         				var context = canvas.getContext('2d');
@@ -102,10 +98,8 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
                 }
             },
             function (xhr) {
-                // console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
             },
             function (xhr) {
-                // console.log( 'An error happened' );
             }
         );
 
@@ -512,7 +506,6 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
                 var vtxRef = mesh.geometry.positionInitial;
                 for (var shapeName in asset.shapes) {
                     if (asset.shapes.hasOwnProperty(shapeName)) {
-                        //console.log("synching " + this.name + " -> " + shape);
                         var shape = asset.shapes[shapeName];
                         var weight = shape.weightEval;
                         if (weight !== 0 &&
@@ -795,7 +788,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
                 var manager = new THREE.LoadingManager();
                     manager.onProgress = function ( item, loaded, total ) {
-                    // console.log( item, loaded, total );
                 };
 
                 var onProgress = function (xhr) {
@@ -885,6 +877,27 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             var yOffset = (textTexture.relativeTop - textTexture.relativeBot) / 2;
                             yOffset = yOffset / textTexture.size[1];
                             plane.position.y = plane.scale.y * yOffset;
+
+                            switch (this.textAlign) {
+                                case 'left': {
+                                    if (textTexture.size[0] > 0) {
+                                        plane.position.x = ((textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x - 1) / 2;
+                                        console.log(plane.position.x);
+                                        console.log(plane.scale.x);
+                                        console.log(scale[0]);
+                                    }
+                                    break;
+                                }
+                                case 'right': {
+                                    if (textTexture.size[0] > 0) {
+                                        plane.position.x = -(textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x / 2;
+                                    }
+                                    break;
+                                }
+                                default: {
+                                    break;
+                                }
+                            }
                         }
 					}
                 } else {
@@ -1112,13 +1125,11 @@ PEEKS.Scene.prototype.onResize = function(width, height) {
         if (width === this.width && height === this.height) {
             return;
         }
-        //console.log('Resizing Canvas from ' + this.width.toString() + 'x' + this.height.toString() + ' to ' + width.toString() + 'x' + height.toString());
         this.width = width;
         this.height = height;
     } else {
         width = (this.width) ? this.width : 500;
     	height = (this.height) ? this.height : 500;
-        //console.log('Setting initial size to ' + this.width.toString() + 'x' + this.height.toString());
     }
     this.three.camera.aspect = width / height;
     this.three.camera.updateProjectionMatrix();
@@ -1131,7 +1142,6 @@ PEEKS.Scene.prototype.onStart = function() {
     var a_scene = document.querySelector('a-scene')
     if (a_scene) {
         // Use A-Frame's scene instead
-        console.log(a_scene);
         scene = a_scene.object3D;
     }
 	var ambient = new THREE.AmbientLight( 0x333333 );

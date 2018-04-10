@@ -1,5 +1,6 @@
 require('./peeks.js');
 require('./pages/toolbar.js');
+require('./pages/debug.js');
 require('./pages/demo.js');
 require('./pages/home.js');
 

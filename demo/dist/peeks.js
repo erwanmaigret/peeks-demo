@@ -71,20 +71,21 @@ __webpack_require__(1);
 __webpack_require__(2);
 __webpack_require__(3);
 __webpack_require__(4);
-
 __webpack_require__(5);
+
+__webpack_require__(6);
 
 var global = Function('return this')();
 
-global.THREE = __webpack_require__(6);
-__webpack_require__(7);
+global.THREE = __webpack_require__(7);
 __webpack_require__(8);
-
 __webpack_require__(9);
+
 __webpack_require__(10);
 __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
+__webpack_require__(14);
 
 
 /***/ }),
@@ -94,40 +95,6 @@ __webpack_require__(13);
 var animationSpeed = 1;
 function setAnimationSpeed(speed) {
 	animationSpeed = speed;
-};
-
-// General logging, 2 == info, 3 == warning, 4 == error
-var logLevel = 2;
-function setLogLevel(level) {
-	logLevel = level;
-};
-function logVerboseOk() {
-    return logLevel <= 0;
-}
-function logVerbose(message) {
-	if (logVerboseOk()) {
-		console.log("Peeks (verbose): " + message);
-	}
-};
-function logDebug(message) {
-	if (logLevel <= 1) {
-		console.log("Peeks (debug): " + message);
-	}
-};
-function logInfo(message) {
-	if (logLevel <= 2) {
-		console.log("Peeks (info): " + message);
-	}
-};
-function logWarning(message) {
-	if (logLevel <= 3) {
-		console.log("Peeks (warning): " + message);
-	}
-};
-function logError(message) {
-	if (logLevel <= 4) {
-		console.log("Peeks (error): " + message);
-	}
 };
 
 var startTime = Date.now();
@@ -330,12 +297,12 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 			return node;
 		},
 
-		addPage: function (name) {
-			var page = PEEKS.navigateToPage(name);
+		addPage: function (name, scene) {
+			var page = PEEKS.navigateToPage(name, scene);
 			if (page) {
 				this.add(page);
 			} else {
-				logDebug('Can not add missing page ' + name);
+				this.logDebug('Can not add missing page ' + name);
 			}
 			return page;
 		},
@@ -811,7 +778,6 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                     if (data && data.pages) {
                         var openPage = function() {
                             if (this.page) {
-                                console.log(this.page);
                                 if (this.page.url) {
                                     var win = window.open(this.page.url, '_blank');
                                     win.focus();
@@ -1044,22 +1010,6 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
                 anim.update(this.time);
             }
             return this;
-		},
-
-		verbose: function(message) {
-			logVerbose(message);
-		},
-		debug: function(message) {
-			logDebug(message);
-		},
-		info: function(message) {
-			logInfo(message);
-		},
-		warn: function(message) {
-			logWarning(message);
-		},
-		error: function(message) {
-			logError(message);
 		},
 	}
 );
@@ -1313,25 +1263,10 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 				texture.canvas.width = canvasWidth;
 				texture.canvas.height = canvasHeight;
                 texture.context.clearRect(0, 0, canvasWidth, canvasHeight);
-                var yOffset = (canvasHeight - height) / 2 + (height / 2);
-                var xOffset;
-                switch (this.textAlign) {
-                    case 'left': {
-                        xOffset = 0;
-                        break;
-                    }
-                    case 'right': {
-                        xOffset = canvasWidth - width;
-                        break;
-                    }
-                    default: {
-                        xOffset = (canvasWidth - width) / 2;
-                        break;
-                    }
-                }
+
                 // Force it to be centered and let the caller adjust position if needed
-                xOffset = (canvasWidth - width) / 2;
-                yOffset = canvasHeight / 2;
+                var xOffset = (canvasWidth - width) / 2;
+                var yOffset = canvasHeight / 2;
 
                 var bgColor = this.getAttrRgba('fontBgColor');
                 texture.context.fillStyle = 'rgba(' +
@@ -1779,13 +1714,13 @@ function navigateToPage(name, scene) {
 		page.name = name;
 
         if (page.onLoad) {
-            logDebug('Calling onLoad on page ' + name);
+            this.logDebug('Calling onLoad on page ' + name);
             page.onLoad(scene);
         }
 
 		return page;
 	} else {
-		logError("Can't load unregistered page " + name);
+		this.logError("Can't load unregistered page " + name);
 	}
 }
 
@@ -1806,6 +1741,7 @@ function Scene() {
     this.ground = this.add(new PEEKS.Asset());
     this.background = this.add(new PEEKS.Asset());
     this.arAsset = this.add(new PEEKS.Asset());
+    this.logLevel = 2;
 
     var userAgent = navigator.userAgent.toLowerCase();
     this.isPhone =
@@ -1882,7 +1818,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onPickNode: function(mouse) {
             analytics('event', 'scene.onPickNode');
-			logDebug('onPickNode');
+			this.logDebug('onPickNode');
 		},
 
         computeOffsetFromCamera: function(offset) {
@@ -2001,7 +1937,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
 		onMouseDown: function (event) {
-			logVerbose('onMouseDown');
+			this.logVerbose('onMouseDown');
             event.preventDefault();
 
 			this.mouseDown = this.getMouse(event);
@@ -2018,7 +1954,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onMouseUp: function (event) {
 			if (this.mouseDown) {
-                logVerbose('onMouseUp');
+                this.logVerbose('onMouseUp');
                 event.preventDefault();
 				if (this.mouseDownCanClick) {
 					this.mouseUp = this.getMouse(event);
@@ -2055,7 +1991,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			var asset = this.onPickNode(mouse);
 			if (asset) {
                 analytics('event', 'scene.onClick');
-    			logDebug('onClick' + (asset.name ? (' on ' + asset.name) : ''));
+    			this.logDebug('onClick' + (asset.name ? (' on ' + asset.name) : ''));
 
 				if (asset.onClick) {
 					//asset[`animateClick`]();
@@ -2080,7 +2016,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onKeyDown: function (event) {
             analytics('event', 'scene.onKeyDown');
-            logDebug('onKeyDown');
+            this.logDebug('onKeyDown');
 
 			event.preventDefault();
 
@@ -2150,12 +2086,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 		onKeyUp: function (event) {
             analytics('event', 'scene.onKeyUp');
-			logDebug('onKeyUp');
+			this.logDebug('onKeyUp');
             event.preventDefault();
 		},
 
 		onMouseWheel: function (event) {
-            logDebug('onMouseWheel');
+            this.logDebug('onMouseWheel');
 			event.preventDefault();
             var position = this.camera.position;
             var offset = this.onGetCameraTranslation([0, 0, event.deltaY * .01]);
@@ -2653,11 +2589,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 }
 				if (pages[name]) {
 					if (this.page) {
-						logError("Unloading current page");
+						this.logError("Unloading current page");
 						this.page.destroy();
 					}
                     analytics('event', 'scene.loadPage', {'name': name} );
-					logDebug("Loading " + name);
+					this.logDebug("Loading " + name);
 					var page = navigateToPage(name, this);
 					this.add(page);
 					this.page = page;
@@ -2668,14 +2604,14 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 						this.pagesHistory[this.pageIndex] = name;
 					}
 				} else {
-					logError("Can't load unregistered page " + name);
+					this.logError("Can't load unregistered page " + name);
 				}
 			} else {
 				var pageIndex = page;
 				if (pageIndex >= 0 && pageIndex < this.pagesHistory.length) {
 					var name = this.pagesHistory[pageIndex];
 					if (this.page) {
-						logError("Unloading current page");
+						this.logError("Unloading current page");
 						this.page.destroy();
 					}
 					var page = navigateToPage(name, this);
@@ -2871,7 +2807,49 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
         },
 
-		start: function (domElement, page) {
+        onLog: function(level, message) {
+        },
+
+        setLogLevel: function(level) {
+        	this.logLevel = level;
+        },
+
+        logVerbose: function(message) {
+        	if (this.logLevel <= 0) {
+        		console.log("Peeks (verbose): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logDebug: function(message) {
+        	if (this.logLevel <= 1) {
+        		console.log("Peeks (debug): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logInfo: function(message) {
+        	if (this.logLevel <= 2) {
+        		console.log("Peeks (info): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logWarning: function(message) {
+        	if (this.logLevel <= 3) {
+        		console.log("Peeks (warning): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        logError: function(message) {
+        	if (this.logLevel <= 4) {
+        		console.log("Peeks (error): " + message);
+                this.onLog(this.logLevel, message);
+        	}
+        },
+
+        start: function (domElement, page) {
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
             }
@@ -2881,16 +2859,17 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             {
                 // This is all good actually
             } else {
-                logDebug("Invalid element passed to the peeks scene. Expecting a canvas");
+                this.logDebug("Invalid element passed to the peeks scene. Expecting a canvas");
                 domElement = undefined;
             }
 
             var url = document.URL;
-            if (url.search('127.0.0.1') != -1) {
+            var debugMode = (url.search('192.') != -1);
+            if (debugMode || url.search('127.0.0.1') != -1) {
                 doAnalytics = false;
-                PEEKS.setLogLevel(1);
+                this.setLogLevel(1);
             } else {
-                PEEKS.setLogLevel(3);
+                this.setLogLevel(3);
             }
 
             analytics('js', new Date());
@@ -2901,14 +2880,18 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             page = page || document.title;
             this.loadPage(page);
 
+            if (debugMode) {
+                this.page.addPage('peeks.debug', this);
+            }
+
             analytics('event', 'scene.start');
-            logDebug('Scene.start');
+            this.logDebug('Scene.start');
 
 			this.resetCamera();
 			this.window = window;
 
             if (domElement === undefined) {
-                logDebug('Creating default canvas element');
+                this.logDebug('Creating default full-screen canvas');
                 domElement = document.createElement('canvas');
                 this.isWidget = true;
                 this.width = this.window.innerWidth;
@@ -3187,13 +3170,6 @@ Animation.prototype = Object.assign(Object.create( Asset.prototype ),
 						this.parent[this.attribute][2] += p[2];
 					}
 				}
-                if (this.parent.name && t > 0 && t < 1) {
-                    if (logVerboseOk()) {
-                        logVerbose('Animation update at ' + t.toString() +
-                            ': ' + this.parent.name + '[' + this.attribute +
-                            '] = ' + this.parent[this.attribute].toString());
-                    }
-                }
 			}
 
             if (t >= 1 && !this.loop && !this.ended) {
@@ -3216,12 +3192,6 @@ exports.Page = Page;
 exports.Plane = Plane;
 exports.Animation = Animation;
 
-exports.setLogLevel = setLogLevel;
-exports.logLevel = logLevel;
-exports.logDebug = logDebug;
-exports.logInfo = logInfo;
-exports.logWarning = logWarning;
-exports.logError = logError;
 exports.registerPage = registerPage;
 exports.loadScript = loadScript;
 exports.start = start;
@@ -3335,6 +3305,81 @@ PEEKS.registerPage('peeks.toolbar', function() {
 /* 3 */
 /***/ (function(module, exports) {
 
+PEEKS.registerPage('peeks.debug', function(scene) {
+    var page = new PEEKS.Asset({
+        fontOutlineStyle: '',
+        fontColor: [0, 0, 0],
+    });
+
+    var canvas = page.addCanvas({
+    });
+
+    var canvasBottom = page.addCanvas({
+        valign: 'bottom',
+    });
+
+    var canvasTop = page.addCanvas({
+        valign: 'top',
+    });
+    var borderColor = [.3, .9, .3];
+    var borderAlpha = .6;
+    var borderSize = .02;
+    // Borders markers
+    canvasBottom.addView({
+        position: [0, -.5 + borderSize / 2],
+        size: [1, borderSize, 1],
+        viewBgColor: borderColor,
+        alpha: borderAlpha,
+    });
+    canvasTop.addView({
+        position: [0, .5 - borderSize / 2],
+        size: [1, borderSize, 1],
+        viewBgColor: borderColor,
+        alpha: borderAlpha,
+    });
+    canvas.addView({
+        position: [-.5 + borderSize / 2, 0],
+        size: [borderSize, 1, 1],
+        viewBgColor: borderColor,
+        alpha: borderAlpha,
+    });
+    canvas.addView({
+        position: [.5 - borderSize / 2, 0],
+        size: [borderSize, 1, 1],
+        viewBgColor: borderColor,
+        alpha: borderAlpha,
+    });
+
+    var height = -.46;
+    canvasBottom.addView({
+        position: [0, height],
+        size: [1, .04, 1],
+        viewBgColor: [1, 1, 1],
+        alpha: .5,
+    });
+    if (scene) {
+        scene.onLog = function (level, message) {
+            if (canvasBottom.textEntry !== undefined) {
+                canvasBottom.textEntry.destroy();
+            }
+            canvasBottom.textEntry = canvasBottom.addText({
+                position: [0, height],
+                fontSize: 24,
+                text: message,
+                textAlign: 'left',
+                size: [.96, .1, 1],
+            });
+        };
+    }
+
+	return page;
+});
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
 PEEKS.registerPage('peeks.demo', function() {
 	var page = new PEEKS.Asset();
 
@@ -3348,7 +3393,7 @@ PEEKS.registerPage('peeks.demo', function() {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.home', function() {
@@ -3414,7 +3459,7 @@ PEEKS.registerPage('peeks.home', function() {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 PEEKS.TrackerFace = function() {
@@ -3522,7 +3567,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 (function (global, factory) {
@@ -48589,7 +48634,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /**
@@ -49310,7 +49355,7 @@ THREE.OBJLoader = ( function () {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 PEEKS.texturesCache = {
@@ -49343,10 +49388,6 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
                 var width = texture.image.width;
                 var height = texture.image.height;
                 if (width !== 0 && height !== 0) {
-                    //console.log('Loaded texture ' + textureUrl + ' ' +
-                    //    width.toString() + 'x' + height.toString());
-
-                    //detour = false;
                     if (detour) {
                         var canvas = document.createElement('canvas');
         				var context = canvas.getContext('2d');
@@ -49417,10 +49458,8 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
                 }
             },
             function (xhr) {
-                // console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
             },
             function (xhr) {
-                // console.log( 'An error happened' );
             }
         );
 
@@ -49827,7 +49866,6 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
                 var vtxRef = mesh.geometry.positionInitial;
                 for (var shapeName in asset.shapes) {
                     if (asset.shapes.hasOwnProperty(shapeName)) {
-                        //console.log("synching " + this.name + " -> " + shape);
                         var shape = asset.shapes[shapeName];
                         var weight = shape.weightEval;
                         if (weight !== 0 &&
@@ -50110,7 +50148,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
                 var manager = new THREE.LoadingManager();
                     manager.onProgress = function ( item, loaded, total ) {
-                    // console.log( item, loaded, total );
                 };
 
                 var onProgress = function (xhr) {
@@ -50200,6 +50237,27 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             var yOffset = (textTexture.relativeTop - textTexture.relativeBot) / 2;
                             yOffset = yOffset / textTexture.size[1];
                             plane.position.y = plane.scale.y * yOffset;
+
+                            switch (this.textAlign) {
+                                case 'left': {
+                                    if (textTexture.size[0] > 0) {
+                                        plane.position.x = ((textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x - 1) / 2;
+                                        console.log(plane.position.x);
+                                        console.log(plane.scale.x);
+                                        console.log(scale[0]);
+                                    }
+                                    break;
+                                }
+                                case 'right': {
+                                    if (textTexture.size[0] > 0) {
+                                        plane.position.x = -(textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x / 2;
+                                    }
+                                    break;
+                                }
+                                default: {
+                                    break;
+                                }
+                            }
                         }
 					}
                 } else {
@@ -50427,13 +50485,11 @@ PEEKS.Scene.prototype.onResize = function(width, height) {
         if (width === this.width && height === this.height) {
             return;
         }
-        //console.log('Resizing Canvas from ' + this.width.toString() + 'x' + this.height.toString() + ' to ' + width.toString() + 'x' + height.toString());
         this.width = width;
         this.height = height;
     } else {
         width = (this.width) ? this.width : 500;
     	height = (this.height) ? this.height : 500;
-        //console.log('Setting initial size to ' + this.width.toString() + 'x' + this.height.toString());
     }
     this.three.camera.aspect = width / height;
     this.three.camera.updateProjectionMatrix();
@@ -50446,7 +50502,6 @@ PEEKS.Scene.prototype.onStart = function() {
     var a_scene = document.querySelector('a-scene')
     if (a_scene) {
         // Use A-Frame's scene instead
-        console.log(a_scene);
         scene = a_scene.object3D;
     }
 	var ambient = new THREE.AmbientLight( 0x333333 );
@@ -50785,7 +50840,7 @@ THREE.ShaderPeeks = {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.assets', function() {
@@ -50848,7 +50903,7 @@ PEEKS.registerPage('peeks.demo.assets', function() {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.fashion', function() {
@@ -50949,7 +51004,7 @@ PEEKS.registerPage('peeks.demo.fashion', function() {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 function createMannequin(page, position) {
@@ -51439,7 +51494,7 @@ PEEKS.registerPage('peeks.demo.mannequin', function() {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 function createAsset(page, position) {
@@ -51618,7 +51673,7 @@ PEEKS.registerPage('peeks.demo.shoe', function() {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.movie', function() {
