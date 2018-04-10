@@ -2893,7 +2893,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             if (domElement === undefined) {
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
-                this.logDebug('Creating default full-screen canvas ' + this.width.toString() + 'x' + this.height.toString());
+                this.logDebug('Creating default full-screen canvas ' + this.width.toString() + 'x' + this.height.toString() + ' pixelRatio: ' + window.devicePixelRatio.toString());
                 domElement = document.createElement('canvas');
                 this.isWidget = false;
                 document.body.appendChild(domElement);
@@ -50529,7 +50529,12 @@ PEEKS.Scene.prototype.onStart = function() {
 
     // Always work retina-style with 4 fragments per pixel
     // This should be adaptive based on the device performances
-    renderer.setPixelRatio(window.devicePixelRatio);
+    if (this.isPhone) {
+        // The window resolution values are already adjusted by the browser
+        renderer.setPixelRatio(1);
+    } else {
+        renderer.setPixelRatio(window.devicePixelRatio);
+    }
 
     this.cameraAngle = 55;
     var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);

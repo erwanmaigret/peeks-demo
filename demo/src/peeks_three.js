@@ -1168,7 +1168,12 @@ PEEKS.Scene.prototype.onStart = function() {
 
     // Always work retina-style with 4 fragments per pixel
     // This should be adaptive based on the device performances
-    renderer.setPixelRatio(window.devicePixelRatio);
+    if (this.isPhone) {
+        // The window resolution values are already adjusted by the browser
+        renderer.setPixelRatio(1);
+    } else {
+        renderer.setPixelRatio(window.devicePixelRatio);
+    }
 
     this.cameraAngle = 55;
     var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
