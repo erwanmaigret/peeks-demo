@@ -49543,14 +49543,11 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                     THREE.Math.degToRad(orient));
             }
         } else if (this.type === 'Canvas') {
-            var pivot = this.threeObjectPivot;
-            pivot.position.copy(scene.three.camera.position);
+            this.threeObjectPivot.position.copy(scene.three.camera.position);
             if (scene.isVrMode() && this.vrFixed !== true) {
-                pivot.rotation.x = 0;
-                pivot.rotation.y = 0;
-                pivot.rotation.z = this.screenOrientation || 0;
+                this.threeObjectPivot.rotation.set(0, 0, this.screenOrientation || 0);
             } else {
-                pivot.quaternion.copy(scene.three.camera.quaternion);
+                this.threeObjectPivot.quaternion.copy(scene.three.camera.quaternion);
             }
 
             var h = .5;
@@ -49563,9 +49560,9 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
                 var valign = this.getAttr('valign');
                 if (valign === 'bottom') {
-                    pivot.position.y -= .5 * depthFactor * (scene.height - scene.width) / scene.width;
+                    this.threeObjectPivotT.position.y = -.5 * depthFactor * (scene.height - scene.width) / scene.width;
                 } else if (valign === 'top') {
-                    pivot.position.y += .5 * depthFactor * (scene.height - scene.width) / scene.width;
+                    this.threeObjectPivotT.position.y = .5 * depthFactor * (scene.height - scene.width) / scene.width;
                 }
             }
 
@@ -50251,8 +50248,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		} else {
 			this.threeObject = new THREE.Object3D();
 		}
-		this.threeObjectPivot = new THREE.Object3D();
-		this.threeObjectPivot.add(this.threeObject);
+        this.threeObjectPivot = new THREE.Object3D();
+        this.threeObjectPivotT = new THREE.Object3D();
+        this.threeObjectPivot.add(this.threeObjectPivotT);
+        this.threeObjectPivotT.add(this.threeObject);
 
 		this.threeObject.peeksAsset = this;
 	} else {
