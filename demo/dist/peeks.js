@@ -2557,7 +2557,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
         setVrMode: function(state) {
-            if (!this.isWidget) {
+            if (this.isWidget) {
                 // Forbid VRMode when in a widget
                 state = false;
             }
@@ -2891,15 +2891,16 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			this.window = window;
 
             if (domElement === undefined) {
-                this.logDebug('Creating default full-screen canvas');
-                domElement = document.createElement('canvas');
-                this.isWidget = true;
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
+                this.logDebug('Creating default full-screen canvas');
+                domElement = document.createElement('canvas');
+                this.isWidget = false;
                 document.body.appendChild(domElement);
             } else {
                 this.width = domElement.width;
                 this.height = domElement.height;
+                this.isWidget = true;
             }
 
             this.setVrMode(this.isPhone);
@@ -2910,7 +2911,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
 			this.onStart();
 
-			if (this.isWidget) {
+			if (!this.isWidget) {
                 document.addEventListener('keydown', function(event) { scene.onKeyDown(event); } );
                 document.addEventListener('keyup', function(event) { scene.onKeyUp(event); } );
             }
@@ -2931,7 +2932,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			var animate = function () {
 				requestAnimationFrame(animate);
 
-                if (scene.isWidget) {
+                if (!scene.isWidget) {
                     scene.onResize(scene.window.innerWidth, scene.window.innerHeight);
                 } else {
                     scene.onResize(scene.domElement.width / window.devicePixelRatio, scene.domElement.height / window.devicePixelRatio);
