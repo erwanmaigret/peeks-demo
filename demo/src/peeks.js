@@ -2799,7 +2799,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             if (domElement === undefined) {
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
-                this.logDebug('Creating default full-screen canvas');
+                this.logDebug('Creating default full-screen canvas ' + this.width.toString() + 'x' + this.height.toString());
                 domElement = document.createElement('canvas');
                 this.isWidget = false;
                 document.body.appendChild(domElement);

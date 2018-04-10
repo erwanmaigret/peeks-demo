@@ -2893,7 +2893,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             if (domElement === undefined) {
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
-                this.logDebug('Creating default full-screen canvas');
+                this.logDebug('Creating default full-screen canvas ' + this.width.toString() + 'x' + this.height.toString());
                 domElement = document.createElement('canvas');
                 this.isWidget = false;
                 document.body.appendChild(domElement);
@@ -50243,15 +50243,12 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                                 case 'left': {
                                     if (textTexture.size[0] > 0) {
                                         plane.position.x = ((textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x - 1) / 2;
-                                        console.log(plane.position.x);
-                                        console.log(plane.scale.x);
-                                        console.log(scale[0]);
                                     }
                                     break;
                                 }
                                 case 'right': {
                                     if (textTexture.size[0] > 0) {
-                                        plane.position.x = -(textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x / 2;
+                                        plane.position.x = (-(textTexture.textSize[0] / textTexture.size[0]) * plane.scale.x + 1) / 2;
                                     }
                                     break;
                                 }
