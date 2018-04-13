@@ -196,11 +196,24 @@ function Node() {
 }
 Object.assign(Node.prototype, EventDispatcher.prototype,
 	{
-		add: function (node) {
+        add: function (node) {
 			node.parent = this;
             node.time = this.time;
 			this.children[ this.children.length ] = node;
 			return node;
+		},
+
+        getChildCount: function () {
+			return this.children.length;
+		},
+
+        getChild: function (childI) {
+            console.log(childI);
+            console.log(this.children);
+
+            if (childI >= 0 && childI < this.children.length) {
+			    return this.children[childI];
+            }
 		},
 
 		addPage: function (name, scene) {
@@ -524,10 +537,24 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             this.applyParams(asset, params);
 		},
 
-		addView: function (params) {
+        addView: function (params) {
 			var asset = new PEEKS.Plane();
 			this.initAsset(asset, params);
 			return this.add(asset);
+		},
+
+        addLight: function (params) {
+			var asset = new PEEKS.Light();
+			this.initAsset(asset, params);
+            var page = this.getPage();
+            var scene = this.getScene();
+            if (page) {
+                page.hasLighting = true;
+            } else if (scene) {
+                scene.hasLighting = true;
+            }
+            this.hasLighting = true;
+            return this.add(asset);
 		},
 
         progressStart: function (message) {
@@ -953,6 +980,7 @@ Asset.PrimitiveCurvedPanel = 7;
 Asset.PrimitiveRibbon = 8;
 Asset.PrimitiveMesh = 9;
 Asset.PrimitiveAnimation = 10;
+Asset.PrimitiveLight = 11;
 
 Asset.prototype = Object.assign(Object.create( Node.prototype ),
 	{
@@ -1046,6 +1074,10 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 
 			// When set from the outside we update the initial value too
 			this.initialSize = this.size.slice();
+		},
+
+        setColor: function (c) {
+            this.color = c;
 		},
 
         measureText: function(aFont, aSize, aChars, aOptions) {
@@ -1350,6 +1382,10 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 
         setVisible: function(visible) {
 			this.visible = visible;
+		},
+
+        getVisible: function() {
+			return this.visible;
 		},
 
         show: function() {
@@ -2458,6 +2494,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             return this.arView.video;
         },
 
+        getLight: function(light) {
+            if (this.lights) {
+                return this.lights.getChild(light);
+            }
+        },
+
         toggleVrMode: function() {
 			this.setVrMode(!this.vrMode);
 		},
@@ -2881,6 +2923,33 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     delete scene.vrReticle;
                 }
 
+                if (scene.page.hasLighting) {
+                    if (scene.lights) {
+                        scene.lights.destroy();
+                        scene.lights = undefined;
+                        scene.hasLighting = false;
+                    }
+                } else {
+                    if (!scene.hasLighting) {
+                        // Default 3d lighting
+                        scene.lights = scene.addAsset();
+
+                        scene.lights.addLight({
+                            lightType: 'ambient',
+                            intensity: .25,
+                        });
+                        scene.lights.addLight({
+                            position: [1, 1, 1],
+                            intensity: .95,
+                        });
+                        scene.lights.addLight({
+                            position: [-1, .5, 1],
+                            intensity: .75,
+                        });
+                        scene.hasLighting = true;
+                    }
+                }
+
 				scene.update();
                 scene.background.setPosition(scene.camera.position);
 				scene.render();
@@ -2898,6 +2967,17 @@ function Plane( ) {
 Plane.prototype = Object.assign(Object.create( Asset.prototype ),
 	{
 		constructor: Plane,
+	}
+);
+
+function Light( ) {
+	Asset.call( this );
+	this.primitive = Asset.PrimitiveLight;
+    this.lightType = "directional";
+}
+Light.prototype = Object.assign(Object.create( Asset.prototype ),
+	{
+		constructor: Light,
 	}
 );
 
@@ -3097,6 +3177,7 @@ exports.Screen = Screen;
 exports.Overlay = Overlay;
 exports.Page = Page;
 exports.Plane = Plane;
+exports.Light = Light;
 exports.Animation = Animation;
 
 exports.registerPage = registerPage;

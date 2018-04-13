@@ -72,16 +72,16 @@ __webpack_require__(2);
 __webpack_require__(3);
 __webpack_require__(4);
 __webpack_require__(5);
-
 __webpack_require__(6);
+
+__webpack_require__(7);
 
 var global = Function('return this')();
 
-global.THREE = __webpack_require__(7);
-__webpack_require__(8);
+global.THREE = __webpack_require__(8);
 __webpack_require__(9);
-
 __webpack_require__(10);
+
 __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
@@ -290,11 +290,24 @@ function Node() {
 }
 Object.assign(Node.prototype, EventDispatcher.prototype,
 	{
-		add: function (node) {
+        add: function (node) {
 			node.parent = this;
             node.time = this.time;
 			this.children[ this.children.length ] = node;
 			return node;
+		},
+
+        getChildCount: function () {
+			return this.children.length;
+		},
+
+        getChild: function (childI) {
+            console.log(childI);
+            console.log(this.children);
+
+            if (childI >= 0 && childI < this.children.length) {
+			    return this.children[childI];
+            }
 		},
 
 		addPage: function (name, scene) {
@@ -618,10 +631,24 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             this.applyParams(asset, params);
 		},
 
-		addView: function (params) {
+        addView: function (params) {
 			var asset = new PEEKS.Plane();
 			this.initAsset(asset, params);
 			return this.add(asset);
+		},
+
+        addLight: function (params) {
+			var asset = new PEEKS.Light();
+			this.initAsset(asset, params);
+            var page = this.getPage();
+            var scene = this.getScene();
+            if (page) {
+                page.hasLighting = true;
+            } else if (scene) {
+                scene.hasLighting = true;
+            }
+            this.hasLighting = true;
+            return this.add(asset);
 		},
 
         progressStart: function (message) {
@@ -1047,6 +1074,7 @@ Asset.PrimitiveCurvedPanel = 7;
 Asset.PrimitiveRibbon = 8;
 Asset.PrimitiveMesh = 9;
 Asset.PrimitiveAnimation = 10;
+Asset.PrimitiveLight = 11;
 
 Asset.prototype = Object.assign(Object.create( Node.prototype ),
 	{
@@ -1140,6 +1168,10 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 
 			// When set from the outside we update the initial value too
 			this.initialSize = this.size.slice();
+		},
+
+        setColor: function (c) {
+            this.color = c;
 		},
 
         measureText: function(aFont, aSize, aChars, aOptions) {
@@ -1444,6 +1476,10 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 
         setVisible: function(visible) {
 			this.visible = visible;
+		},
+
+        getVisible: function() {
+			return this.visible;
 		},
 
         show: function() {
@@ -2552,6 +2588,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             return this.arView.video;
         },
 
+        getLight: function(light) {
+            if (this.lights) {
+                return this.lights.getChild(light);
+            }
+        },
+
         toggleVrMode: function() {
 			this.setVrMode(!this.vrMode);
 		},
@@ -2975,6 +3017,33 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     delete scene.vrReticle;
                 }
 
+                if (scene.page.hasLighting) {
+                    if (scene.lights) {
+                        scene.lights.destroy();
+                        scene.lights = undefined;
+                        scene.hasLighting = false;
+                    }
+                } else {
+                    if (!scene.hasLighting) {
+                        // Default 3d lighting
+                        scene.lights = scene.addAsset();
+
+                        scene.lights.addLight({
+                            lightType: 'ambient',
+                            intensity: .25,
+                        });
+                        scene.lights.addLight({
+                            position: [1, 1, 1],
+                            intensity: .95,
+                        });
+                        scene.lights.addLight({
+                            position: [-1, .5, 1],
+                            intensity: .75,
+                        });
+                        scene.hasLighting = true;
+                    }
+                }
+
 				scene.update();
                 scene.background.setPosition(scene.camera.position);
 				scene.render();
@@ -2992,6 +3061,17 @@ function Plane( ) {
 Plane.prototype = Object.assign(Object.create( Asset.prototype ),
 	{
 		constructor: Plane,
+	}
+);
+
+function Light( ) {
+	Asset.call( this );
+	this.primitive = Asset.PrimitiveLight;
+    this.lightType = "directional";
+}
+Light.prototype = Object.assign(Object.create( Asset.prototype ),
+	{
+		constructor: Light,
 	}
 );
 
@@ -3191,6 +3271,7 @@ exports.Screen = Screen;
 exports.Overlay = Overlay;
 exports.Page = Page;
 exports.Plane = Plane;
+exports.Light = Light;
 exports.Animation = Animation;
 
 exports.registerPage = registerPage;
@@ -3244,12 +3325,12 @@ PEEKS.registerPage('peeks.toolbar', function() {
         valign: 'bottom',
     });
 
-    var height = -.44;
+    //var height = -.44;
 
     /*
     // These should be dynamic based on the navigation, and only apply
     // when in a FullScreen mode
-    
+
     canvas.addRoundIconButton({
 		icon: '/ui/icon_previous.png',
 		position: [-.45, height],
@@ -3304,6 +3385,90 @@ PEEKS.registerPage('peeks.toolbar', function() {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('peeks.toolbar.lighting', function() {
+    var page = new PEEKS.Asset();
+
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
+
+    //var height = -.44;
+
+    /*
+    // These should be dynamic based on the navigation, and only apply
+    // when in a FullScreen mode
+
+    canvas.addRoundIconButton({
+		icon: '/ui/icon_previous.png',
+		position: [-.45, height],
+		size: .08,
+		onClick: 'loadPreviousPage',
+	})
+
+    canvas.addRoundIconButton({
+		icon: '/ui/icon_next.png',
+        position: [-.35, height],
+		size: .08,
+		onClick: 'loadNextPage',
+	});
+    */
+
+    canvas.addButton({
+        image: '/ui/icon_light.png',
+        position: [-.45, .45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: function() {
+            this.getScene().getLight(0).toggleVisible();
+            this.setColor(this.getScene().getLight(0).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+        },
+    });
+    canvas.addButton({
+        image: '/ui/icon_light.png',
+        position: [-.35, .45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: function() {
+            this.getScene().getLight(1).toggleVisible();
+            this.setColor(this.getScene().getLight(1).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+        },
+    });
+    canvas.addButton({
+        image: '/ui/icon_light.png',
+        position: [-.25, .45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: function() {
+            this.getScene().getLight(2).toggleVisible();
+            this.setColor(this.getScene().getLight(2).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+        },
+    });
+
+    /*
+        canvas.addRoundIconButton({
+            icon: '/ui/icon_gyroscope.png',
+            position: [.35, height],
+            size: .08,
+            onClick: function() { this.getScene().toggleGyroscope(); },
+        });
+
+        canvas.addTextButton({
+            position: [0, height],
+            fontSize: 40,
+            text: 'search',
+            size: .08,
+            onClick: 'searchPage',
+        })
+    */
+
+	return page;
+});
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.debug', function(scene) {
@@ -3378,7 +3543,7 @@ PEEKS.registerPage('peeks.debug', function(scene) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo', function() {
@@ -3394,7 +3559,7 @@ PEEKS.registerPage('peeks.demo', function() {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.home', function() {
@@ -3460,7 +3625,7 @@ PEEKS.registerPage('peeks.home', function() {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 PEEKS.TrackerFace = function() {
@@ -3568,7 +3733,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 (function (global, factory) {
@@ -48635,7 +48800,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 /**
@@ -49356,7 +49521,7 @@ THREE.OBJLoader = ( function () {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 PEEKS.texturesCache = {
@@ -50193,6 +50358,12 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
                     object.parent.peeksAsset.threeSynchMaterial();
                 }, onProgress, onError );
+            } else if (this.primitive === PEEKS.Asset.PrimitiveLight) {
+                if (this.lightType === "ambient") {
+                    this.threeObject = new THREE.AmbientLight();
+                } else {
+                    this.threeObject = new THREE.DirectionalLight();
+                }
             } else if (this.primitive === PEEKS.Asset.PrimitivePlane) {
                 if (this.getAttr('text')) {
                     this.threeObject = new THREE.Object3D();
@@ -50338,7 +50509,9 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
 	this.threeSynchXform(threeObject);
 
-	if (threeObject.material) {
+    if (this.primitive === PEEKS.Asset.PrimitiveLight) {
+        threeObject.intensity = this.getAttr('intensity');
+    } else if (threeObject.material) {
 		var color = this.getAttrColor('color', [1, 1, 1, 1]);
 		if (this.getAttr('textureUrl') === undefined || this.getAttr('textureUrl') === "") {
             color = this.getAttrColor('viewBgColor');
@@ -50502,14 +50675,6 @@ PEEKS.Scene.prototype.onStart = function() {
         // Use A-Frame's scene instead
         scene = a_scene.object3D;
     }
-	var ambient = new THREE.AmbientLight( 0x333333 );
-	scene.add(ambient);
-	var directionalLight = new THREE.DirectionalLight( 0xEEEEEE );
-	directionalLight.position.set(1, 1, 1);
-	scene.add( directionalLight );
-    var directionalLight = new THREE.DirectionalLight( 0xCCCCCC );
-	directionalLight.position.set(-1, .5, 1);
-	scene.add( directionalLight );
 
     var canvas = this.domElement;
     if (canvas === undefined) {
@@ -50843,7 +51008,7 @@ THREE.ShaderPeeks = {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.assets', function() {
@@ -50906,7 +51071,7 @@ PEEKS.registerPage('peeks.demo.assets', function() {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.fashion', function() {
@@ -51007,7 +51172,7 @@ PEEKS.registerPage('peeks.demo.fashion', function() {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 function createMannequin(page, position) {
@@ -51491,185 +51656,6 @@ PEEKS.registerPage('peeks.demo.mannequin', function() {
     });
 
     createMannequin(page, [0, 0, 0]);
-
-	return page;
-});
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-function createAsset(page, position) {
-    var femaleHigh = page.addAsset({
-        position: position,
-    });
-
-    var model = femaleHigh.addAsset({
-        position: [0, 0, -2],
-        rotation: [0, -110, 0],
-        onClick: 'animateRotate90',
-        size: .03,
-        onFocus: '',
-    });
-
-    model.mannequin = {
-    };
-
-    var mannequin = model.mannequin;
-
-    var poseDefault = "pose1";
-    var fabric = undefined;
-
-    var getGeometryUrl = function (part) {
-        return "/assets/frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
-    };
-
-    var updateGeometry = function(node, mesh, properties) {
-        if (node === undefined) {
-            node = model.addMesh({
-                geometry: getGeometryUrl(mesh, poseDefault),
-                position: [-20, -20, 20],
-            });
-        }
-        node.setProperties(properties);
-        return node;
-    };
-
-    var onSetClothMaterial = function(caller) {
-        if (caller === undefined) {
-            caller = this;
-        }
-        if (caller.material !== undefined) {
-            fabric = caller.material;
-        }
-
-        mannequin.boot = updateGeometry(mannequin.boot, "", {
-            texture: fabric.map,
-            material: fabric,
-        });
-        mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
-            texture: fabric.map,
-        });
-        mannequin.boot_buckle = updateGeometry(mannequin.boot_buckle, "buckle", {
-            texture: '/assets/frye_boot_diffuse.jpg',
-        });
-        mannequin.boot_inside = updateGeometry(mannequin.boot_inside, "inside", {
-            texture: '/assets/material_suede.jpg',
-        });
-        mannequin.boot_sole = updateGeometry(mannequin.boot_sole, "sole", {
-            texture: '/assets/frye_sole.jpg',
-        });
-        mannequin.boot_sole_top = updateGeometry(mannequin.boot_sole_top, "sole_top", {
-            texture: '/assets/frye_sole.jpg',
-        });
-    };
-
-    var canvas = page.addCanvas({valign: 'top'});
-    var y = .45;
-    canvas.addText({
-        position: [.35, y, 0],
-        text: 'Finish',
-        fontSize: 40,
-        fontOutlineStyle: '',
-    });
-    canvas.addView({
-        position: [.35, y - .03, 0],
-        size: [.2, .001, 1],
-    });
-    y-= .08;
-    canvas.addDisc({
-        texture: '/assets/material_red_satin.jpg',
-        position: [.3, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.1,.1,.1],
-            shininess: 10,
-            normalMap: undefined,
-            map: '/assets/material_red_satin.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    canvas.addDisc({
-        texture: '/assets/material_nubuk.jpg',
-        position: [.4, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.1,0,0],
-            shininess: 2,
-            map: '/assets/material_nubuk.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    y-= .08;
-    canvas.addDisc({
-        texture: '/assets/material_suede.jpg',
-        position: [.3, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.1,.1,.1],
-            shininess: 5,
-            normalMap: '/assets/material_suede_normal.jpg',
-            map: '/assets/material_suede.jpg',
-            specularMap: '/assets/material_red_satin.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    canvas.addDisc({
-        texture: '/assets/material_blue_satin.jpg',
-        position: [.4, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.05,.05,.1],
-            shininess: 5,
-            normalMap: '/assets/material_suede_normal.jpg',
-            map: '/assets/material_blue_satin.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    y-= .08;
-    var defaultMaterial = canvas.addDisc({
-        texture: '/assets/frye_boot_diffuse.jpg',
-        position: [.3, y, 0],
-        size: .05,
-        material: {
-            emissive: [.1,.0,.0],
-            shininess: 2,
-            map: '/assets/frye_boot_diffuse.jpg',
-            bumpMap: '/assets/frye_boot_bump.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-    canvas.addDisc({
-        texture: '/assets/material_dark.jpg',
-        position: [.4, y, 0],
-        size: .05,
-        material: {
-            type: 'velvet',
-            emissive: [.0,.0,.1],
-            shininess: 5,
-            map: '/assets/material_dark.jpg',
-        },
-        onClick: onSetClothMaterial,
-    });
-
-    onSetClothMaterial(defaultMaterial);
-
-    return femaleHigh;
-}
-
-PEEKS.registerPage('peeks.demo.shoe', function() {
-    var page = new PEEKS.Asset({
-        category: 'white',
-        bgColor: [226/255, 220/255, 209/255],
-        gyroscope: 'off',
-    });
-
-    createAsset(page, [0, 0, 0]);
 
 	return page;
 });

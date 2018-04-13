@@ -832,6 +832,12 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
                     object.parent.peeksAsset.threeSynchMaterial();
                 }, onProgress, onError );
+            } else if (this.primitive === PEEKS.Asset.PrimitiveLight) {
+                if (this.lightType === "ambient") {
+                    this.threeObject = new THREE.AmbientLight();
+                } else {
+                    this.threeObject = new THREE.DirectionalLight();
+                }
             } else if (this.primitive === PEEKS.Asset.PrimitivePlane) {
                 if (this.getAttr('text')) {
                     this.threeObject = new THREE.Object3D();
@@ -977,7 +983,9 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
 	this.threeSynchXform(threeObject);
 
-	if (threeObject.material) {
+    if (this.primitive === PEEKS.Asset.PrimitiveLight) {
+        threeObject.intensity = this.getAttr('intensity');
+    } else if (threeObject.material) {
 		var color = this.getAttrColor('color', [1, 1, 1, 1]);
 		if (this.getAttr('textureUrl') === undefined || this.getAttr('textureUrl') === "") {
             color = this.getAttrColor('viewBgColor');
@@ -1141,14 +1149,6 @@ PEEKS.Scene.prototype.onStart = function() {
         // Use A-Frame's scene instead
         scene = a_scene.object3D;
     }
-	var ambient = new THREE.AmbientLight( 0x333333 );
-	scene.add(ambient);
-	var directionalLight = new THREE.DirectionalLight( 0xEEEEEE );
-	directionalLight.position.set(1, 1, 1);
-	scene.add( directionalLight );
-    var directionalLight = new THREE.DirectionalLight( 0xCCCCCC );
-	directionalLight.position.set(-1, .5, 1);
-	scene.add( directionalLight );
 
     var canvas = this.domElement;
     if (canvas === undefined) {

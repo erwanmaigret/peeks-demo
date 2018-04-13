@@ -5,12 +5,12 @@ PEEKS.registerPage('peeks.toolbar', function() {
         valign: 'bottom',
     });
 
-    var height = -.44;
+    //var height = -.44;
 
     /*
     // These should be dynamic based on the navigation, and only apply
     // when in a FullScreen mode
-    
+
     canvas.addRoundIconButton({
 		icon: '/ui/icon_previous.png',
 		position: [-.45, height],
