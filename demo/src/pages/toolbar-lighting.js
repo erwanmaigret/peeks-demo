@@ -28,7 +28,7 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
 
     canvas.addButton({
         image: '/ui/icon_light.png',
-        position: [-.45, .45],
+        position: [-.4, .45],
         size: .07,
         color: page.fontColorBold,
         onClick: function() {
@@ -38,7 +38,7 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
     });
     canvas.addButton({
         image: '/ui/icon_light.png',
-        position: [-.35, .45],
+        position: [-.3, .45],
         size: .07,
         color: page.fontColorBold,
         onClick: function() {
@@ -48,7 +48,7 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
     });
     canvas.addButton({
         image: '/ui/icon_light.png',
-        position: [-.25, .45],
+        position: [-.2, .45],
         size: .07,
         color: page.fontColorBold,
         onClick: function() {
