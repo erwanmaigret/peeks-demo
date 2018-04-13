@@ -208,9 +208,6 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 		},
 
         getChild: function (childI) {
-            console.log(childI);
-            console.log(this.children);
-
             if (childI >= 0 && childI < this.children.length) {
 			    return this.children[childI];
             }
