@@ -113,7 +113,7 @@ function createMannequin(page) {
 
         mannequin.hair = updateGeometry(mannequin.hair, "hair", {
             texture: '/assets/woman_hair_diffuse.png',
-            color: [1, .7, .2],
+            color: [.7, .4, .1],
             material: {
                 emissive: [.05, .05, .05],
                 reflectivity: 10,
@@ -131,13 +131,6 @@ function createMannequin(page) {
                 emissive: [.0, .0, .0],
                 reflectivity: .1,
                 shininess: .1,
-                //emissive: [0,.0,.0],
-                //specular: [1, 1, 1],
-                //specular: [.1, .1, .1],
-                //specularMap: '/assets/woman_body_reflection.jpg',
-                //specular: [0, 0, 0],
-                //bumpMap: assetPath + 'frye_boot_bump.jpg',
-                //bumpScale: .005,
             },
         });
 
@@ -154,7 +147,6 @@ function createMannequin(page) {
         mannequin.jacket = updateGeometry(mannequin.jacket, "jacket", {
             texture: fabric.map,
             material: fabric,
-            textureRepeat: [2, 2],
         }, outfit === 'pants' || outfit === 'skirt');
 
         mannequin.blouse = updateGeometry(mannequin.blouse, "j_blouse", {
@@ -228,6 +220,7 @@ function createMannequin(page) {
             //bumpScale: .03,
             normalMap: '/assets/material_velvet_normal.jpg',
             normalScale: [3, 3],
+            textureRepeat: [2, 2],
             //bumpScale: .03,
             map: '/assets/material_red_velvet.jpg',
         },
@@ -271,6 +264,7 @@ function createMannequin(page) {
             shininess: 2,
             normalMap: '/assets/material_velvet_normal.jpg',
             map: '/assets/material_white.jpg',
+            textureRepeat: [2, 2],
         },
         onClick: onSetClothMaterial,
     });
@@ -482,8 +476,8 @@ PEEKS.registerPage('peeks.demo.mannequin', function() {
     // Stand-up
     mannequin.setPosition([0, -1, -2.9]);
     // Face zoom
-    mannequin.setPosition([0, -2, -0.8]);
-    mannequin.setRotation([0, -30, 0]);
+    //mannequin.setPosition([0, -2, -0.8]);
+    //mannequin.setRotation([0, -30, 0]);
 
     page.addLight({
         lightType: 'ambient',

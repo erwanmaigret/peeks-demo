@@ -690,13 +690,12 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         material.side = THREE.FrontSide;
 
-                        if (asset.textureRepeat) {
+                        var repeat = refMat.textureRepeat || asset.textureRepeat;
+                        if (repeat) {
                             if (material.map) {
                                 material.map.wrapS = THREE.RepeatWrapping;
                         		material.map.wrapT = THREE.RepeatWrapping;
-                        		material.map.repeat.set(
-                                    asset.textureRepeat[0],
-                                    asset.textureRepeat[1]);
+                        		material.map.repeat.set(repeat[0], repeat[1]);
                             }
                             if (material.normalMap) {
                                 material.normalMap.wrapS = THREE.RepeatWrapping;
