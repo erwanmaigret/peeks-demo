@@ -15,5 +15,3 @@ require('./peeks_three.js');
 
 require("./pages/assets.js");
 require("./pages/fashion.js");
-require("./pages/mannequin.js");
-require("./pages/movie.js");

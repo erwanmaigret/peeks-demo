@@ -1,10 +1,7 @@
-function createMannequin(page, position) {
-    var femaleHigh = page.addAsset({
-        position: position,
-    });
+function createMannequin(page) {
+    var femaleHigh = page.addAsset();
 
     var model = femaleHigh.addAsset({
-        position: [0, -1, -2.9],
         onClick: 'animateRotate90',
         size: .013,
         onFocus: '',
@@ -20,7 +17,7 @@ function createMannequin(page, position) {
     var chestSize = "M";
     var breastSize = "M";
     var hipsSize = "M";
-    var skin = [1, 1, 1];
+    var skin = [1.1, 1.1, 1.4];
     var modelName = "woman";
     var pose = "pose1";
     var poseDefault = "pose1";
@@ -114,12 +111,33 @@ function createMannequin(page, position) {
             material: { type: "velvet" },
         });
 
+        mannequin.hair = updateGeometry(mannequin.hair, "hair", {
+            texture: '/assets/woman_hair_diffuse.png',
+            color: [1, .7, .2],
+            material: {
+                emissive: [.05, .05, .05],
+                reflectivity: 10,
+                shininess: 20,
+                bumpMap: '/assets/woman_hair_normal.png',
+                bumpScale: .01,
+             },
+        });
+        mannequin.hair.setPosition([0, 10, 0]);
+
         mannequin.body = updateGeometry(mannequin.body, "body", {
             texture: '/assets/woman_body.png',
             color: skin,
             material: {
-                emissive: [.1, .05, .05],
-                shininess: 20,
+                emissive: [.0, .0, .0],
+                reflectivity: .1,
+                shininess: .1,
+                //emissive: [0,.0,.0],
+                //specular: [1, 1, 1],
+                //specular: [.1, .1, .1],
+                //specularMap: '/assets/woman_body_reflection.jpg',
+                //specular: [0, 0, 0],
+                //bumpMap: assetPath + 'frye_boot_bump.jpg',
+                //bumpScale: .005,
             },
         });
 
@@ -137,6 +155,7 @@ function createMannequin(page, position) {
             texture: fabric.map,
             material: fabric,
         }, outfit === 'pants' || outfit === 'skirt');
+        //mannequin.jacket.textureRepeat = [.15, .15];
 
         mannequin.blouse = updateGeometry(mannequin.blouse, "j_blouse", {
             texture: '/assets/material_white.jpg',
@@ -185,7 +204,7 @@ function createMannequin(page, position) {
         size: [.2, .001, 1],
     });
     y-= .08;
-    var defaultMaterial = canvas.addDisc({
+    canvas.addDisc({
         texture: '/assets/material_red_satin.jpg',
         position: [.3, y, 0],
         size: .05,
@@ -198,14 +217,15 @@ function createMannequin(page, position) {
         },
         onClick: onSetClothMaterial,
     });
-    canvas.addDisc({
+    var defaultMaterial = canvas.addDisc({
         texture: '/assets/material_red_velvet.jpg',
         position: [.4, y, 0],
         size: .05,
         material: {
-            emissive: [.1,0,0],
-            shininess: 2,
-            normalMap: '/assets/material_velvet_normal.jpg',
+            emissive: [0,0,0],
+            shininess: 10,
+            bumpMap: '/assets/material_velvet_normal.jpg',
+            bumpScale: .03,
             map: '/assets/material_red_velvet.jpg',
         },
         onClick: onSetClothMaterial,
@@ -314,33 +334,10 @@ function createMannequin(page, position) {
         texture: '/assets/woman_body.png',
         position: [.4, y, 0],
         size: .05,
-        color: [.7, .7, .6],
-        textureRepeat: [.15, .15],
-        vm: {
-            skin: [.7, .7, .6],
-        },
-        onClick: onSetClothMaterial,
-    });
-    y-= .08;
-    canvas.addDisc({
-        texture: '/assets/woman_body.png',
-        position: [.3, y, 0],
-        size: .05,
-        color: [.5, .5, .5],
-        textureRepeat: [.15, .15],
-        vm: {
-            skin: [.5, .5, .5],
-        },
-        onClick: onSetClothMaterial,
-    });
-    canvas.addDisc({
-        texture: '/assets/woman_body.png',
-        position: [.4, y, 0],
-        size: .05,
         color: [.3, .3, .3],
         textureRepeat: [.15, .15],
         vm: {
-            skin: [.3, .3, .3],
+            skin: [.4, .4, .4],
         },
         onClick: onSetClothMaterial,
     });
@@ -478,7 +475,26 @@ PEEKS.registerPage('peeks.demo.mannequin', function() {
         gyroscope: 'off',
     });
 
-    createMannequin(page, [0, 0, 0]);
+    var mannequin = createMannequin(page);
+    // Stand-up
+    mannequin.setPosition([0, -1, -2.9]);
+    // Face zoom
+    mannequin.setPosition([0, -2, -0.8]);
+    mannequin.setRotation([0, -30, 0]);
+
+    page.addLight({
+        lightType: 'ambient',
+        intensity: .4,
+    });
+    page.addLight({
+        position: [1, 1, 1],
+        intensity: .7,
+    });
+    page.addLight({
+        position: [-1, .5, 1],
+        intensity: .4,
+    });
+
 
 	return page;
 });

@@ -27,7 +27,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
     */
 
     canvas.addButton({
-        image: '/ui/icon_vr.png',
+        image: 'https://dev.peeks.io/ui/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,

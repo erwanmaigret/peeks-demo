@@ -160,6 +160,11 @@ PEEKS.ThreeColor = function(value, defaultValue) {
     return new THREE.Color(value[0], value[1], value[2], 1);
 }
 
+PEEKS.ThreeV2 = function(value, defaultValue) {
+    value = value || defaultValue || [0, 0];
+    return new THREE.Vector2(value[0], value[1]);
+}
+
 PEEKS.ThreeFloat = function(value, defaultValue) {
     return value || defaultValue || 0;
 }
@@ -673,11 +678,13 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         material.map = PEEKS.ThreeTextureLoader(asset.textureUrl);
                         material.transparent = true;
                         material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
-                        material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , .2);
-                        material.shininess = PEEKS.ThreeFloat(refMat.shininess, 10);
-                        material.emissive = PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]);
+                        material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , 1);
+                        material.shininess = PEEKS.ThreeFloat(refMat.shininess, 30);
+                        material.emissive = PEEKS.ThreeColor(refMat.emissive, [.0, .0, .0]);
                         material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
+                        material.specularMap = PEEKS.ThreeTextureLoader(refMat.specularMap);
                         material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
+                        material.normalScale = PEEKS.ThreeV2(refMat.normalScale, [1, 1]);
                         material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
                         material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
                         material.bumpScale = PEEKS.ThreeFloat(refMat.bumpScale, 1);

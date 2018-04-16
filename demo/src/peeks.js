@@ -2971,6 +2971,7 @@ function Light( ) {
 	Asset.call( this );
 	this.primitive = Asset.PrimitiveLight;
     this.lightType = "directional";
+    this.intensity = 1;
 }
 Light.prototype = Object.assign(Object.create( Asset.prototype ),
 	{
