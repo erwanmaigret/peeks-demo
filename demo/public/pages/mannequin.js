@@ -154,8 +154,8 @@ function createMannequin(page) {
         mannequin.jacket = updateGeometry(mannequin.jacket, "jacket", {
             texture: fabric.map,
             material: fabric,
+            textureRepeat: [2, 2],
         }, outfit === 'pants' || outfit === 'skirt');
-        //mannequin.jacket.textureRepeat = [.15, .15];
 
         mannequin.blouse = updateGeometry(mannequin.blouse, "j_blouse", {
             texture: '/assets/material_white.jpg',
@@ -224,8 +224,11 @@ function createMannequin(page) {
         material: {
             emissive: [0,0,0],
             shininess: 10,
-            bumpMap: '/assets/material_velvet_normal.jpg',
-            bumpScale: .03,
+            //bumpMap: '/assets/material_velvet_normal.jpg',
+            //bumpScale: .03,
+            normalMap: '/assets/material_velvet_normal.jpg',
+            normalScale: [3, 3],
+            //bumpScale: .03,
             map: '/assets/material_red_velvet.jpg',
         },
         onClick: onSetClothMaterial,

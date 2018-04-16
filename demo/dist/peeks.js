@@ -49520,9 +49520,6 @@ THREE.OBJLoader = ( function () {
 /* 10 */
 /***/ (function(module, exports) {
 
-PEEKS.texturesCache = {
-};
-
 PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, flipX, flipY,
     removeBackground, useCache)
 {
@@ -49534,9 +49531,12 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
             '&flipY=' + (flipY ? flipY.toString() : 'false') +
             '&removeBackground=' + (removeBackground ? removeBackground.toString() : 'false');
 
-        if (useCache && PEEKS.texturesCache[cacheName]) {
-            material.map = PEEKS.texturesCache[cacheName];
-            return;
+        if (useCache) {
+            var texture = PEEKS.ThreeTextureLoader(cacheName);
+            if (texture) {
+                material.map = texture;
+                return;
+            }
         }
 
 		var loader = new THREE.TextureLoader();
@@ -49625,10 +49625,6 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
             }
         );
 
-        if (useCache) {
-            PEEKS.texturesCache[cacheName] = material.map;
-        }
-
 		// Don't mind not POT textures
         material.map.minFilter = THREE.LinearMipMapLinearFilter;
 
@@ -49659,6 +49655,9 @@ PEEKS.ThreeSetObjectQuaternion = function(quaternion, alpha, beta, gamma, orient
 }
 
 PEEKS.ThreeTextureLoader = function(path) {
+    if (this.texturesCache === undefined) {
+        PEEKS.texturesCache = {};
+    }
     if (path) {
         if (PEEKS.texturesCache[path]) {
             return PEEKS.texturesCache[path];
@@ -50210,9 +50209,22 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
                         material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
                         material.bumpScale = PEEKS.ThreeFloat(refMat.bumpScale, 1);
-                        asset.getAttrColor('color', [1, 1, 1, 1]);
                         material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
                         material.side = THREE.FrontSide;
+
+                        if (asset.textureRepeat) {
+                            if (material.map) {
+                                material.map.wrapS = THREE.RepeatWrapping;
+                        		material.map.wrapT = THREE.RepeatWrapping;
+                        		material.map.repeat.set(
+                                    asset.textureRepeat[0],
+                                    asset.textureRepeat[1]);
+                            }
+                            if (material.normalMap) {
+                                material.normalMap.wrapS = THREE.RepeatWrapping;
+                        		material.normalMap.wrapT = THREE.RepeatWrapping;
+                            }
+                        }
                     }
                 }
             }
