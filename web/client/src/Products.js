@@ -62,8 +62,8 @@ class Products extends React.Component {
             return (
                 <div className={section}>
                 <table align="center" width="100%"><tbody><tr><td>
-                    <p className="textTitle">{element.title}</p>
-                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <p className="textTitle2" align="left">{element.title}</p>
+                    <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
                 </td></tr>
                 <tr><td width="50%">{this.renderImage(element)}</td></tr>
                 </tbody></table></div>
@@ -75,7 +75,7 @@ class Products extends React.Component {
                     <td width="50%">{this.renderImage(element)}</td>
                     <td width="5%"></td>
                     <td width="45%" align="left">
-                        <div className="textTitle">{element.title}</div>
+                        <div className="textTitle2">{element.title}</div>
                         <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
                     </td>
                     </tr></tbody></table></div>
@@ -85,7 +85,7 @@ class Products extends React.Component {
                     <div className={section}><table align="center"><tbody><tr>
                     <td width="5%" ></td>
                     <td width="45%" align="left">
-                        <div className="textTitle">{element.title}</div>
+                        <div className="textTitle2">{element.title}</div>
                         <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
                     </td><td width="50%">{this.renderImage(element)}</td>
                     </tr></tbody></table></div>
@@ -94,43 +94,38 @@ class Products extends React.Component {
         }
     }
 
+/*
+    '<table width="100%" cellspacing="10"><tbody>' +
+    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a DOM widget inside your own <b>website</b></td><td width="10%"/>' +
+    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a GUI component of a native <b>mobile</b> application.</td><td width="10%"/>' +
+    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a <b>customizable ad</b> with video, AR, 3d and animations!</td><td width="10%"/>' +
+    '</tbody></table></p>',
+*/
+
     render() {
         const elements = {
             'widget': {
-                title: 'Peeks Widget.',
-                description: '<p>Enable <b>Augmented Reality</b> and <b>Virtual Reality</b> within your digital properties.</p><p>The peeks player can be embedded as a widget inside your own solution:'+
-                '<table width="100%" cellspacing="10"><tbody>' +
-                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a DOM widget inside your own <b>website</b></td><td width="10%"/>' +
-                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a GUI component of a native <b>mobile</b> application.</td><td width="10%"/>' +
-                '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet.svg" alt="bullet" width="20px"/></td><td align="left">As a <b>customizable ad</b> with video, AR, 3d and animations!</td><td width="10%"/>' +
-                '</tbody></table></p>',
+                title: 'Immersive Advertisements',
+                description: '<p>Programmatic advertisements integrated with immersive experiences such as virtual try-ons and games increase click-through rates, dwell times and conversion.</p>',
                 image: 'snapshot-widget.png',
                 imageShadows: true,
                 canvas: 'peeks_shoe',
             },
             'tryon': {
-                title: 'Fitting Room.',
-                description: '<p>Enter the virtual fitting room and try-on products on yourself.</p>'+
-                    '<p>Use the best solution adapted to your products:' +
-                    '<table width="100%" cellspacing="10"><tbody>' +
-                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">AR <b>Face tracking</b> for head wearables (glasses, hats).</td><td width="10%"/>' +
-                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">2D photo montages from simple photographs.</td><td width="10%"/>' +
-                    '<tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Full body <b>3D avatar</b> mapping.</td><td width="10%"/>' +
-                    '</tbody></table></p>',
+                title: 'Virtual Try-ons',
+                description: '<p>From makeup to clothes to cars to accessories, virtual try-ons have been shown to engage your audience, increases conversion and customer satisfaction, and dramatically reduce returns.</p>',
                 image: 'snapshot-face-tracking.png',
             },
             'browser': {
-                title: 'VR Browser.',
-                description: '<p>Explore and navigate through all your inventory inside an <b>immersive 3d</b> environment using a Virtual Reality heaset.</p>' +
-                    '<p>Expose your products in our VR browser and get more exposure.</p>',
+                title: 'VR/AR E-Commerce Websites',
+                description: '<p>Get your brand out in front of the competition by establishing your presence in VR and AR. From specific content to entire websites, our machine learning technology makes it fast and easy to optimize your digital assets for AR and VR.</p>',
                 image: 'snapshot-browser.png',
                 imageShadows: true,
             },
             'user': {
-                title: 'User Profile.',
+                title: 'Try-on Avatars',
                 description:
-                    '<p>Let your customers setup their user profile and <b>virtual mannequin</b> for optimized shopping experience.</p>' +
-                    '<p>Collect new types of <b>analytics</b> for a more targeted product recommendation.</p>',
+                    '<p>Help your customers find the right fit and discover new products by virtually trying on clothes and accessories with an avatar sized to their specific measurements. Our new feature enables customers to use their avatar across multiple websites.</p>',
                 image: 'snapshot-user.png',
                 imageShadows: true,
             },
@@ -138,12 +133,15 @@ class Products extends React.Component {
 
         return (
             <div>
-            <div className="textTitle">A solution for everyone</div>
-            <div className="textDescription">Extend your brand with the right Mixed Reality experience for your clients.</div>
-            <img src="/ui-shape-underline.svg" alt="underline" width="50%"/>
-            {this.renderSection(elements['widget'], false, 'sectionBlank')}
+            <div className="sectionBlank"><table align="center"><tbody><tr>
+            <td width="10%" ></td>
+            <td width="80%" align="center">
+                <div className="textTitle">Immerse your audience in your brand’s story</div>
+            </td><td width="10%"></td>
+            </tr></tbody></table></div>
+            {this.renderSection(elements['widget'], false, 'sectionGrey')}
             {this.renderSection(elements['tryon'], true, 'sectionBlank')}
-            {this.renderSection(elements['browser'], false, 'sectionBlank')}
+            {this.renderSection(elements['browser'], false, 'sectionGrey')}
             {this.renderSection(elements['user'], true, 'sectionBlank')}
             </div>
         );

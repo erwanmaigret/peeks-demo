@@ -17,13 +17,13 @@ class Home extends Component {
     renderSection(element, isRight, section) {
         if (window.innerWidth < 650) {
             return (
-                <div>
+                <div className={section}>
                 <table align="center" width="100%"><tbody>
                 <tr>
                 <td width="10%"></td>
                 <td width="80%">
-                    <p className="textTitle">{element.title}</p>
-                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <p className="textTitle2" align="left">{element.title}</p>
+                    <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
                 </td>
                 <td width="10%"></td>
                 </tr>
@@ -33,10 +33,10 @@ class Home extends Component {
         } else {
             if (isRight) {
                 return (
-                    <div><table align="center"><tbody><tr>
+                    <div className={section}><table align="center"><tbody><tr>
                     <td width="50%">{this.renderExample(element)}</td>
                     <td width="40%">
-                        <p className="textTitle" align="left">{element.title}</p>
+                        <p className="textTitle2" align="left">{element.title}</p>
                         <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
                     </td>
                     <td width="10%"></td>
@@ -44,10 +44,10 @@ class Home extends Component {
                 );
             } else {
                 return (
-                    <div><table align="center"><tbody><tr>
+                    <div className={section}><table align="center"><tbody><tr>
                     <td width="10%"></td>
                     <td width="40%">
-                        <p className="textTitle" align="left">{element.title}</p>
+                        <p className="textTitle2" align="left">{element.title}</p>
                         <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
                     </td>
                     <td width="50%">{this.renderExample(element)}</td>
@@ -60,20 +60,18 @@ class Home extends Component {
     render() {
         const elements = {
             'intro': {
-                title: 'We make AR and VR a reality.',
-                description: '<p>Immersive web and mobile VR/AR technology now made available to the retail industry.</p><p>Turn all your inventory into AR. Customers have fun purchasing online using our AR tool. It brings the fitting room into their hands.</p>',
+                title: 'Portable, powerful, engaging AR & VR',
+                description: '<p>Reach your audience in new ways with <b>Peeks</b>.</p><p>Virtual try-ons, immersive websites, and engaging experiences that increase conversion, upselling from recommendations, and customer retention.</p>',
                 image: "snapshot-product-1.png",
             },
             'browser': {
-                title: 'Web-browser friendly.',
-                description: '<p>Wether your store is accessible from the web or a native application, our technology brings VR to all software environments.</p>' +
-                    '<p>We support all inventories, no kidding. Food, furniture, clothes, buildings, cars.. all!</p>',
+                title: 'It just works',
+                description: '<p>No special special apps or plug-in to download.</p><p>Creating and incorporating immersive content is easy and within your existing website, mobile app, and digital advertisements.</p><p>Our machine learning technology makes optimizing your existing content for AR and VR fast.</p>',
                 image: "snapshot-product-2.png",
             },
             'headset': {
-                title: 'Headset compatible.',
-                description: '<p>If you have a VR Headset, you can make it even more immersive.</p>' +
-                    '<p>We are compatible with all VR headsets from the simplest <b>Google Cardboard</b></p>',
+                title: 'You don’t need previous expertise in VR or AR',
+                description: '<p>Peeks is designed to easily integrate into your existing creative workflow.</p><p>This mean your creative team doesn’t need to ramp up or change the way they work.</p><p>Publishing content in AR and VR and is easy and fast.</p>',
                 image: "snapshot-product-3.png",
             },
         };
@@ -81,27 +79,8 @@ class Home extends Component {
         return (
             <div>
                 {this.renderSection(elements['intro'], false, 'sectionBlank')}
-                {this.renderSection(elements['browser'], true, 'sectionBlank')}
+                {this.renderSection(elements['browser'], true, 'sectionGrey')}
                 {this.renderSection(elements['headset'], false, 'sectionBlank')}
-                <table align="center" width="100%"><tbody>
-                    <tr>
-                    <td width="10%"></td>
-                    <td width="80%">
-                        <Timeline
-                            dataSource={{
-                            sourceType: 'profile',
-                            screenName: 'peeksio'
-                            }}
-                            options={{
-                            username: 'PeeksIo',
-                            height: '300'
-                            }}
-                        />
-                    </td>
-                    <td width="10%"></td>
-                    </tr>
-                    <tr></tr>
-                </tbody></table>
             </div>
         );
     }

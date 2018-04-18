@@ -215,11 +215,11 @@ class Examples extends React.Component {
                         <p>All the following snipets are as simple as possible so they can be quickly integrated into your code.</p>
                     </div>
                 </div>
-                {this.renderSection(elements['3d-model'], true, 'sectionBlank')}
+                {this.renderSection(elements['3d-model'], true, 'sectionGrey')}
                 {this.renderSection(elements['face'], false, 'sectionBlank')}
-                {this.renderSection(elements['image360'], true, 'sectionBlank')}
+                {this.renderSection(elements['image360'], true, 'sectionGrey')}
                 {this.renderSection(elements['movies'], false, 'sectionBlank')}
-                {this.renderSection(elements['image-processing'], true, 'sectionBlank')}
+                {this.renderSection(elements['image-processing'], true, 'sectionGrey')}
             </div>
         );
     }

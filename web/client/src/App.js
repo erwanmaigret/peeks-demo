@@ -6,6 +6,7 @@ import Products from './Products.js'
 import Sdk from './Sdk.js'
 import Home from './Home.js'
 //import store from "./store.js";
+import { Timeline } from 'react-twitter-widgets'
 
 function isPhone() {
     var userAgent = navigator.userAgent.toLowerCase();
@@ -36,7 +37,7 @@ function getLayoutWidth() {
     }
 }
 
-class Team extends React.Component {
+class About extends React.Component {
     renderTeamMember(member) {
         return (
             <td align='center'>
@@ -48,6 +49,31 @@ class Team extends React.Component {
                 <a href={member.linkedin} target="_blank"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
             </div>
             </td>
+        );
+    }
+
+    renderBlurb() {
+        return (
+            <table align="center" width="100%"><tbody>
+                <tr>
+                <td width="10%"></td>
+                <td width="80%">
+                <div className="textDescription" align="left">
+                <p>
+                Founded in 2017 and with more than a decade of combined experience in VR and AR, we at Peeks feel that the internet is not being effectively harnessed for AR and VR.
+                </p><p>
+                From browsing the web in VR and AR hardware to incorporating immersive experiences that benefit a brand’s audience, Peeks is the bridge between exclusively 2D content and custom created VR or AR content.
+                </p><p>
+                We help you reach your audience in new and immersive ways that help drive the outcomes your brand seeks.
+                </p><p>
+                From exposure to conversion to retention, Peeks provides meaningful and measurable value to brands across the full digital marketing funnel.
+                </p>
+                </div>
+                </td>
+                <td width="10%"></td>
+                </tr>
+                <tr></tr>
+            </tbody></table>
         );
     }
 
@@ -73,22 +99,62 @@ class Team extends React.Component {
         if (layout === 0) {
             return (
                 <div>
-                <div className="textTitle">Meet our team!</div>
+                {this.renderBlurb()}
+                <div className="textTitle2">Meet our team!</div>
                 <table align="center"><tbody><tr>
                     {this.renderTeamMember(members['ryan'])}
                 </tr><tr>
                     {this.renderTeamMember(members['erwan'])}
                 </tr></tbody></table>
+                <table align="center" width="100%"><tbody>
+                    <tr>
+                    <td width="10%"></td>
+                    <td width="80%">
+                        <Timeline
+                            dataSource={{
+                            sourceType: 'profile',
+                            screenName: 'peeksio'
+                            }}
+                            options={{
+                            username: 'PeeksIo',
+                            height: '300'
+                            }}
+                        />
+                    </td>
+                    <td width="10%"></td>
+                    </tr>
+                    <tr></tr>
+                </tbody></table>
                 </div>
             )
         } else {
             return (
                 <div>
-                <div className="textTitle">Meet our team!</div>
+                {this.renderBlurb()}
+                <div className="textTitle2">Meet our team!</div>
                 <table align="center"><tbody><tr>
                     {this.renderTeamMember(members['ryan'])}
                     {this.renderTeamMember(members['erwan'])}
                 </tr></tbody></table>
+                <table align="center" width="100%"><tbody>
+                    <tr>
+                    <td width="10%"></td>
+                    <td width="80%">
+                        <Timeline
+                            dataSource={{
+                            sourceType: 'profile',
+                            screenName: 'peeksio'
+                            }}
+                            options={{
+                            username: 'PeeksIo',
+                            height: '300'
+                            }}
+                        />
+                    </td>
+                    <td width="10%"></td>
+                    </tr>
+                    <tr></tr>
+                </tbody></table>
                 </div>
             )
         }
@@ -133,7 +199,7 @@ class MenuBar extends React.Component {
               {this.renderMenuItem('HOME')}
               {this.renderMenuItem('PRODUCTS')}
               {this.renderMenuItem('SDK')}
-              {this.renderMenuItem('TEAM')}
+              {this.renderMenuItem('ABOUT')}
             </div>
         </div>
         </Router>
@@ -150,7 +216,7 @@ class Pages extends React.Component {
       return (
           <div>
               <Route exact path="/" component={Home} />
-              <Route path="/team" component={Team} />
+              <Route path="/about" component={About} />
               <Route path="/products" component={Products} />
               <Route path="/sdk" component={Sdk} />
           </div>
@@ -182,27 +248,35 @@ class App extends Component {
     }
 
     render() {
+/*
+<table><tbody>
+<tr>
+<td width="2px"></td>
+<td><img src={logo} className="logo" alt="logo" width="20px"/></td>
+<td><div className="logoText">Peeks</div></td>
+</tr>
+</tbody></table>
+*/
+
     return (
         <div className="App">
+        <header className="header">
         <div><table width='100%' cellPadding="0" cellSpacing="5"><tbody><tr>
         <td align="left">
             <table><tbody>
             <tr>
             <td width="2px"></td>
-            <td><img src={logo} className="logo" alt="logo" width="20px"/></td>
             <td><div className="logoText">Peeks</div></td>
             </tr>
             </tbody></table>
         </td>
         <td align="right" valign="top"><MenuBar/></td>
         </tr></tbody></table></div>
+        </header>
         <Pages/>
         <footer className="footer">
-        <h1>We bring your inventory to life</h1>
-        <br/>
-        <p>Our VR technology is ultra easy to implement. Try it!</p>
-        <a href="mailto:info@peeks.io"><p>Request Trial</p></a>
-        <br/>
+        <div className="textTitleWhite">Immerse your audience in your brand’s story</div>
+        <p>Our VR technology is ultra easy to implement! <a href="mailto:info@peeks.io">Request Trial</a></p>
         <div>
             <a href="https://www.facebook.com/peeks.io/" target="_blank" rel="noopener noreferrer"><img src="/icon_facebook.png" alt="facebook" width="25px"/></a>&nbsp;&nbsp;
             <a href="https://twitter.com/PeeksIo" target="_blank" rel="noopener noreferrer"><img src="/icon_twitter.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
