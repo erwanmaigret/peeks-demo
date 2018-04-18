@@ -159,13 +159,15 @@
 }
 
 .sectionBlank {
-  padding: 20px;
-  color: #fff;
-  text-align: center;
+    padding: 0px;
+    margin: 0px;
+    color: #fff;
+    text-align: center;
 }
 
 .sectionGrey {
-  padding: 20px;
+  padding: 0px;
+  margin: 0px;
   color: #fff;
   background-color: #eee;
   text-align: center;
@@ -429,6 +431,12 @@ b {
     margin: 20px;
     padding: 0px;
     background-color: #fff;
+}
+
+.boxFill {
+    margin: 0px;
+    padding: 0px;
+    display: block;
 }
 
 .widget {

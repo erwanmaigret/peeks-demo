@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Timeline } from 'react-twitter-widgets'
+//import { Timeline } from 'react-twitter-widgets'
 
 class Home extends Component {
     renderExample(element) {
