@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <title>Example</title>
+        <link rel="stylesheet" href="https://dev.peeks.io/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="/peeks.js"></script>
+            <script>
+                PEEKS.registerPage('worldcraft', function() {
+
+                    var addVectors = function(v1, v2) {
+                        return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]];
+                    };
+
+                    var move = function() {
+                        var scene = this.getScene();
+                        var camera = scene.getCamera();
+                        var deltaTime = scene.time - scene.timeLast;
+                        var speed = 0;
+                        if (scene.deviceOrientation !== undefined) {
+                            speed = scene.deviceOrientation.beta / 180;
+                        }
+                        camera.setPosition(addVectors(camera.position, [0, deltaTime * speed, 0]));
+                    }
+
+                    var page = new PEEKS.Asset({
+                        bgColor: [226/255, 220/255, 209/255],
+                        gyroscope: 'on',
+                        onUpdate: move,
+                    });
+
+                    var assetPath = "/assets/";
+
+                    var getGeometryUrl = function (part) {
+                        return assetPath + "frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
+                    };
+
+                    var addGeometry = function(mesh, properties) {
+                        var node = this.addMesh({
+                            geometry: getGeometryUrl(mesh),
+                            position: this.position,
+                            size: 0.005
+                        });
+                        node.setProperties(properties);
+                        return node;
+                    };
+
+                    var addWorldCube = function() {
+                        var cube = page.addAsset({
+                            position: addVectors(this.position, this.offsetCube),
+                            faceColor: [Math.random(), Math.random(), Math.random()],
+                            faceSize: 0.5,
+                            addWorldFace: addWorldFace,
+                            addGeometry: addGeometry
+                        });
+                        cube.addWorldFace(addVectors(cube.position, [cube.faceSize / 2, 0, 0]), [0, 90, 0], [cube.faceSize / 2, 0, 0]);
+                        cube.addWorldFace(addVectors(cube.position, [-cube.faceSize / 2, 0, 0]), [0, -90, 0], [-cube.faceSize / 2, 0, 0]);
+                        cube.addWorldFace(addVectors(cube.position, [0, cube.faceSize / 2, 0]), [-90, 0, 0], [0, cube.faceSize / 2, 0]);
+                        cube.addWorldFace(addVectors(cube.position, [0, -cube.faceSize / 2, 0]), [90, 0, 0], [0, -cube.faceSize / 2, 0]);
+                        cube.addWorldFace(addVectors(cube.position, [0, 0, cube.faceSize / 2]), [0, 0, 0], [0, 0, cube.faceSize / 2]);
+                        cube.addWorldFace(addVectors(cube.position, [0, 0, -cube.faceSize / 2]), [0, 180, 0], [0, 0, -cube.faceSize / 2]);
+                        // cube.addGeometry("", { texture: assetPath + 'frye_boot_diffuse.jpg' });
+                        // cube.addGeometry("buckle", { texture: assetPath + 'frye_boot_diffuse.jpg' });
+                        // cube.addGeometry("sole", { texture: assetPath + 'frye_sole.jpg' });
+                        // cube.addGeometry("sole_top", { texture: assetPath + 'frye_sole.jpg' });
+                    };
+
+                    var addWorldFace = function(position, rotation, offsetCube) {
+                        var view = page.addView({
+                            position: position,
+                            rotation: rotation,
+                            size: this.faceSize,
+                            viewBgColor: this.faceColor,
+                            offsetCube: offsetCube,
+                            onClick: addWorldCube,
+                            alpha: 0.1,
+                            onFocusStart: function () {
+                                console.log('oui');
+                                this.animate({
+                                    duration: .5,
+                                    begin: 0.1,
+                                    end: 1,
+                                    attribute: 'alpha'
+                                });
+                            },
+                            onFocusEnd: function () {
+                                this.animate({
+                                    duration: .5,
+                                    begin: 1,
+                                    end: 0.1,
+                                    attribute: 'alpha'
+                                });
+                            }
+                        });
+                    };
+
+                    var initWorld = function() {
+                        for (var i = -1; i <= 1; i += 0.5) {
+                            for (var j = -1; j <= 1; j += 0.5) {
+                                var ground = page.addAsset({
+                                    position: [i, -1, j],
+                                    offsetCube: [0, 0.25, 0],
+                                    createCube: addWorldCube
+                                });
+                                ground.createCube();
+                            }
+                        }
+                    }
+
+                    initWorld();
+
+                    return page;
+                });
+
+                PEEKS.start(window, 'worldcraft');
+            </script>
+        </section>
+    </body>
+</html>
+

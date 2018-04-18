@@ -998,12 +998,14 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 			this.position = this.initialPosition.slice();
 			this.rotation = this.initialRotation.slice();
 			this.size = this.initialSize.slice();
+            // this.alpha = this.initialAlpha;
 		},
 
 		updateInitial: function() {
 			this.initialPosition = this.position.slice();
 			this.initialRotation = this.rotation.slice();
 			this.initialSize = this.size.slice();
+            // this.initialAlpha = this.alpha;
 		},
 
 		setPosition: function (x, y, z) {
@@ -1828,8 +1830,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             var asset = this.onPickNode(this.getMouse(event));
             if (this.assetOver) {
                 if (asset !== this.assetOver) {
-                    if (this.assetOver.onFocus !== undefined) {
-                        // should apply this custom focus method yet TBD
+                    if (this.assetOver.onFocusEnd !== undefined) {
+                        this.assetOver.onFocusEnd();
                     } else {
                         this.assetOver.animateFocusEnd();
                     }
@@ -1838,8 +1840,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
             if (asset && asset.onClick && asset !== this.assetOver) {
                 this.assetOver = asset;
-                if (asset.onFocus !== undefined) {
-                    // should apply this custom focus method yet TBD
+                if (asset.onFocusStart !== undefined) {
+                    asset.onFocusStart();
                 } else {
                     asset.animateFocusStart();
                 }
@@ -3052,18 +3054,26 @@ function Animation(data) {
 		this.p3 = [0, 0, 0];
 	}
 	if (!this.p1) {
-		this.p1 = [
-			this.p0[0] * 2 / 3 + this.p3[0] / 3,
-			this.p0[1] * 2 / 3 + this.p3[1] / 3,
-			this.p0[2] * 2 / 3 + this.p3[2] / 3
-		];
+        if (typeof this.p0 === 'number' && typeof this.p3 === 'number') {
+            this.p1 = this.p0 * 2 / 3 + this.p3 / 3;
+        } else {
+    		this.p1 = [
+    			this.p0[0] * 2 / 3 + this.p3[0] / 3,
+    			this.p0[1] * 2 / 3 + this.p3[1] / 3,
+    			this.p0[2] * 2 / 3 + this.p3[2] / 3
+    		];
+        }
 	}
 	if (!this.p2) {
-		this.p2 = [
-			this.p0[0] * 1 / 3 + this.p3[0] * 2 / 3,
-			this.p0[1] * 1 / 3 + this.p3[1] * 2 / 3,
-			this.p0[2] * 1 / 3 + this.p3[2] * 2 / 3
-		];
+        if (typeof this.p0 === 'number' && typeof this.p3 === 'number') {
+            this.p2 = this.p0 * 1 / 3 + this.p3 * 2 / 3;
+        } else {
+    		this.p2 = [
+    			this.p0[0] * 1 / 3 + this.p3[0] * 2 / 3,
+    			this.p0[1] * 1 / 3 + this.p3[1] * 2 / 3,
+    			this.p0[2] * 1 / 3 + this.p3[2] * 2 / 3
+    		];
+        }
 	}
 
 	if (data.attribute) this.attribute = data.attribute;
@@ -3137,23 +3147,28 @@ Animation.prototype = Object.assign(Object.create( Asset.prototype ),
 			var k2 = 3 * (1 - t) * t * t;
 			var k3 = t * t * t;
 
-			var p = [
-				k0 * this.p0[0] + k1 * this.p1[0] + k2 * this.p2[0] + k3 * this.p3[0],
-				k0 * this.p0[1] + k1 * this.p1[1] + k2 * this.p2[1] + k3 * this.p3[1],
-				k0 * this.p0[2] + k1 * this.p1[2] + k2 * this.p2[2] + k3 * this.p3[2],
-			];
 
 			if (this.parent) {
 				if (this.parent[this.attribute]) {
-					if (this.attribute === 'size') {
-						this.parent[this.attribute][0] *= p[0];
-						this.parent[this.attribute][1] *= p[1];
-						this.parent[this.attribute][2] *= p[2];
-					} else {
-						this.parent[this.attribute][0] += p[0];
-						this.parent[this.attribute][1] += p[1];
-						this.parent[this.attribute][2] += p[2];
-					}
+                    if (typeof this.parent[this.attribute] === 'number') {
+                        var p = k0 * this.p0 + k1 * this.p1 + k2 * this.p2 + k3 * this.p3;
+                        this.parent[this.attribute] += p;
+                    } else {
+                        var p = [
+                            k0 * this.p0[0] + k1 * this.p1[0] + k2 * this.p2[0] + k3 * this.p3[0],
+                            k0 * this.p0[1] + k1 * this.p1[1] + k2 * this.p2[1] + k3 * this.p3[1],
+                            k0 * this.p0[2] + k1 * this.p1[2] + k2 * this.p2[2] + k3 * this.p3[2],
+                        ];
+    					if (this.attribute === 'size') {
+    						this.parent[this.attribute][0] *= p[0];
+    						this.parent[this.attribute][1] *= p[1];
+    						this.parent[this.attribute][2] *= p[2];
+    					} else {
+                            this.parent[this.attribute][0] += p[0];
+                            this.parent[this.attribute][1] += p[1];
+                            this.parent[this.attribute][2] += p[2];
+                        }
+                    }
 				}
 			}
 
