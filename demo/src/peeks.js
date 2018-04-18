@@ -998,17 +998,22 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 			this.position = this.initialPosition.slice();
 			this.rotation = this.initialRotation.slice();
 			this.size = this.initialSize.slice();
-            // this.alpha = this.initialAlpha;
+            this.alpha = this.initialAlpha;
 		},
 
 		updateInitial: function() {
 			this.initialPosition = this.position.slice();
 			this.initialRotation = this.rotation.slice();
 			this.initialSize = this.size.slice();
-            // this.initialAlpha = this.alpha;
+            this.initialAlpha = this.alpha;
 		},
 
-		setPosition: function (x, y, z) {
+        setAlpha: function (value) {
+            this.alpha = value;
+            this.initialAlpha = this.alpha;
+        },
+
+        setPosition: function (x, y, z) {
 			if (typeof x === "number") {
 				if (x) this.position[0] = x;
 				if (y) this.position[1] = y;
@@ -3037,23 +3042,23 @@ function Animation(data) {
     this.ended = false;
 
 	// Assign all passed in attributes
-	if (data.duration) this.duration = data.duration;
-	if (data.delay) this.delay = data.delay;
+	if (data.duration !== undefined) this.duration = data.duration;
+	if (data.delay !== undefined) this.delay = data.delay;
 
-	if (data.begin) this.p0 = data.begin;
-	if (data.end) this.p3 = data.end;
-	if (data.p0) this.p0 = data.p0;
-	if (data.p1) this.p1 = data.p1;
-	if (data.p2) this.p2 = data.p2;
-	if (data.p3) this.p3 = data.p3;
+	if (data.begin !== undefined) this.p0 = data.begin;
+	if (data.end !== undefined) this.p3 = data.end;
+	if (data.p0 !== undefined) this.p0 = data.p0;
+	if (data.p1 !== undefined) this.p1 = data.p1;
+	if (data.p2 !== undefined) this.p2 = data.p2;
+	if (data.p3 !== undefined) this.p3 = data.p3;
 
-	if (!this.p0) {
+	if (this.p0 === undefined) {
 		this.p0 = [0, 0, 0];
 	}
-	if (!this.p3) {
+	if (this.p3 === undefined) {
 		this.p3 = [0, 0, 0];
 	}
-	if (!this.p1) {
+	if (this.p1 === undefined) {
         if (typeof this.p0 === 'number' && typeof this.p3 === 'number') {
             this.p1 = this.p0 * 2 / 3 + this.p3 / 3;
         } else {
@@ -3064,7 +3069,7 @@ function Animation(data) {
     		];
         }
 	}
-	if (!this.p2) {
+	if (this.p2 === undefined) {
         if (typeof this.p0 === 'number' && typeof this.p3 === 'number') {
             this.p2 = this.p0 * 1 / 3 + this.p3 * 2 / 3;
         } else {
@@ -3078,7 +3083,7 @@ function Animation(data) {
 
 	if (data.attribute) this.attribute = data.attribute;
 
-	if (data.loop) {
+	if (data.loop !== undefined) {
 		this.loop = data.loop;
 	}
 
