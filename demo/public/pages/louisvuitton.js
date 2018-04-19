@@ -636,7 +636,8 @@ PEEKS.registerPage('louisvuitton', function() {
         },
         rotation: [0, 0, 0],
         onClick: entranceOpen,
-        onFocus: function() {},
+        onFocusStart: function () {},
+        onFocusEnd: function () {},
     });
     lvLogo.addMesh({
         geometry: '/assets/lv_logo_bg.obj',

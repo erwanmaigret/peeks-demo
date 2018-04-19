@@ -9,7 +9,8 @@ PEEKS.registerPage('widget_shoe', function() {
         rotation: [0, 20, 0],
         onClick: 'animateRotate90',
         size: .035,
-        onFocus: '', // Disable default focus zoom-in effect
+        onFocusStart: function () {},
+        onFocusEnd: function () {},
     });
 
     var assetPath = "/assets/";

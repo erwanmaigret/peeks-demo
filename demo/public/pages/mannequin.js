@@ -4,7 +4,8 @@ function createMannequin(page) {
     var model = femaleHigh.addAsset({
         onClick: 'animateRotate90',
         size: .013,
-        onFocus: '',
+        onFocusStart: function () {},
+        onFocusEnd: function () {},
     });
 
     model.mannequin = {

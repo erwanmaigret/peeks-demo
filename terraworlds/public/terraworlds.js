@@ -96,7 +96,6 @@ PEEKS.registerPage('Terraworlds', function() {
     		size: .08,
             image: icon,
             game: game,
-            onFocus: "",
             onClick: function() {
                 game.setTool(this);
                 tool.image = image;

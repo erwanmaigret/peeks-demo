@@ -24,7 +24,8 @@
                         rotation: [0, -110, 0],
                         onClick: 'animateRotate90',
                         size: .03,
-                        onFocus: '', // Disable default focus zoom-in effect
+                        onFocusStart: function () {},
+                        onFocusEnd: function () {},
                     });
 
                     var assetPath = "https://dev.peeks.io/assets/";
