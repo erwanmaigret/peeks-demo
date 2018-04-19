@@ -372,7 +372,7 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             var asset = this.addButton(params);
             asset.addAttrAlias('viewBgColor', 'colorWhite');
             asset.addAttrAlias('alpha', 'buttonBgAlpha');
-            asset.alpha = 0;
+            asset.setAlpha(0);
 
             asset.addText({
                 position: [0, 0, .01],
@@ -2889,7 +2889,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 if (!scene.isWidget) {
                     scene.onResize(scene.window.innerWidth, scene.window.innerHeight);
                 } else {
-                    scene.onResize(scene.domElement.width / this.pixelRatio, scene.domElement.height / this.pixelRatio);
+                    scene.onResize(scene.domElement.width / scene.pixelRatio, scene.domElement.height / scene.pixelRatio);
                 }
 
                 // Update global UI components
