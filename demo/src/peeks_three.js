@@ -556,7 +556,19 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             if (child instanceof THREE.Mesh) {
                 if (child.geometry && child.material) {
                     var refMat = asset.material || {};
-                    if (refMat.type === 'velvet') {
+                    var matType = refMat.type;
+                    // We used to highjack the shaders but this is not forward
+                    //  compatible with new versions of ThreeJS so we'll need something
+                    //  that can evolve better so we keep up to date with
+                    //  ThreeJS releases when dealing with custom shaders.
+                    // In the meantime we'll shut this down instead of fixing it
+                    //  since it's based on some internal assumptions on how
+                    //  threejs shading is setup
+                    var allowCustomShaders = false;
+                    if (!allowCustomShaders) {
+                        matType = 'MeshPhongMaterial';
+                    }
+                    if (matType === 'velvet') {
                         var shader = THREE.ShaderPeeks["fabric"];
         				var fragmentShader = shader.fragmentShader;
         				var vertexShader = shader.vertexShader;
@@ -581,7 +593,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         } else {
                             uniforms["uFresnelScale"].value = 0.0;
                         }
-                    } else if (refMat.type === 'phong') {
+                    } else if (matType === 'phong') {
                         var shader = THREE.ShaderPeeks["phong"];
         				var fragmentShader = shader.fragmentShader;
         				var vertexShader = shader.vertexShader;
@@ -665,7 +677,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         // PEEKS.ThreeShaderAttr(material, 'side', THREE.FrontSide);
                     } else {
                         var material = child.material;
-                        if (material.type !== 'MeshPhongMaterial') {
+                        if (material.type === undefined) {
                             material = new THREE.MeshPhongMaterial({
                                 color: 0xffffff,
                                 transparent: true,
@@ -674,32 +686,38 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                             });
                             child.material = material;
                         }
-                        material.map = PEEKS.ThreeTextureLoader(asset.textureUrl);
-                        material.transparent = true;
-                        material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
-                        material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , 1);
-                        material.shininess = PEEKS.ThreeFloat(refMat.shininess, 30);
-                        material.emissive = PEEKS.ThreeColor(refMat.emissive, [.0, .0, .0]);
-                        material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
-                        material.specularMap = PEEKS.ThreeTextureLoader(refMat.specularMap);
-                        material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
-                        material.normalScale = PEEKS.ThreeV2(refMat.normalScale, [1, 1]);
-                        material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
-                        material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
-                        material.bumpScale = PEEKS.ThreeFloat(refMat.bumpScale, 1);
-                        material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
-                        material.side = THREE.FrontSide;
+                        if (asset.textureUrl || asset.color) {
+                            // This is user defined, if neither color or texture is set
+                            //  let the default happen from whatever got loaded
+                            // In the future we should have the option to refine
+                            //  special elements so it's not binary like this
+                            material.map = PEEKS.ThreeTextureLoader(asset.textureUrl);
+                            material.transparent = true;
+                            material.opacity = PEEKS.ThreeFloat(asset.alpha, 1);
+                            material.reflectivity = PEEKS.ThreeFloat(refMat.reflectivity , 1);
+                            material.shininess = PEEKS.ThreeFloat(refMat.shininess, 30);
+                            material.emissive = PEEKS.ThreeColor(refMat.emissive, [.0, .0, .0]);
+                            material.specular = PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]);
+                            material.specularMap = PEEKS.ThreeTextureLoader(refMat.specularMap);
+                            material.normalMap = PEEKS.ThreeTextureLoader(refMat.normalMap);
+                            material.normalScale = PEEKS.ThreeV2(refMat.normalScale, [1, 1]);
+                            material.alphaMap = PEEKS.ThreeTextureLoader(refMat.alphaMap);
+                            material.bumpMap = PEEKS.ThreeTextureLoader(refMat.bumpMap);
+                            material.bumpScale = PEEKS.ThreeFloat(refMat.bumpScale, 1);
+                            material.color = PEEKS.ThreeColor(asset.color, [1, 1, 1]);
+                            material.side = THREE.FrontSide;
 
-                        var repeat = refMat.textureRepeat || asset.textureRepeat;
-                        if (repeat) {
-                            if (material.map) {
-                                material.map.wrapS = THREE.RepeatWrapping;
-                        		material.map.wrapT = THREE.RepeatWrapping;
-                        		material.map.repeat.set(repeat[0], repeat[1]);
-                            }
-                            if (material.normalMap) {
-                                material.normalMap.wrapS = THREE.RepeatWrapping;
-                        		material.normalMap.wrapT = THREE.RepeatWrapping;
+                            var repeat = refMat.textureRepeat || asset.textureRepeat;
+                            if (repeat) {
+                                if (material.map) {
+                                    material.map.wrapS = THREE.RepeatWrapping;
+                            		material.map.wrapT = THREE.RepeatWrapping;
+                            		material.map.repeat.set(repeat[0], repeat[1]);
+                                }
+                                if (material.normalMap) {
+                                    material.normalMap.wrapS = THREE.RepeatWrapping;
+                            		material.normalMap.wrapT = THREE.RepeatWrapping;
+                                }
                             }
                         }
                     }
@@ -818,38 +836,55 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 var node = this.threeObject;
                 this.threeObject.peeksAsset = peeksObject;
                 var autofit = this.getAttr('autofit');
-                var loader = new THREE.OBJLoader( manager );
-                loader.load(this.geometryUrl, function ( object ) {
-                    node.add(object);
-                    if (autofit) {
-                        var boundingSphere;
+                var loader;
+                console.log(this.geometryUrl);
+                var extension = this.geometryUrl.split('.').pop().toLowerCase();
+                if (this.geometryUrl) {
+                    var extension = this.geometryUrl.split('.').pop().toLowerCase();
+                    if (extension === 'obj') {
+                        loader = new THREE.OBJLoader( manager );
+                    } else if (extension === 'gltf') {
+                        loader = new THREE.GLTFLoader( manager );
+                    }
+                }
+                if (loader) {
+                    loader.load(this.geometryUrl, function ( object ) {
+                        if (extension === 'gltf') {
+                            object = object.scene;
+                        }
+                        node.add(object);
+                        if (autofit) {
+                            var boundingSphere;
+                            object.traverse( function ( child ) {
+                                if ( child instanceof THREE.Mesh ) {
+                                    if (child.geometry) {
+                                        child.geometry.computeBoundingSphere();
+                                        if (boundingSphere === undefined) {
+                                            boundingSphere = child.geometry.boundingSphere;
+                                        }
+                                        child.position.set(
+                                            -boundingSphere.center.x,
+                                            -boundingSphere.center.y,
+                                            -boundingSphere.center.z
+                                        );
+                                    }
+                                }
+                            });
+                        }
+
                         object.traverse( function ( child ) {
                             if ( child instanceof THREE.Mesh ) {
                                 if (child.geometry) {
-                                    child.geometry.computeBoundingSphere();
-                                    if (boundingSphere === undefined) {
-                                        boundingSphere = child.geometry.boundingSphere;
-                                    }
-                                    child.position.set(
-                                        -boundingSphere.center.x,
-                                        -boundingSphere.center.y,
-                                        -boundingSphere.center.z
-                                    );
+                                    child.geometry.computeFaceNormals();
                                 }
                             }
                         });
-                    }
 
-                    object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {
-                            if (child.geometry) {
-                                child.geometry.computeFaceNormals();
-                            }
-                        }
-                    });
-
-                    object.parent.peeksAsset.threeSynchMaterial();
-                }, onProgress, onError );
+                        object.parent.peeksAsset.threeSynchMaterial();
+                    }, onProgress, onError );
+                } else {
+                    this.error('Unable to load geometry from url ' + this.geometryUrl.toString());
+                }
             } else if (this.primitive === PEEKS.Asset.PrimitiveLight) {
                 if (this.lightType === "ambient") {
                     this.threeObject = new THREE.AmbientLight();

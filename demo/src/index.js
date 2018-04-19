@@ -10,6 +10,7 @@ require('./peeks.tracking.js');
 var global = Function('return this')();
 
 global.THREE = require('./three.js');
+require('./three/loaders/GLTFLoader.js');
 require('./three/loaders/OBJLoader.js');
 require('./peeks_three.js');
 

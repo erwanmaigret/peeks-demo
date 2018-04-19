@@ -43,6 +43,7 @@ app.use('/face', require('./routes/face'));
 app.use('/opencv', require('./routes/opencv'));
 app.use('/facetracking', require('./routes/facetracking'));
 app.use('/widget', require('./routes/widget'));
+app.use('/gltf', require('./routes/gltf'));
 
 /*
 

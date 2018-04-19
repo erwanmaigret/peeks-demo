@@ -77,6 +77,7 @@ router.get('/', function(req, res, next) {
     //data.pages.push({ name: 'peeks.demo.assets' });
 
     data.pages.push({ name: 'Face', page: 'face', url: '/face' });
+    data.pages.push({ name: 'Gltf', page: 'gltf', url: '/gltf' });
 
     res.send(JSON.stringify(data));
 });
