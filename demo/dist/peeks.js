@@ -2953,6 +2953,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             var scene = this;
 
+            this.pixelRatio = window.devicePixelRatio;
+
 			this.onStart();
 
 			if (!this.isWidget) {
@@ -2979,7 +2981,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 if (!scene.isWidget) {
                     scene.onResize(scene.window.innerWidth, scene.window.innerHeight);
                 } else {
-                    scene.onResize(scene.domElement.width / window.devicePixelRatio, scene.domElement.height / window.devicePixelRatio);
+                    scene.onResize(scene.domElement.width / this.pixelRatio, scene.domElement.height / this.pixelRatio);
                 }
 
                 // Update global UI components
@@ -50725,15 +50727,7 @@ PEEKS.Scene.prototype.onStart = function() {
     });
     renderer.sortObjects = false;
 	renderer.setClearColor(0xffffff, 1);
-
-    // Always work retina-style with 4 fragments per pixel
-    // This should be adaptive based on the device performances
-    if (this.isPhone) {
-        // The window resolution values are already adjusted by the browser
-        renderer.setPixelRatio(1);
-    } else {
-        renderer.setPixelRatio(window.devicePixelRatio);
-    }
+    renderer.setPixelRatio(this.pixelRatio);
 
     this.cameraAngle = 55;
     var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
