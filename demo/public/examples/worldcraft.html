@@ -10,7 +10,6 @@
             <script src="/peeks.js"></script>
             <script>
                 PEEKS.registerPage('worldcraft', function() {
-
                     var addVectors = function(v1, v2) {
                         return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]];
                     };
@@ -34,17 +33,29 @@
 
                     var assetPath = "/assets/";
 
+                    var animals = [
+                        {name: "cat", size: 0.0004},
+                        {name: "cow", size: 0.00025},
+                        {name: "deer", size: 0.00025},
+                        {name: "goat", size: 0.0003},
+                        {name: "rat", size: 0.002},
+                        {name: "wolf", size: 0.0015}
+                    ];
+
+                    var selectedAnimalIndex = 0;
+
                     var getGeometryUrl = function (part) {
-                        return assetPath + "frye_boot" + (part !== "" ? "_" + part : "") + ".obj";
+                        return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".obj";
                     };
 
-                    var addGeometry = function(mesh, properties) {
+                    var addAnimal = function() {
+                        var animal = animals[selectedAnimalIndex];
                         var node = this.addMesh({
-                            geometry: getGeometryUrl(mesh),
-                            position: this.position,
-                            size: 0.005
+                            geometry: getGeometryUrl(animal.name),
+                            size: animal.size,
+                            color: this.faceColor,
+                            autofit: true
                         });
-                        node.setProperties(properties);
                         return node;
                     };
 
@@ -54,7 +65,7 @@
                             faceColor: [Math.random(), Math.random(), Math.random()],
                             faceSize: 0.5,
                             addWorldFace: addWorldFace,
-                            addGeometry: addGeometry
+                            addAnimal: addAnimal
                         });
                         cube.addWorldFace(addVectors(cube.position, [cube.faceSize / 2, 0, 0]), [0, 90, 0], [cube.faceSize / 2, 0, 0]);
                         cube.addWorldFace(addVectors(cube.position, [-cube.faceSize / 2, 0, 0]), [0, -90, 0], [-cube.faceSize / 2, 0, 0]);
@@ -62,10 +73,7 @@
                         cube.addWorldFace(addVectors(cube.position, [0, -cube.faceSize / 2, 0]), [90, 0, 0], [0, -cube.faceSize / 2, 0]);
                         cube.addWorldFace(addVectors(cube.position, [0, 0, cube.faceSize / 2]), [0, 0, 0], [0, 0, cube.faceSize / 2]);
                         cube.addWorldFace(addVectors(cube.position, [0, 0, -cube.faceSize / 2]), [0, 180, 0], [0, 0, -cube.faceSize / 2]);
-                        // cube.addGeometry("", { texture: assetPath + 'frye_boot_diffuse.jpg' });
-                        // cube.addGeometry("buckle", { texture: assetPath + 'frye_boot_diffuse.jpg' });
-                        // cube.addGeometry("sole", { texture: assetPath + 'frye_sole.jpg' });
-                        // cube.addGeometry("sole_top", { texture: assetPath + 'frye_sole.jpg' });
+                        cube.addAnimal();
                     };
 
                     var addWorldFace = function(position, rotation, offsetCube) {
@@ -78,7 +86,6 @@
                             onClick: addWorldCube,
                             alpha: 0.1,
                             onFocusStart: function () {
-                                console.log('in');
                                 this.animate({
                                     duration: .5,
                                     begin: 0,
@@ -87,7 +94,6 @@
                                 });
                             },
                             onFocusEnd: function () {
-                                console.log('out');
                                 this.animate({
                                     duration: .5,
                                     begin: 0,
@@ -98,6 +104,35 @@
                         });
                     };
 
+                    var getImageUrl = function (part) {
+                        return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".jpg";
+                    };
+
+                    var canvas = page.addCanvas({
+                        valign: "bottom"
+                    });
+
+                    var selectedAnimalImage = canvas.addImage({
+                        image: assetPath + "material_dark.jpg",
+                        position: [selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0],
+                        size: [0.16, 0.16, 1]
+                    });
+
+                    var changeSelectedAnimal = function() {
+                        selectedAnimalIndex = this.animalIndex;
+                        selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
+                    };
+
+                    for (var i = 0; i < animals.length; i++) {
+                        canvas.addImage({
+                            image: getImageUrl(animals[i].name),
+                            position: [i / animals.length + 0.075 - .5, 0.415, 0],
+                            size: [0.15, 0.15, 1],
+                            onClick: changeSelectedAnimal,
+                            animalIndex: i
+                        });
+                    }
+
                     var initWorld = function() {
                         for (var i = -1; i <= 1; i += 0.5) {
                             for (var j = -3; j <= 1; j += 0.5) {
@@ -106,9 +141,11 @@
                                     offsetCube: [0, 0.25, 0],
                                     createCube: addWorldCube
                                 });
+                                selectedAnimalIndex = Math.floor(Math.random() * animals.length);
                                 ground.createCube();
                             }
                         }
+                        selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
                     }
 
                     initWorld();
