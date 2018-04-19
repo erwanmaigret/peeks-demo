@@ -57,155 +57,122 @@ class Examples extends React.Component {
         }
     }
 
-    renderSection(element, isRight, section) {
+    renderSection(element, isRight) {
         const layout = getLayoutWidth();
+        const section = isRight ? 'sectionBlank' : 'sectionGrey';
         if (layout === 0) {
             return (
                 <div className={section}>
                 <table align="center" width="100%"><tbody><tr><td>
-                    <p className="textTitle2">{element.title}</p>
-                    <p className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <div className="textTitle2">{element.title}</div>
+                    <div className="textDescription" align="left">{element.description()}</div>
                 </td></tr>
                 <tr><td width="50%">{this.renderImage(element)}</td></tr>
                 </tbody></table></div>
             );
         } else {
-            if (isRight) {
-                return (
-                    <div className={section}><table align="center" width="100%">
-                    <tbody><tr>
-                    <td width="50%">{this.renderImage(element)}</td>
-                    <td width="5%"></td>
-                    <td width="45%" align="left">
-                        <div className="textTitle2">{element.title}</div>
-                        <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
-                    </td>
-                    </tr></tbody></table>
-                    </div>
-                );
-            } else {
-                return (
-                    <div className={section}>
-                    <table align="center" width="100%"><tbody><tr>
-                        <td width="5%" ></td>
-                        <td width="45%" align="left">
-                            <div className="textTitle2">{element.title}</div>
-                            <div className="textDescription" dangerouslySetInnerHTML={{__html: element.description}}></div>
-                        </td>
-                        <td width="50%">{this.renderImage(element)}</td>
-                    </tr></tbody></table>
-                    </div>
-                );
-            }
+            return (
+                <div className={section}><table align="center" width="80%">
+                <tbody><tr>
+                <td align="right" width="40%">{this.renderImage(element)}</td>
+                <td align="left">
+                    <div className="textTitle2">{element.title}</div>
+                    <div className="textDescription">{element.description()}</div>
+                </td>
+                <td></td>
+                </tr></tbody></table>
+                </div>
+            );
         }
     }
 
     render() {
         const elements = {
+            'gltf': {
+                title: 'GLTF',
+                description: function () {return (<div>
+                    <span>
+                    <p>Load rich GLTF 2.0 Models</p>
+                    <p>This is the new standard for Web 3d industry coming with animations, shading models and deformations.</p>
+                    </span>
+                    <table><tbody><tr>
+                    <td><a href='/examples/example-gltf.js' target='_blank'>Javascript code</a></td>
+                    <td><a href='/examples/example-gltf.html' target='_blank'>Run</a></td>
+                    </tr></tbody></table>
+                </div>);},
+                image: 'examples/example-gltf.png',
+            },
             '3d-model': {
-                title: '3d Product.',
-                description:
-                    "<span>"+
-                    '<p>Import 3d models</p>'+
-                    '<p>You can use standard material properties</p>' +
-                    '</span>'+
-                    "<table width='100%'><tr>" +
-                    "<td align='left'><a href='/widget_shoe.js' target='_blank'>Javascript code</a></td>"+
-                    "<td align='right'><a href='/examples/example-3d-model.html' target='_blank'>Run</td>"+
-                    "</tr></table>",
+                title: '3d Product',
+                description: function () {return (<div>
+                    <span>
+                    <p>Import 3d models</p>
+                    <p>You can use standard material properties</p>
+                    </span>
+                    <table><tbody><tr>
+                    <td><a href='/widget_shoe.js' target='_blank'>Javascript code</a></td>
+                    <td><a href='/examples/example-3d-model.html' target='_blank'>Run</a></td>
+                    </tr></tbody></table>
+                </div>);},
                 image: 'examples/example-3d-model.png',
             },
             'face': {
-                title: 'Face Tracking.',
-                description:
-                    "<span>"+
-                    '<p>Add face tracking in <b>50 lines of code</b>!</p>'+
-                    '<p>Allow the user to see themselves inside of a viewer and attach any 3d assets to their face</p>' +
-                    "<p>This can be used for creating fun experiences of virtually trying products on one's head.</p>" +
-                    '</span>'+
-                    "<table width='100%'><tr>" +
-                    "<td align='left'><a href='/examples/example-facetracking.js' target='_blank'>Javascript code</a></td>"+
-                    "<td align='right'><a href='/examples/example-facetracking.html' target='_blank'>Run</td>"+
-                    "</tr></table>",
+                title: 'Face Tracking',
+                description: function () {return (<div>
+                    <span>
+                        <p>Add face tracking in <b>50 lines of code</b>!</p>
+                        <p>Allow the user to see themselves inside of a viewer and attach any 3d assets to their face</p>
+                        <div>This can be used for creating fun experiences of virtually trying products on one&#39;s head.</div>
+                    </span>
+                    <table><tbody><tr>
+                    <td><a href='/examples/example-facetracking.js' target='_blank'>Javascript code</a></td>
+                    <td><a href='/examples/example-facetracking.html' target='_blank'>Run</a></td>
+                    </tr></tbody></table>
+                </div>);},
                 image: 'examples/example-face.png',
             },
             'image-processing': {
-                title: 'Dynamic Image Processing.',
-                description:
-                    "<span>"+
-                    '<p>Dynamically change loaded images with super-simple pixel operations.</p>'+
-                    '<p>This is very useful when using external assets that you need to reference from your Peeks scene.</p>' +
-                    '</span>'+
-                    "<table width='100%'><tr>" +
-                    "<td align='left'><a href='/examples/example-image-processing.js' target='_blank'>Javascript code</a></td>"+
-                    "<td align='right'><a href='/examples/example-image-processing.html' target='_blank'>Run</td>"+
-                    "</tr></table>",
+                title: 'Dynamic Image Processing',
+                description: function () {return (<div>
+                    <span>
+                    <p>Dynamically change loaded images with super-simple pixel operations.</p>
+                    <p>This is very useful when using external assets that you need to reference from your Peeks scene.</p>
+                    </span>
+                    <table><tbody><tr>
+                    <td><a href='/examples/example-image-processing.js' target='_blank'>Javascript code</a></td>
+                    <td><a href='/examples/example-image-processing.html' target='_blank'>Run</a></td>
+                    </tr></tbody></table>
+                    </div>);},
                 image: 'examples/example-image-processing.png',
             },
-            'carVR': {
-                title: 'Car VR.',
-                description:
-                '<p>Explore the interior of a car in 360'+
-                '</p>',
-                image: 'examples/example-car-vr.png',
-            },
-            'furtinureAR': {
-                title: 'Furniture AR.',
-                description: '<p>Explore the interior of a car in 360</p>',
-                image: 'examples/example-furniture-ar.png',
-            },
-            'scan3D': {
-                title: '3d Scan.',
-                description:
-                '<p>Explore the interior of a car in 360'+
-                '</p>',
-                image: 'examples/example-scane-3d.png',
-            },
-            'visitVR': {
-                title: 'VR visit.',
-                description:
-                '<p>Explore the interior of a car in 360'+
-                '</p>',
-                image: 'examples/example-visit-vr.png',
-            },
-            'objectDesigner': {
-                title: 'Virtual Designer.',
-                description:
-                '<p>Create a 3d Object and allow to customize it'+
-                '</p>',
-                image: 'examples/example-object-designer.png',
-            },
             'movies': {
-                title: 'Play movies.',
-                description:
-                    "<span>"+
-                    '<p>Integrate movie streams into your 3D experience.</p>'+
-                    '</span>'+
-                    "<table width='100%'><tr>" +
-                    "<td align='left'><a href='/examples/example-movie.js' target='_blank'>Javascript code</a></td>"+
-                    "<td align='right'><a href='/examples/example-movie.html' target='_blank'>Run</td>"+
-                    "</tr></table>",
+                title: 'Play movies',
+                description: function () {return (<div>
+                    <span>
+                    <p>Integrate movie streams into your 3D experience.</p>
+                    </span>
+                    <table><tbody><tr>
+                    <td><a href='/examples/example-movie.js' target='_blank'>Javascript code</a></td>
+                    <td><a href='/examples/example-movie.html' target='_blank'>Run</a></td>
+                    </tr></tbody></table>
+                </div>);},
                 image: 'examples/example-movie.png',
             },
             'image360': {
-                title: '360 images.',
-                description:
-                    "<span>"+
-                    '<p>Easily create Virtual experiences using 360 images.</p>'+
-                    '</span>'+
-                    "<table width='100%'><tr>" +
-                    "<td align='left'><a href='/examples/example-360.js' target='_blank'>Javascript code</a></td>"+
-                    "<td align='right'><a href='/examples/example-360.html' target='_blank'>Run</td>"+
-                    "</tr></table>",
+                title: '360 images',
+                description: function () {return (<div>
+                    <span>
+                    <p>Easily create Virtual experiences using 360 images.</p>
+                    </span>
+                    <table><tbody><tr>
+                    <td><a href='/examples/example-360.js' target='_blank'>Javascript code</a></td>
+                    <td><a href='/examples/example-360.html' target='_blank'>Run</a></td>
+                    </tr></tbody></table>
+                </div>);},
                 image: 'examples/example-image360.png',
             },
         };
 
-        //{this.renderSection(elements['carVR'], true, 'sectionBlank')}
-        //{this.renderSection(elements['furtinureAR'], false, 'sectionBlank')}
-        //{this.renderSection(elements['scan3D'], true, 'sectionBlank')}
-        //{this.renderSection(elements['visitVR'], false, 'sectionBlank')}
-        //{this.renderSection(elements['objectDesigner'], true, 'sectionBlank')}
         return (
             <div>
                 <div className="sectionDocumentation">
@@ -215,11 +182,12 @@ class Examples extends React.Component {
                         <p>All the following snipets are as simple as possible so they can be quickly integrated into your code.</p>
                     </div>
                 </div>
-                {this.renderSection(elements['3d-model'], true, 'sectionGrey')}
-                {this.renderSection(elements['face'], false, 'sectionBlank')}
-                {this.renderSection(elements['image360'], true, 'sectionGrey')}
-                {this.renderSection(elements['movies'], false, 'sectionBlank')}
-                {this.renderSection(elements['image-processing'], true, 'sectionGrey')}
+                {this.renderSection(elements['gltf'], false)}
+                {this.renderSection(elements['3d-model'], true)}
+                {this.renderSection(elements['face'], false)}
+                {this.renderSection(elements['image360'], true)}
+                {this.renderSection(elements['movies'], false)}
+                {this.renderSection(elements['image-processing'], true)}
             </div>
         );
     }
