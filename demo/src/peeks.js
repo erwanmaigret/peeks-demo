@@ -2862,6 +2862,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             var scene = this;
 
             this.pixelRatio = window.devicePixelRatio;
+            if (this.isPhone) {
+                // Don't oversample on mobile devices, this is not needed there
+                //  and killing the framerate
+                this.pixelRatio = 1;
+            }
 
 			this.onStart();
 
