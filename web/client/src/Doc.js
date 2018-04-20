@@ -53,6 +53,16 @@ addDoc('Node', 'addCanvas', {
     usage: "page.addCanvas({valign: 'top'});",
     example: '',
 });
+addDoc('Node', 'addLight', {
+    description: '<p>Create and attach a Light</p>'
+        +'<p>A light is usefulf when dealing with 3d models</p>',
+    args: [
+        ['parameters', 'Initial parameter values'],
+    ],
+    returnValue: 'A new Light',
+    usage: "page.addLight({ position: [1, 1, 1], intensity: .7 });",
+    example: '',
+});
 addDoc('Node', 'addScreen', {
     description: '<p>Create and attach a 3D sperical Screen</p>'
         +'<p>A Screen is an invisible sphere on which other Assets can be attached using their x/y positions values as 2D coordinates on the sphere.</p>',
@@ -126,6 +136,22 @@ addDoc('Node', 'addTextButton', {internal: true});
 addDoc('Node', 'addRoundTextButton', {internal: true});
 addDoc('Node', 'addIconButton', {internal: true});
 addDoc('Node', 'addRoundIconButton', {internal: true});
+addDoc('Node', 'addOverlay', {internal: true});
+addDoc('Node', 'getChildCount', {
+    description: 'Returns the total number of child nodes',
+    returnValue: 'A number',
+    usage: 'var childCount = asset.getChildCount();',
+    example: '',
+});
+addDoc('Node', 'getChild', {
+    description: 'Returns the child at the given index',
+    args: [
+        ['childIndex', 'A number'],
+    ],
+    returnValue: 'A Node',
+    usage: 'var childCount = asset.getChildCount();',
+    example: '',
+});
 addDoc('Node', 'addVideo', {
     description: 'Create and attach a Video',
     args: [
@@ -218,11 +244,6 @@ addDoc('Node', 'animate', {
     usage: 'node.animate({})',
     example: '',
 });
-addDoc('Node', 'verbose', {internal: true});
-addDoc('Node', 'debug', {internal: true});
-addDoc('Node', 'info', {internal: true});
-addDoc('Node', 'warn', {internal: true});
-addDoc('Node', 'error', {internal: true});
 
 addClassDoc('Scene', {
     description: 'class.',
@@ -284,11 +305,29 @@ addDoc('Scene', 'hideKeyboard', {
     example: '',
 });
 addDoc('Scene', 'getArView', {internal: true});
+addDoc('Scene', 'requestFullScreen', {internal: true});
+addDoc('Scene', 'exitFullScreen', {internal: true});
+addDoc('Scene', 'onLog', {internal: true});
+addDoc('Scene', 'setLogLevel', {internal: true});
+addDoc('Scene', 'logVerbose', {internal: true});
+addDoc('Scene', 'logDebug', {internal: true});
+addDoc('Scene', 'logInfo', {internal: true});
+addDoc('Scene', 'logWarning', {internal: true});
+addDoc('Scene', 'logError', {internal: true});
 addDoc('Scene', 'getArImageData', {
     description: 'Query the image data from the AR View. This is especially useful when you want to run Computer Vision algorythms on a live video feed to create Augmented Reality experiences.',
     args: '',
-    returnValue: '',
+    returnValue: 'An array of pixel values',
     usage: 'vat data = scene.getArImageData()',
+    example: '',
+});
+addDoc('Scene', 'getLight', {
+    description: 'Returns the light corresponding to the given number. By default lighting rigs have 3 lights.',
+    args: [
+        ['lightIndex', 'A number']
+    ],
+    returnValue: '',
+    usage: 'vat light = scene.getLight(lightIndex)',
     example: '',
 });
 addDoc('Scene', 'setArMode', {
@@ -331,7 +370,6 @@ addDoc('Scene', 'loadNextPage', {internal: true});
 addDoc('Scene', 'loadHomePage', {internal: true});
 addDoc('Scene', 'searchPage', {internal: true});
 addDoc('Scene', 'resetCamera', {internal: true});
-addDoc('Scene', 'updateFullScreen', {internal: true});
 addDoc('Scene', 'start', {internal: true});
 addDoc('Scene', 'onRender', {internal: true});
 
@@ -341,6 +379,24 @@ addClassDoc('Asset', { description: 'Asset class', });
 addDoc('Asset', 'isInCanvas', {internal: true});
 addDoc('Asset', 'resetToInitial', {internal: true});
 addDoc('Asset', 'updateInitial', {internal: true});
+addDoc('Asset', 'setAlpha', {
+    description: 'Sets the alpha (opacity)',
+    args: [
+        ['value', 'An number in [0, 1] range']
+    ],
+    returnValue: '',
+    usage: 'asset.setAlpha(.5)',
+    example: '',
+});
+addDoc('Asset', 'setColor', {
+    description: 'Sets the color value',
+    args: [
+        ['vector', 'An array of 3 values representing RGB in 0, 1] range']
+    ],
+    returnValue: '',
+    usage: 'asset.setColor([1, 0, 0])',
+    example: '',
+});
 addDoc('Asset', 'setPosition', {
     description: 'Sets the xyz position of the Asset',
     args: [
@@ -422,6 +478,12 @@ addDoc('Asset', 'setVisible', {
     usage: 'asset.setVisible(true)',
     example: '',
 });
+addDoc('Asset', 'getVisible', {
+    description: 'Returns the visibility state',
+    returnValue: 'A boolean value',
+    usage: 'var visible = asset.getVisible();',
+    example: '',
+});
 addDoc('Asset', 'show', {internal: true});
 addDoc('Asset', 'hide', {internal: true});
 addDoc('Asset', 'toggleVisible', {internal: true});
@@ -455,6 +517,14 @@ addClassDoc('Screen', { internal: true, description: 'Asset class', });
 addClassDoc('Page', { internal: true, description: 'Asset class', });
 
 addClassDoc('Plane', { internal: true, });
+
+addClassDoc('Light', { internal: true, description: 'Asset class', });
+
+addClassDoc('Tracker', { internal: true, description: 'Asset class', });
+
+addClassDoc('TrackerFace', { internal: true, description: 'Asset class', });
+
+addClassDoc('Overlay', { internal: true, description: 'Asset class', });
 
 addClassDoc('Animation', {
     internal: true,

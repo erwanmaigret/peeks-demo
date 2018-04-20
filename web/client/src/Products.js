@@ -96,6 +96,19 @@ class Products extends React.Component {
                         <tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Dwell times and conversion</td><td width="10%"/></tr>
                         <tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Are interactive, try it!</td><td width="10%"/></tr>
                     </tbody></table>
+                    <table width="100%" cellSpacing="10"><tbody>
+                        <tr>
+                        <td width="10%"/>
+                        <td align="center"><img src="/icon_android.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_apple.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_chrome.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_edge.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_firefox.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_html5.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_safari.png" alt="vr" width="20px"/></td>
+                        <td width="10%"/>
+                        </tr>
+                    </tbody></table>
                     </div>
                 );},
                 image: 'snapshot-widget.png',
@@ -125,6 +138,19 @@ class Products extends React.Component {
                     </p><p>
                     From specific content to entire websites, our machine learning technology makes it fast and easy to optimize your digital assets for AR and VR.
                     </p>
+                    <table width="100%" cellSpacing="10"><tbody>
+                        <tr>
+                        <td width="10%"/>
+                        <td align="center"><img src="/icon_daydream.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_gear_vr.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_htc_vive.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_microsoft.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_oculus.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_playstation_vr.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_google_cardboard.png" alt="vr" width="40px"/></td>
+                        <td width="10%"/>
+                        </tr>
+                    </tbody></table>
                 </div>);},
                 image: 'snapshot-browser.png',
                 imageFull: true,
