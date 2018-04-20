@@ -840,7 +840,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 this.threeObject.peeksAsset = peeksObject;
                 var autofit = this.getAttr('autofit');
                 var loader;
-                console.log(this.geometryUrl);
                 var extension = this.geometryUrl.split('.').pop().toLowerCase();
                 if (this.geometryUrl) {
                     var extension = this.geometryUrl.split('.').pop().toLowerCase();
