@@ -461,6 +461,8 @@ PEEKS.Scene.prototype.onRender = function() {
         var eyeSpacing = .06;
         var eyeFocalDistance = .2;
         var angle = Math.atan(eyeSpacing * .5 / eyeFocalDistance);
+        // No angle, just offset
+        angle = 0;
         this.three.camera.aspect = ((width / 2) - separatorWidth) / height;
         this.three.camera.updateProjectionMatrix();
         three.renderer.setScissorTest(true);
@@ -479,15 +481,16 @@ PEEKS.Scene.prototype.onRender = function() {
 
         this.three.cameraPivot.position.x = 0;
         this.three.cameraPivot.rotation.y = 0;
-    }
-
-    this.three.renderer.setViewport(0, 0, width, height);
-    this.three.renderer.setScissor(0, 0, width, height);
-    this.three.renderer.setScissorTest(false);
-    this.three.camera.aspect = width / height;
-    this.three.camera.updateProjectionMatrix();
-
-    if (!this.isVrMode()) {
+        this.three.camera.aspect = width / height;
+        this.three.camera.updateProjectionMatrix();
+    } else {
+        this.three.cameraPivot.position.x = 0;
+        this.three.cameraPivot.rotation.y = 0;
+        this.three.renderer.setViewport(0, 0, width, height);
+        this.three.renderer.setScissor(0, 0, width, height);
+        this.three.renderer.setScissorTest(false);
+        this.three.camera.aspect = width / height;
+        this.three.camera.updateProjectionMatrix();
         this.three.renderer.render(this.three.scene, this.three.camera);
     }
 },
@@ -1134,7 +1137,7 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
     }
 
 	var raycaster = new THREE.Raycaster();
-	raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
+   raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
 	var objects = raycaster.intersectObjects(this.threeObject.children, true);
 
     // First pass for Canvas only object
