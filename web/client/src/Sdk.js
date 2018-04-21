@@ -8,9 +8,20 @@ const menuExamples = 'Examples';
 const code = {
     html: function(name) { return (<span className="textHtmlTag">&lt;{name}&gt;<br/></span>); },
     htmlOpen: function(name) { return (<span className="textHtmlTag">&lt;{name}&nbsp;</span>); },
-    htmlClose: function(slash) {
-        if (slash) return (<span className="textHtmlTag">/&gt;<br/></span>);
-        else return (<span className="textHtmlTag">&gt;<br/></span>);
+    htmlClose: function(slash, keepLine) {
+        if (slash) {
+            if (keepLine) {
+                return (<span className="textHtmlTag">/&gt;</span>);
+            } else {
+                return (<span className="textHtmlTag">/&gt;<br/></span>);
+            }
+        } else {
+            if (keepLine) {
+                return (<span className="textHtmlTag">&gt;</span>);
+            } else {
+                return (<span className="textHtmlTag">&gt;<br/></span>);
+            }
+        }
     },
     var: function(value) { return (<span className="textJsVar">{value}</span>); },
     string: function(value) { return (<span className="textJsString">'{value}'</span>); },
@@ -374,7 +385,8 @@ class Sdk extends React.Component {
                                 {code.var('src')}
                                 {code.body('=')}
                                 {code.string('https://dev.peeks.io/peeks.js')}
-                            {code.htmlClose(true)}
+                            {code.htmlClose(false, true)}
+                            {code.html('/script')}
                             {code.html('script')}
                             <ul className="codeIndent">
                                 {code.function('PEEKS.registerPage')}
@@ -437,7 +449,8 @@ class Sdk extends React.Component {
                                     {code.var('src')}
                                     {code.body('=')}
                                     {code.string('https://dev.peeks.io/peeks.js')}
-                                {code.htmlClose(true)}
+                                {code.htmlClose(false, true)}
+                                {code.html('/script')}
                                 {code.html('script')}
                                 <ul className="codeIndent">
                                     {code.function('PEEKS.registerPage')}
