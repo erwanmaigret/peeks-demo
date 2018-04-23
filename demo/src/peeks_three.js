@@ -302,7 +302,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
 PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 	var threeObject = this.threeObject;
-	if (threeObject && this.useVideoTexture) {
+	if (threeObject && this.hasVideo()) {
 		var video;
 		var scene = this.getScene();
 		if (scene) {
@@ -405,7 +405,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 
 PEEKS.Asset.prototype.threeGetVisibility = function() {
 	if (this.visible) {
-		if (this.threeObject && this.useVideoTexture) {
+		if (this.threeObject && this.hasVideo()) {
 			return this.threeSynchVideoTexture();
 		} else {
 			return true;

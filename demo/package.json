@@ -1,10 +1,10 @@
 {
   "name": "demo",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "webpack && uglifyjs ./dist/peeks.js -c -m -o ./public/peeks.js"
+    "build": "webpack && uglifyjs ./dist/peeks.js -c -m -o ./public/peeks.js && ncp ./public/peeks.js ./public/peeks.$npm_package_version.js"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -16,6 +16,7 @@
     "jade": "~1.11.0",
     "jsdom": "11.2.0",
     "morgan": "~1.8.1",
+    "ncp": "^2.0.0",
     "q": "1.5.0",
     "request": "2.82.0",
     "scraper-js": "1.0.2",

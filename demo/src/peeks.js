@@ -414,6 +414,10 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             return asset;
         },
 
+        hasVideo: function() {
+            return this.useVideoTexture || this.videoUrl;
+        },
+
         addVideo: function (params) {
             var asset = this.addButton(params);
 			asset.useVideoTexture = true;
@@ -2649,10 +2653,20 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     this.backgroundImage = this.background.addSphere({
                         image: backgroundFilename,
                         position: [0, 0, 0],
-                        rotation: [0, 0, 0],
+                        rotation: [0, 90, 0],
                         sides: 'back',
                         size: 20,
                         color: backgroundColor,
+                    });
+                }
+
+                if (this.page.backgroundVideo) {
+                    this.backgroundVideo = this.background.addSphere({
+                        videoUrl: this.page.backgroundVideo,
+                        position: [0, 0, 0],
+                        rotation: [0, 90, 0],
+                        sides: 'back',
+                        size: 20,
                     });
                 }
 

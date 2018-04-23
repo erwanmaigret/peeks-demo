@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>example</title>
+        <link rel="stylesheet" href="https://dev.peeks.io/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="https://dev.peeks.io/peeks.js"></script>
+            <script>
+                // Declare the behavior of your peeks page:
+                PEEKS.registerPage('example', function() {
+                    var page = new PEEKS.Asset({
+                        category: 'entertainment',
+                        gyroscope: 'off',
+                    });
+
+                     page.addVideo({
+                         url: '/assets/video_sintel.mp4',
+                         position: [0, 0, -3],
+                         rotation: [0, 0, 0],
+                         size: [4.8, 2.4, 1],
+                     });
+
+                     return page;
+                });
+                // Start that page full-screen
+                PEEKS.start(window, 'example');
+            </script>
+        </section>
+    </body>
+</html>

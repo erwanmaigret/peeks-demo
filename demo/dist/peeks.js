@@ -507,6 +507,10 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
             return asset;
         },
 
+        hasVideo: function() {
+            return this.useVideoTexture || this.videoUrl;
+        },
+
         addVideo: function (params) {
             var asset = this.addButton(params);
 			asset.useVideoTexture = true;
@@ -2742,10 +2746,20 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     this.backgroundImage = this.background.addSphere({
                         image: backgroundFilename,
                         position: [0, 0, 0],
-                        rotation: [0, 0, 0],
+                        rotation: [0, 90, 0],
                         sides: 'back',
                         size: 20,
                         color: backgroundColor,
+                    });
+                }
+
+                if (this.page.backgroundVideo) {
+                    this.backgroundVideo = this.background.addSphere({
+                        videoUrl: this.page.backgroundVideo,
+                        position: [0, 0, 0],
+                        rotation: [0, 90, 0],
+                        sides: 'back',
+                        size: 20,
                     });
                 }
 
@@ -53954,7 +53968,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
 PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 	var threeObject = this.threeObject;
-	if (threeObject && this.useVideoTexture) {
+	if (threeObject && this.hasVideo()) {
 		var video;
 		var scene = this.getScene();
 		if (scene) {
@@ -54057,7 +54071,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 
 PEEKS.Asset.prototype.threeGetVisibility = function() {
 	if (this.visible) {
-		if (this.threeObject && this.useVideoTexture) {
+		if (this.threeObject && this.hasVideo()) {
 			return this.threeSynchVideoTexture();
 		} else {
 			return true;
@@ -54492,7 +54506,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 this.threeObject.peeksAsset = peeksObject;
                 var autofit = this.getAttr('autofit');
                 var loader;
-                console.log(this.geometryUrl);
                 var extension = this.geometryUrl.split('.').pop().toLowerCase();
                 if (this.geometryUrl) {
                     var extension = this.geometryUrl.split('.').pop().toLowerCase();
