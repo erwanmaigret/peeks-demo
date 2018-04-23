@@ -1640,9 +1640,9 @@ function loadScript(src, callback)
     node.parentNode.insertBefore(script, node);
 }
 
-function start(domElement, page) {
+function start(domElement, page, params) {
     var peeks = new PEEKS.Scene();
-    peeks.start(domElement, page);
+    peeks.start(domElement, page, params);
 }
 
 function getAsset(name) {
@@ -2822,7 +2822,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             }
 
             params = params || {};
-            this.fov = params.fov = 60;
+            this.fov = params.fov || 60;
+            console.log(this.fov);
 
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);

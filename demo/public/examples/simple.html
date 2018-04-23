@@ -7,7 +7,7 @@
         <header>
         </header>
         <section id="wrapper">
-            <script src="https://dev.peeks.io/peeks.js"></script>
+            <script src="/peeks.js"></script>
             <script>
                 // Declare the behavior of your peeks page:
                 PEEKS.registerPage('widget', function() {
@@ -17,7 +17,7 @@
                     return page;
                 });
                 // Start that page full-screen
-                PEEKS.start(window, 'widget');
+                PEEKS.start(window, 'widget', { fov: 120 });
             </script>
         </section>
     </body>
