@@ -2823,7 +2823,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             params = params || {};
             this.fov = params.fov || 60;
-            console.log(this.fov);
 
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
