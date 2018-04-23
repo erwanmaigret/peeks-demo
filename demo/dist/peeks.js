@@ -73,18 +73,19 @@ __webpack_require__(3);
 __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 var global = Function('return this')();
 
-global.THREE = __webpack_require__(8);
-__webpack_require__(9);
+global.THREE = __webpack_require__(9);
 __webpack_require__(10);
 __webpack_require__(11);
-
 __webpack_require__(12);
+
 __webpack_require__(13);
+__webpack_require__(14);
 
 
 /***/ }),
@@ -2909,6 +2910,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         },
 
         start: function (domElement, page) {
+            if (PEEKS.version && !PEEKS.versionLogged) {
+                console.log('PEEKS Sdk version ' + PEEKS.version);
+                PEEKS.versionLogged = true;
+            }
+
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
             }
@@ -3356,6 +3362,13 @@ if (global.PEEKS === undefined) {
 /* 2 */
 /***/ (function(module, exports) {
 
+PEEKS.version = '0.0.1';
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
 PEEKS.registerPage('peeks.toolbar', function() {
     var page = new PEEKS.Asset();
 
@@ -3422,7 +3435,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.toolbar.lighting', function() {
@@ -3506,7 +3519,7 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.debug', function(scene) {
@@ -3581,7 +3594,7 @@ PEEKS.registerPage('peeks.debug', function(scene) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo', function() {
@@ -3597,7 +3610,7 @@ PEEKS.registerPage('peeks.demo', function() {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.home', function() {
@@ -3663,7 +3676,7 @@ PEEKS.registerPage('peeks.home', function() {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 PEEKS.TrackerFace = function() {
@@ -3771,7 +3784,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
@@ -24943,7 +24956,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 	function WebGLRenderer( parameters ) {
 
-		console.log( 'THREE.WebGLRenderer', REVISION );
+		// console.log( 'THREE.WebGLRenderer', REVISION );
 
 		parameters = parameters || {};
 
@@ -50040,7 +50053,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /**
@@ -52940,7 +52953,7 @@ THREE.GLTFLoader = ( function () {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /**
@@ -53661,7 +53674,7 @@ THREE.OBJLoader = ( function () {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, flipX, flipY,
@@ -55195,7 +55208,7 @@ THREE.ShaderPeeks = {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.assets', function() {
@@ -55258,7 +55271,7 @@ PEEKS.registerPage('peeks.demo.assets', function() {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.fashion', function() {

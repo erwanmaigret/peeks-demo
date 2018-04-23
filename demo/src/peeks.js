@@ -2816,6 +2816,11 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         },
 
         start: function (domElement, page) {
+            if (PEEKS.version && !PEEKS.versionLogged) {
+                console.log('PEEKS Sdk version ' + PEEKS.version);
+                PEEKS.versionLogged = true;
+            }
+
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
             }

@@ -7,17 +7,17 @@
         <header>
         </header>
         <section id="wrapper">
-            <script src="/peeks.0.0.1.js"></script>
+            <script src="https://dev.peeks.io/peeks.0.0.1.js"></script>
             <script>
             // Declare the behavior of your peeks page:
             PEEKS.registerPage('example', function() {
                 var page = new PEEKS.Asset({
                     gyroscope: 'off',
-                    backgroundVideo: '/assets/video_360.mp4',
+                    backgroundVideo: 'https://dev.peeks.io/assets/video_360.mp4',
                 });
 
                  page.addVideo({
-                     url: '/assets/video_sintel.mp4',
+                     url: 'https://dev.peeks.io/assets/video_sintel.mp4',
                      position: [0, 0, -6],
                      rotation: [0, 0, 0],
                      size: [4.8, 2.4, 1],
