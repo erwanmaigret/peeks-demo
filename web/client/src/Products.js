@@ -138,9 +138,8 @@ class Products extends React.Component {
                     </p><p>
                     From specific content to entire websites, our machine learning technology makes it fast and easy to optimize your digital assets for AR and VR.
                     </p>
-                    <table width="100%" cellSpacing="10"><tbody>
+                    <table width="100%" cellSpacing="0" cellPadding="0"><tbody>
                         <tr>
-                        <td width="10%"/>
                         <td align="center"><img src="/icon_daydream.png" alt="vr" width="40px"/></td>
                         <td align="center"><img src="/icon_gear_vr.png" alt="vr" width="40px"/></td>
                         <td align="center"><img src="/icon_htc_vive.png" alt="vr" width="40px"/></td>
@@ -148,7 +147,6 @@ class Products extends React.Component {
                         <td align="center"><img src="/icon_oculus.png" alt="vr" width="40px"/></td>
                         <td align="center"><img src="/icon_playstation_vr.png" alt="vr" width="40px"/></td>
                         <td align="center"><img src="/icon_google_cardboard.png" alt="vr" width="40px"/></td>
-                        <td width="10%"/>
                         </tr>
                     </tbody></table>
                 </div>);},
