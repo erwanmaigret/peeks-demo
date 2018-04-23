@@ -23,6 +23,7 @@ function addDoc(node, method, doc) {
 addClassDoc('Node', {
     description: '<p>This is the root class. It defines the default behaviors for all Peeks objects.</p>',
 });
+addDoc('Node', 'hasVideo', {internal: true});
 addDoc('Node', 'DOMcreateElementVideo', {internal: true});
 addDoc('Node', 'add', {internal: true});
 addDoc('Node', 'addPage', {
