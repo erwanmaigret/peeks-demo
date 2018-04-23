@@ -3365,7 +3365,7 @@ if (global.PEEKS === undefined) {
 /* 2 */
 /***/ (function(module, exports) {
 
-PEEKS.version = '0.0.1';
+PEEKS.version = '0.0.2';
 
 
 /***/ }),

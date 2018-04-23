@@ -1,1 +1,1 @@
-PEEKS.version = '0.0.1';
+PEEKS.version = '0.0.2';
