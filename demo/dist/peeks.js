@@ -2909,11 +2909,14 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         	}
         },
 
-        start: function (domElement, page) {
+        start: function (domElement, page, params) {
             if (PEEKS.version && !PEEKS.versionLogged) {
                 console.log('PEEKS Sdk version ' + PEEKS.version);
                 PEEKS.versionLogged = true;
             }
+
+            params = params || {};
+            this.fov = params.fov = 60;
 
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
@@ -53914,7 +53917,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
             var h = .5;
             var scene = this.getScene();
-            var tan = Math.tan(THREE.Math.degToRad(scene.cameraAngle / 2));
+            var tan = Math.tan(THREE.Math.degToRad(scene.fov / 2));
             var distance = h / tan;
             var depthFactor = 10;
             if (scene.width < scene.height) {
@@ -54901,8 +54904,7 @@ PEEKS.Scene.prototype.onStart = function() {
 	renderer.setClearColor(0xffffff, 1);
     renderer.setPixelRatio(this.pixelRatio);
 
-    this.cameraAngle = 55;
-    var camera = new THREE.PerspectiveCamera(this.cameraAngle, 1, 0.1, 1000);
+    var camera = new THREE.PerspectiveCamera(this.fov, 1, 0.1, 1000);
 
     this.three.scene = scene;
     this.three.camera = camera;

@@ -2815,11 +2815,14 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
         	}
         },
 
-        start: function (domElement, page) {
+        start: function (domElement, page, params) {
             if (PEEKS.version && !PEEKS.versionLogged) {
                 console.log('PEEKS Sdk version ' + PEEKS.version);
                 PEEKS.versionLogged = true;
             }
+
+            params = params || {};
+            this.fov = params.fov = 60;
 
             if (typeof domElement === 'string') {
                 domElement = document.getElementById(domElement);
