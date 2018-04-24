@@ -45,6 +45,7 @@ PEEKS.registerPage('peeks.demo.shoe', function() {
     addGeometry("sole_top", { texture: assetPath + 'frye_sole.jpg' });
 
     page.addPage('peeks.toolbar.lighting');
+    page.addPage('peeks.toolbar');
 
     return page;
 });

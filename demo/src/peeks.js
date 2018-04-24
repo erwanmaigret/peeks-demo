@@ -956,7 +956,6 @@ function Asset(params) {
     }
 	this.position = [0, 0, 0];
     this.rotation = [0, 0, 0];
-    this.pivotRotation = [0, 0, 0];
 	this.rotationOrder = 'XYZ';
 	this.size = [1, 1, 1];
 	this.updateInitial();

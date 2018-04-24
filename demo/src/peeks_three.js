@@ -233,12 +233,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                 threeObject.scale.x * depthFactor,
                 threeObject.scale.y * depthFactor,
                 threeObject.scale.z * depthFactor);
-		} else {
-            this.threeObjectPivot.rotation.set(
-                THREE.Math.degToRad(this.pivotRotation[0]),
-                THREE.Math.degToRad(this.pivotRotation[1]),
-                THREE.Math.degToRad(this.pivotRotation[2])
-            );
         }
 
         // Adjust object in Virtual Screen space
@@ -448,23 +442,23 @@ PEEKS.Scene.prototype.onRender = function() {
 
         three.renderer.setViewport(0, 0, width / 2 - separatorWidth, height);
         three.renderer.setScissor(0, 0, width / 2 - separatorWidth, height);
-        this.three.cameraPivot.position.x = eyeSpacing;
-        this.three.cameraPivot.rotation.y = angle;
+        this.three.cameraRoot.position.x = eyeSpacing;
+        this.three.cameraRoot.rotation.y = angle;
         three.renderer.render(three.scene, this.three.camera);
 
         three.renderer.setViewport(width / 2 + separatorWidth, 0, width / 2 - separatorWidth, height);
         three.renderer.setScissor(width / 2 + separatorWidth, 0, width / 2 - separatorWidth, height);
-        this.three.cameraPivot.position.x = -eyeSpacing;
-        this.three.cameraPivot.rotation.y = -angle;
+        this.three.cameraRoot.position.x = -eyeSpacing;
+        this.three.cameraRoot.rotation.y = -angle;
         three.renderer.render(three.scene, three.camera);
 
-        this.three.cameraPivot.position.x = 0;
-        this.three.cameraPivot.rotation.y = 0;
+        this.three.cameraRoot.position.x = 0;
+        this.three.cameraRoot.rotation.y = 0;
         this.three.camera.aspect = width / height;
         this.three.camera.updateProjectionMatrix();
     } else {
-        this.three.cameraPivot.position.x = 0;
-        this.three.cameraPivot.rotation.y = 0;
+        this.three.cameraRoot.position.x = 0;
+        this.three.cameraRoot.rotation.y = 0;
         this.three.renderer.setViewport(0, 0, width, height);
         this.three.renderer.setScissor(0, 0, width, height);
         this.three.renderer.setScissorTest(false);
@@ -1208,13 +1202,22 @@ PEEKS.Scene.prototype.onStart = function() {
 	this.three.renderer = renderer;
 	this.domElement = this.three.renderer.domElement;
 
-    // For camera debug and added pivot
-    //var cameraHelper = new THREE.CameraHelper( camera );
-    //scene.add( cameraHelper );
+    // Where the camera origin will be managed, used by stereo cameras
+    this.three.cameraRoot = new THREE.Object3D();
+    scene.add(this.three.cameraRoot);
 
-    this.three.cameraPivot = new THREE.Object3D();
-    scene.add(this.three.cameraPivot);
-    this.three.cameraPivot.add(camera);
+    // The center is where the transformations will be applied
+    this.three.cameraCenter = new THREE.Object3D();
+    this.three.cameraRoot.add(this.three.cameraCenter);
+
+    // Addition offset in case we need to shift the camera position from its center
+    this.three.cameraOffset = new THREE.Object3D();
+    // below is how you would push the offset of the camera:
+    // this.three.cameraOffset.position.set(0, 0, 3);
+    this.three.cameraCenter.add(this.three.cameraOffset);
+
+    // Eventually the camera is leaf of that whole hierarchy
+    this.three.cameraOffset.add(camera);
 
     this.three.scene.add(this.threeGetNode());
 
