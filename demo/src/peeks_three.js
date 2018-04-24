@@ -109,7 +109,7 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
 		material.map.wrapS = THREE.RepeatWrapping;
 		material.map.wrapT = THREE.RepeatWrapping;
 		if (textureRepeat) {
-			material.map.repeat.set(textureRepeat[0], textureRepeat[1]);
+			material.map.repeat.fromArray(textureRepeat);
 		}
 
         if (flipX) {
@@ -122,6 +122,10 @@ PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, fl
 }
 
 PEEKS.ThreeSetObjectQuaternion = function(quaternion, alpha, beta, gamma, orient) {
+    alpha = THREE.Math.degToRad(alpha);
+    beta = THREE.Math.degToRad(beta);
+    gamma = THREE.Math.degToRad(gamma);
+    orient = THREE.Math.degToRad(orient);
     var zee = new THREE.Vector3( 0, 0, 1 );
     var euler = new THREE.Euler();
     var q0 = new THREE.Quaternion();
@@ -178,7 +182,7 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
         var scene = this.getScene();
 
         if (this.position) {
-            threeObject.position.set(this.position[0], this.position[1], this.position[2]);
+            threeObject.position.fromArray(this.position);
 			threeObject.rotation.set(
                 THREE.Math.degToRad(this.rotation[0]),
                 THREE.Math.degToRad(this.rotation[1]),
@@ -186,22 +190,19 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
             );
 			threeObject.rotation.order = this.rotationOrder;
 
-			threeObject.scale.set(this.size[0], this.size[1], this.size[2]);
+			threeObject.scale.fromArray(this.size);
 		}
 
         if (this === camera) {
             if (scene && scene.deviceOrientation !== undefined && scene.isGyroMode()) {
                 this.orientation = [alpha, beta, gamma, orient];
-                var alpha = scene.deviceOrientation.alpha;
-                var beta = scene.deviceOrientation.beta;
-                var gamma = scene.deviceOrientation.gamma;
-                var orient = scene.screenOrientation || 0;
                 threeObject.rotation.order = 'YXZ';
-                PEEKS.ThreeSetObjectQuaternion(threeObject.quaternion,
-                    THREE.Math.degToRad(alpha),
-                    THREE.Math.degToRad(beta),
-                    THREE.Math.degToRad(gamma),
-                    THREE.Math.degToRad(orient));
+                PEEKS.ThreeSetObjectQuaternion(
+                    threeObject.quaternion,
+                    scene.deviceOrientation.alpha,
+                    scene.deviceOrientation.beta,
+                    scene.deviceOrientation.gamma,
+                    scene.screenOrientation || 0);
             }
         } else if (this.type === 'Canvas') {
             this.threeObjectPivot.position.copy(scene.three.camera.position);
@@ -693,7 +694,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                                 if (material.map) {
                                     material.map.wrapS = THREE.RepeatWrapping;
                             		material.map.wrapT = THREE.RepeatWrapping;
-                            		material.map.repeat.set(repeat[0], repeat[1]);
+                            		material.map.repeat.fromArray(repeat);
                                 }
                                 if (material.normalMap) {
                                     material.normalMap.wrapS = THREE.RepeatWrapping;
