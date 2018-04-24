@@ -66,7 +66,7 @@ class Home extends Component {
             },
             'browser': {
                 title: 'It just works',
-                description: '<p>No special special apps or plug-in to download.</p><p>Creating and incorporating immersive content is easy and within your existing website, mobile app, and digital advertisements.</p><p>Our machine learning technology makes optimizing your existing content for AR and VR fast.</p>',
+                description: '<p>No special apps or plug-in to download.</p><p>Creating and incorporating immersive content is easy and within your existing website, mobile app, and digital advertisements.</p><p>Our machine learning technology makes optimizing your existing content for AR and VR fast.</p>',
                 image: "snapshot-product-2.png",
             },
             'headset': {
