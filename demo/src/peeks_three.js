@@ -195,7 +195,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
 
         if (this === camera) {
             if (scene && scene.deviceOrientation !== undefined && scene.isGyroMode()) {
-                this.orientation = [alpha, beta, gamma, orient];
                 threeObject.rotation.order = 'YXZ';
                 PEEKS.ThreeSetObjectQuaternion(
                     threeObject.quaternion,
@@ -205,13 +204,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                     scene.screenOrientation || 0);
             }
         } else if (this.type === 'Canvas') {
-            this.threeObjectPivot.position.copy(scene.three.camera.position);
-            if (scene.isVrMode() && this.vrFixed !== true) {
-                this.threeObjectPivot.rotation.set(0, 0, this.screenOrientation || 0);
-            } else {
-                this.threeObjectPivot.quaternion.copy(scene.three.camera.quaternion);
-            }
-
             var h = .5;
             var scene = this.getScene();
             var tan = Math.tan(THREE.Math.degToRad(scene.fov / 2));
@@ -977,6 +969,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		} else {
 			this.threeObject = new THREE.Object3D();
 		}
+
         this.threeObjectPivot = new THREE.Object3D();
         this.threeObjectPivotT = new THREE.Object3D();
         this.threeObjectPivot.add(this.threeObjectPivotT);
@@ -1079,7 +1072,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		var child = this.children[childI];
 		if (!child.threeObject) {
 			child.threeSynch();
-			this.threeObject.add(child.threeObjectPivot);
+            if (child.type === 'Canvas') {
+                if (this.getScene().isVrMode() && this.vrFixed !== true) {
+                    this.getScene().three.camera.add(child.threeObjectPivot);
+                } else {
+                    this.getScene().three.cameraRoot.add(child.threeObjectPivot);
+                }
+            } else {
+                this.threeObject.add(child.threeObjectPivot);
+            }
 		} else {
 			child.threeSynch();
 		}
@@ -1110,9 +1111,9 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 
 	var raycaster = new THREE.Raycaster();
    raycaster.setFromCamera(new THREE.Vector3(mouse[0], mouse[1], 0), this.three.camera);
-	var objects = raycaster.intersectObjects(this.threeObject.children, true);
 
-    // First pass for Canvas only object
+    // First pass for Canvas objects
+    var objects = raycaster.intersectObjects(this.three.cameraRoot.children, true);
 	for (var objectI = 0; objectI < objects.length; objectI++) {
 		var object = objects[objectI].object;
 		while (object) {
@@ -1125,7 +1126,8 @@ PEEKS.Scene.prototype.onPickNode = function(mouse) {
 		}
 	}
 
-    // Second pass for any other object
+    // Second pass for scene objects
+    objects = raycaster.intersectObjects(this.threeObject.children, true);
 	for (var objectI = 0; objectI < objects.length; objectI++) {
 		var object = objects[objectI].object;
 		while (object) {
@@ -1204,7 +1206,6 @@ PEEKS.Scene.prototype.onStart = function() {
 
     // Where the camera origin will be managed, used by stereo cameras
     this.three.cameraRoot = new THREE.Object3D();
-    scene.add(this.three.cameraRoot);
 
     // The center is where the transformations will be applied
     this.three.cameraCenter = new THREE.Object3D();
@@ -1220,6 +1221,7 @@ PEEKS.Scene.prototype.onStart = function() {
     this.three.cameraOffset.add(camera);
 
     this.three.scene.add(this.threeGetNode());
+    this.three.scene.add(this.three.cameraRoot);
 
     this.onResize();
 }
