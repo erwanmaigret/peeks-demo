@@ -1874,14 +1874,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             ];
         },
 
-        getCameraQuaternion: function() {
-            return this.onGetCameraQuaternion();
-        },
-
-        onGetCameraQuaternion: function() {
-            return [0, 0, 0, 1];
-        },
-
         onGetCameraTranslation: function(translation) {
             return [
                 translation[0],
@@ -53860,35 +53852,13 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
         var scene = this.getScene();
 
         if (this.position) {
-            if (this === camera) {
-                threeObject.position.set(
-                    this.position[0],
-                    this.position[1],
-                    this.position[2]
-                );
-            } else {
-                threeObject.position.set(
-                    this.position[0],
-                    this.position[1],
-                    this.position[2]
-                );
-            }
-
-            if (this.quaternion) {
-                threeObject.quaternion.copy(new THREE.Quaternion(
-                    this.quaternion[0],
-                    this.quaternion[1],
-                    this.quaternion[2],
-                    this.quaternion[3]
-                ));
-            } else {
-    			threeObject.rotation.set(
-                    THREE.Math.degToRad(this.rotation[0]),
-                    THREE.Math.degToRad(this.rotation[1]),
-                    THREE.Math.degToRad(this.rotation[2])
-                );
-    			threeObject.rotation.order = this.rotationOrder;
-            }
+            threeObject.position.set(this.position[0], this.position[1], this.position[2]);
+			threeObject.rotation.set(
+                THREE.Math.degToRad(this.rotation[0]),
+                THREE.Math.degToRad(this.rotation[1]),
+                THREE.Math.degToRad(this.rotation[2])
+            );
+			threeObject.rotation.order = this.rotationOrder;
 
 			threeObject.scale.set(this.size[0], this.size[1], this.size[2]);
 		}

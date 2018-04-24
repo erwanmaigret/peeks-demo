@@ -1780,14 +1780,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             ];
         },
 
-        getCameraQuaternion: function() {
-            return this.onGetCameraQuaternion();
-        },
-
-        onGetCameraQuaternion: function() {
-            return [0, 0, 0, 1];
-        },
-
         onGetCameraTranslation: function(translation) {
             return [
                 translation[0],
