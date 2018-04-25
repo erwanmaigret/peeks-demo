@@ -53917,8 +53917,24 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                     scene.screenOrientation || 0);
             }
         } else if (this.type === 'Canvas') {
+            var parent = scene.three.camera;
+            var resetParent = false;
+            if (scene.isVrMode()) {
+                if (this.vrFixed) {
+                    resetParent = true;
+                } else {
+                    parent = scene.three.cameraRoot;
+                }
+            }
+            if (resetParent || parent !== this.threeObjectPivot.parent) {
+                console.log('canvas rewire');
+                if (this.threeObjectPivot.parent) {
+                    this.threeObjectPivot.parent.remove(this.threeObjectPivot);
+                }
+                parent.add(this.threeObjectPivot);
+            }
+
             var h = .5;
-            var scene = this.getScene();
             var tan = Math.tan(THREE.Math.degToRad(scene.fov / 2));
             var distance = h / tan;
             var depthFactor = 10;
@@ -54791,17 +54807,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		var child = this.children[childI];
 		if (!child.threeObject) {
 			child.threeSynch();
-            if (child.type === 'Canvas') {
-                if (this.getScene().isVrMode() && this.vrFixed !== true) {
-                    console.log("here");
-                    this.getScene().three.camera.add(child.threeObjectPivot);
-                } else {
-                    console.log("there");
-                    this.getScene().three.cameraRoot.add(child.threeObjectPivot);
-                }
-            } else {
-                this.threeObject.add(child.threeObjectPivot);
-            }
+            this.threeObject.add(child.threeObjectPivot);
 		} else {
 			child.threeSynch();
 		}
