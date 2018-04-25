@@ -2983,7 +2983,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                                             geometry: file.name,
                                             readData: e.target.result,
                                             position: [0, 0, -3],
-                                            size: .1,
+                                            size: 1,
                                             autofit: true,
                                             onClick: 'animateRotate90',
                                         });
@@ -54545,6 +54545,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                                             -boundingSphere.center.y,
                                             -boundingSphere.center.z
                                         );
+                                        var scale = 1.0 / boundingSphere.radius;
+                                        child.scale.set(scale, scale, scale);
                                     }
                                 }
                             });

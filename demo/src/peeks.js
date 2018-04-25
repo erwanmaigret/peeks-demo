@@ -2889,7 +2889,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                                             geometry: file.name,
                                             readData: e.target.result,
                                             position: [0, 0, -3],
-                                            size: .1,
+                                            size: 1,
                                             autofit: true,
                                             onClick: 'animateRotate90',
                                         });
