@@ -31,7 +31,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,
-        onClick: function() { peeks.toggleVrMode(); },
+        onClick: 'toggleVrMode',
     });
 
     /*
@@ -39,7 +39,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
             icon: '/ui/icon_gyroscope.png',
             position: [.35, height],
             size: .08,
-            onClick: function() { this.getScene().toggleGyroscope(); },
+            onClick: 'toggleGyroscope' },
         });
 
         canvas.addTextButton({

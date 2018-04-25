@@ -1080,8 +1080,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 			child.threeSynch();
             if (child.type === 'Canvas') {
                 if (this.getScene().isVrMode() && this.vrFixed !== true) {
+                    console.log("here");
                     this.getScene().three.camera.add(child.threeObjectPivot);
                 } else {
+                    console.log("there");
                     this.getScene().three.cameraRoot.add(child.threeObjectPivot);
                 }
             } else {
