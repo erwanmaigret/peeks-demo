@@ -310,7 +310,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                                         });
                                     });
     						} else {
-    							 this.error("getUserMedia not supported");
+    							 this.getScene().logError("getUserMedia not supported");
     						}
                         }
 					}
@@ -805,17 +805,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 this.threeObject.peeksAsset = peeksObject;
                 var autofit = this.getAttr('autofit');
                 var loader;
+                this.geometryUrl = this.geometryUrl || '';
                 var extension = this.geometryUrl.split('.').pop().toLowerCase();
-                if (this.geometryUrl) {
-                    var extension = this.geometryUrl.split('.').pop().toLowerCase();
-                    if (extension === 'obj') {
-                        loader = new THREE.OBJLoader( manager );
-                    } else if (extension === 'gltf') {
-                        loader = new THREE.GLTFLoader( manager );
-                    }
+                if (extension === 'obj') {
+                    loader = new THREE.OBJLoader( manager );
+                } else if (extension === 'gltf') {
+                    loader = new THREE.GLTFLoader( manager );
                 }
                 if (loader) {
-                    loader.load(this.geometryUrl, function ( object ) {
+                    var onLoad = function ( object ) {
                         if (extension === 'gltf') {
                             object = object.scene;
                         }
@@ -848,9 +846,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                         });
 
                         object.parent.peeksAsset.threeSynchMaterial();
-                    }, onProgress, onError );
+                    };
+
+                    if (this.readData) {
+                        onLoad(loader.parse(this.readData));
+                    } else {
+                        loader.load(this.geometryUrl, onLoad, onProgress, onError);
+                    }
                 } else {
-                    this.error('Unable to load geometry from url ' + this.geometryUrl.toString());
+                    this.getScene().logError('Unable to load geometry from url ' + this.geometryUrl.toString());
                 }
             } else if (this.primitive === PEEKS.Asset.PrimitiveLight) {
                 if (this.lightType === "ambient") {

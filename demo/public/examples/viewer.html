@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Viewer</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+    <body>
+        <script src="/peeks.0.0.2.js"></script>
+        <script>
+            PEEKS.registerPage('widget', function() {
+                var page = new PEEKS.Asset({
+                    category: 'winter',
+                });
+                return page;
+            });
+            PEEKS.start(window, 'widget');
+        </script>
+    </body>
+</html>

@@ -2949,11 +2949,53 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			this.resetCamera();
 			this.window = window;
 
+            var scene = this;
+
             if (domElement === undefined) {
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
                 this.logDebug('Creating default full-screen canvas ' + this.width.toString() + 'x' + this.height.toString() + ' pixelRatio: ' + window.devicePixelRatio.toString());
                 domElement = document.createElement('canvas');
+                domElement.ondragover = function(ev) {
+                    ev.preventDefault();
+                }
+                domElement.ondrop = function(ev) {
+                    ev.preventDefault();
+                    var items  = ev.dataTransfer.items;
+                    for (var i = 0; i < items.length; i++) {
+                        var entry = items[i].webkitGetAsEntry();
+                        var file = items[i].getAsFile();
+                        if (!entry.isDirectory) {
+                            var fileExt = file.name.split('.').pop();
+                            if (fileExt === 'png' || fileExt === 'jpg') {
+                                var reader = new FileReader();
+                        		reader.onload = function(e) {
+                                    var result = e.target.result;
+                                    scene.loadedFiles[file.name] = e.target.result;
+                        		}
+                        		reader.readAsText(file);
+                            } else if (fileExt === 'obj') {
+                                var reader = new FileReader();
+                        		reader.onload = function(e) {
+                                    var result = e.target.result;
+                                    if (scene.page) {
+                                        scene.page.addMesh({
+                                            geometry: file.name,
+                                            readData: e.target.result,
+                                            position: [0, 0, -3],
+                                            size: .1,
+                                            autofit: true,
+                                            onClick: 'animateRotate90',
+                                        });
+                                    }
+                        		}
+                        		reader.readAsText(file);
+                            } else {
+                                console.warn('Unsupported file type: ' + fileExt);
+                            }
+                        }
+                    }
+                }
                 this.isWidget = false;
                 document.body.appendChild(domElement);
             } else {
@@ -2965,8 +3007,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             this.setVrMode(this.isPhone);
 
             this.domElement = domElement;
-
-            var scene = this;
 
             this.pixelRatio = window.devicePixelRatio;
             if (this.isPhone) {
@@ -53877,13 +53917,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                     scene.screenOrientation || 0);
             }
         } else if (this.type === 'Canvas') {
-            //this.threeObjectPivot.position.copy(scene.three.camera.position);
-            //if (scene.isVrMode() && this.vrFixed !== true) {
-            //    this.threeObjectPivot.rotation.set(0, 0, this.screenOrientation || 0);
-            //} else {
-            //    this.threeObjectPivot.quaternion.copy(scene.three.camera.quaternion);
-            //}
-
             var h = .5;
             var scene = this.getScene();
             var tan = Math.tan(THREE.Math.degToRad(scene.fov / 2));
@@ -53990,7 +54023,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                                         });
                                     });
     						} else {
-    							 this.error("getUserMedia not supported");
+    							 this.getScene().logError("getUserMedia not supported");
     						}
                         }
 					}
@@ -54485,17 +54518,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 this.threeObject.peeksAsset = peeksObject;
                 var autofit = this.getAttr('autofit');
                 var loader;
+                this.geometryUrl = this.geometryUrl || '';
                 var extension = this.geometryUrl.split('.').pop().toLowerCase();
-                if (this.geometryUrl) {
-                    var extension = this.geometryUrl.split('.').pop().toLowerCase();
-                    if (extension === 'obj') {
-                        loader = new THREE.OBJLoader( manager );
-                    } else if (extension === 'gltf') {
-                        loader = new THREE.GLTFLoader( manager );
-                    }
+                if (extension === 'obj') {
+                    loader = new THREE.OBJLoader( manager );
+                } else if (extension === 'gltf') {
+                    loader = new THREE.GLTFLoader( manager );
                 }
                 if (loader) {
-                    loader.load(this.geometryUrl, function ( object ) {
+                    var onLoad = function ( object ) {
                         if (extension === 'gltf') {
                             object = object.scene;
                         }
@@ -54528,9 +54559,15 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                         });
 
                         object.parent.peeksAsset.threeSynchMaterial();
-                    }, onProgress, onError );
+                    };
+
+                    if (this.readData) {
+                        onLoad(loader.parse(this.readData));
+                    } else {
+                        loader.load(this.geometryUrl, onLoad, onProgress, onError);
+                    }
                 } else {
-                    this.error('Unable to load geometry from url ' + this.geometryUrl.toString());
+                    this.getScene().logError('Unable to load geometry from url ' + this.geometryUrl.toString());
                 }
             } else if (this.primitive === PEEKS.Asset.PrimitiveLight) {
                 if (this.lightType === "ambient") {

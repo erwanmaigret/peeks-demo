@@ -2855,11 +2855,53 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 			this.resetCamera();
 			this.window = window;
 
+            var scene = this;
+
             if (domElement === undefined) {
                 this.width = this.window.innerWidth;
                 this.height = this.window.innerHeight;
                 this.logDebug('Creating default full-screen canvas ' + this.width.toString() + 'x' + this.height.toString() + ' pixelRatio: ' + window.devicePixelRatio.toString());
                 domElement = document.createElement('canvas');
+                domElement.ondragover = function(ev) {
+                    ev.preventDefault();
+                }
+                domElement.ondrop = function(ev) {
+                    ev.preventDefault();
+                    var items  = ev.dataTransfer.items;
+                    for (var i = 0; i < items.length; i++) {
+                        var entry = items[i].webkitGetAsEntry();
+                        var file = items[i].getAsFile();
+                        if (!entry.isDirectory) {
+                            var fileExt = file.name.split('.').pop();
+                            if (fileExt === 'png' || fileExt === 'jpg') {
+                                var reader = new FileReader();
+                        		reader.onload = function(e) {
+                                    var result = e.target.result;
+                                    scene.loadedFiles[file.name] = e.target.result;
+                        		}
+                        		reader.readAsText(file);
+                            } else if (fileExt === 'obj') {
+                                var reader = new FileReader();
+                        		reader.onload = function(e) {
+                                    var result = e.target.result;
+                                    if (scene.page) {
+                                        scene.page.addMesh({
+                                            geometry: file.name,
+                                            readData: e.target.result,
+                                            position: [0, 0, -3],
+                                            size: .1,
+                                            autofit: true,
+                                            onClick: 'animateRotate90',
+                                        });
+                                    }
+                        		}
+                        		reader.readAsText(file);
+                            } else {
+                                console.warn('Unsupported file type: ' + fileExt);
+                            }
+                        }
+                    }
+                }
                 this.isWidget = false;
                 document.body.appendChild(domElement);
             } else {
@@ -2871,8 +2913,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             this.setVrMode(this.isPhone);
 
             this.domElement = domElement;
-
-            var scene = this;
 
             this.pixelRatio = window.devicePixelRatio;
             if (this.isPhone) {
