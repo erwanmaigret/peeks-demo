@@ -13,41 +13,54 @@
                     var addVectors = function(v1, v2) {
                         return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]];
                     };
-
-                    var move = function() {
+ 
+                    var changeSelectedAnimal = function(incremental) {
+                        if (incremental === undefined) {
+                            selectedAnimalIndex = this.animalIndex;
+                        } else {
+                            selectedAnimalIndex += incremental;
+                            if (selectedAnimalIndex < 0) {
+                                selectedAnimalIndex = animals.length - 1;
+                            } else if (selectedAnimalIndex >= animals.length) {
+                                selectedAnimalIndex = 0;
+                            }
+                        }
+                        selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
+                    };
+ 
+                    var betaInputUpdate = function() {
+                        var scene = this.getScene();
+                        var beta = scene.deviceOrientation.beta;
+                        if (currentBetaCooldown <= 0) {
+                            if (Math.abs(beta) < 45) {
+                                currentBetaCooldown = betaCooldown;
+                                changeSelectedAnimal(beta < 0 ? 1 : -1);
+                            }
+                        } else {
+                            var deltaTime = scene.time - scene.timeLast;
+                            currentBetaCooldown -= deltaTime;
+                        }
+                    };
+ 
+                    var gammaInputUpdate = function() {
                         var scene = this.getScene();
                         var camera = scene.getCamera();
-                        var deltaTime = scene.time - scene.timeLast;
-                        var speed = 0;
+                        var gamma = scene.deviceOrientation.gamma;
+                        // camera.setPosition(addVectors(camera.position, [0, deltaTime * gamma, 0]));
+                    };
+ 
+                    var worldUpdate = function() {
+                        var scene = this.getScene();
                         if (scene.deviceOrientation !== undefined) {
-                            speed = scene.deviceOrientation.beta / 180;
+                            betaInputUpdate();
+                            gammaInputUpdate();
                         }
-                        camera.setPosition(addVectors(camera.position, [0, deltaTime * speed, 0]));
-                    }
-
-                    var page = new PEEKS.Asset({
-                        bgColor: [226/255, 220/255, 209/255],
-                        gyroscope: 'on',
-                        onUpdate: move,
-                    });
-
-                    var assetPath = "/assets/";
-
-                    var animals = [
-                        {name: "cat", size: 0.0004},
-                        {name: "cow", size: 0.00025},
-                        {name: "deer", size: 0.00025},
-                        {name: "goat", size: 0.0003},
-                        {name: "rat", size: 0.002},
-                        {name: "wolf", size: 0.0015}
-                    ];
-
-                    var selectedAnimalIndex = 0;
-
+                    };
+ 
                     var getGeometryUrl = function (part) {
                         return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".obj";
                     };
-
+ 
                     var addAnimal = function() {
                         var animal = animals[selectedAnimalIndex];
                         var node = this.addMesh({
@@ -58,7 +71,7 @@
                         });
                         return node;
                     };
-
+ 
                     var addWorldCube = function() {
                         var cube = page.addAsset({
                             position: addVectors(this.position, this.offsetCube),
@@ -67,15 +80,17 @@
                             addWorldFace: addWorldFace,
                             addAnimal: addAnimal
                         });
-                        cube.addWorldFace(addVectors(cube.position, [cube.faceSize / 2, 0, 0]), [0, 90, 0], [cube.faceSize / 2, 0, 0]);
-                        cube.addWorldFace(addVectors(cube.position, [-cube.faceSize / 2, 0, 0]), [0, -90, 0], [-cube.faceSize / 2, 0, 0]);
-                        cube.addWorldFace(addVectors(cube.position, [0, cube.faceSize / 2, 0]), [-90, 0, 0], [0, cube.faceSize / 2, 0]);
-                        cube.addWorldFace(addVectors(cube.position, [0, -cube.faceSize / 2, 0]), [90, 0, 0], [0, -cube.faceSize / 2, 0]);
-                        cube.addWorldFace(addVectors(cube.position, [0, 0, cube.faceSize / 2]), [0, 0, 0], [0, 0, cube.faceSize / 2]);
-                        cube.addWorldFace(addVectors(cube.position, [0, 0, -cube.faceSize / 2]), [0, 180, 0], [0, 0, -cube.faceSize / 2]);
+                        var cubePos = cube.position;
+                        var offsetPos = cube.faceSize / 2;
+                        cube.addWorldFace(addVectors(cubePos, [offsetPos, 0, 0]), [0, 90, 0], [offsetPos, 0, 0]);
+                        cube.addWorldFace(addVectors(cubePos, [-offsetPos, 0, 0]), [0, -90, 0], [-offsetPos, 0, 0]);
+                        cube.addWorldFace(addVectors(cubePos, [0, offsetPos, 0]), [-90, 0, 0], [0, offsetPos, 0]);
+                        cube.addWorldFace(addVectors(cubePos, [0, -offsetPos, 0]), [90, 0, 0], [0, -offsetPos, 0]);
+                        cube.addWorldFace(addVectors(cubePos, [0, 0, offsetPos]), [0, 0, 0], [0, 0, offsetPos]);
+                        cube.addWorldFace(addVectors(cubePos, [0, 0, -offsetPos]), [0, 180, 0], [0, 0, -offsetPos]);
                         cube.addAnimal();
                     };
-
+ 
                     var addWorldFace = function(position, rotation, offsetCube) {
                         var view = page.addView({
                             position: position,
@@ -84,7 +99,7 @@
                             viewBgColor: this.faceColor,
                             offsetCube: offsetCube,
                             onClick: addWorldCube,
-                            alpha: 0.1,
+                            alpha: 0.0001,
                             onFocusStart: function () {
                                 this.animate({
                                     duration: .5,
@@ -103,26 +118,81 @@
                             }
                         });
                     };
-
+ 
                     var getImageUrl = function (part) {
                         return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".jpg";
                     };
+ 
+                    var showGyro = function () {
+                        var scene = this.getScene();
+                        var gyroText = "";
+                        if (scene.deviceOrientation !== undefined) {
+                            gyroText =  "beta[" + Math.round(scene.deviceOrientation.beta).toString() + "]\n" +
+                                        "gamma[" + Math.round(scene.deviceOrientation.gamma).toString() + "]\n" +
+                                        "alpha[" + Math.round(scene.deviceOrientation.alpha).toString() + "]";
+                        } else {
+                            gyroText = "bonjour";
+                        }
+                        if (this.gyroShow != null) {
+                            this.gyroShow.destroy();
+                        }
+                        this.gyroShow = this.addText({
+                            text: gyroText,
+                            position: [0, 0, 0],
+                            fontSize: 40,
+                        });
+                    };
+ 
+                    var initWorld = function() {
+                        for (var i = -3; i <= 3; i += 0.5) {
+                            for (var j = -3; j <= 3; j += 0.5) {
+                                    var ground = page.addAsset({
+                                    position: [i, -1, j],
+                                    offsetCube: [0, 0.25, 0],
+                                    addGround: addWorldFace,
+                                    faceSize: 0.5,
+                                    faceColor: [Math.random(), Math.random(), Math.random()]
+                                });
+                                ground.addGround(addVectors(ground.position, [0, ground.faceSize / 2, 0]), [-90, 0, 0], [0, ground.faceSize / 2, 0]);
+                            }
+                        }
+                        selectedAnimalIndex = Math.floor(Math.random() * animals.length);
+                        selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
+                    };
+ 
+                    var assetPath = "/assets/";
+ 
+                    var betaCooldown = 0.5;
+                    var currentBetaCooldown = 0;
+ 
+                    var animals = [
+                        {name: "cat", size: 0.0004},
+                        {name: "cow", size: 0.00025},
+                        {name: "deer", size: 0.00025},
+                        {name: "goat", size: 0.0003},
+                        {name: "rat", size: 0.002},
+                        {name: "wolf", size: 0.0015}
+                    ];
 
+                    var selectedAnimalIndex = 0;
+ 
+                    var page = new PEEKS.Asset({
+                        bgColor: [226/255, 220/255, 209/255],
+                        gyroscope: 'on',
+                        onUpdate: worldUpdate,
+                    });  
+ 
                     var canvas = page.addCanvas({
-                        valign: "bottom"
+                        valign: "top",
+                        onUpdate: showGyro
                     });
-
+ 
                     var selectedAnimalImage = canvas.addImage({
                         image: assetPath + "material_dark.jpg",
                         position: [selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0],
                         size: [0.16, 0.16, 1]
                     });
-
-                    var changeSelectedAnimal = function() {
-                        selectedAnimalIndex = this.animalIndex;
-                        selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
-                    };
-
+ 
                     for (var i = 0; i < animals.length; i++) {
                         canvas.addImage({
                             image: getImageUrl(animals[i].name),
@@ -132,27 +202,14 @@
                             animalIndex: i
                         });
                     }
-
-                    var initWorld = function() {
-                        for (var i = -1; i <= 1; i += 0.5) {
-                            for (var j = -3; j <= 1; j += 0.5) {
-                                var ground = page.addAsset({
-                                    position: [i, -1, j],
-                                    offsetCube: [0, 0.25, 0],
-                                    createCube: addWorldCube
-                                });
-                                selectedAnimalIndex = Math.floor(Math.random() * animals.length);
-                                ground.createCube();
-                            }
-                        }
-                        selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
-                    }
-
+ 
                     initWorld();
-
+ 
+                    page.addPage('peeks.toolbar');
+ 
                     return page;
                 });
-
+ 
                 PEEKS.start(window, 'worldcraft');
             </script>
         </section>
