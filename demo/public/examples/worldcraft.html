@@ -28,11 +28,15 @@
                         selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
                     };
  
-                    var betaInputUpdate = function() {
-                        var scene = this.getScene();
+                    // manage the changement of animal
+                    var betaInputUpdate = function(scene) {
                         var beta = scene.deviceOrientation.beta;
                         if (currentBetaCooldown <= 0) {
-                            if (Math.abs(beta) < 45) {
+                            if (Math.abs(beta) < 150 && Math.abs(beta) > 90) {
+                                currentBetaCooldown = betaCooldown;
+                                changeSelectedAnimal(beta < 0 ? -1 : 1);
+                            }
+                            else if (Math.abs(beta) < 90 && Math.abs(beta) > 30) {
                                 currentBetaCooldown = betaCooldown;
                                 changeSelectedAnimal(beta < 0 ? 1 : -1);
                             }
@@ -42,56 +46,98 @@
                         }
                     };
  
-                    var gammaInputUpdate = function() {
-                        var scene = this.getScene();
+                    // manage the movement
+                    var gammaInputUpdate = function(scene) {
                         var camera = scene.getCamera();
+                        var alpha = scene.deviceOrientation.alpha;
                         var gamma = scene.deviceOrientation.gamma;
-                        // camera.setPosition(addVectors(camera.position, [0, deltaTime * gamma, 0]));
+                        var speed = 90 - Math.abs(gamma);
+                        var deltaTime = scene.time - scene.timeLast;
+                        if (gamma < 0) {
+                            speed = -speed;
+                        }
+                        if (Math.abs(alpha) >= 180) {
+                            speed = -speed;
+                        }
+                        velocity += (speed / 90) * deltaTime;
+                        if (velocity > maxSpeed) {
+                            velocity = maxSpeed;
+                        }
+                        camera.setPosition(addVectors(camera.position, [0, 0, 0.001]));
                     };
  
+                    // manage gyro inputs
                     var worldUpdate = function() {
                         var scene = this.getScene();
-                        if (scene.deviceOrientation !== undefined) {
-                            betaInputUpdate();
-                            gammaInputUpdate();
+                        if (scene.isGyroMode() && scene.deviceOrientation !== undefined &&
+                            window.innerHeight < window.innerWidth) {
+                            betaInputUpdate(scene);
+                            gammaInputUpdate(scene);
                         }
                     };
- 
+
+                    // get the path of the animal obj
                     var getGeometryUrl = function (part) {
                         return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".obj";
                     };
  
+                    // add an animal in the cube which has been created
                     var addAnimal = function() {
+                        // get the current animal
                         var animal = animals[selectedAnimalIndex];
+                        // create the animal
                         var node = this.addMesh({
                             geometry: getGeometryUrl(animal.name),
                             size: animal.size,
                             color: this.faceColor,
-                            autofit: true
+                            // autofit: true
                         });
-                        return node;
                     };
  
+                    // add a cube when clicking on a face
                     var addWorldCube = function() {
+                        // preset the position of the cube and his position in a grid system
+                        var cubePos = addVectors(this.position, this.offsetCube);
+                        var coord = [cubePos[0] / this.faceSize, cubePos[1] / this.faceSize, cubePos[2] / this.faceSize];
+                        // create the cube
                         var cube = page.addAsset({
-                            position: addVectors(this.position, this.offsetCube),
+                            position: cubePos,
                             faceColor: [Math.random(), Math.random(), Math.random()],
                             faceSize: 0.5,
                             addWorldFace: addWorldFace,
-                            addAnimal: addAnimal
+                            addAnimal: addAnimal,
+                            coord: coord
                         });
-                        var cubePos = cube.position;
+                        // create faces
                         var offsetPos = cube.faceSize / 2;
-                        cube.addWorldFace(addVectors(cubePos, [offsetPos, 0, 0]), [0, 90, 0], [offsetPos, 0, 0]);
-                        cube.addWorldFace(addVectors(cubePos, [-offsetPos, 0, 0]), [0, -90, 0], [-offsetPos, 0, 0]);
-                        cube.addWorldFace(addVectors(cubePos, [0, offsetPos, 0]), [-90, 0, 0], [0, offsetPos, 0]);
-                        cube.addWorldFace(addVectors(cubePos, [0, -offsetPos, 0]), [90, 0, 0], [0, -offsetPos, 0]);
-                        cube.addWorldFace(addVectors(cubePos, [0, 0, offsetPos]), [0, 0, 0], [0, 0, offsetPos]);
-                        cube.addWorldFace(addVectors(cubePos, [0, 0, -offsetPos]), [0, 180, 0], [0, 0, -offsetPos]);
+                        cube.faces = [
+                            cube.addWorldFace(addVectors(cubePos, [offsetPos, 0, 0]), [0, 90, 0], [offsetPos, 0, 0]),
+                            cube.addWorldFace(addVectors(cubePos, [-offsetPos, 0, 0]), [0, -90, 0], [-offsetPos, 0, 0]),
+                            cube.addWorldFace(addVectors(cubePos, [0, offsetPos, 0]), [-90, 0, 0], [0, offsetPos, 0]),
+                            cube.addWorldFace(addVectors(cubePos, [0, -offsetPos, 0]), [90, 0, 0], [0, -offsetPos, 0]),
+                            cube.addWorldFace(addVectors(cubePos, [0, 0, offsetPos]), [0, 0, 0], [0, 0, offsetPos]),
+                            cube.addWorldFace(addVectors(cubePos, [0, 0, -offsetPos]), [0, 180, 0], [0, 0, -offsetPos])
+                        ];
+                        // create the animal
                         cube.addAnimal();
+                        // add the cube to the grid system
+                        page.cubes.push(cube);
+                        // face clicked is no longer visible same for the face in front of this one
+                        for (var i = 0; i < 3; i++) {
+                            if (this.offsetCube[i] != 0) {
+                                var index = i * 2;
+                                if (this.offsetCube[i] > 0) {
+                                    index++;
+                                }
+                                cube.faces[index].visible = false;
+                            }
+                        }
+                        this.visible = false;
                     };
  
+                    // add a face for the cube which has been created
                     var addWorldFace = function(position, rotation, offsetCube) {
+                        console.log(this.faceSize != null);
                         var view = page.addView({
                             position: position,
                             rotation: rotation,
@@ -117,36 +163,20 @@
                                 });
                             }
                         });
+                        return view;
                     };
  
+                    // get the path of the animal image
                     var getImageUrl = function (part) {
                         return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".jpg";
                     };
  
-                    var showGyro = function () {
-                        var scene = this.getScene();
-                        var gyroText = "";
-                        if (scene.deviceOrientation !== undefined) {
-                            gyroText =  "beta[" + Math.round(scene.deviceOrientation.beta).toString() + "]\n" +
-                                        "gamma[" + Math.round(scene.deviceOrientation.gamma).toString() + "]\n" +
-                                        "alpha[" + Math.round(scene.deviceOrientation.alpha).toString() + "]";
-                        } else {
-                            gyroText = "bonjour";
-                        }
-                        if (this.gyroShow != null) {
-                            this.gyroShow.destroy();
-                        }
-                        this.gyroShow = this.addText({
-                            text: gyroText,
-                            position: [0, 0, 0],
-                            fontSize: 40,
-                        });
-                    };
- 
+                    // initialize the world
                     var initWorld = function() {
+                        // create a ground
                         for (var i = -3; i <= 3; i += 0.5) {
                             for (var j = -3; j <= 3; j += 0.5) {
-                                    var ground = page.addAsset({
+                                var ground = page.addAsset({
                                     position: [i, -1, j],
                                     offsetCube: [0, 0.25, 0],
                                     addGround: addWorldFace,
@@ -156,15 +186,20 @@
                                 ground.addGround(addVectors(ground.position, [0, ground.faceSize / 2, 0]), [-90, 0, 0], [0, ground.faceSize / 2, 0]);
                             }
                         }
+                        // initialize randomly an animal
                         selectedAnimalIndex = Math.floor(Math.random() * animals.length);
                         selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
                     };
  
+                    // where all the assets are stacked
                     var assetPath = "/assets/";
- 
-                    var betaCooldown = 0.5;
+                    // value to change animal
+                    var betaCooldown = 1;
                     var currentBetaCooldown = 0;
- 
+                    // value to move
+                    var velocity = 0;
+                    var maxSpeed = 2;
+                    // animals available
                     var animals = [
                         {name: "cat", size: 0.0004},
                         {name: "cow", size: 0.00025},
@@ -173,26 +208,27 @@
                         {name: "rat", size: 0.002},
                         {name: "wolf", size: 0.0015}
                     ];
-
                     var selectedAnimalIndex = 0;
  
                     var page = new PEEKS.Asset({
                         bgColor: [226/255, 220/255, 209/255],
                         gyroscope: 'on',
                         onUpdate: worldUpdate,
+                        cubes: []
                     });  
  
                     var canvas = page.addCanvas({
-                        valign: "top",
-                        onUpdate: showGyro
+                        valign: "top"
                     });
  
+                    // add select image 
                     var selectedAnimalImage = canvas.addImage({
                         image: assetPath + "material_dark.jpg",
                         position: [selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0],
                         size: [0.16, 0.16, 1]
                     });
  
+                    // add animals images
                     for (var i = 0; i < animals.length; i++) {
                         canvas.addImage({
                             image: getImageUrl(animals[i].name),
