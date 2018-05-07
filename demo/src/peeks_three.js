@@ -303,8 +303,9 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 				if (threeObject.material && (threeObject.material.map === null || threeObject.material.map !== video.texture)) {
 					if (!video.texture && !this.stopVideoTexture) {
 						video.texture = new THREE.Texture(video);
-                        video.texture.minFilter = THREE.NearestFilter;
-                        video.texture.magFilter = THREE.NearestFilter;
+                        // Videos are better blurred than pixelated, so don't use Nearest
+                        video.texture.minFilter = THREE.LinearFilter;
+                        video.texture.magFilter = THREE.LinearFilter;
                         if (this.videoUrl !== undefined) {
                             video.src = this.videoUrl;
                         } else {
