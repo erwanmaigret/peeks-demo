@@ -440,18 +440,21 @@ Object.assign(Node.prototype, EventDispatcher.prototype,
 
         DOMcreateElementVideo: function(name) {
             this.video = document.createElement(name || 'video');
-            this.video.autoplay = true;
-            this.video.setAttribute('autoplay', '');
-            this.video.setAttribute('playsinline', '');
             if (this.videoUrl === undefined) {
+                this.video.setAttribute('playsinline', '');
+                this.video.setAttribute('autoplay', '');
                 this.video.width = 512;
                 this.video.height = 512;
                 this.video.setAttribute('muted', '');
                 this.video.setAttribute('id', 'peeksCamera');
             } else {
-                var ratio = this.size[0] / this.size[1];
-                this.video.width = 512;
-                this.video.height = 512 / ratio;
+                if (this.videoAutoPlay) {
+                    this.video.setAttribute('playsinline', '');
+                    this.video.setAttribute('autoplay', '');
+                }
+                if (this.videoLoop) {
+                    this.video.setAttribute('loop', '');
+                }
             }
         },
 
@@ -1878,6 +1881,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 		},
 
 		onMouseDown: function (event) {
+            this.didInteract = true;
 			this.logVerbose('onMouseDown');
             event.preventDefault();
 
@@ -2654,6 +2658,8 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 if (this.page.backgroundVideo) {
                     this.backgroundVideo = this.background.addSphere({
                         videoUrl: this.page.backgroundVideo,
+                        videoLoop: true,
+                        videoAutoPlay: true,
                         position: [0, 0, 0],
                         rotation: [0, 90, 0],
                         sides: 'back',

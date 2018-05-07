@@ -353,6 +353,12 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
                     // Still the texture is valid, just does not need to be updated (frozen)
                     return true;
                 } else if (video.texture && video.readyState === video.HAVE_ENOUGH_DATA) {
+                    if (scene.didInteract) {
+                        if (this.videoAutoPlay && video.currentTime === 0) {
+                            video.play();
+                        }
+                    }
+
                     var canvas = this.parent.canvas;
                     if (canvas && video.videoWidth !== 0 && video.videoHeight !== 0) {
                         var context = canvas.getContext('2d');
@@ -1010,8 +1016,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
             }
         }
     }
-
-	this.threeSynchVideoTexture();
 
 	this.threeObject.visible = this.threeGetVisibility();
 
