@@ -45,25 +45,33 @@
                             currentBetaCooldown -= deltaTime;
                         }
                     };
+
+                    var show = function (text) {
+                        if (canvas.showDebug != null) { 
+                            canvas.showDebug.destroy(); 
+                        }
+                        canvas.showDebug = canvas.addText({ 
+                            text: text, 
+                            position: [0, 0, 0], 
+                            fontSize: 40, 
+                        }); 
+                    };
  
                     // manage the movement
                     var gammaInputUpdate = function(scene) {
-                        var camera = scene.getCamera();
-                        var alpha = scene.deviceOrientation.alpha;
-                        var gamma = scene.deviceOrientation.gamma;
-                        var speed = 90 - Math.abs(gamma);
-                        var deltaTime = scene.time - scene.timeLast;
-                        if (gamma < 0) {
-                            speed = -speed;
-                        }
-                        if (Math.abs(alpha) >= 180) {
-                            speed = -speed;
-                        }
-                        velocity += (speed / 90) * deltaTime;
-                        if (velocity > maxSpeed) {
-                            velocity = maxSpeed;
-                        }
-                        camera.setPosition(addVectors(camera.position, [0, 0, 0.001]));
+                        // var camera = scene.getCamera();
+                        // var speed = 1;
+                        // var deltaTime = scene.time - scene.timeLast;
+                        // var euler = new THREE.Euler(camera.rotation[0], camera.rotation[1], camera.rotation[2], camera.rotationOrder);
+                        // var dir = new THREE.Vector3(0, 0, 1);
+                        // dir.applyEuler(euler);
+                        // var offset = [
+                        //     dir.x * deltaTime * speed,
+                        //     dir.y * deltaTime * speed,
+                        //     dir.z * deltaTime * speed
+                        // ];
+                        // show(offset[0].toString() + ", " + offset[1].toString() + ", " + offset[2].toString());
+                        // camera.setPosition(addVectors(camera.position, offset));
                     };
  
                     // manage gyro inputs
@@ -72,8 +80,8 @@
                         if (scene.isGyroMode() && scene.deviceOrientation !== undefined &&
                             window.innerHeight < window.innerWidth) {
                             betaInputUpdate(scene);
-                            gammaInputUpdate(scene);
                         }
+                        gammaInputUpdate(scene);
                     };
 
                     // get the path of the animal obj
@@ -137,7 +145,6 @@
  
                     // add a face for the cube which has been created
                     var addWorldFace = function(position, rotation, offsetCube) {
-                        console.log(this.faceSize != null);
                         var view = page.addView({
                             position: position,
                             rotation: rotation,
@@ -196,9 +203,6 @@
                     // value to change animal
                     var betaCooldown = 1;
                     var currentBetaCooldown = 0;
-                    // value to move
-                    var velocity = 0;
-                    var maxSpeed = 2;
                     // animals available
                     var animals = [
                         {name: "cat", size: 0.0004},
