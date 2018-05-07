@@ -53927,7 +53927,6 @@ PEEKS.Asset.prototype.threeSynchXform = function(threeObject) {
                 }
             }
             if (resetParent || parent !== this.threeObjectPivot.parent) {
-                console.log('canvas rewire');
                 if (this.threeObjectPivot.parent) {
                     this.threeObjectPivot.parent.remove(this.threeObjectPivot);
                 }
@@ -54099,7 +54098,7 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 
 PEEKS.Asset.prototype.threeGetVisibility = function() {
 	if (this.visible) {
-		if (this.threeObject && this.hasVideo()) {
+        if (this.threeObject && this.hasVideo()) {
 			return this.threeSynchVideoTexture();
 		} else {
 			return true;
