@@ -13,7 +13,7 @@
                     var addVectors = function(v1, v2) {
                         return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]];
                     };
- 
+
                     var changeSelectedAnimal = function(incremental) {
                         if (incremental === undefined) {
                             selectedAnimalIndex = this.animalIndex;
@@ -27,7 +27,7 @@
                         }
                         selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
                     };
- 
+
                     // manage the changement of animal
                     var betaInputUpdate = function(scene) {
                         var beta = scene.deviceOrientation.beta;
@@ -47,16 +47,16 @@
                     };
 
                     var show = function (text) {
-                        if (canvas.showDebug != null) { 
-                            canvas.showDebug.destroy(); 
+                        if (canvas.showDebug != null) {
+                            canvas.showDebug.destroy();
                         }
-                        canvas.showDebug = canvas.addText({ 
-                            text: text, 
-                            position: [0, 0, 0], 
-                            fontSize: 40, 
-                        }); 
+                        canvas.showDebug = canvas.addText({
+                            text: text,
+                            position: [0, 0, 0],
+                            fontSize: 40,
+                        });
                     };
- 
+
                     // manage the movement
                     var gammaInputUpdate = function(scene) {
                         // var camera = scene.getCamera();
@@ -73,7 +73,7 @@
                         // show(offset[0].toString() + ", " + offset[1].toString() + ", " + offset[2].toString());
                         // camera.setPosition(addVectors(camera.position, offset));
                     };
- 
+
                     // manage gyro inputs
                     var worldUpdate = function() {
                         var scene = this.getScene();
@@ -86,9 +86,9 @@
 
                     // get the path of the animal obj
                     var getGeometryUrl = function (part) {
-                        return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".obj";
+                        return assetPath + part + ".glb";
                     };
- 
+
                     // add an animal in the cube which has been created
                     var addAnimal = function() {
                         // get the current animal
@@ -101,7 +101,7 @@
                             // autofit: true
                         });
                     };
- 
+
                     // add a cube when clicking on a face
                     var addWorldCube = function() {
                         // preset the position of the cube and his position in a grid system
@@ -142,7 +142,7 @@
                         }
                         this.visible = false;
                     };
- 
+
                     // add a face for the cube which has been created
                     var addWorldFace = function(position, rotation, offsetCube) {
                         var view = page.addView({
@@ -172,12 +172,12 @@
                         });
                         return view;
                     };
- 
+
                     // get the path of the animal image
                     var getImageUrl = function (part) {
-                        return assetPath + "low_poly_animal" + (part !== "" ? "_" + part : "") + ".jpg";
+                        return assetPath + part + ".jpg";
                     };
- 
+
                     // initialize the world
                     var initWorld = function() {
                         // create a ground
@@ -197,41 +197,41 @@
                         selectedAnimalIndex = Math.floor(Math.random() * animals.length);
                         selectedAnimalImage.setPosition([selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0]);
                     };
- 
+
                     // where all the assets are stacked
-                    var assetPath = "/assets/";
+                    var assetPath = "/assets/terraworlds/";
                     // value to change animal
                     var betaCooldown = 1;
                     var currentBetaCooldown = 0;
                     // animals available
                     var animals = [
-                        {name: "cat", size: 0.0004},
-                        {name: "cow", size: 0.00025},
-                        {name: "deer", size: 0.00025},
-                        {name: "goat", size: 0.0003},
-                        {name: "rat", size: 0.002},
-                        {name: "wolf", size: 0.0015}
+                        {name: "arbre", size: .1},
+                        {name: "arbre2", size: .1},
+                        {name: "arbre3", size: .1},
+                        {name: "arbre4", size: .1},
+                        {name: "arbre5", size: .1},
+                        {name: "arbre6", size: .1}
                     ];
                     var selectedAnimalIndex = 0;
- 
+
                     var page = new PEEKS.Asset({
                         bgColor: [226/255, 220/255, 209/255],
                         gyroscope: 'on',
                         onUpdate: worldUpdate,
                         cubes: []
-                    });  
- 
+                    });
+
                     var canvas = page.addCanvas({
                         valign: "top"
                     });
- 
-                    // add select image 
+
+                    // add select image
                     var selectedAnimalImage = canvas.addImage({
                         image: assetPath + "material_dark.jpg",
                         position: [selectedAnimalIndex / animals.length + 0.075 - .5, 0.415, 0],
                         size: [0.16, 0.16, 1]
                     });
- 
+
                     // add animals images
                     for (var i = 0; i < animals.length; i++) {
                         canvas.addImage({
@@ -242,14 +242,14 @@
                             animalIndex: i
                         });
                     }
- 
+
                     initWorld();
- 
+
                     page.addPage('peeks.toolbar');
- 
+
                     return page;
                 });
- 
+
                 PEEKS.start(window, 'worldcraft');
             </script>
         </section>
