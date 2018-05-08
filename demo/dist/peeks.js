@@ -54550,12 +54550,12 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                 var extension = this.geometryUrl.split('.').pop().toLowerCase();
                 if (extension === 'obj') {
                     loader = new THREE.OBJLoader( manager );
-                } else if (extension === 'gltf') {
+                } else if (extension === 'gltf' || extension === 'glb') {
                     loader = new THREE.GLTFLoader( manager );
                 }
                 if (loader) {
                     var onLoad = function ( object ) {
-                        if (extension === 'gltf') {
+                        if (extension === 'gltf' || extension === 'glb') {
                             object = object.scene;
                         }
                         node.add(object);

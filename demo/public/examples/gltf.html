@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>example</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="/peeks.js"></script>
+            <script>
+                // Declare the behavior of your peeks page:
+                PEEKS.registerPage('example', function() {
+                    var page = new PEEKS.Asset({
+                        category: 'winter',
+                    });
+                    page.addMesh({
+                        geometry: '/assets/glb/tree.glb',
+                        position: [0, 0, -3],
+                        rotation: [0, 90, 0],
+                        size: 1,
+                        onClick: 'animateRotate90',
+                    });
+                    return page;
+                });
+                // Start that page full-screen
+                PEEKS.start(window, 'example');
+            </script>
+        </section>
+    </body>
+</html>
