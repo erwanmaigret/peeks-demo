@@ -1374,6 +1374,9 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
         onUpdate: function() {
         },
 
+        onUpdate: function() {
+        },
+
 		update: function(time) {
 			if (time == undefined) {
 				time = (Date.now() - startTime) / 1000;
@@ -54535,13 +54538,16 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     manager.onProgress = function ( item, loaded, total ) {
                 };
 
+                var peeksObject = this;
+
                 var onProgress = function (xhr) {
                 };
 
                 var onError = function (xhr) {
+                    peeksObject.getScene().logDebug('Loading error on ' + peeksObject.geometryUrl);
+                    console.log(xhr);
                 };
 
-                var peeksObject = this;
                 var node = this.threeObject;
                 this.threeObject.peeksAsset = peeksObject;
                 var autofit = this.getAttr('autofit');
@@ -54554,8 +54560,13 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     loader = new THREE.GLTFLoader( manager );
                 }
                 if (loader) {
+                    peeksObject.getScene().logDebug('Loading ' + peeksObject.geometryUrl);
+
                     var onLoad = function ( object ) {
+                        var clips;
+                        peeksObject.getScene().logDebug('Loaded ' + peeksObject.geometryUrl);
                         if (extension === 'gltf' || extension === 'glb') {
+                            clips = object.animations;
                             object = object.scene;
                         }
                         node.add(object);
@@ -54589,6 +54600,33 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                         });
 
                         object.parent.peeksAsset.threeSynchMaterial();
+
+                        if (clips) {
+                            var mixer = new THREE.AnimationMixer( object );
+
+                            // Update the mixer on each frame
+                            function update () {
+                            	mixer.update( deltaSeconds );
+                            }
+
+                            // Play a specific animation
+                            //var clip = THREE.AnimationClip.findByName( clips, 'dance' );
+                            //var action = mixer.clipAction( clip );
+                            //action.play();
+
+                            console.log(clips);
+                            // Play all animations
+                            clips.forEach(
+                                function ( clip ) {
+                                    console.log(clip);
+                                	mixer.clipAction( clip ).play();
+                                }
+                            );
+
+                            console.log(mixer);
+
+                            node.mixer = mixer;
+                        }
                     };
 
                     if (this.readData) {
@@ -54747,6 +54785,10 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		return;
 	}
 
+    if (threeObject.mixer) {
+        //console.log("ther!");
+    }
+
 	this.threeSynchXform(threeObject);
 
     if (this.primitive === PEEKS.Asset.PrimitiveLight) {
@@ -54829,6 +54871,12 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 PEEKS.Asset.prototype.threeGetNode = function() {
 	this.threeSynch();
 	return this.threeObject;
+}
+
+PEEKS.Asset.prototype.onUpdate = function(time) {
+    if (this.threeObject && this.threeObject.mixer) {
+        this.threeObject.mixer.update(time - this.threeObject.mixer.time);
+    }
 }
 
 PEEKS.Asset.prototype.onUnload = function() {

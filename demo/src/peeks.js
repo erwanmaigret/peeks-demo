@@ -1280,6 +1280,9 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
         onUpdate: function() {
         },
 
+        onUpdate: function() {
+        },
+
 		update: function(time) {
 			if (time == undefined) {
 				time = (Date.now() - startTime) / 1000;
