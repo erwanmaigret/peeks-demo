@@ -882,26 +882,11 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                         if (clips) {
                             var mixer = new THREE.AnimationMixer( object );
 
-                            // Update the mixer on each frame
-                            function update () {
-                            	mixer.update( deltaSeconds );
-                            }
-
-                            // Play a specific animation
-                            //var clip = THREE.AnimationClip.findByName( clips, 'dance' );
-                            //var action = mixer.clipAction( clip );
-                            //action.play();
-
-                            console.log(clips);
-                            // Play all animations
                             clips.forEach(
-                                function ( clip ) {
-                                    console.log(clip);
-                                	mixer.clipAction( clip ).play();
+                                function (clip) {
+                                	mixer.clipAction(clip).play();
                                 }
                             );
-
-                            console.log(mixer);
 
                             node.mixer = mixer;
                         }
@@ -1063,10 +1048,6 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 		return;
 	}
 
-    if (threeObject.mixer) {
-        //console.log("ther!");
-    }
-
 	this.threeSynchXform(threeObject);
 
     if (this.primitive === PEEKS.Asset.PrimitiveLight) {
@@ -1154,6 +1135,7 @@ PEEKS.Asset.prototype.threeGetNode = function() {
 PEEKS.Asset.prototype.onUpdate = function(time) {
     if (this.threeObject && this.threeObject.mixer) {
         this.threeObject.mixer.update(time - this.threeObject.mixer.time);
+        //this.threeObject.mixer.update(time - this.threeObject.mixer.time);
     }
 }
 
