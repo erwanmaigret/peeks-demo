@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>example</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="/peeks.js"></script>
+            <script>
+                // Declare the behavior of your peeks page:
+                PEEKS.registerPage('example', function() {
+                    var page = new PEEKS.Asset({
+                    });
+                    page.addMesh({
+                        geometry: '/assets/gltf/samba_dancing/scene.gltf',
+                        position: [0, -1, -5],
+                        rotation: [0, 0, 0],
+                        size: .01,
+                        onClick: 'animateRotate90',
+                    });
+                    page.addPage('peeks.toolbar');
+                    return page;
+                });
+                // Start that page full-screen
+                PEEKS.start(window, 'example');
+            </script>
+        </section>
+    </body>
+</html>
