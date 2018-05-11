@@ -332,6 +332,14 @@ PEEKS.Asset.prototype.threeSynchVideoTexture = function() {
 					}
 
 					threeObject.material.map = video.texture;
+
+                    if (this.textureFlipX) {
+                        threeObject.material.map.repeat.x = -1;
+                    }
+                    if (this.textureFlipY) {
+                        threeObject.material.map.repeat.y = -1;
+                    }
+                    console.log(threeObject.material.map);
 				}
 
                 if (this.stopVideoTexture) {
@@ -766,7 +774,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     depthWrite: this.getAttr('depthWrite') === 'false' ? false : true,
                 });
                 this.threeObject = new THREE.Mesh(geometry, material);
-                PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'), this.textureRepeat);
+                PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'), this.textureRepeat, this.textureFlipX, this.textureFlipY);
             } else if (this.primitive === PEEKS.Asset.PrimitiveCurvedPanel) {
                 var geometry = new THREE.SphereGeometry(1, 32, 32,
                     Math.PI * 1.45, Math.PI * .1,
@@ -985,7 +993,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 						backSide.rotation.y = THREE.Math.degToRad(180);
 						PEEKS.ThreeLoadTexture(this, material, this.textureBackUrl,
                             this.textureRepeat,
-                            false, false,
+                            this.textureFlipX, this.textureFlipY,
                             this.imageDetour
                         );
 					}
@@ -1003,7 +1011,7 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 
                     PEEKS.ThreeLoadTexture(this, material, this.getAttr('textureUrl'),
                         this.textureRepeat,
-                        false, false,
+                        this.textureFlipX, this.textureFlipY,
                         this.imageDetour
                     );
 

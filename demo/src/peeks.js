@@ -2651,9 +2651,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     this.backgroundImage = this.background.addSphere({
                         image: backgroundFilename,
                         position: [0, 0, 0],
-                        rotation: [0, 90, 0],
+                        rotation: [0, -90, 0],
                         sides: 'back',
-                        size: 20,
+                        size: [-20, 20, 20],
                         color: backgroundColor,
                     });
                 }
@@ -2664,9 +2664,9 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         videoLoop: true,
                         videoAutoPlay: true,
                         position: [0, 0, 0],
-                        rotation: [0, 90, 0],
+                        rotation: [0, -90, 0],
                         sides: 'back',
-                        size: 20,
+                        size: [-20, 20, 20],
                     });
                 }
 

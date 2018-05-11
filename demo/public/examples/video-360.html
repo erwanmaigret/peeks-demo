@@ -7,18 +7,18 @@
         <header>
         </header>
         <section id="wrapper">
-            <script src="/peeks.0.0.3.js"></script>
+            <script src="/peeks.js"></script>
             <script>
             // Declare the behavior of your peeks page:
             PEEKS.registerPage('example', function() {
                 var page = new PEEKS.Asset({
                     gyroscope: 'off',
-                    backgroundVideo: '/assets/video_360.mp4',
+                    backgroundVideo: '/assets/video_360_rollercoaster.mp4',
                 });
 
                  page.addVideo({
                      url: '/assets/video_sintel.mp4',
-                     position: [0, 0, -6],
+                     position: [0, 4, -6],
                      rotation: [0, 0, 0],
                      size: [4.8, 2.4, 1],
                  });
@@ -26,7 +26,7 @@
                  return page;
             });
             // Start that page full-screen
-            PEEKS.start(window, 'example');
+            PEEKS.start(window, 'example', { fov: 100 });
             </script>
         </section>
     </body>
