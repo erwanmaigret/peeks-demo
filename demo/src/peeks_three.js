@@ -862,8 +862,8 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                                             -boundingSphere.center.y,
                                             -boundingSphere.center.z
                                         );
-                                        var scale = 1.0 / boundingSphere.radius;
-                                        child.scale.set(scale, scale, scale);
+                                        // var scale = 1.0 / boundingSphere.radius;
+                                        // child.scale.set(scale, scale, scale);
                                     }
                                 }
                             });

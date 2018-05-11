@@ -56,6 +56,40 @@
                             fontSize: 40, 
                         }); 
                     };
+
+                    var getPositionWithCollision = function(position, initOffset) {
+                        initOffset[1] = 0;
+                        var currentGridX = Math.floor(position[0] / 0.5);
+                        var currentGridZ = Math.floor(position[2] / 0.5);
+                        var posWithOffset = addVectors(position, initOffset);
+                        var nextGridX = Math.floor(posWithOffset[0] / 0.5);
+                        var nextGridZ = Math.floor(posWithOffset[2] / 0.5);
+                        if (currentGridX === nextGridX && currentGridZ === nextGridZ) {
+                            for (var i = 0; i < page.cubes.length; i++) {
+                                if (page.cubes[i].coord[0] === nextGridX && page.cubes[i].coord[2] === nextGridZ) {
+                                    initOffset[0] = 0;
+                                    initOffset[2] = 0;
+                                }
+                            }
+                        }
+                        if (currentGridX !== nextGridX) {
+                            for (var i = 0; i < page.cubes.length; i++) {
+                                console.log(page.cubes[i].coord[0] + "/" + page.cubes[i].coord[2]);
+                                console.log(nextGridX + "/" + nextGridZ);
+                                if (page.cubes[i].coord[0] === nextGridX && page.cubes[i].coord[2] === nextGridZ) {
+                                    initOffset[0] = 0;
+                                }
+                            }
+                        }
+                        if (currentGridZ !== nextGridZ) {
+                            for (var i = 0; i < page.cubes.length; i++) {
+                                if (page.cubes[i].coord[0] === nextGridX && page.cubes[i].coord[2] === nextGridZ) {
+                                    initOffset[2] = 0;
+                                }
+                            }
+                        }
+                        return initOffset;
+                    };
  
                     // manage the movement
                     var gammaInputUpdate = function(scene) {
