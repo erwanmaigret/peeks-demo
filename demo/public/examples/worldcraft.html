@@ -93,19 +93,18 @@
  
                     // manage the movement
                     var gammaInputUpdate = function(scene) {
-                        // var camera = scene.getCamera();
-                        // var speed = 1;
-                        // var deltaTime = scene.time - scene.timeLast;
-                        // var euler = new THREE.Euler(camera.rotation[0], camera.rotation[1], camera.rotation[2], camera.rotationOrder);
-                        // var dir = new THREE.Vector3(0, 0, 1);
-                        // dir.applyEuler(euler);
-                        // var offset = [
-                        //     dir.x * deltaTime * speed,
-                        //     dir.y * deltaTime * speed,
-                        //     dir.z * deltaTime * speed
-                        // ];
-                        // show(offset[0].toString() + ", " + offset[1].toString() + ", " + offset[2].toString());
-                        // camera.setPosition(addVectors(camera.position, offset));
+                        var camera = scene.getCamera(); 
+                        var speed = 0.5; 
+                        var deltaTime = scene.time - scene.timeLast; 
+                        var zOffset = deltaTime * speed; 
+                        var animValue = scene.onGetCameraTranslation([0, 0, -zOffset]); 
+                        animValue = getPositionWithCollision(camera.position, animValue); 
+                        camera.add(new PEEKS.Animation({ 
+                            duration: 0.001, 
+                            begin: [0, 0, 0], 
+                            end: animValue, 
+                            attribute: "position" 
+                        })); 
                     };
  
                     // manage gyro inputs
@@ -253,7 +252,10 @@
                         gyroscope: 'on',
                         onUpdate: worldUpdate,
                         cubes: []
-                    });  
+                    });
+
+                    var cubes = page.addAsset();  
+                    var faces = page.addAsset();
  
                     var canvas = page.addCanvas({
                         valign: "top"
