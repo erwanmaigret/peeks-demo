@@ -3077,6 +3077,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     if (scene.timePause === undefined) {
                         scene.timePause = ((Date.now() - startTime) / 1000);
                     }
+                    scene.update(scene.time);
                 }
                 scene.background.setPosition(scene.camera.position);
 				scene.render();

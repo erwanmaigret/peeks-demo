@@ -3166,12 +3166,13 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         scene.timeShift += ((Date.now() - startTime) / 1000) - scene.timePause;
                         delete scene.timePause;
                     }
+
 				    scene.update();
                 } else {
                     if (scene.timePause === undefined) {
                         scene.timePause = ((Date.now() - startTime) / 1000);
                     }
-
+                    scene.update(scene.time);
                 }
                 scene.background.setPosition(scene.camera.position);
 				scene.render();
