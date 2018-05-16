@@ -261,10 +261,10 @@ PEEKS.registerPage('louisvuitton', function() {
         colorLight: [1, .85, 0],
         colorDark: [.1, .05, 0],
         category: 'white',
-        //groundImage: '/ui/gradient_radial.png',
+        //groundImage: '/peeks/gradient_radial.png',
         groundImage: '/assets/lv_ground.jpg',
         groundImageRepeat: 80,
-        backgroundImage: '/ui/gradient.png',
+        backgroundImage: '/peeks/gradient.png',
         backgroundImageColor: [224/255, 219/255, 213/255],
     });
 
@@ -430,7 +430,7 @@ PEEKS.registerPage('louisvuitton', function() {
     });
 
     canvas.addButton({
-        image: '/ui/icon_menu.png',
+        image: '/peeks/icon_menu.png',
         position: [-.45, -.45],
         size: .07,
         color: page.fontColorBold,
@@ -438,7 +438,7 @@ PEEKS.registerPage('louisvuitton', function() {
     });
 
     canvas.addButton({
-        image: '/ui/icon_vr.png',
+        image: '/peeks/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,

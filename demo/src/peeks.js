@@ -1090,6 +1090,26 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.color = c;
 		},
 
+        play: function() {
+            this.paused = false;
+        },
+
+        pause: function() {
+            this.paused = false;
+        },
+
+        setTime: function(time) {
+            //this.paused = false;
+        },
+
+        setFrame: function() {
+            //this.paused = false;
+        },
+
+        setFps: function() {
+            //this.paused = false;
+        },
+
         measureText: function(aFont, aSize, aChars, aOptions) {
             // if you do pass aOptions.ctx, keep in mind that the ctx properties will be changed and not set back. so you should have a devoted canvas for this
             // if you dont pass in a width to aOptions, it will return it to you in the return object
@@ -1265,6 +1285,9 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		},
 
         setTexture: function(url) {
+            if (useRemoteResources && url.search('/peeks/') === 0) {
+                url = "https://dev.peeks.io" + url;
+            }
 			this.textureUrl = url;
             return this;
 		},
@@ -1650,6 +1673,7 @@ function start(domElement, page, params) {
     peeks.start(domElement, page, params);
 }
 
+var useRemoteResources = false;
 function getAsset(name) {
     //return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
     return "https://dev.peeks.io/" + name;
@@ -2844,6 +2868,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.setLogLevel(1);
             } else {
                 this.setLogLevel(3);
+            }
+
+            var scripts = document.getElementsByTagName("script");
+            for (var scriptI = 0; scriptI < scripts.length; scriptI++) {
+                var script = scripts[scriptI];
+                if (script.src.search('dev.peeks.io') !== -1) {
+                    useRemoteResources = true;
+                    break;
+                }
             }
 
             analytics('js', new Date());

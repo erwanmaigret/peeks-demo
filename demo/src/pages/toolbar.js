@@ -12,14 +12,14 @@ PEEKS.registerPage('peeks.toolbar', function() {
     // when in a FullScreen mode
 
     canvas.addRoundIconButton({
-		icon: '/ui/icon_previous.png',
+		icon: '/peeks/icon_previous.png',
 		position: [-.45, height],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
-		icon: '/ui/icon_next.png',
+		icon: '/peeks/icon_next.png',
         position: [-.35, height],
 		size: .08,
 		onClick: 'loadNextPage',
@@ -27,7 +27,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
     */
 
     canvas.addButton({
-        image: 'https://dev.peeks.io/ui/icon_vr.png',
+        image: '/peeks/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,
@@ -36,7 +36,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
 
     /*
         canvas.addRoundIconButton({
-            icon: '/ui/icon_gyroscope.png',
+            icon: '/peeks/icon_gyroscope.png',
             position: [.35, height],
             size: .08,
             onClick: 'toggleGyroscope' },

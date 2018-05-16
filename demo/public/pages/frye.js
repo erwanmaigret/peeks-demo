@@ -6,9 +6,9 @@ PEEKS.registerPage('frye', function() {
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
         category: 'white',
-        groundImage: '/ui/gradient_radial.png',
+        groundImage: '/peeks/gradient_radial.png',
         groundImageRepeat: 1,
-        backgroundImage: '/ui/gradient.png',
+        backgroundImage: '/peeks/gradient.png',
         backgroundImageColor: [226/255, 220/255, 209/255],
     });
 
@@ -294,7 +294,7 @@ PEEKS.registerPage('frye', function() {
     });
 
     canvas.addButton({
-        image: '/ui/icon_menu.png',
+        image: '/peeks/icon_menu.png',
         position: [-.45, -.45],
         size: .07,
         color: page.fontColorBold,
@@ -302,7 +302,7 @@ PEEKS.registerPage('frye', function() {
     });
 
     canvas.addButton({
-        image: '/ui/icon_vr.png',
+        image: '/peeks/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,

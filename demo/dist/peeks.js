@@ -74,18 +74,19 @@ __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(6);
 __webpack_require__(7);
-
 __webpack_require__(8);
+
+__webpack_require__(9);
 
 var global = Function('return this')();
 
-global.THREE = __webpack_require__(9);
-__webpack_require__(10);
+global.THREE = __webpack_require__(10);
 __webpack_require__(11);
 __webpack_require__(12);
-
 __webpack_require__(13);
+
 __webpack_require__(14);
+__webpack_require__(15);
 
 
 /***/ }),
@@ -1184,6 +1185,26 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.color = c;
 		},
 
+        play: function() {
+            this.paused = false;
+        },
+
+        pause: function() {
+            this.paused = false;
+        },
+
+        setTime: function(time) {
+            //this.paused = false;
+        },
+
+        setFrame: function() {
+            //this.paused = false;
+        },
+
+        setFps: function() {
+            //this.paused = false;
+        },
+
         measureText: function(aFont, aSize, aChars, aOptions) {
             // if you do pass aOptions.ctx, keep in mind that the ctx properties will be changed and not set back. so you should have a devoted canvas for this
             // if you dont pass in a width to aOptions, it will return it to you in the return object
@@ -1359,6 +1380,9 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		},
 
         setTexture: function(url) {
+            if (useRemoteResources && url.search('/peeks/') === 0) {
+                url = "https://dev.peeks.io" + url;
+            }
 			this.textureUrl = url;
             return this;
 		},
@@ -1744,6 +1768,7 @@ function start(domElement, page, params) {
     peeks.start(domElement, page, params);
 }
 
+var useRemoteResources = false;
 function getAsset(name) {
     //return "http://52.25.54.6/?url=http://dev.peeks.io/" + name;
     return "https://dev.peeks.io/" + name;
@@ -2940,6 +2965,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 this.setLogLevel(3);
             }
 
+            var scripts = document.getElementsByTagName("script");
+            for (var scriptI = 0; scriptI < scripts.length; scriptI++) {
+                var script = scripts[scriptI];
+                if (script.src.search('dev.peeks.io') !== -1) {
+                    useRemoteResources = true;
+                    break;
+                }
+            }
+
             analytics('js', new Date());
             analytics('config', 'UA-109650112-1');
 
@@ -3426,14 +3460,14 @@ PEEKS.registerPage('peeks.toolbar', function() {
     // when in a FullScreen mode
 
     canvas.addRoundIconButton({
-		icon: '/ui/icon_previous.png',
+		icon: '/peeks/icon_previous.png',
 		position: [-.45, height],
 		size: .08,
 		onClick: 'loadPreviousPage',
 	})
 
     canvas.addRoundIconButton({
-		icon: '/ui/icon_next.png',
+		icon: '/peeks/icon_next.png',
         position: [-.35, height],
 		size: .08,
 		onClick: 'loadNextPage',
@@ -3441,7 +3475,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
     */
 
     canvas.addButton({
-        image: 'https://dev.peeks.io/ui/icon_vr.png',
+        image: '/peeks/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,
@@ -3450,7 +3484,7 @@ PEEKS.registerPage('peeks.toolbar', function() {
 
     /*
         canvas.addRoundIconButton({
-            icon: '/ui/icon_gyroscope.png',
+            icon: '/peeks/icon_gyroscope.png',
             position: [.35, height],
             size: .08,
             onClick: 'toggleGyroscope' },
@@ -3481,36 +3515,15 @@ PEEKS.registerPage('peeks.toolbar', function() {
 /* 4 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('peeks.toolbar.lighting', function() {
+PEEKS.registerPage('peeks.toolbar.animation', function() {
     var page = new PEEKS.Asset();
 
     var canvas = page.addCanvas({
         valign: 'top',
     });
 
-    //var height = -.44;
-
-    /*
-    // These should be dynamic based on the navigation, and only apply
-    // when in a FullScreen mode
-
-    canvas.addRoundIconButton({
-		icon: '/ui/icon_previous.png',
-		position: [-.45, height],
-		size: .08,
-		onClick: 'loadPreviousPage',
-	})
-
-    canvas.addRoundIconButton({
-		icon: '/ui/icon_next.png',
-        position: [-.35, height],
-		size: .08,
-		onClick: 'loadNextPage',
-	});
-    */
-
     canvas.addButton({
-        image: '/ui/icon_light.png',
+        image: '/peeks/icon_next.png',
         position: [-.4, .45],
         size: .07,
         color: page.fontColorBold,
@@ -3520,7 +3533,43 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
         },
     });
     canvas.addButton({
-        image: '/ui/icon_light.png',
+        image: '/peeks/icon_pause.png',
+        position: [-.3, .45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: function() {
+            this.getScene().getLight(1).toggleVisible();
+            this.setColor(this.getScene().getLight(1).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+        },
+    });
+
+	return page;
+});
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+PEEKS.registerPage('peeks.toolbar.lighting', function() {
+    var page = new PEEKS.Asset();
+
+    var canvas = page.addCanvas({
+        valign: 'top',
+    });
+
+    canvas.addButton({
+        image: '/peeks/icon_light.png',
+        position: [-.4, .45],
+        size: .07,
+        color: page.fontColorBold,
+        onClick: function() {
+            this.getScene().getLight(0).toggleVisible();
+            this.setColor(this.getScene().getLight(0).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+        },
+    });
+    canvas.addButton({
+        image: '/peeks/icon_light.png',
         position: [-.3, .45],
         size: .07,
         color: page.fontColorBold,
@@ -3530,7 +3579,7 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
         },
     });
     canvas.addButton({
-        image: '/ui/icon_light.png',
+        image: '/peeks/icon_light.png',
         position: [-.2, .45],
         size: .07,
         color: page.fontColorBold,
@@ -3540,29 +3589,12 @@ PEEKS.registerPage('peeks.toolbar.lighting', function() {
         },
     });
 
-    /*
-        canvas.addRoundIconButton({
-            icon: '/ui/icon_gyroscope.png',
-            position: [.35, height],
-            size: .08,
-            onClick: function() { this.getScene().toggleGyroscope(); },
-        });
-
-        canvas.addTextButton({
-            position: [0, height],
-            fontSize: 40,
-            text: 'search',
-            size: .08,
-            onClick: 'searchPage',
-        })
-    */
-
 	return page;
 });
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.debug', function(scene) {
@@ -3637,7 +3669,7 @@ PEEKS.registerPage('peeks.debug', function(scene) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo', function() {
@@ -3653,7 +3685,7 @@ PEEKS.registerPage('peeks.demo', function() {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.home', function() {
@@ -3662,23 +3694,17 @@ PEEKS.registerPage('peeks.home', function() {
     var canvas = page.addCanvas();
 
     canvas.addTextButton({
-        label: 'We make AR and VR and Reality!',
-        position: [0, -.3, 0],
+        label: 'Peeks SDK',
+        position: [0, 0, 0],
         size: [.9, .15, 1],
         fontSize: 40,
     }).animate({
         duration: 3,
         delay: 2,
-        begin: [0, -1, 0],
+        begin: [10, 0, 0],
         end: [0, 0, 0],
         attribute: 'position'
     });
-
-    canvas.addButton({
-        image: '/ui/icon_peeks.png',
-        position: [0, 0],
-        size: [.4, .2, 1],
-    }).addAttrAlias('color', 'colorMedium');
 
     canvas.addView({
         position: [0, .1],
@@ -3719,7 +3745,7 @@ PEEKS.registerPage('peeks.home', function() {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 PEEKS.TrackerFace = function() {
@@ -3827,7 +3853,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
@@ -50096,7 +50122,7 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /**
@@ -52996,7 +53022,7 @@ THREE.GLTFLoader = ( function () {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /**
@@ -53717,7 +53743,7 @@ THREE.OBJLoader = ( function () {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, flipX, flipY,
@@ -55287,7 +55313,7 @@ THREE.ShaderPeeks = {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.assets', function() {
@@ -55350,7 +55376,7 @@ PEEKS.registerPage('peeks.demo.assets', function() {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.fashion', function() {

@@ -1,6 +1,7 @@
 require('./peeks.js');
 require('./config.js');
 require('./pages/toolbar.js');
+require('./pages/toolbar-animation.js');
 require('./pages/toolbar-lighting.js');
 require('./pages/debug.js');
 require('./pages/demo.js');

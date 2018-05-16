@@ -6,9 +6,9 @@ PEEKS.registerPage('Target', function() {
         fontName: 'Helvetica Neue',
         bgColor: [1, 1, 1],
         category: 'white',
-        groundImage: '/ui/gradient_radial.png',
+        groundImage: '/peeks/gradient_radial.png',
         groundImageRepeat: 1,
-        backgroundImage: '/ui/gradient.png',
+        backgroundImage: '/peeks/gradient.png',
     });
 
 	var panel = page.addAsset();
@@ -642,7 +642,7 @@ PEEKS.registerPage('Target', function() {
     });
 
     canvas.addButton({
-        image: '/ui/icon_vr.png',
+        image: '/peeks/icon_vr.png',
         position: [.45, -.45],
         size: .08,
         color: page.fontColorBold,
