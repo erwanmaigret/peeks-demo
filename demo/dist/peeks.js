@@ -3159,17 +3159,19 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 }
 
                 if (scene.isPlaying()) {
+                    if (scene.timePause) {
+                        if (scene.timeShift === undefined) {
+                            scene.timeShift = 0;
+                        }
+                        scene.timeShift += ((Date.now() - startTime) / 1000) - scene.timePause;
+                        delete scene.timePause;
+                    }
 				    scene.update();
                 } else {
-                    if (scene.timeShift === undefined) {
-                        scene.timeShift = 0;
+                    if (scene.timePause === undefined) {
+                        scene.timePause = ((Date.now() - startTime) / 1000);
                     }
-                    if (scene.timeLast === undefined) {
-                        scene.timeLast = 0;
-                    }
-                    scene.timeLast = scene.time;
-                    scene.time = ((Date.now() - startTime) / 1000) - scene.timeShift;
-                    scene.timeShift += scene.time - scene.timeLast;
+
                 }
                 scene.background.setPosition(scene.camera.position);
 				scene.render();
