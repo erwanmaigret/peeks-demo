@@ -1185,12 +1185,16 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.color = c;
 		},
 
+        isPlaying: function() {
+            return !this.paused;
+        },
+
         play: function() {
             this.paused = false;
         },
 
         pause: function() {
-            this.paused = false;
+            this.paused = true;
         },
 
         setTime: function(time) {
@@ -1404,6 +1408,9 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		update: function(time) {
 			if (time == undefined) {
 				time = (Date.now() - startTime) / 1000;
+                if (this.timeShift) {
+                    time -= this.timeShift;
+                }
 			}
 
             this.onUpdate(time);
@@ -3151,7 +3158,19 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     }
                 }
 
-				scene.update();
+                if (scene.isPlaying()) {
+				    scene.update();
+                } else {
+                    if (scene.timeShift === undefined) {
+                        scene.timeShift = 0;
+                    }
+                    if (scene.timeLast === undefined) {
+                        scene.timeLast = 0;
+                    }
+                    scene.timeLast = scene.time;
+                    scene.time = ((Date.now() - startTime) / 1000) - scene.timeShift;
+                    scene.timeShift += scene.time - scene.timeLast;
+                }
                 scene.background.setPosition(scene.camera.position);
 				scene.render();
 			};
@@ -3515,33 +3534,38 @@ PEEKS.registerPage('peeks.toolbar', function() {
 /* 4 */
 /***/ (function(module, exports) {
 
-PEEKS.registerPage('peeks.toolbar.animation', function() {
+PEEKS.registerPage('peeks.toolbar.animation', function(scene) {
     var page = new PEEKS.Asset();
 
     var canvas = page.addCanvas({
         valign: 'top',
     });
 
-    canvas.addButton({
-        image: '/peeks/icon_next.png',
-        position: [-.4, .45],
+    var play = canvas.addButton({
+        image: '/peeks/icon_play.png',
+        position: [0, .45],
         size: .07,
         color: page.fontColorBold,
         onClick: function() {
-            this.getScene().getLight(0).toggleVisible();
-            this.setColor(this.getScene().getLight(0).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+            this.getScene().play();
+            pause.show();
+            play.hide();
         },
     });
-    canvas.addButton({
+
+    var pause = canvas.addButton({
         image: '/peeks/icon_pause.png',
-        position: [-.3, .45],
+        position: [0, .45],
         size: .07,
         color: page.fontColorBold,
         onClick: function() {
-            this.getScene().getLight(1).toggleVisible();
-            this.setColor(this.getScene().getLight(1).getVisible() ? [1, 1, 1] : [.2, .2, .2]);
+            this.getScene().pause();
+            play.show();
+            pause.hide();
         },
     });
+
+    play.hide();
 
 	return page;
 });

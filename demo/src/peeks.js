@@ -1090,12 +1090,16 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
             this.color = c;
 		},
 
+        isPlaying: function() {
+            return !this.paused;
+        },
+
         play: function() {
             this.paused = false;
         },
 
         pause: function() {
-            this.paused = false;
+            this.paused = true;
         },
 
         setTime: function(time) {
@@ -1309,6 +1313,9 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 		update: function(time) {
 			if (time == undefined) {
 				time = (Date.now() - startTime) / 1000;
+                if (this.timeShift) {
+                    time -= this.timeShift;
+                }
 			}
 
             this.onUpdate(time);
@@ -3056,7 +3063,19 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     }
                 }
 
-				scene.update();
+                if (scene.isPlaying()) {
+				    scene.update();
+                } else {
+                    if (scene.timeShift === undefined) {
+                        scene.timeShift = 0;
+                    }
+                    if (scene.timeLast === undefined) {
+                        scene.timeLast = 0;
+                    }
+                    scene.timeLast = scene.time;
+                    scene.time = ((Date.now() - startTime) / 1000) - scene.timeShift;
+                    scene.timeShift += scene.time - scene.timeLast;
+                }
                 scene.background.setPosition(scene.camera.position);
 				scene.render();
 			};
