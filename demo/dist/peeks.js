@@ -100,6 +100,10 @@ function setAnimationSpeed(speed) {
 
 var startTime = Date.now();
 
+function getAbsoluteTime() {
+    return ((Date.now() - startTime) / 1000);
+}
+
 var utils = {};
 
 utils.v2Distance = function (v1, v2) {
@@ -1407,7 +1411,7 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 
 		update: function(time) {
 			if (time == undefined) {
-				time = (Date.now() - startTime) / 1000;
+				time = getAbsoluteTime();
                 if (this.timeShift) {
                     time -= this.timeShift;
                 }
@@ -2770,7 +2774,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     } else if (category === 'white') {
                     } else if (category === 'canyon') {
                         backgroundFilename = getAsset('images/bg_360_canyon.jpg');
-                    } else if (category === '') {
                     }
                 }
                 if (backgroundFilename) {
@@ -3020,14 +3023,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                             if (fileExt === 'png' || fileExt === 'jpg') {
                                 var reader = new FileReader();
                         		reader.onload = function(e) {
-                                    var result = e.target.result;
                                     scene.loadedFiles[file.name] = e.target.result;
                         		}
                         		reader.readAsText(file);
                             } else if (fileExt === 'obj') {
                                 var reader = new FileReader();
                         		reader.onload = function(e) {
-                                    var result = e.target.result;
                                     if (scene.page) {
                                         scene.page.addMesh({
                                             geometry: file.name,
@@ -3163,14 +3164,14 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         if (scene.timeShift === undefined) {
                             scene.timeShift = 0;
                         }
-                        scene.timeShift += ((Date.now() - startTime) / 1000) - scene.timePause;
+                        scene.timeShift += getAbsoluteTime() - scene.timePause;
                         delete scene.timePause;
                     }
 
 				    scene.update();
                 } else {
                     if (scene.timePause === undefined) {
-                        scene.timePause = ((Date.now() - startTime) / 1000);
+                        scene.timePause = getAbsoluteTime();
                     }
                     scene.update(scene.time);
                 }
@@ -3881,12 +3882,10 @@ PEEKS.Tracker.prototype.update = function(video, image) {
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 (function (global, factory) {
-	 true ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.THREE = {})));
+    factory(exports);
 }(this, (function (exports) { 'use strict';
 
 	// Polyfills
@@ -50387,9 +50386,9 @@ THREE.GLTFLoader = ( function () {
 	/**
 	 * DDS Texture Extension
 	 *
-	 * Specification: 
+	 * Specification:
 	 * https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/MSFT_texture_dds
-	 * 
+	 *
 	 */
 	function GLTFTextureDDSExtension() {
 
@@ -50525,7 +50524,7 @@ THREE.GLTFLoader = ( function () {
 
 	/* BINARY EXTENSION */
 
-	var BINARY_EXTENSION_BUFFER_NAME = 'binary_glTF';
+	//var BINARY_EXTENSION_BUFFER_NAME = 'binary_glTF';
 	var BINARY_EXTENSION_HEADER_MAGIC = 'glTF';
 	var BINARY_EXTENSION_HEADER_LENGTH = 12;
 	var BINARY_EXTENSION_CHUNK_TYPES = { JSON: 0x4E4F534A, BIN: 0x004E4942 };
@@ -51117,7 +51116,7 @@ THREE.GLTFLoader = ( function () {
 		UNSIGNED_BYTE: 5121,
 		UNSIGNED_SHORT: 5123
 	};
-
+/*
 	var WEBGL_TYPE = {
 		5126: Number,
 		//35674: THREE.Matrix2,
@@ -51128,7 +51127,7 @@ THREE.GLTFLoader = ( function () {
 		35666: THREE.Vector4,
 		35678: THREE.Texture
 	};
-
+*/
 	var WEBGL_COMPONENT_TYPES = {
 		5120: Int8Array,
 		5121: Uint8Array,
@@ -51167,14 +51166,14 @@ THREE.GLTFLoader = ( function () {
 		32820: THREE.UnsignedShort5551Type,
 		33635: THREE.UnsignedShort565Type
 	};
-
+/*
 	var WEBGL_SIDES = {
 		1028: THREE.BackSide, // Culling front
 		1029: THREE.FrontSide // Culling back
 		//1032: THREE.NoSide   // Culling front and back, what to do?
 	};
-
-	var WEBGL_DEPTH_FUNCS = {
+*/
+/*	var WEBGL_DEPTH_FUNCS = {
 		512: THREE.NeverDepth,
 		513: THREE.LessDepth,
 		514: THREE.EqualDepth,
@@ -51209,7 +51208,7 @@ THREE.GLTFLoader = ( function () {
 		//32771: CONSTANT_ALPHA,
 		//32772: ONE_MINUS_CONSTANT_COLOR
 	};
-
+*/
 	var WEBGL_TYPE_SIZES = {
 		'SCALAR': 1,
 		'VEC2': 2,
@@ -51251,7 +51250,7 @@ THREE.GLTFLoader = ( function () {
 		LINEAR: THREE.InterpolateLinear,
 		STEP: THREE.InterpolateDiscrete
 	};
-
+/*
 	var STATES_ENABLES = {
 		2884: 'CULL_FACE',
 		2929: 'DEPTH_TEST',
@@ -51260,7 +51259,7 @@ THREE.GLTFLoader = ( function () {
 		32823: 'POLYGON_OFFSET_FILL',
 		32926: 'SAMPLE_ALPHA_TO_COVERAGE'
 	};
-
+*/
 	var ALPHA_MODES = {
 		OPAQUE: 'OPAQUE',
 		MASK: 'MASK',
@@ -52111,7 +52110,6 @@ THREE.GLTFLoader = ( function () {
 	GLTFParser.prototype.loadMaterial = function ( materialIndex ) {
 
 		var parser = this;
-		var json = this.json;
 		var extensions = this.extensions;
 		var materialDef = this.json.materials[ materialIndex ];
 
@@ -52382,7 +52380,6 @@ THREE.GLTFLoader = ( function () {
 	GLTFParser.prototype.loadMesh = function ( meshIndex ) {
 
 		var scope = this;
-		var json = this.json;
 		var extensions = this.extensions;
 
 		var meshDef = this.json.meshes[ meshIndex ];
@@ -52656,7 +52653,6 @@ THREE.GLTFLoader = ( function () {
 	 */
 	GLTFParser.prototype.loadAnimation = function ( animationIndex ) {
 
-		var json = this.json;
 
 		var animationDef = this.json.animations[ animationIndex ];
 
@@ -52800,7 +52796,6 @@ THREE.GLTFLoader = ( function () {
 	 */
 	GLTFParser.prototype.loadNode = function ( nodeIndex ) {
 
-		var json = this.json;
 		var extensions = this.extensions;
 
 		var meshReferences = this.json.meshReferences;
@@ -54263,7 +54258,7 @@ PEEKS.Scene.prototype.onRender = function() {
         this.three.camera.updateProjectionMatrix();
         this.three.renderer.render(this.three.scene, this.three.camera);
     }
-},
+}
 
 PEEKS.Asset.prototype.threeSynchGeometry = function() {
     var asset = this;
@@ -54305,7 +54300,7 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
             }
         }
     }
-},
+}
 
 PEEKS.ThreeShaderAttr = function(material, name, value) {
     if (typeof value === 'string') {
@@ -54314,7 +54309,7 @@ PEEKS.ThreeShaderAttr = function(material, name, value) {
     }
     material[name] = value;
     material.uniforms[name].value = value;
-},
+}
 
 PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
@@ -54337,10 +54332,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                     // In the meantime we'll shut this down instead of fixing it
                     //  since it's based on some internal assumptions on how
                     //  threejs shading is setup
-                    var allowCustomShaders = false;
-                    if (!allowCustomShaders) {
-                        matType = 'MeshPhongMaterial';
-                    }
+                    matType = 'MeshPhongMaterial';
                     if (matType === 'velvet') {
                         var shader = THREE.ShaderPeeks["fabric"];
         				var fragmentShader = shader.fragmentShader;
@@ -54379,53 +54371,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         } );
                         child.material = material;
 
-                        /*
-                        Internal defaults:
-
-                        material.type = 'MeshPhongMaterial';
-                        material.color = new THREE.Color( 0xff0000 ); // diffuse
-                        material.specular = new THREE.Color( 0x0000ff );
-                        material.shininess = 30;
-
-                        material.lightMap = null;
-                        material.lightMapIntensity = 1.0;
-
-                        material.aoMap = null;
-                        material.aoMapIntensity = 1.0;
-
-                        material.emissive = new THREE.Color( 0x000000 );
-                        material.emissiveIntensity = 1.0;
-                        material.emissiveMap = null;
-
-                        material.bumpMap = null;
-                        material.bumpScale = 1;
-
-                        material.normalMap = null;
-                        material.normalScale = new THREE.Vector2( 1, 1 );
-
-                        material.displacementMap = null;
-                        material.displacementScale = 1;
-                        material.displacementBias = 0;
-
-                        material.specularMap = null;
-
-                        material.alphaMap = null;
-
-                        material.envMap = null;
-                        material.combine = THREE.MultiplyOperation;
-                        material.reflectivity = 1;
-                        material.refractionRatio = 0.98;
-
-                        material.wireframe = false;
-                        material.wireframeLinewidth = 1;
-                        material.wireframeLinecap = 'round';
-                        material.wireframeLinejoin = 'round';
-
-                        material.skinning = false;
-                        material.morphTargets = false;
-                        material.morphNormals = false;
-                        */
-
                         material.extensions.derivatives = true;
                         material.extensions.fragDepth = true;
             			material.extensions.drawBuffers = true;
@@ -54446,8 +54391,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         PEEKS.ThreeShaderAttr(material, 'shininess', PEEKS.ThreeFloat(refMat.shininess , 10));
                         PEEKS.ThreeShaderAttr(material, 'emissive', PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]));
                         PEEKS.ThreeShaderAttr(material, 'specular', PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]));
-                        // PEEKS.ThreeShaderAttr(material, 'color', PEEKS.ThreeColor(refMat.color, [1, 1, 1]));
-                        // PEEKS.ThreeShaderAttr(material, 'side', THREE.FrontSide);
                     } else {
                         var material = child.material;
                         if (material.type === undefined) {
@@ -54498,7 +54441,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             }
         }
     }
-},
+}
 
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {

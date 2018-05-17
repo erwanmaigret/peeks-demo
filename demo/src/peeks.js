@@ -5,6 +5,10 @@ function setAnimationSpeed(speed) {
 
 var startTime = Date.now();
 
+function getAbsoluteTime() {
+    return ((Date.now() - startTime) / 1000);
+}
+
 var utils = {};
 
 utils.v2Distance = function (v1, v2) {
@@ -1312,7 +1316,7 @@ Asset.prototype = Object.assign(Object.create( Node.prototype ),
 
 		update: function(time) {
 			if (time == undefined) {
-				time = (Date.now() - startTime) / 1000;
+				time = getAbsoluteTime();
                 if (this.timeShift) {
                     time -= this.timeShift;
                 }
@@ -2675,7 +2679,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                     } else if (category === 'white') {
                     } else if (category === 'canyon') {
                         backgroundFilename = getAsset('images/bg_360_canyon.jpg');
-                    } else if (category === '') {
                     }
                 }
                 if (backgroundFilename) {
@@ -2925,14 +2928,12 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                             if (fileExt === 'png' || fileExt === 'jpg') {
                                 var reader = new FileReader();
                         		reader.onload = function(e) {
-                                    var result = e.target.result;
                                     scene.loadedFiles[file.name] = e.target.result;
                         		}
                         		reader.readAsText(file);
                             } else if (fileExt === 'obj') {
                                 var reader = new FileReader();
                         		reader.onload = function(e) {
-                                    var result = e.target.result;
                                     if (scene.page) {
                                         scene.page.addMesh({
                                             geometry: file.name,
@@ -3068,14 +3069,14 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                         if (scene.timeShift === undefined) {
                             scene.timeShift = 0;
                         }
-                        scene.timeShift += ((Date.now() - startTime) / 1000) - scene.timePause;
+                        scene.timeShift += getAbsoluteTime() - scene.timePause;
                         delete scene.timePause;
                     }
 
 				    scene.update();
                 } else {
                     if (scene.timePause === undefined) {
-                        scene.timePause = ((Date.now() - startTime) / 1000);
+                        scene.timePause = getAbsoluteTime();
                     }
                     scene.update(scene.time);
                 }

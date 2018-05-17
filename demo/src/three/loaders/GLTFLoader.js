@@ -233,9 +233,9 @@ THREE.GLTFLoader = ( function () {
 	/**
 	 * DDS Texture Extension
 	 *
-	 * Specification: 
+	 * Specification:
 	 * https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/MSFT_texture_dds
-	 * 
+	 *
 	 */
 	function GLTFTextureDDSExtension() {
 
@@ -371,7 +371,7 @@ THREE.GLTFLoader = ( function () {
 
 	/* BINARY EXTENSION */
 
-	var BINARY_EXTENSION_BUFFER_NAME = 'binary_glTF';
+	//var BINARY_EXTENSION_BUFFER_NAME = 'binary_glTF';
 	var BINARY_EXTENSION_HEADER_MAGIC = 'glTF';
 	var BINARY_EXTENSION_HEADER_LENGTH = 12;
 	var BINARY_EXTENSION_CHUNK_TYPES = { JSON: 0x4E4F534A, BIN: 0x004E4942 };
@@ -963,7 +963,7 @@ THREE.GLTFLoader = ( function () {
 		UNSIGNED_BYTE: 5121,
 		UNSIGNED_SHORT: 5123
 	};
-
+/*
 	var WEBGL_TYPE = {
 		5126: Number,
 		//35674: THREE.Matrix2,
@@ -974,7 +974,7 @@ THREE.GLTFLoader = ( function () {
 		35666: THREE.Vector4,
 		35678: THREE.Texture
 	};
-
+*/
 	var WEBGL_COMPONENT_TYPES = {
 		5120: Int8Array,
 		5121: Uint8Array,
@@ -1013,14 +1013,14 @@ THREE.GLTFLoader = ( function () {
 		32820: THREE.UnsignedShort5551Type,
 		33635: THREE.UnsignedShort565Type
 	};
-
+/*
 	var WEBGL_SIDES = {
 		1028: THREE.BackSide, // Culling front
 		1029: THREE.FrontSide // Culling back
 		//1032: THREE.NoSide   // Culling front and back, what to do?
 	};
-
-	var WEBGL_DEPTH_FUNCS = {
+*/
+/*	var WEBGL_DEPTH_FUNCS = {
 		512: THREE.NeverDepth,
 		513: THREE.LessDepth,
 		514: THREE.EqualDepth,
@@ -1055,7 +1055,7 @@ THREE.GLTFLoader = ( function () {
 		//32771: CONSTANT_ALPHA,
 		//32772: ONE_MINUS_CONSTANT_COLOR
 	};
-
+*/
 	var WEBGL_TYPE_SIZES = {
 		'SCALAR': 1,
 		'VEC2': 2,
@@ -1097,7 +1097,7 @@ THREE.GLTFLoader = ( function () {
 		LINEAR: THREE.InterpolateLinear,
 		STEP: THREE.InterpolateDiscrete
 	};
-
+/*
 	var STATES_ENABLES = {
 		2884: 'CULL_FACE',
 		2929: 'DEPTH_TEST',
@@ -1106,7 +1106,7 @@ THREE.GLTFLoader = ( function () {
 		32823: 'POLYGON_OFFSET_FILL',
 		32926: 'SAMPLE_ALPHA_TO_COVERAGE'
 	};
-
+*/
 	var ALPHA_MODES = {
 		OPAQUE: 'OPAQUE',
 		MASK: 'MASK',
@@ -1957,7 +1957,6 @@ THREE.GLTFLoader = ( function () {
 	GLTFParser.prototype.loadMaterial = function ( materialIndex ) {
 
 		var parser = this;
-		var json = this.json;
 		var extensions = this.extensions;
 		var materialDef = this.json.materials[ materialIndex ];
 
@@ -2228,7 +2227,6 @@ THREE.GLTFLoader = ( function () {
 	GLTFParser.prototype.loadMesh = function ( meshIndex ) {
 
 		var scope = this;
-		var json = this.json;
 		var extensions = this.extensions;
 
 		var meshDef = this.json.meshes[ meshIndex ];
@@ -2502,7 +2500,6 @@ THREE.GLTFLoader = ( function () {
 	 */
 	GLTFParser.prototype.loadAnimation = function ( animationIndex ) {
 
-		var json = this.json;
 
 		var animationDef = this.json.animations[ animationIndex ];
 
@@ -2646,7 +2643,6 @@ THREE.GLTFLoader = ( function () {
 	 */
 	GLTFParser.prototype.loadNode = function ( nodeIndex ) {
 
-		var json = this.json;
 		var extensions = this.extensions;
 
 		var meshReferences = this.json.meshReferences;

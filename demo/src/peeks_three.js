@@ -488,7 +488,7 @@ PEEKS.Scene.prototype.onRender = function() {
         this.three.camera.updateProjectionMatrix();
         this.three.renderer.render(this.three.scene, this.three.camera);
     }
-},
+}
 
 PEEKS.Asset.prototype.threeSynchGeometry = function() {
     var asset = this;
@@ -530,7 +530,7 @@ PEEKS.Asset.prototype.threeSynchGeometry = function() {
             }
         }
     }
-},
+}
 
 PEEKS.ThreeShaderAttr = function(material, name, value) {
     if (typeof value === 'string') {
@@ -539,7 +539,7 @@ PEEKS.ThreeShaderAttr = function(material, name, value) {
     }
     material[name] = value;
     material.uniforms[name].value = value;
-},
+}
 
 PEEKS.Asset.prototype.threeSynchMaterial = function() {
     var asset = this;
@@ -562,10 +562,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                     // In the meantime we'll shut this down instead of fixing it
                     //  since it's based on some internal assumptions on how
                     //  threejs shading is setup
-                    var allowCustomShaders = false;
-                    if (!allowCustomShaders) {
-                        matType = 'MeshPhongMaterial';
-                    }
+                    matType = 'MeshPhongMaterial';
                     if (matType === 'velvet') {
                         var shader = THREE.ShaderPeeks["fabric"];
         				var fragmentShader = shader.fragmentShader;
@@ -604,53 +601,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         } );
                         child.material = material;
 
-                        /*
-                        Internal defaults:
-
-                        material.type = 'MeshPhongMaterial';
-                        material.color = new THREE.Color( 0xff0000 ); // diffuse
-                        material.specular = new THREE.Color( 0x0000ff );
-                        material.shininess = 30;
-
-                        material.lightMap = null;
-                        material.lightMapIntensity = 1.0;
-
-                        material.aoMap = null;
-                        material.aoMapIntensity = 1.0;
-
-                        material.emissive = new THREE.Color( 0x000000 );
-                        material.emissiveIntensity = 1.0;
-                        material.emissiveMap = null;
-
-                        material.bumpMap = null;
-                        material.bumpScale = 1;
-
-                        material.normalMap = null;
-                        material.normalScale = new THREE.Vector2( 1, 1 );
-
-                        material.displacementMap = null;
-                        material.displacementScale = 1;
-                        material.displacementBias = 0;
-
-                        material.specularMap = null;
-
-                        material.alphaMap = null;
-
-                        material.envMap = null;
-                        material.combine = THREE.MultiplyOperation;
-                        material.reflectivity = 1;
-                        material.refractionRatio = 0.98;
-
-                        material.wireframe = false;
-                        material.wireframeLinewidth = 1;
-                        material.wireframeLinecap = 'round';
-                        material.wireframeLinejoin = 'round';
-
-                        material.skinning = false;
-                        material.morphTargets = false;
-                        material.morphNormals = false;
-                        */
-
                         material.extensions.derivatives = true;
                         material.extensions.fragDepth = true;
             			material.extensions.drawBuffers = true;
@@ -671,8 +621,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         PEEKS.ThreeShaderAttr(material, 'shininess', PEEKS.ThreeFloat(refMat.shininess , 10));
                         PEEKS.ThreeShaderAttr(material, 'emissive', PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]));
                         PEEKS.ThreeShaderAttr(material, 'specular', PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]));
-                        // PEEKS.ThreeShaderAttr(material, 'color', PEEKS.ThreeColor(refMat.color, [1, 1, 1]));
-                        // PEEKS.ThreeShaderAttr(material, 'side', THREE.FrontSide);
                     } else {
                         var material = child.material;
                         if (material.type === undefined) {
@@ -723,7 +671,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
             }
         }
     }
-},
+}
 
 PEEKS.Asset.prototype.threeSynch = function(threeObject) {
 	if (!this.threeObject) {
