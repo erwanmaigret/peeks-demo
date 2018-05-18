@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "set HTTPS=true && node ./bin/www",
     "build": "echo \"PEEKS.version = '$npm_package_version';\" > ./src/config.js && webpack && uglifyjs ./dist/peeks.js -c -m -o ./public/peeks.js && ncp ./public/peeks.js ./public/peeks.$npm_package_version.js"
   },
   "dependencies": {

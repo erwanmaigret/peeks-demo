@@ -67,6 +67,40 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/*
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '1641014236148586',
+    xfbml      : true,
+    version    : 'v3.0'
+  });
+  FB.AppEvents.logPageView();
+  //FB.getLoginStatus(function(response) {
+//      console.log(response);
+      //statusChangeCallback(response);
+  //});
+  FB.login(function(response) {
+      if (response.authResponse) {
+          console.log(response);
+       console.log('Welcome!  Fetching your information.... ');
+       FB.api('/me', function(response) {
+         console.log('Good to see you, ' + response.name + '.');
+       });
+      } else {
+       console.log('User cancelled login or did not fully authorize.');
+      }
+  }, {scope: 'public_profile,email,publish_actions'});
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "https://connect.facebook.net/en_US/sdk.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+*/
+
 __webpack_require__(1);
 __webpack_require__(2);
 __webpack_require__(3);
@@ -2968,7 +3002,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             var url = document.URL;
             var debugMode = (url.search('192.') != -1);
-            if (debugMode || url.search('127.0.0.1') != -1) {
+            if (debugMode ||
+                url.search('127.0.0.1') != -1 ||
+                url.search('localhost') != -1 )
+            {
                 doAnalytics = false;
                 this.setLogLevel(1);
             } else {

@@ -2873,7 +2873,10 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
             var url = document.URL;
             var debugMode = (url.search('192.') != -1);
-            if (debugMode || url.search('127.0.0.1') != -1) {
+            if (debugMode ||
+                url.search('127.0.0.1') != -1 ||
+                url.search('localhost') != -1 )
+            {
                 doAnalytics = false;
                 this.setLogLevel(1);
             } else {
