@@ -1,13 +1,13 @@
 /*
 window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '1641014236148586',
-    xfbml      : true,
-    version    : 'v3.0'
-  });
-  FB.AppEvents.logPageView();
+    FB.init({
+      appId      : '291105648095036',
+      xfbml      : true,
+      version    : 'v3.0'
+    });
+    FB.AppEvents.logPageView();
   //FB.getLoginStatus(function(response) {
-//      console.log(response);
+  //      console.log(response);
       //statusChangeCallback(response);
   //});
   FB.login(function(response) {
@@ -21,6 +21,18 @@ window.fbAsyncInit = function() {
        console.log('User cancelled login or did not fully authorize.');
       }
   }, {scope: 'public_profile,email,publish_actions'});
+  FB.ui({
+    method: 'share',
+    link: 'https://dev.peeks.io/',
+    //source: 'https://dev.peeks.io/assets/glb/tree.glb',
+    source: 'https://dev.peeks.io/assets/converse.jpg',
+    //picture: 'https://dev.peeks.io/assets/converse.jpg',
+    thumbnail: 'https://dev.peeks.io/assets/converse.jpg',
+//    method: 'share',
+//    href: 'https://dev.peeks.io/assets/glb/tree.glb',
+    caption: 'this is a test',
+  }, function(response){});
+  console.log(FB);
 };
 
 (function(d, s, id){
@@ -30,7 +42,9 @@ window.fbAsyncInit = function() {
    js.src = "https://connect.facebook.net/en_US/sdk.js";
    fjs.parentNode.insertBefore(js, fjs);
  }(document, 'script', 'facebook-jssdk'));
-*/
+
+ */
+
 
 require('./peeks.js');
 require('./config.js');
