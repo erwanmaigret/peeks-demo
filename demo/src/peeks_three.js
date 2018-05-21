@@ -444,8 +444,10 @@ PEEKS.Scene.prototype.onRender = function() {
     this.camera.threeSynch(three.camera);
 	this.threeSynch();
 	if (this.page) {
-        var bgColor = this.page.getAttrColor('bgColor', [0, 0, 0]);
-		three.renderer.setClearColor(colorToThreeColor(bgColor));
+        if (this.page.bgColor) {
+            var bgColor = this.page.getAttrColor('bgColor', [0, 0, 0]);
+    		three.renderer.setClearColor(colorToThreeColor(bgColor));
+        }
 	}
 
     var width = (this.width) ? this.width : 500;
@@ -1195,8 +1197,10 @@ PEEKS.Scene.prototype.onStart = function() {
         // antialias: false,
     });
     renderer.sortObjects = false;
-	renderer.setClearColor(0xffffff, 1);
+	renderer.setClearColor(0xffffff, 0);
     renderer.setPixelRatio(this.pixelRatio);
+    //renderer.gammaInput = true;
+    //renderer.gammaOutput = true;
 
     var camera = new THREE.PerspectiveCamera(this.fov, 1, 0.1, 1000);
 

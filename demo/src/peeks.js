@@ -1739,7 +1739,7 @@ function Scene() {
         userAgent.search('ipod') !== -1 ||
         userAgent.search('android') !== -1;
 
-    this.gyroscope = this.isPhone;
+    this.setGyroscope(this.isPhone);
     this.vrMode = false;
 
 	this.pagesHistory = []; // Make this the default first page
@@ -2103,7 +2103,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
         toggleGyroscope: function() {
             analytics('event', 'scene.toggleGyroscope');
-			this.gyroscope = !this.gyroscope;
+			this.setGyroscope(!this.gyroscope);
+		},
+
+        setGyroscope: function(state) {
+            if (this.gyroscope !== state) {
+                analytics('event', 'scene.setGyroscope');
+                this.gyroscope = state;
+                this.logDebug("setGyroscope to " + state.toString());
+            }
 		},
 
         toggleArMode: function() {
@@ -2505,7 +2513,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             } else {
                 analytics('event', 'scene.setArModeOff');
             }
-            this.gyroscope = this.arMode;
 		},
 
         DOMarGetElement: function() {
@@ -2566,7 +2573,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 //this.exitFullScreen();
                 analytics('event', 'scene.setVrModeOff');
             }
-            this.gyroscope = this.vrMode;
 		},
 
 		loadPage: function(page) {
@@ -2617,7 +2623,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 }
 
                 if (this.page.gyroscope === 'off') {
-                    this.gyroscope = false;
+                    this.setGyroscope(false);
                 }
 
                 var category = this.page.getAttr('category');

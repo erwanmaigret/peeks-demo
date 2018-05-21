@@ -12,6 +12,7 @@
                 // Declare the behavior of your peeks page:
                 PEEKS.registerPage('example', function() {
                     var page = new PEEKS.Asset({
+                        gyroscope: 'off',
                     });
                     page.addMesh({
                         geometry: '/assets/gltf/samba_dancing/scene.gltf',

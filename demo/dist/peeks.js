@@ -67,6 +67,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/*
 window.fbAsyncInit = function() {
     FB.init({
       appId      : '291105648095036',
@@ -74,7 +75,6 @@ window.fbAsyncInit = function() {
       version    : 'v3.0'
     });
     FB.AppEvents.logPageView();
-  /*
   //FB.getLoginStatus(function(response) {
   //      console.log(response);
       //statusChangeCallback(response);
@@ -90,7 +90,6 @@ window.fbAsyncInit = function() {
        console.log('User cancelled login or did not fully authorize.');
       }
   }, {scope: 'public_profile,email,publish_actions'});
- */
   FB.ui({
     method: 'share',
     link: 'https://dev.peeks.io/',
@@ -113,6 +112,7 @@ window.fbAsyncInit = function() {
    fjs.parentNode.insertBefore(js, fjs);
  }(document, 'script', 'facebook-jssdk'));
 
+ */
 
 
 __webpack_require__(1);
@@ -1882,7 +1882,7 @@ function Scene() {
         userAgent.search('ipod') !== -1 ||
         userAgent.search('android') !== -1;
 
-    this.gyroscope = this.isPhone;
+    this.setGyroscope(this.isPhone);
     this.vrMode = false;
 
 	this.pagesHistory = []; // Make this the default first page
@@ -2246,7 +2246,15 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
 
         toggleGyroscope: function() {
             analytics('event', 'scene.toggleGyroscope');
-			this.gyroscope = !this.gyroscope;
+			this.setGyroscope(!this.gyroscope);
+		},
+
+        setGyroscope: function(state) {
+            if (this.gyroscope !== state) {
+                analytics('event', 'scene.setGyroscope');
+                this.gyroscope = state;
+                this.logDebug("setGyroscope to " + state.toString());
+            }
 		},
 
         toggleArMode: function() {
@@ -2648,7 +2656,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
             } else {
                 analytics('event', 'scene.setArModeOff');
             }
-            this.gyroscope = this.arMode;
 		},
 
         DOMarGetElement: function() {
@@ -2709,7 +2716,6 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 //this.exitFullScreen();
                 analytics('event', 'scene.setVrModeOff');
             }
-            this.gyroscope = this.vrMode;
 		},
 
 		loadPage: function(page) {
@@ -2760,7 +2766,7 @@ Scene.prototype = Object.assign(Object.create( Asset.prototype ),
                 }
 
                 if (this.page.gyroscope === 'off') {
-                    this.gyroscope = false;
+                    this.setGyroscope(false);
                 }
 
                 var category = this.page.getAttr('category');
@@ -3513,7 +3519,7 @@ if (global.PEEKS === undefined) {
 /* 2 */
 /***/ (function(module, exports) {
 
-PEEKS.version = '0.0.5';
+PEEKS.version = '0.0.6';
 
 
 /***/ }),
@@ -54265,8 +54271,10 @@ PEEKS.Scene.prototype.onRender = function() {
     this.camera.threeSynch(three.camera);
 	this.threeSynch();
 	if (this.page) {
-        var bgColor = this.page.getAttrColor('bgColor', [0, 0, 0]);
-		three.renderer.setClearColor(colorToThreeColor(bgColor));
+        if (this.page.bgColor) {
+            var bgColor = this.page.getAttrColor('bgColor', [0, 0, 0]);
+    		three.renderer.setClearColor(colorToThreeColor(bgColor));
+        }
 	}
 
     var width = (this.width) ? this.width : 500;
@@ -55016,8 +55024,10 @@ PEEKS.Scene.prototype.onStart = function() {
         // antialias: false,
     });
     renderer.sortObjects = false;
-	renderer.setClearColor(0xffffff, 1);
+	renderer.setClearColor(0xffffff, 0);
     renderer.setPixelRatio(this.pixelRatio);
+    //renderer.gammaInput = true;
+    //renderer.gammaOutput = true;
 
     var camera = new THREE.PerspectiveCamera(this.fov, 1, 0.1, 1000);
 
