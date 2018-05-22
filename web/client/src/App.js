@@ -8,6 +8,7 @@ import Home from './Home.js'
 //import store from "./store.js";
 import { Timeline } from 'react-twitter-widgets'
 import VeryReal from './VeryReal.js';
+import Creattitude from './Creattitude.js';
 
 function isPhone() {
     var userAgent = navigator.userAgent.toLowerCase();
@@ -221,6 +222,7 @@ class Pages extends React.Component {
               <Route path="/products" component={Products} />
               <Route path="/sdk" component={Sdk} />
               <Route path="/ArVisit" component={VeryReal} />
+              <Route path="/creattitude" component={Creattitude} />
           </div>
       );
     }

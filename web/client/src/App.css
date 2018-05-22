@@ -540,3 +540,34 @@ b {
     color: #fff;
     background-color: #283C69;
 }
+
+.creaButton1 {
+    align: right;
+    border-radius: 20px;
+    border-width: 0;
+    margin: 10px;
+    background-color: #FF733F;
+}
+
+.creaButton2 {
+    align: right;
+    border-radius: 20px;
+    border-width: 0;
+    margin: 10px;
+    color: #fff;
+    background-color: #01B050;
+}
+
+.creaCard {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 10px;
+    width: 200px;
+    position: 'absolute';
+    left: 0px;
+    right: 0px;
+    text-align: center;
+    background-color: #FF733F;
+    color: #fff;
+    padding: 2px;
+}
