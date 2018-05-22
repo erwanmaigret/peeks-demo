@@ -7,6 +7,7 @@ import Sdk from './Sdk.js'
 import Home from './Home.js'
 //import store from "./store.js";
 import { Timeline } from 'react-twitter-widgets'
+import VeryReal from './VeryReal.js';
 
 function isPhone() {
     var userAgent = navigator.userAgent.toLowerCase();
@@ -219,6 +220,7 @@ class Pages extends React.Component {
               <Route path="/about" component={About} />
               <Route path="/products" component={Products} />
               <Route path="/sdk" component={Sdk} />
+              <Route path="/ArVisit" component={VeryReal} />
           </div>
       );
     }
