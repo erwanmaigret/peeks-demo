@@ -279,12 +279,11 @@ class App extends Component {
         </header>
         <Pages/>
         <footer className="footer">
-        <div className="textTitleWhite">Immerse your audience in your brand’s story</div>
-        <p>Our VR technology is ultra easy to implement! <a href="mailto:info@peeks.io">Request Trial</a></p>
+        <h3>Immerse your audience in your brand’s story</h3>
         <div>
-            <a href="https://www.facebook.com/peeks.io/" target="_blank" rel="noopener noreferrer"><img src="/icon_facebook.png" alt="facebook" width="25px"/></a>&nbsp;&nbsp;
-            <a href="https://twitter.com/PeeksIo" target="_blank" rel="noopener noreferrer"><img src="/icon_twitter.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
-            <a href="https://www.linkedin.com/company/peeks-technologies/" target="_blank" rel="noopener noreferrer"><img src="/icon_linkedin.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
+            <a href="https://www.facebook.com/peeks.io/" target="_blank" rel="noopener noreferrer"><img src="/icon_facebook_white.png" alt="facebook" width="25px"/></a>&nbsp;&nbsp;
+            <a href="https://twitter.com/PeeksIo" target="_blank" rel="noopener noreferrer"><img src="/icon_twitter_white.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
+            <a href="https://www.linkedin.com/company/peeks-technologies/" target="_blank" rel="noopener noreferrer"><img src="/icon_linkedin_white.png" alt="twitter" width="25px"/></a>&nbsp;&nbsp;
         </div>
         <p className="copyright">&copy; All rights reserved - Peeks Technologies 2018</p>
         </footer>

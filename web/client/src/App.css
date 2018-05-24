@@ -2,25 +2,8 @@
   text-align: center;
 }
 
-.AppOld {
-  text-align: center;
-  background-image: url("/ui-menubar.svg");
-  background-position: right top;
-  background-repeat: no-repeat;
-  background-size: 230px auto;
-}
-
 .logo {
   height: 30px;
-}
-
-.headerA {
-    padding: 0px;
-    color: #ffffff;
-    background-color: #FD3279;
-    text-align: center;
-    background: linear-gradient(-90deg, #6F17FB , #FFF);
-    background: linear-gradient(-90deg, #6F17FB , #000);
 }
 
 .logoText {
@@ -28,30 +11,11 @@
   color: #FFF;
 }
 
-.headerB {
-    padding: 0px;
-    color: #ffffff;
-    background-color: #FD3279;
-    text-align: center;
-    background: linear-gradient(-90deg, #6F17FB , #FFF);
-}
-
 .header {
     padding: 0px;
     color: #ffffff;
-    background-color: #FFF;
+    background-color: #262626;
     text-align: center;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
-}
-
-.header {
-    padding: 0px;
-    color: #ffffff;
-    background-color: #6F17FB;
-    text-align: center;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
-    background: linear-gradient(-90deg, #6F17FB , #FD3279);
-    background: linear-gradient(-90deg, #FD3279 , #6F17FB);
 }
 
 .logoText {
@@ -88,7 +52,7 @@
     font-size: 0.6em;
     color: #1F176C;
     background-color: #0000;
-    color: #1F174C;
+    color: #aaa;
 }
 
 .menuItemSelected {
@@ -166,8 +130,16 @@
 .sectionBlank {
     padding: 0px;
     margin: 0px;
-    color: #fff;
+    color: #000;
     text-align: center;
+}
+
+.sectionDark {
+  padding: 0px;
+  margin: 0px;
+  color: #fff;
+  background-color: #262626;
+  text-align: center;
 }
 
 .sectionGrey {
@@ -296,11 +268,10 @@
 }
 
 .footer {
-  padding: 20px;
+  padding: 10px;
   color: #ffffff;
-  background-color: #FD3279;
+  background-color: #262626;
   text-align: center;
-  background: linear-gradient(-30deg, #FF7556 , #FD3279);
 }
 
 .h1 {
@@ -313,7 +284,7 @@
 .h3 {
   font-size: 1.1em;
 }
-.p {
+p {
   font-size: 1em;
 }
 .copyright {
@@ -411,9 +382,6 @@
 }
 .codeIndent {
   margin: 0px;
-}
-b {
-  color: #1F176C;
 }
 .textTitleInverted {
   font-size: 2.0em;

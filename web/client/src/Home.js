@@ -36,8 +36,8 @@ class Home extends Component {
                     <div className={section}><table align="center"><tbody><tr>
                     <td width="50%">{this.renderExample(element)}</td>
                     <td width="40%">
-                        <p className="textTitle2" align="left">{element.title}</p>
-                        <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                        <h2 align="left">{element.title}</h2>
+                        <p align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
                     </td>
                     <td width="10%"></td>
                     </tr></tbody></table></div>
@@ -47,13 +47,43 @@ class Home extends Component {
                     <div className={section}><table align="center"><tbody><tr>
                     <td width="10%"></td>
                     <td width="40%">
-                        <p className="textTitle2" align="left">{element.title}</p>
-                        <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                        <h2 align="left">{element.title}</h2>
+                        <p align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
                     </td>
                     <td width="50%">{this.renderExample(element)}</td>
                     </tr></tbody></table></div>
                 );
             }
+        }
+    }
+
+    renderContact(element, section) {
+        if (window.innerWidth < 650) {
+            return (
+                <div className={section}>
+                <table align="center" width="100%"><tbody>
+                <tr>
+                <td width="10%"></td>
+                <td width="80%">
+                    <p className="textTitle2" align="left">{element.title}</p>
+                    <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                </td>
+                <td width="10%"></td>
+                </tr>
+                <tr></tr>
+                </tbody></table>{this.renderExample(element)}</div>
+            );
+        } else {
+            return (
+                <div className={section}><table align="center"><tbody><tr>
+                <td width="10%"></td>
+                <td width="40%">
+                    <h2 align="left">{element.title}</h2>
+                    <p align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                </td>
+                <td width="50%">{this.renderExample(element)}</td>
+                </tr></tbody></table></div>
+            );
         }
     }
 
@@ -74,14 +104,20 @@ class Home extends Component {
                 description: '<p>Peeks is designed to easily integrate into your existing creative workflow.</p><p>This mean your creative team doesn’t need to ramp up or change the way they work.</p><p>Publishing content in AR and VR and is easy and fast.</p>',
                 image: "snapshot-product-3.png",
             },
+            'trial': {
+                title: 'You don’t need previous expertise in VR or AR',
+                description: '<p>Peeks is designed to easily integrate into your existing creative workflow.</p><p>This mean your creative team doesn’t need to ramp up or change the way they work.</p><p>Publishing content in AR and VR and is easy and fast.</p>',
+                image: "snapshot-product-3.png",
+            },
         };
 
         return (
             <div>
-                {this.renderSection(elements['intro'], false, 'sectionBlank')}
-                {this.renderSection(elements['browser'], true, 'sectionGrey')}
-                {this.renderSection(elements['headset'], false, 'sectionBlank')}
+                {this.renderSection(elements['intro'], false, 'sectionDark')}
+                {this.renderSection(elements['browser'], true, 'sectionBlank')}
+                {this.renderSection(elements['headset'], false, 'sectionDark')}
             </div>
+            //{this.renderContact(elements['trial'], 'sectionBlank')}
         );
     }
 }
