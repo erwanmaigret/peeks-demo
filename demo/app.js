@@ -29,6 +29,7 @@ app.use('/users', require('./routes/users'));
 app.use('/scrap', require('./routes/scrap'));
 app.use('/scrape', require('./routes/scrape'));
 app.use('/reco', require('./routes/reco'));
+app.use('/mailer', require('./routes/mailer'));
 
 app.use('/target', require('./routes/target'));
 app.use('/mannequin', require('./routes/mannequin'));
