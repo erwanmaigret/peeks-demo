@@ -1,7 +1,30 @@
 import React, { Component } from 'react';
-//import { Timeline } from 'react-twitter-widgets'
 
 class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            message: '',
+        };
+
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handleMessageChange = this.handleMessageChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleEmailChange(event) {
+        this.setState({email: event.target.value});
+    }
+
+    handleMessageChange(event) {
+        this.setState({message: event.target.value});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+    }
+
     renderExample(element) {
         if (element.image) {
             return (
@@ -60,7 +83,7 @@ class Home extends Component {
         }
     }
 
-    renderContact(element, section) {
+    renderContact(section) {
         if (window.innerWidth < 650) {
             return (
                 <div className={section}>
@@ -68,24 +91,52 @@ class Home extends Component {
                 <tr>
                 <td width="10%"></td>
                 <td width="80%">
-                    <p className="textTitle2" align="left">{element.title}</p>
-                    <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                <h2>Request Trial</h2>
+                <p></p>
                 </td>
                 <td width="10%"></td>
                 </tr>
                 <tr></tr>
-                </tbody></table>{this.renderExample(element)}</div>
+                </tbody></table></div>
             );
         } else {
             return (
-                <div className={section}><table align="center"><tbody><tr>
+                <div className={section}>
+                <table><tbody><tr>
                 <td width="10%"></td>
                 <td width="40%">
-                    <h2 align="left">{element.title}</h2>
-                    <p align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <h2>Request Trial</h2>
+                    <h4>Our VR technology is ultra easy to implement!</h4>
+                    <form onSubmit={this.handleSubmit}>
+                        <input type="text" placeholder="Your Email" value={this.state.email} onChange={this.handleEmailChange} />
+                        <textarea placeholder="Message" value={this.state.message} onChange={this.handleMessageChange} />
+                        <div align="right">
+                            <input type="submit" value="Send" />
+                        </div>
+                    </form>
                 </td>
-                <td width="50%">{this.renderExample(element)}</td>
-                </tr></tbody></table></div>
+                <td width="10%"></td>
+                <td width="30%">
+                    <table width="100%"><tbody>
+                    <tr height="20%"/>
+                    <tr>
+                    <td width="10%"></td>
+                    <td width="40%"><img aling="center" src="/icon_email_blue.png" alt="email"/></td>
+                    <td width="40%"><h4>Email Us</h4><p>info@peeks.io</p></td>
+                    <td width="10%"></td>
+                    </tr>
+                    <tr>
+                    <td width="10%"></td>
+                    <td width="40%"><img aling="center" src="/icon_twitter_blue.png" alt="twitter"/></td>
+                    <td width="40%"><h4>Follow Us</h4><p>twitter</p></td>
+                    <td width="10%"></td>
+                    </tr>
+                    <tr height="20%"/>
+                    </tbody></table>
+                </td>
+                <td width="10%"></td>
+                </tr></tbody></table>
+                </div>
             );
         }
     }
@@ -107,11 +158,6 @@ class Home extends Component {
                 description: '<p>Peeks is designed to easily integrate into your existing creative workflow.</p><p>This mean your creative team doesn’t need to ramp up or change the way they work.</p><p>Publishing content in AR and VR and is easy and fast.</p>',
                 image: "snapshot-product-3.png",
             },
-            'trial': {
-                title: 'You don’t need previous expertise in VR or AR',
-                description: '<p>Peeks is designed to easily integrate into your existing creative workflow.</p><p>This mean your creative team doesn’t need to ramp up or change the way they work.</p><p>Publishing content in AR and VR and is easy and fast.</p>',
-                image: "snapshot-product-3.png",
-            },
         };
 
         return (
@@ -119,8 +165,8 @@ class Home extends Component {
                 {this.renderSection(elements['intro'], false, 'sectionDark')}
                 {this.renderSection(elements['browser'], true, 'sectionBlank')}
                 {this.renderSection(elements['headset'], false, 'sectionDark')}
+                {this.renderContact('sectionBlank')}
             </div>
-            //{this.renderContact(elements['trial'], 'sectionBlank')}
         );
     }
 }
