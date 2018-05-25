@@ -5,7 +5,7 @@ class Home extends Component {
     renderExample(element) {
         if (element.image) {
             return (
-                <img src={element.image} alt="product1" width='300px'/>
+                <img aling="center" src={element.image} alt="product1" width='300px'/>
             );
         } else {
             return (
@@ -22,22 +22,25 @@ class Home extends Component {
                 <tr>
                 <td width="10%"></td>
                 <td width="80%">
-                    <p className="textTitle2" align="left">{element.title}</p>
-                    <p className="textDescription" align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <h2>{element.title}</h2>
+                    <p dangerouslySetInnerHTML={{__html: element.description}}></p>
                 </td>
                 <td width="10%"></td>
                 </tr>
-                <tr></tr>
-                </tbody></table>{this.renderExample(element)}</div>
+                </tbody></table>
+                    <div align="center">
+                    {this.renderExample(element)}
+                    </div>
+                </div>
             );
         } else {
             if (isRight) {
                 return (
                     <div className={section}><table align="center"><tbody><tr>
-                    <td width="50%">{this.renderExample(element)}</td>
+                    <td width="50%" align="center">{this.renderExample(element)}</td>
                     <td width="40%">
-                        <h2 align="left">{element.title}</h2>
-                        <p align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                        <h2>{element.title}</h2>
+                        <p dangerouslySetInnerHTML={{__html: element.description}}></p>
                     </td>
                     <td width="10%"></td>
                     </tr></tbody></table></div>
@@ -47,10 +50,10 @@ class Home extends Component {
                     <div className={section}><table align="center"><tbody><tr>
                     <td width="10%"></td>
                     <td width="40%">
-                        <h2 align="left">{element.title}</h2>
-                        <p align="left" dangerouslySetInnerHTML={{__html: element.description}}></p>
+                        <h2>{element.title}</h2>
+                        <p dangerouslySetInnerHTML={{__html: element.description}}></p>
                     </td>
-                    <td width="50%">{this.renderExample(element)}</td>
+                    <td width="50%" align="center">{this.renderExample(element)}</td>
                     </tr></tbody></table></div>
                 );
             }
