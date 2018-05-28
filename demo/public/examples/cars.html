@@ -1,0 +1,230 @@
+<html> 
+    <head> 
+        <title>example</title> 
+        <link rel="stylesheet" href="/stylesheets/style.css"> 
+    </head> 
+    <body> 
+        <header> 
+        </header> 
+        <section id="wrapper">
+            <script src="/peeks.js"></script> 
+            <script> 
+                // Declare the behavior of your peeks page: 
+                PEEKS.registerPage('cars', function() { 
+                    var page = new PEEKS.Asset({
+                        bgColor: [0, 0, 0]
+                    });
+
+                    var cars = [
+                        {
+                            'url': '/assets/gltf/cars/hybrid_car/scene.gltf',
+                            'size': .1,
+                            'position': [0, 0, 0],
+                            'rotation': [0, 0, 0],
+                            'driverPosition': [0, 0, -3],
+                            'direction': 'front'
+                        },
+                        {
+                            'url': '/assets/gltf/cars/lada_2107/scene.gltf',
+                            'size': .1,
+                            'position': [0, -20, -80],
+                            'rotation': [0, -180, 0],
+                            'driverPosition': [-4.321055249834232,18.576561919940996,-5.058761119870071],
+                            'direction': 'front'
+                        },
+                        {
+                            'url': '/assets/gltf/cars/lamborghini/scene.gltf',
+                            'size': .001,
+                            'position': [0, 0, -3],
+                            'rotation': [0, 0, 0],
+                            'driverPosition': [0, 0, -3],
+                            'direction': 'front'
+                        },
+                        {
+                            'url': '/assets/gltf/cars/porsche_cayman/scene.gltf',
+                            'size': .001,
+                            'position': [0, 0, -3],
+                            'rotation': [0, 0, 0],
+                            'driverPosition': [0, 0, -3],
+                            'direction': 'front'
+                        },
+                        {
+                            'url': '/assets/gltf/cars/zenvo_st1/scene.gltf',
+                            'size': .001,
+                            'position': [0, 0, -3],
+                            'rotation': [0, 0, 0],
+                            'driverPosition': [0, 0, -3],
+                            'direction': 'front'
+                        },
+                        {
+                            'url': '/assets/gltf/cars/zis-101a_sport_1938/scene.gltf',
+                            'size': .01,
+                            'position': [0, -5, -20],
+                            'rotation': [0, 0, 0],
+                            'driverPosition': [-1.2196979917712871, 5.0095234557698705, 0.5863405276653173],
+                            'direction': 'front'
+                        }
+                    ];
+
+                    var logCamPos = function() {
+                        var scene = this.getScene();
+                        var camera = scene.getCamera(); 
+                        console.log('pos : ' + camera.position + ' rot : ' + camera.rotation);
+                    };
+
+                    var toggleView = function() {
+                        var scene = this.getScene();
+                        var camera = scene.getCamera();
+                        var newPos;
+                        var newRot;
+                        if (this.isInCar) {
+                            newPos = [-camera.position[0], -camera.position[1], -camera.position[2]];
+                            newRot = [-camera.rotation[0] % 360, -camera.rotation[1] % 360, -camera.rotation[2] % 360];
+                            if (Math.abs(newRot[0]) > 180) {
+                                newRot[0] = 360 - Math.abs(newRot[0]);
+                            } else if (newRot[1] / 180 > 1) {
+                                newRot[1] = 360 - Math.abs(newRot[1]);
+                            } else if (newRot[2] / 180 > 1) {
+                                newRot[2] = 360 - Math.abs(newRot[2]);
+                            }
+                        } else {
+                            newPos = [
+                                this.position[0] - camera.position[0],
+                                this.position[1] + this.driverPosition[1] - camera.position[1],
+                                this.position[2] - camera.position[2]
+                            ];
+                            if (this.direction == 'left') {
+                                newPos[0] += -this.driverPosition[2];
+                                newPos[2] += this.driverPosition[0]; 
+                            } else if (this.direction == 'right') {
+                                newPos[0] += this.driverPosition[2];
+                                newPos[2] += -this.driverPosition[0]; 
+                            } else if (this.direction == 'back') {
+                                newPos[0] += -this.driverPosition[0];
+                                newPos[2] += -this.driverPosition[2]; 
+                            } else if (this.direction == 'front') {
+                                newPos[0] += this.driverPosition[0];
+                                newPos[2] += this.driverPosition[2]; 
+                            }
+                            newRot = [-camera.rotation[0] % 360, -camera.rotation[1] % 360, -camera.rotation[2] % 360];
+                            if (this.direction == 'right') {
+                                newRot[1] += 90;
+                            } else if (this.direction == 'back') {
+                                newRot[1] += 180;
+                            } else if (this.direction == 'left') {
+                                newRot[1] -= 90;
+                            }
+                        }
+                        camera.add(new PEEKS.Animation({ 
+                            duration: 1, 
+                            begin: [0, 0, 0], 
+                            end: newPos, 
+                            attribute: "position"
+                        }));
+                        camera.add(new PEEKS.Animation({ 
+                            duration: 1, 
+                            begin: [0, 0, 0], 
+                            end: newRot, 
+                            attribute: "rotation"
+                        }));
+                        this.isInCar = !this.isInCar;
+                    };
+
+                    var rotateCar = function() {
+                        if (car.direction == 'front') {
+                            car.direction = 'right';
+                        } else if (car.direction == 'right') {
+                            car.direction = 'back';
+                        } else if (car.direction == 'back') {
+                            car.direction = 'left';
+                        } else if (car.direction == 'left') {
+                            car.direction = 'front';
+                        }
+                        car.add(new PEEKS.Animation({ 
+                            duration: 1, 
+                            begin: [0, 0, 0], 
+                            end: [0, 90, 0], 
+                            attribute: "rotation"
+                        }));
+                        if (car.isInCar) {
+                            var scene = this.getScene();
+                            var camera = scene.getCamera();
+                            var newPos = [
+                                car.position[0] - camera.position[0],
+                                car.position[1] + car.driverPosition[1] - camera.position[1],
+                                car.position[2] - camera.position[2]
+                            ];
+                            if (car.direction == 'left') {
+                                newPos[0] += -car.driverPosition[2];
+                                newPos[2] += car.driverPosition[0]; 
+                            } else if (car.direction == 'right') {
+                                newPos[0] += car.driverPosition[2];
+                                newPos[2] += -car.driverPosition[0]; 
+                            } else if (car.direction == 'back') {
+                                newPos[0] += -car.driverPosition[0];
+                                newPos[2] += -car.driverPosition[2]; 
+                            } else if (car.direction == 'front') {
+                                newPos[0] += car.driverPosition[0];
+                                newPos[2] += car.driverPosition[2]; 
+                            }
+                            newRot = [-camera.rotation[0] % 360, -camera.rotation[1] % 360, -camera.rotation[2] % 360];
+                            if (car.direction == 'right') {
+                                newRot[1] += 90;
+                            } else if (car.direction == 'back') {
+                                newRot[1] += 180;
+                            } else if (car.direction == 'left') {
+                                newRot[1] += 270;
+                            } else if (car.direction == 'front') {
+                                newRot[1] += 360;
+                            }
+                            camera.add(new PEEKS.Animation({ 
+                                duration: 1, 
+                                begin: [0, 0, 0], 
+                                end: newPos, 
+                                attribute: "position"
+                            }));
+                            camera.add(new PEEKS.Animation({ 
+                                duration: 1, 
+                                begin: [0, 0, 0], 
+                                end: newRot, 
+                                attribute: "rotation"
+                            }));
+                        }
+                    };
+
+                    var canvas = page.addCanvas({
+                        valign: "top"
+                    });
+
+                    canvas.addImage({
+                        image: '/assets/360-degrees.png',
+                        position: [0.35, 0.35, 0],
+                        size: [0.075, 0.075, 1],
+                        onClick: rotateCar,
+                        onUpdate: logCamPos
+                    });
+
+                    var selectedCar = cars[5];
+
+                    var car = page.addMesh({ 
+                        geometry: selectedCar.url, 
+                        position: selectedCar.position, 
+                        rotation: selectedCar.rotation, 
+                        size: selectedCar.size,
+                        driverPosition: selectedCar.driverPosition,
+                        onClick: toggleView,
+                        direction: selectedCar.direction,
+                        onFocusStart: null,
+                        onFocusEnd: null,
+                        isInCar: false
+                    });
+
+                    page.addPage('peeks.toolbar'); 
+                    return page; 
+                }); 
+                // Start that page full-screen 
+                PEEKS.start(window, 'cars'); 
+            </script> 
+        </section> 
+    </body> 
+</html> 
