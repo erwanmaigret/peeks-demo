@@ -1,18 +1,18 @@
-<html> 
-    <head> 
-        <title>example</title> 
-        <link rel="stylesheet" href="/stylesheets/style.css"> 
-    </head> 
-    <body> 
-        <header> 
-        </header> 
+<html>
+    <head>
+        <title>example</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
         <section id="wrapper">
-            <script src="/peeks.js"></script> 
-            <script> 
-                // Declare the behavior of your peeks page: 
-                PEEKS.registerPage('cars', function() { 
+            <script src="/peeks.js"></script>
+            <script>
+                // Declare the behavior of your peeks page:
+                PEEKS.registerPage('cars', function() {
                     var page = new PEEKS.Asset({
-                        bgColor: [0, 0, 0]
+                        bgColor: [.3, .3 ,.3],
                     });
 
                     var cars = [
@@ -68,7 +68,7 @@
 
                     var logCamPos = function() {
                         var scene = this.getScene();
-                        var camera = scene.getCamera(); 
+                        var camera = scene.getCamera();
                         console.log('pos : ' + camera.position + ' rot : ' + camera.rotation);
                     };
 
@@ -95,16 +95,16 @@
                             ];
                             if (this.direction == 'left') {
                                 newPos[0] += -this.driverPosition[2];
-                                newPos[2] += this.driverPosition[0]; 
+                                newPos[2] += this.driverPosition[0];
                             } else if (this.direction == 'right') {
                                 newPos[0] += this.driverPosition[2];
-                                newPos[2] += -this.driverPosition[0]; 
+                                newPos[2] += -this.driverPosition[0];
                             } else if (this.direction == 'back') {
                                 newPos[0] += -this.driverPosition[0];
-                                newPos[2] += -this.driverPosition[2]; 
+                                newPos[2] += -this.driverPosition[2];
                             } else if (this.direction == 'front') {
                                 newPos[0] += this.driverPosition[0];
-                                newPos[2] += this.driverPosition[2]; 
+                                newPos[2] += this.driverPosition[2];
                             }
                             newRot = [-camera.rotation[0] % 360, -camera.rotation[1] % 360, -camera.rotation[2] % 360];
                             if (this.direction == 'right') {
@@ -115,16 +115,16 @@
                                 newRot[1] -= 90;
                             }
                         }
-                        camera.add(new PEEKS.Animation({ 
-                            duration: 1, 
-                            begin: [0, 0, 0], 
-                            end: newPos, 
+                        camera.add(new PEEKS.Animation({
+                            duration: 1,
+                            begin: [0, 0, 0],
+                            end: newPos,
                             attribute: "position"
                         }));
-                        camera.add(new PEEKS.Animation({ 
-                            duration: 1, 
-                            begin: [0, 0, 0], 
-                            end: newRot, 
+                        camera.add(new PEEKS.Animation({
+                            duration: 1,
+                            begin: [0, 0, 0],
+                            end: newRot,
                             attribute: "rotation"
                         }));
                         this.isInCar = !this.isInCar;
@@ -140,10 +140,10 @@
                         } else if (car.direction == 'left') {
                             car.direction = 'front';
                         }
-                        car.add(new PEEKS.Animation({ 
-                            duration: 1, 
-                            begin: [0, 0, 0], 
-                            end: [0, 90, 0], 
+                        car.add(new PEEKS.Animation({
+                            duration: 1,
+                            begin: [0, 0, 0],
+                            end: [0, 90, 0],
                             attribute: "rotation"
                         }));
                         if (car.isInCar) {
@@ -156,16 +156,16 @@
                             ];
                             if (car.direction == 'left') {
                                 newPos[0] += -car.driverPosition[2];
-                                newPos[2] += car.driverPosition[0]; 
+                                newPos[2] += car.driverPosition[0];
                             } else if (car.direction == 'right') {
                                 newPos[0] += car.driverPosition[2];
-                                newPos[2] += -car.driverPosition[0]; 
+                                newPos[2] += -car.driverPosition[0];
                             } else if (car.direction == 'back') {
                                 newPos[0] += -car.driverPosition[0];
-                                newPos[2] += -car.driverPosition[2]; 
+                                newPos[2] += -car.driverPosition[2];
                             } else if (car.direction == 'front') {
                                 newPos[0] += car.driverPosition[0];
-                                newPos[2] += car.driverPosition[2]; 
+                                newPos[2] += car.driverPosition[2];
                             }
                             newRot = [-camera.rotation[0] % 360, -camera.rotation[1] % 360, -camera.rotation[2] % 360];
                             if (car.direction == 'right') {
@@ -177,16 +177,16 @@
                             } else if (car.direction == 'front') {
                                 newRot[1] += 360;
                             }
-                            camera.add(new PEEKS.Animation({ 
-                                duration: 1, 
-                                begin: [0, 0, 0], 
-                                end: newPos, 
+                            camera.add(new PEEKS.Animation({
+                                duration: 1,
+                                begin: [0, 0, 0],
+                                end: newPos,
                                 attribute: "position"
                             }));
-                            camera.add(new PEEKS.Animation({ 
-                                duration: 1, 
-                                begin: [0, 0, 0], 
-                                end: newRot, 
+                            camera.add(new PEEKS.Animation({
+                                duration: 1,
+                                begin: [0, 0, 0],
+                                end: newRot,
                                 attribute: "rotation"
                             }));
                         }
@@ -206,25 +206,30 @@
 
                     var selectedCar = cars[5];
 
-                    var car = page.addMesh({ 
-                        geometry: selectedCar.url, 
-                        position: selectedCar.position, 
-                        rotation: selectedCar.rotation, 
+                    var pivot = page.addAsset({
+                        size: 1,
+                    });
+
+                    var car = pivot.addMesh({
+                        geometry: selectedCar.url,
+                        position: selectedCar.position,
+                        rotation: selectedCar.rotation,
                         size: selectedCar.size,
                         driverPosition: selectedCar.driverPosition,
                         onClick: toggleView,
                         direction: selectedCar.direction,
-                        onFocusStart: null,
-                        onFocusEnd: null,
+                        onFocusStart: function(){},
+                        onFocusEnd: function(){},
                         isInCar: false
                     });
 
-                    page.addPage('peeks.toolbar'); 
-                    return page; 
-                }); 
-                // Start that page full-screen 
-                PEEKS.start(window, 'cars'); 
-            </script> 
-        </section> 
-    </body> 
-</html> 
+                    page.addPage('peeks.toolbar');
+                    page.addPage('peeks.toolbar.lighting');
+                    return page;
+                });
+                // Start that page full-screen
+                PEEKS.start(window, 'cars');
+            </script>
+        </section>
+    </body>
+</html>
