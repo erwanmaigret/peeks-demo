@@ -23,6 +23,20 @@ class Home extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+
+        if (this.state.email !== '' && this.state.message !== '') {
+            let url = 'https://dev.peeks.io/mailer?' +
+                'email:' + encodeURIComponent(this.state.email) + '&' +
+                'message:' + encodeURIComponent(this.state.message);
+                var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", url, true);
+            xhttp.send();
+
+            this.setState({
+                email: '',
+                message: '',
+            });
+        }
     }
 
     renderExample(element) {
@@ -83,21 +97,63 @@ class Home extends Component {
         }
     }
 
+    renderContactPart1(section) {
+        return (
+            <div>
+                <h2>Request Trial</h2>
+                <h4>Our VR technology is ultra easy to implement!</h4>
+                <form onSubmit={this.handleSubmit}>
+                    <input type="text" placeholder="Your Email" value={this.state.email} onChange={this.handleEmailChange} />
+                    <textarea placeholder="Message" value={this.state.message} onChange={this.handleMessageChange} />
+                    <div align="right">
+                        <input type="submit" value="Send" />
+                    </div>
+                </form>
+            </div>
+        );
+    }
+
+    renderContactPart2(section) {
+        return (
+            <div>
+                <table width="100%"><tbody>
+                <tr height="20%"/>
+                <tr>
+                <td width="10%"></td>
+                <td width="40%"><img className='iconBig'aling="center" src="/icon_email_blue.png" alt="email"/></td>
+                <td width="40%"><h4>Email Us</h4><p>info@peeks.io</p></td>
+                <td width="10%"></td>
+                </tr>
+                <tr>
+                <td width="10%"></td>
+                <td width="40%"><img className='iconBig' aling="center" src="/icon_twitter_blue.png" alt="twitter"/></td>
+                <td width="40%"><h4>Follow Us</h4><p><a href='https://twitter.com/PeeksIo'>twitter</a></p></td>
+                <td width="10%"></td>
+                </tr>
+                <tr height="20%"/>
+                </tbody></table>
+            </div>
+        );
+    }
+
     renderContact(section) {
         if (window.innerWidth < 650) {
             return (
                 <div className={section}>
-                <table align="center" width="100%"><tbody>
-                <tr>
+                <table><tbody><tr>
                 <td width="10%"></td>
                 <td width="80%">
-                <h2>Request Trial</h2>
-                <p></p>
+                    {this.renderContactPart1()}
                 </td>
                 <td width="10%"></td>
-                </tr>
-                <tr></tr>
-                </tbody></table></div>
+                </tr><tr>
+                <td width="15%"></td>
+                <td width="70%">
+                    {this.renderContactPart2()}
+                </td>
+                <td width="15%"></td>
+                </tr></tbody></table>
+                </div>
             );
         } else {
             return (
@@ -105,34 +161,11 @@ class Home extends Component {
                 <table><tbody><tr>
                 <td width="10%"></td>
                 <td width="40%">
-                    <h2>Request Trial</h2>
-                    <h4>Our VR technology is ultra easy to implement!</h4>
-                    <form onSubmit={this.handleSubmit}>
-                        <input type="text" placeholder="Your Email" value={this.state.email} onChange={this.handleEmailChange} />
-                        <textarea placeholder="Message" value={this.state.message} onChange={this.handleMessageChange} />
-                        <div align="right">
-                            <input type="submit" value="Send" />
-                        </div>
-                    </form>
+                    {this.renderContactPart1()}
                 </td>
                 <td width="10%"></td>
                 <td width="30%">
-                    <table width="100%"><tbody>
-                    <tr height="20%"/>
-                    <tr>
-                    <td width="10%"></td>
-                    <td width="40%"><img aling="center" src="/icon_email_blue.png" alt="email"/></td>
-                    <td width="40%"><h4>Email Us</h4><p>info@peeks.io</p></td>
-                    <td width="10%"></td>
-                    </tr>
-                    <tr>
-                    <td width="10%"></td>
-                    <td width="40%"><img aling="center" src="/icon_twitter_blue.png" alt="twitter"/></td>
-                    <td width="40%"><h4>Follow Us</h4><p>twitter</p></td>
-                    <td width="10%"></td>
-                    </tr>
-                    <tr height="20%"/>
-                    </tbody></table>
+                    {this.renderContactPart2()}
                 </td>
                 <td width="10%"></td>
                 </tr></tbody></table>

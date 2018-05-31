@@ -49,10 +49,11 @@
     border-width: 0;
     margin: 3px;
     padding: 4px;
-    font-size: 0.6em;
+    font-size: calc(10px + 0.5vw);
+    font-weight: 700;
     color: #1F176C;
     background-color: #0000;
-    color: #aaa;
+    color: #FFF;
 }
 
 .menuItemSelected {
@@ -61,11 +62,11 @@
     border-width: 0;
     margin: 3px;
     padding: 4px;
-    font-size: 0.6em;
-    font-weight: 1;
+    font-size: calc(10px + 0.5vw);
+    font-weight: 700;
     color: #6100DF;
     background-color: #0000;
-    color: #FFF;
+    color: #85ABE8;
 }
 
 .menuItem2 {
@@ -92,6 +93,14 @@
     padding: 4px;
     font-size: 1.0em;
     color: #6100DF;
+}
+
+.iconSmall {
+    width: 32px;
+}
+
+.iconBig {
+    width: 64px;
 }
 
 .buttonIcon {
@@ -180,30 +189,42 @@
 }
 
 h1 {
-    font-size: 55px;
+    font-size: 60px;
+    font-size: calc(24px + 1.86vw);
     font-family: "Work Sans";
     font-weight: 800;
 }
 h2 {
   font-size: 50px;
+  font-size: calc(20px + 1.55vw);
   font-family: "Work Sans";
   font-weight: 800;
 }
 h3 {
+    font-size: 45px;
+    font-size: calc(18px + 1.39vw);
+    font-family: "Work Sans";
+    font-weight: 800;
+}
+h4 {
     font-size: 30px;
+    font-size: calc(12px + 0.93vw);
     font-family: "Work Sans";
     font-weight: 700;
 }
-h4 {
-    font-size: 25px;
+h5 {
+    font-size: 20px;
+    font-size: calc(8px + 0.62vw);
     font-weight: 500;
 }
 p {
-  font-size: 25px;
+    font-size: 25px;
+    font-size: calc(10px + 0.78vw);
 }
 input {
     width: 100%;
     font-size: 25px;
+    font-size: calc(10px + 0.78vw);
     border: 2px solid transparent;
     border-bottom: 2px solid grey;
     padding: 10px;
@@ -213,6 +234,7 @@ textarea {
     width: 100%;
     height: 10em;
     font-size: 25px;
+    font-size: calc(10px + 0.78vw);
     border: 2px solid transparent;
     border-bottom: 2px solid grey;
     padding: 10px;
@@ -221,17 +243,22 @@ textarea {
 }
 input[type=submit] {
     width: auto;
-    padding-left: 60px;
-    padding-right: 60px;
-    margin: 10px;
+    font-size: 25px;
+    font-size: calc(10px + 0.78vw);
+    padding-left: calc(24px + 1.86vw);
+    padding-right: calc(24px + 1.86vw);
+    margin: calc(4px + 0.31vw);
     border: 4px solid #333;
     border-radius: 50px;
 }
 input[type=submit]:active {
-    border: 4px solid #000;
+    border: 4px solid #85ABE8;
+    color: #85ABE8;
 }
 .copyright {
-  font-size: 0.5em;
+  font-size: 14px;
+  font-size: calc(6px + 0.4vw);
+  font-weight: 700;
 }
 .textSmall {
   font-size: 0.7em;
