@@ -23,6 +23,17 @@ function getLayoutWidth() {
 }
 
 class Products extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.handleLearnMore = this.handleLearnMore.bind(this);
+    }
+
+    handleLearnMore(event) {
+        event.preventDefault();
+        console.log('learn more');
+    }
+
     renderImage(element) {
         if (typeof (element.canvas) === 'string') {
             const script = document.createElement('script');
@@ -169,12 +180,20 @@ class Products extends React.Component {
 
         return (
             <div>
-            <div className="sectionBlank"><table align="center"><tbody><tr>
-            <td width="10%" ></td>
-            <td width="80%" align="center">
-                <div className="textTitle">Immerse your audience in your brand’s story</div>
-            </td><td width="10%"></td>
-            </tr></tbody></table></div>
+            <div className="sectionDark" align="center">
+            <br/><br/>
+            <table align="center" width="100%"><tbody><tr>
+            <td width="5%" ></td>
+            <td width="90%" align="center">
+                <h1>Our Products</h1>
+                <h4>Immerse your audience in your brand’s story</h4>
+                <form onSubmit={this.handleLearnMore}>
+                    <input type="submit" className="inputLight" value="Learn More"/>
+                </form>
+            </td><td width="5%"></td>
+            </tr></tbody></table>
+            <br/><br/><br/>
+            </div>
             {this.renderSection(elements['widget'], false, 'sectionGrey')}
             {this.renderSection(elements['tryon'], true, 'sectionBlank')}
             {this.renderSection(elements['browser'], false, 'sectionGrey')}

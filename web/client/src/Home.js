@@ -106,7 +106,7 @@ class Home extends Component {
                     <input type="text" placeholder="Your Email" value={this.state.email} onChange={this.handleEmailChange} />
                     <textarea placeholder="Message" value={this.state.message} onChange={this.handleMessageChange} />
                     <div align="right">
-                        <input type="submit" value="Send" />
+                        <input className="inputDark" type="submit" value="Send" />
                     </div>
                 </form>
             </div>
