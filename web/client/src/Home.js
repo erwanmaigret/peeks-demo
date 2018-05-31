@@ -120,14 +120,14 @@ class Home extends Component {
                 <tr height="20%"/>
                 <tr>
                 <td width="10%"></td>
-                <td width="40%"><img className='iconBig'aling="center" src="/icon_email_blue.png" alt="email"/></td>
-                <td width="40%"><h4>Email Us</h4><p>info@peeks.io</p></td>
+                <td width="40%"><img className='iconBig'align="right" hspace="20" src="/icon_email_blue.png" alt="email"/></td>
+                <td width="40%"><h5>Email Us</h5><p>info@peeks.io</p></td>
                 <td width="10%"></td>
                 </tr>
                 <tr>
                 <td width="10%"></td>
-                <td width="40%"><img className='iconBig' aling="center" src="/icon_twitter_blue.png" alt="twitter"/></td>
-                <td width="40%"><h4>Follow Us</h4><p><a href='https://twitter.com/PeeksIo'>twitter</a></p></td>
+                <td width="20%"><img className='iconBig' align="right" hspace="20" src="/icon_twitter_blue.png" alt="twitter"/></td>
+                <td width="60%"><h5>Follow Us</h5><p><a href='https://twitter.com/PeeksIo'>twitter</a></p></td>
                 <td width="10%"></td>
                 </tr>
                 <tr height="20%"/>

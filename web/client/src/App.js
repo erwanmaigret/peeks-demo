@@ -271,7 +271,6 @@ class App extends Component {
             <table><tbody>
             <tr>
             <td width="2px"></td>
-            <td><div className="logoText">Peeks</div></td>
             </tr>
             </tbody></table>
         </td>
