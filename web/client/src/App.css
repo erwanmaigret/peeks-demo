@@ -39,7 +39,7 @@
 .menuItem {
     align: right;
     border-width: 0;
-    margin: 3px;
+    margin: calc(3px + 1vw);
     font-size: 0.6em;
     color: #fff;
     background-color: #0000;
@@ -47,9 +47,9 @@
     align: right;
     border-radius: 20px;
     border-width: 0;
-    margin: 3px;
-    padding: 4px;
-    font-size: calc(10px + 0.5vw);
+    margin: calc(3px + 1vw);
+    padding: calc(3px + 1vw);
+    font-size: calc(8px + 0.5vw);
     font-weight: 700;
     color: #1F176C;
     background-color: #0000;
@@ -60,9 +60,9 @@
     align: right;
     border-radius: 20px;
     border-width: 0;
-    margin: 3px;
-    padding: 4px;
-    font-size: calc(10px + 0.5vw);
+    margin: calc(3px + 1vw);
+    padding: calc(3px + 1vw);
+    font-size: calc(8px + 0.5vw);
     font-weight: 700;
     color: #6100DF;
     background-color: #0000;

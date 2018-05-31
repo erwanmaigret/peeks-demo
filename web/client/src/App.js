@@ -40,12 +40,12 @@ function getLayoutWidth() {
 }
 
 class About extends React.Component {
+    //<p className="textGray">{member.title}</p>
     renderTeamMember(member) {
         return (
             <td align='center'>
             <div className="cardPortrait">
                 <img src={member.photo} alt={member.name}/>
-                <p className="textGray">{member.title}</p>
                 <p className="textHighlight">{member.name}</p>
                 <div className="cardPortraitDescription"><p className="textSmall" align="justify">{member.blurb}</p></div>
                 <a href={member.linkedin} target="_blank"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
@@ -82,15 +82,15 @@ class About extends React.Component {
     render() {
         const members = {
             'ryan': {
-                name: 'Ryan',
+                name: 'Ryan Schmaltz',
                 title: 'CEO',
                 photo: '/team-ryan.png',
                 blurb: 'Seasoned hyper growth entrepreneur. Expert in building products, commercializing products and IP, and business development. Executive leader responsible for AR platforms at Blippar. Early strategy leader (first 250 employees) at Uber. MBA from Johns Hopkins University.',
                 linkedin: 'https://www.linkedin.com/in/ryanschmaltz/',
             },
             'erwan': {
-                name: 'Erwan',
-                title: 'CTO',
+                name: 'Erwan Maigret',
+                title: 'Founder',
                 photo: '/team-erwan.png',
                 blurb: '20+ years experience in 3D software/full stack and engineering leadership. Extensive early stage startup experience (Blippar, Toytalk, Loom.ai). Former Dreamworks Animation R&D engineering lead for feature films (Shrek, Madagascar) and the internal tools used for moviemaking.',
                 linkedin: 'https://www.linkedin.com/in/erwanmaigret/',
@@ -102,7 +102,7 @@ class About extends React.Component {
             return (
                 <div>
                 {this.renderBlurb()}
-                <div className="textTitle2">Meet our team!</div>
+                <div className="textTitle2">Meet the founders!</div>
                 <table align="center"><tbody><tr>
                     {this.renderTeamMember(members['ryan'])}
                 </tr><tr>
@@ -202,6 +202,7 @@ class MenuBar extends React.Component {
               {this.renderMenuItem('PRODUCTS')}
               {this.renderMenuItem('SDK')}
               {this.renderMenuItem('ABOUT')}
+              {this.renderMenuItem('')}
             </div>
         </div>
         </Router>
