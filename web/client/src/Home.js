@@ -27,7 +27,8 @@ class Home extends Component {
     }
 
     handleRequestTrial(event) {
-        console.log('handleRequestTrial');
+        event.preventDefault();
+        window.open('/#trial', '_self');
     }
 
     handleEmailChange(event) {
@@ -131,7 +132,7 @@ class Home extends Component {
     renderContactPart1(section) {
         return (
             <div>
-                <h2>Request Trial</h2>
+                <a name="trial"><h2>Request Trial</h2></a>
                 <h4>Our VR technology is ultra easy to implement!</h4>
                 <form onSubmit={this.handleSubmit}>
                     <input type="text" placeholder="Your Email" value={this.state.email} onChange={this.handleEmailChange} />
