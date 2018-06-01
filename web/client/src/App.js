@@ -133,7 +133,7 @@ class About extends React.Component {
             return (
                 <div>
                 {this.renderBlurb()}
-                <div className="textTitle2">Meet our team!</div>
+                <div className="textTitle2">Meet the Founders!</div>
                 <table align="center"><tbody><tr>
                     {this.renderTeamMember(members['ryan'])}
                     {this.renderTeamMember(members['erwan'])}

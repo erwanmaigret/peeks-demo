@@ -31,7 +31,7 @@ class Products extends React.Component {
 
     handleLearnMore(event) {
         event.preventDefault();
-        console.log('learn more');
+        window.open('/about', '_self');
     }
 
     renderImage(element) {

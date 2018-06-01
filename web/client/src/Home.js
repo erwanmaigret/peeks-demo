@@ -17,11 +17,13 @@ class Home extends Component {
     }
 
     handleLearnMore(event) {
-        console.log('Learn More');
+        event.preventDefault();
+        window.open('/about', '_self');
     }
 
     handleViewProducts(event) {
-        console.log('handleViewProducts');
+        event.preventDefault();
+        window.open('/products', '_self');
     }
 
     handleRequestTrial(event) {
@@ -151,7 +153,7 @@ class Home extends Component {
                 <tr>
                 <td width="10%"></td>
                 <td width="40%"><img className='iconBig' align="right" hspace="20" src="/icon_email_blue.png" alt="email"/></td>
-                <td width="40%"><b>Email Us</b><p>info@peeks.io</p></td>
+                <td width="40%"><b>Email Us</b><p><a href='mailto:info@peekss.io'>info@peeks.io</a></p></td>
                 <td width="10%"></td>
                 </tr>
                 <tr height="30px"/>
