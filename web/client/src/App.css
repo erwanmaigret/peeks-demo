@@ -54,6 +54,7 @@
     color: #1F176C;
     background-color: #0000;
     color: #FFF;
+    outline: none;
 }
 
 .menuItemSelected {
@@ -67,6 +68,7 @@
     color: #6100DF;
     background-color: #0000;
     color: #85ABE8;
+    outline: none;
 }
 
 .menuItem2 {
