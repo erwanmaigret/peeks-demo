@@ -471,6 +471,7 @@ PEEKS.registerPage('peeks.demo.mannequin', function() {
     var page = new PEEKS.Asset({
         category: 'white',
         gyroscope: 'off',
+        bgColor: [44/255, 45/255, 46/255],
     });
 
     var mannequin = createMannequin(page);

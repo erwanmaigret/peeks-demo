@@ -43,7 +43,7 @@ class Products extends React.Component {
             if (isPhone()) {
                 return (<canvas id={element.canvas} width="200px" height="180px" className="widget"/>);
             } else {
-                return (<canvas id={element.canvas} width="300px" height="250px" className="widget"/>);
+                return (<canvas id={element.canvas} width="400px" height="300px" className="widget"/>);
             }
         } else if (element.imageFull) {
             return (<img src={element.image} alt="product" width="100%" className="boxFill"/>);
@@ -61,9 +61,9 @@ class Products extends React.Component {
         if (layout === 0) {
             return (
                 <div className={section}>
-                <table align="center" width="100%" border="0" cellSpacing="0" cellPadding="0"><tbody><tr><td>
-                    <p className="textTitle2" align="left">{element.title}</p>
-                    <div className="textDescription" align="left">{element.description()}</div>
+                <table align="center" width="100%" border="0" cellSpacing="20px" cellPadding="0"><tbody><tr><td>
+                    <h3 align="center">{element.title}</h3>
+                    {element.description()}
                 </td></tr>
                 <tr><td width="100%" align="center">{this.renderImage(element)}</td></tr>
                 </tbody></table></div>
@@ -71,24 +71,26 @@ class Products extends React.Component {
         } else {
             if (isRight) {
                 return (
-                    <div className={section}><table align="center" border="0" cellSpacing="0" cellPadding="0"><tbody><tr>
+                    <div className={section}><table align="center" border="0" cellSpacing="20px" cellPadding="0"><tbody><tr>
                     <td width="50%">{this.renderImage(element)}</td>
                     <td width="2%"></td>
                     <td width="45%" align="left">
-                        <div className="textTitle2">{element.title}</div>
-                        <div className="textDescription">{element.description()}</div>
+                        <h3>{element.title}</h3>
+                        {element.description()}
                     </td>
                     <td width="3%"></td>
                     </tr></tbody></table></div>
                 );
             } else {
                 return (
-                    <div className={section}><table align="center" border="0" cellSpacing="0" cellPadding="0"><tbody><tr>
-                    <td width="5%" ></td>
+                    <div className={section}><table align="center" border="0" cellSpacing="20px" cellPadding="0"><tbody><tr>
+                    <td width="3%" ></td>
                     <td width="45%" align="left">
-                        <div className="textTitle2">{element.title}</div>
-                        <div className="textDescription">{element.description()}</div>
-                    </td><td width="50%">{this.renderImage(element)}</td>
+                        <h3>{element.title}</h3>
+                        {element.description()}
+                    </td>
+                    <td width="2%"></td>
+                    <td width="50%" align="center">{this.renderImage(element)}</td>
                     </tr></tbody></table></div>
                 );
             }
@@ -96,27 +98,33 @@ class Products extends React.Component {
     }
 
     render() {
+        let iconSize = (window.innerWidth / 50);
+        if (iconSize < 18) iconSize = 18;
+        const iconSizeStr = iconSize.toString() + 'px';
+        const iconSize2Str = (iconSize * 2).toString() + 'px';
         const elements = {
             'widget': {
-                title: 'Immersive Advertisements',
+                title: 'Programmatic Adverts',
                 description: function () {return (
                     <div>
+                    <p>
                     Programmatic advertisements integrated with immersive experiences such as virtual try-ons and games:
-                    <table width="100%" cellSpacing="10"><tbody>
-                        <tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Increase click-through rates</td><td width="10%"/></tr>
-                        <tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Dwell times and conversion</td><td width="10%"/></tr>
-                        <tr><td width="10%"/><td align="right"><img src="/ui-shape-bullet2.svg" alt="bullet" width="20px"/></td><td align="left">Are interactive, try it!</td><td width="10%"/></tr>
-                    </tbody></table>
+                    </p>
+                    <ul>
+                    <li>Increase click-through rates</li>
+                    <li>Dwell times and conversion</li>
+                    <li>Are interactive, try it!</li>
+                    </ul>
                     <table width="100%" cellSpacing="10"><tbody>
                         <tr>
                         <td width="10%"/>
-                        <td align="center"><img src="/icon_android.png" alt="vr" width="20px"/></td>
-                        <td align="center"><img src="/icon_apple.png" alt="vr" width="20px"/></td>
-                        <td align="center"><img src="/icon_chrome.png" alt="vr" width="20px"/></td>
-                        <td align="center"><img src="/icon_edge.png" alt="vr" width="20px"/></td>
-                        <td align="center"><img src="/icon_firefox.png" alt="vr" width="20px"/></td>
-                        <td align="center"><img src="/icon_html5.png" alt="vr" width="20px"/></td>
-                        <td align="center"><img src="/icon_safari.png" alt="vr" width="20px"/></td>
+                        <td align="center"><img src="/icon_android.png" alt="vr" width={iconSizeStr}/></td>
+                        <td align="center"><img src="/icon_apple.png" alt="vr" width={iconSizeStr}/></td>
+                        <td align="center"><img src="/icon_chrome.png" alt="vr" width={iconSizeStr}/></td>
+                        <td align="center"><img src="/icon_edge.png" alt="vr" width={iconSizeStr}/></td>
+                        <td align="center"><img src="/icon_firefox.png" alt="vr" width={iconSizeStr}/></td>
+                        <td align="center"><img src="/icon_html5.png" alt="vr" width={iconSizeStr}/></td>
+                        <td align="center"><img src="/icon_safari.png" alt="vr" width={iconSizeStr}/></td>
                         <td width="10%"/>
                         </tr>
                     </tbody></table>
@@ -151,13 +159,13 @@ class Products extends React.Component {
                     </p>
                     <table width="100%" cellSpacing="0" cellPadding="0"><tbody>
                         <tr>
-                        <td align="center"><img src="/icon_daydream.png" alt="vr" width="40px"/></td>
-                        <td align="center"><img src="/icon_gear_vr.png" alt="vr" width="40px"/></td>
-                        <td align="center"><img src="/icon_htc_vive.png" alt="vr" width="40px"/></td>
-                        <td align="center"><img src="/icon_microsoft.png" alt="vr" width="40px"/></td>
-                        <td align="center"><img src="/icon_oculus.png" alt="vr" width="40px"/></td>
-                        <td align="center"><img src="/icon_playstation_vr.png" alt="vr" width="40px"/></td>
-                        <td align="center"><img src="/icon_google_cardboard.png" alt="vr" width="40px"/></td>
+                        <td align="center"><img src="/icon_daydream.png" alt="vr" width={iconSize2Str}/></td>
+                        <td align="center"><img src="/icon_gear_vr.png" alt="vr" width={iconSize2Str}/></td>
+                        <td align="center"><img src="/icon_htc_vive.png" alt="vr" width={iconSize2Str}/></td>
+                        <td align="center"><img src="/icon_microsoft.png" alt="vr" width={iconSize2Str}/></td>
+                        <td align="center"><img src="/icon_oculus.png" alt="vr" width={iconSize2Str}/></td>
+                        <td align="center"><img src="/icon_playstation_vr.png" alt="vr" width={iconSize2Str}/></td>
+                        <td align="center"><img src="/icon_google_cardboard.png" alt="vr" width={iconSize2Str}/></td>
                         </tr>
                     </tbody></table>
                 </div>);},
@@ -168,9 +176,16 @@ class Products extends React.Component {
                 title: 'Try-on Avatars',
                 image: 'snapshot-user.png',
                 description: function () {return (<div>
+                    <p>From makeup to clothes to cars to accessories, virtual try-ons have been shown to:</p>
+                    <ul>
+                        <li>Engage your audience</li>
+                        <li>Increases conversion and customer satisfaction</li>
+                        <li>Dramatically reduce returns</li>
+                    </ul>
                     <p>
                     Help your customers find the right fit and discover new products by virtually trying on clothes and accessories with an avatar sized to their specific measurements.
-                    </p><p>
+                    </p>
+                    <p>
                     Our new feature enables customers to use their avatar across multiple websites.
                     </p>
                 </div>);},
@@ -201,9 +216,9 @@ class Products extends React.Component {
             <td width="90%" align="center">
                 <h3>What We Offer</h3>
                 <table align="center" width="100%" cellSpacing="40px"><tbody><tr>
-                <td align="center"><h5>Programmatic Adverts</h5></td>
-                <td align="center"><h5>Try-on Avatars</h5></td>
-                <td align="center"><h5>VR/AR E-Commerce Websites</h5></td>
+                <td align="center"><img src="/icon_ad.svg" alt='icon' align="center" width="50%"/><h5>Programmatic Adverts</h5></td>
+                <td align="center"><img src="/icon_tryon.png" alt='icon' align="center" width="50%"/><h5>Try-on Avatars</h5></td>
+                <td align="center"><img src="/icon_kart.svg" alt='icon' align="center" width="50%"/><h5>VR/AR E-Commerce Websites</h5></td>
                 </tr></tbody></table>
             </td><td width="5%"></td>
             </tr></tbody></table>
