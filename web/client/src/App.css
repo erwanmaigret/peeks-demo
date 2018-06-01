@@ -163,9 +163,9 @@
 .sectionGrey {
   padding: 0px;
   margin: 0px;
-  color: #fff;
+  color: #333;
   background-color: #eee;
-  text-align: center;
+  text-align: left;
 }
 
 .sectionDocumentation {
@@ -404,10 +404,9 @@ input[type=submit]:active {
 
 .widget {
     border-radius: 20px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin: 20px;
     padding: 0px;
-    background-color: #fff;
+    background-color: #fff0;
 }
 
 .cardPortrait {

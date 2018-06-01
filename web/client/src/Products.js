@@ -65,7 +65,7 @@ class Products extends React.Component {
                     <p className="textTitle2" align="left">{element.title}</p>
                     <div className="textDescription" align="left">{element.description()}</div>
                 </td></tr>
-                <tr><td width="100%">{this.renderImage(element)}</td></tr>
+                <tr><td width="100%" align="center">{this.renderImage(element)}</td></tr>
                 </tbody></table></div>
             );
         } else {
@@ -194,10 +194,24 @@ class Products extends React.Component {
             </tr></tbody></table>
             <br/><br/><br/>
             </div>
-            {this.renderSection(elements['widget'], false, 'sectionGrey')}
-            {this.renderSection(elements['tryon'], true, 'sectionBlank')}
-            {this.renderSection(elements['browser'], false, 'sectionGrey')}
-            {this.renderSection(elements['user'], true, 'sectionBlank')}
+            <div className="sectionGrey" align="center">
+            <br/>
+            <table align="center" width="100%"><tbody><tr>
+            <td width="5%" ></td>
+            <td width="90%" align="center">
+                <h3>What We Offer</h3>
+                <table align="center" width="100%" cellSpacing="40px"><tbody><tr>
+                <td align="center"><h5>Programmatic Adverts</h5></td>
+                <td align="center"><h5>Try-on Avatars</h5></td>
+                <td align="center"><h5>VR/AR E-Commerce Websites</h5></td>
+                </tr></tbody></table>
+            </td><td width="5%"></td>
+            </tr></tbody></table>
+            <br/>
+            </div>
+            {this.renderSection(elements['widget'], false, 'sectionBlank')}
+            {this.renderSection(elements['user'], true, 'sectionDark')}
+            {this.renderSection(elements['browser'], false, 'sectionBlank')}
             </div>
         );
     }

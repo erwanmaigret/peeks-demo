@@ -1,6 +1,5 @@
 PEEKS.registerPage('widget_shoe', function() {
     var page = new PEEKS.Asset({
-        bgColor: [226/255, 220/255, 209/255],
         gyroscope: 'off',
     });
 

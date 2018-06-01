@@ -202,7 +202,6 @@ class MenuBar extends React.Component {
               {this.renderMenuItem('PRODUCTS')}
               {this.renderMenuItem('SDK')}
               {this.renderMenuItem('ABOUT')}
-              {this.renderMenuItem('')}
             </div>
         </div>
         </Router>
