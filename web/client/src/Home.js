@@ -11,6 +11,21 @@ class Home extends Component {
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleLearnMore = this.handleLearnMore.bind(this);
+        this.handleViewProducts = this.handleViewProducts.bind(this);
+        this.handleRequestTrial = this.handleRequestTrial.bind(this);
+    }
+
+    handleLearnMore(event) {
+        console.log('Learn More');
+    }
+
+    handleViewProducts(event) {
+        console.log('handleViewProducts');
+    }
+
+    handleRequestTrial(event) {
+        console.log('handleRequestTrial');
     }
 
     handleEmailChange(event) {
@@ -52,6 +67,7 @@ class Home extends Component {
     }
 
     renderSection(element, isRight, section) {
+        let buttonClass = (section === 'sectionDark') ? "inputPurple" : "inputDark";
         if (window.innerWidth < 650) {
             return (
                 <div className={section}>
@@ -61,6 +77,9 @@ class Home extends Component {
                 <td width="80%">
                     <h2>{element.title}</h2>
                     <p dangerouslySetInnerHTML={{__html: element.description}}></p>
+                    <form onSubmit={element.buttonAction}>
+                        <input type="submit" className={buttonClass} value={element.button}/>
+                    </form>
                 </td>
                 <td width="10%"></td>
                 </tr>
@@ -73,25 +92,35 @@ class Home extends Component {
         } else {
             if (isRight) {
                 return (
-                    <div className={section}><table align="center"><tbody><tr>
+                    <div className={section}><br/>
+                    <table align="center"><tbody><tr>
                     <td width="50%" align="center">{this.renderExample(element)}</td>
                     <td width="40%">
                         <h2>{element.title}</h2>
                         <p dangerouslySetInnerHTML={{__html: element.description}}></p>
+                        <form onSubmit={element.buttonAction}>
+                            <input type="submit" className={buttonClass} value={element.button}/>
+                        </form>
                     </td>
                     <td width="10%"></td>
-                    </tr></tbody></table></div>
+                    </tr></tbody></table>
+                    <br/><br/></div>
                 );
             } else {
                 return (
-                    <div className={section}><table align="center"><tbody><tr>
+                    <div className={section}><br/>
+                    <table align="center"><tbody><tr>
                     <td width="10%"></td>
                     <td width="40%">
                         <h2>{element.title}</h2>
                         <p dangerouslySetInnerHTML={{__html: element.description}}></p>
+                        <form onSubmit={element.buttonAction}>
+                            <input type="submit" className={buttonClass} value={element.button}/>
+                        </form>
                     </td>
                     <td width="50%" align="center">{this.renderExample(element)}</td>
-                    </tr></tbody></table></div>
+                    </tr></tbody></table>
+                    <br/><br/></div>
                 );
             }
         }
@@ -109,6 +138,7 @@ class Home extends Component {
                         <input className="inputDark" type="submit" value="Send" />
                     </div>
                 </form>
+                <br/>
             </div>
         );
     }
@@ -117,20 +147,21 @@ class Home extends Component {
         return (
             <div>
                 <table width="100%"><tbody>
-                <tr height="20%"/>
+                <tr height="30px"/>
                 <tr>
                 <td width="10%"></td>
-                <td width="40%"><img className='iconBig'align="right" hspace="20" src="/icon_email_blue.png" alt="email"/></td>
-                <td width="40%"><h5>Email Us</h5><p>info@peeks.io</p></td>
+                <td width="40%"><img className='iconBig' align="right" hspace="20" src="/icon_email_blue.png" alt="email"/></td>
+                <td width="40%"><b>Email Us</b><p>info@peeks.io</p></td>
                 <td width="10%"></td>
                 </tr>
+                <tr height="30px"/>
                 <tr>
                 <td width="10%"></td>
                 <td width="20%"><img className='iconBig' align="right" hspace="20" src="/icon_twitter_blue.png" alt="twitter"/></td>
-                <td width="60%"><h5>Follow Us</h5><p><a href='https://twitter.com/PeeksIo'>twitter</a></p></td>
+                <td width="60%"><b>Follow Us</b><p><a href='https://twitter.com/PeeksIo'>twitter</a></p></td>
                 <td width="10%"></td>
                 </tr>
-                <tr height="20%"/>
+                <tr height="30px"/>
                 </tbody></table>
             </div>
         );
@@ -180,16 +211,22 @@ class Home extends Component {
                 title: 'Portable, powerful, engaging AR & VR',
                 description: '<p>Reach your audience in new ways with <b>Peeks</b>.</p><p>Virtual try-ons, immersive websites, and engaging experiences that increase conversion, upselling from recommendations, and customer retention.</p>',
                 image: "snapshot-product-1.png",
+                button: "Learn More",
+                buttonAction: this.handleLearnMore,
             },
             'browser': {
                 title: 'It just works',
                 description: '<p>No special apps or plug-in to download.</p><p>Creating and incorporating immersive content is easy and within your existing website, mobile app, and digital advertisements.</p><p>Our machine learning technology makes optimizing your existing content for AR and VR fast.</p>',
                 image: "snapshot-product-2.jpg",
+                button: "View Products",
+                buttonAction: this.handleViewProducts,
             },
             'headset': {
                 title: 'You don’t need previous expertise in VR or AR',
                 description: '<p>Peeks is designed to easily integrate into your existing creative workflow.</p><p>This mean your creative team doesn’t need to ramp up or change the way they work.</p><p>Publishing content in AR and VR and is easy and fast.</p>',
                 image: "snapshot-product-3.png",
+                button: "Request Trial",
+                buttonAction: this.handleRequestTrial,
             },
         };
 

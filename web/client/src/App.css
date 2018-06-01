@@ -102,7 +102,7 @@
 }
 
 .iconBig {
-    width: 64px;
+    width: 72px;
 }
 
 .buttonIcon {
@@ -250,14 +250,22 @@ input[type=submit] {
     width: auto;
     font-size: 25px;
     font-size: calc(10px + 0.78vw);
-    padding-left: calc(24px + 1.86vw);
-    padding-right: calc(24px + 1.86vw);
+    padding-left: calc(14px + 1.86vw);
+    padding-right: calc(14px + 1.86vw);
     margin: calc(4px + 0.31vw);
+    margin-left: 0;
     border-radius: 50px;
 }
 input[type=submit]:active {
     border: 2px solid #85ABE8;
     color: #85ABE8;
+    background-color: #0000;
+}
+.inputPurple {
+    border: 2px solid #5020E6;
+    background-color: #5020E6;
+    -webkit-appearance: none;
+    color: #fff;
 }
 .inputDark {
     border: 2px solid #333;
