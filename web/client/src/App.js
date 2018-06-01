@@ -253,26 +253,13 @@ class App extends Component {
     }
 
     render() {
-/*
-<table><tbody>
-<tr>
-<td width="2px"></td>
-<td><img src={logo} className="logo" alt="logo" width="20px"/></td>
-<td><div className="logoText">Peeks</div></td>
-</tr>
-</tbody></table>
-*/
-
+    let logo = (getLayoutWidth() === 0) ? "/Peeks Io Logo.svg" : "/Peeks Io Logo Text.svg";
     return (
         <div className="App">
         <header className="header">
         <div><table width='100%' cellPadding="0" cellSpacing="5"><tbody><tr>
         <td align="left">
-            <table><tbody>
-            <tr>
-            <td width="2px"></td>
-            </tr>
-            </tbody></table>
+            <img src={logo} alt="logo" height="20%" hspace="50%" vspace="10%"/>
         </td>
         <td align="right" valign="top"><MenuBar/></td>
         </tr></tbody></table></div>

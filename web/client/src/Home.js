@@ -140,7 +140,7 @@ class Home extends Component {
         if (window.innerWidth < 650) {
             return (
                 <div className={section}>
-                <table><tbody><tr>
+                <table width="100%"><tbody><tr>
                 <td width="10%"></td>
                 <td width="80%">
                     {this.renderContactPart1()}
@@ -158,7 +158,7 @@ class Home extends Component {
         } else {
             return (
                 <div className={section}>
-                <table><tbody><tr>
+                <table width="100%"><tbody><tr>
                 <td width="10%"></td>
                 <td width="40%">
                     {this.renderContactPart1()}

@@ -222,23 +222,25 @@ p {
     font-size: calc(8px + 0.62vw);
 }
 input {
-    width: 100%;
+    width: 98%;
     font-size: 25px;
     font-size: calc(10px + 0.78vw);
     border: 2px solid transparent;
     border-bottom: 2px solid grey;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     outline-width: 0;
     background-color: #0000;
 }
 textarea {
-    width: 100%;
+    width: 98%;
     height: 10em;
     font-size: 25px;
     font-size: calc(10px + 0.78vw);
     border: 2px solid transparent;
     border-bottom: 2px solid grey;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     resize: none;
     outline-width: 0;
 }
