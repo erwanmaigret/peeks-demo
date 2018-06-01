@@ -148,6 +148,11 @@
 .sectionBlank p {
     color: #666666;
 }
+.blankP {
+    font-size: 20px;
+    font-size: calc(6px + 0.62vw);
+    color: #666666;
+}
 
 .sectionDark {
   padding: 0px;
@@ -425,6 +430,25 @@ input[type=submit]:active {
     margin: 20px;
     padding: 0px;
     background-color: #fff0;
+}
+
+.businessCard {
+    margin: 20px;
+    color: #333;
+    width: calc(80px + 30vw);
+    height: calc(185px + 5vw);
+    text-align: left;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.businessCardPortrait {
+    margin: 20px;
+    width: calc(150px + 20vw);
+    color: #333;
+    text-align: left;
+    padding: 10px;
+    background-color: #fff;
 }
 
 .cardPortrait {

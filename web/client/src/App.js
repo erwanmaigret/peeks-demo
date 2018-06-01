@@ -19,7 +19,8 @@ function isPhone() {
     return value;
 }
 
-function getLayoutWidth() {
+function getLayoutWidth(widthLimit) {
+    widthLimit = widthLimit || 650;
     if (isPhone()) {
         // Always display in portrait mode even if the phone is landscape
         return 0;
@@ -31,7 +32,7 @@ function getLayoutWidth() {
         }
         */
     } else {
-        if (window.innerWidth < 650) {
+        if (window.innerWidth < widthLimit) {
             return 0;
         } else {
             return 1;
@@ -40,42 +41,73 @@ function getLayoutWidth() {
 }
 
 class About extends React.Component {
-    //<p className="textGray">{member.title}</p>
-    renderTeamMember(member) {
-        return (
-            <td align='center'>
-            <div className="cardPortrait">
-                <img src={member.photo} alt={member.name}/>
-                <p className="textHighlight">{member.name}</p>
-                <div className="cardPortraitDescription"><p className="textSmall" align="justify">{member.blurb}</p></div>
-                <a href={member.linkedin} target="_blank"><img src="/linkedin.png" alt="linkedin" width='30'/></a>
-            </div>
-            </td>
-        );
+    renderTeamMember(member, isPortrait) {
+        if (isPortrait) {
+            return (
+                <div className='businessCardPortrait'>
+                    <table cellPadding="10px"><tbody>
+                        <tr><td align="middle">
+                        <img src={member.photo} alt={member.name}/>
+                        </td></tr>
+                        <tr><td>
+                            <h4 align="middle">{member.name}</h4>
+                            <div className="blankP">{member.blurb}</div>
+                        </td></tr>
+                        <tr><td align="center">
+                            <a href={member.twitter} target="_blank"><img src="/icon_twitter_blue.png" alt="twitter" width='30' hspace="10" vspace="10"/></a>
+                            <a href={member.linkedin} target="_blank"><img src="/icon_linkedin_blue.png" alt="linkedin" width='30' hspace="10" vspace="10"/></a>
+                        </td></tr>
+                    </tbody></table>
+                </div>
+            );
+        } else {
+            return (
+                <div className='businessCard'>
+                    <table cellPadding="10px"><tbody>
+                        <tr>
+                            <td>
+                                <table><tbody>
+                                    <tr><td>
+                                    <img src={member.photo} alt={member.name}/>
+                                    </td></tr>
+                                    <tr><td align="center">
+                                        <a href={member.twitter} target="_blank"><img src="/icon_twitter_blue.png" alt="twitter" width='30' hspace="10" vspace="10"/></a>
+                                        <a href={member.linkedin} target="_blank"><img src="/icon_linkedin_blue.png" alt="linkedin" width='30' hspace="10" vspace="10"/></a>
+                                    </td></tr>
+                                </tbody></table>
+                            </td>
+                            <td>
+                            <h4>{member.name}</h4>
+                            <div className="blankP">{member.blurb}</div>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            );
+        }
     }
 
     renderBlurb() {
         return (
-            <table align="center" width="100%"><tbody>
-                <tr>
-                <td width="10%"></td>
-                <td width="80%">
-                <div className="textDescription" align="left">
+            <div>
                 <p>
                 Founded in 2017 and with more than a decade of combined experience in VR and AR, we at Peeks feel that the internet is not being effectively harnessed for AR and VR.
                 </p><p>
                 From browsing the web in VR and AR hardware to incorporating immersive experiences that benefit a brand’s audience, Peeks is the bridge between exclusively 2D content and custom created VR or AR content.
-                </p><p>
+                </p>
+            </div>
+        );
+    }
+
+    renderBlurb2() {
+        return (
+            <div>
+                <p>
                 We help you reach your audience in new and immersive ways that help drive the outcomes your brand seeks.
                 </p><p>
                 From exposure to conversion to retention, Peeks provides meaningful and measurable value to brands across the full digital marketing funnel.
                 </p>
-                </div>
-                </td>
-                <td width="10%"></td>
-                </tr>
-                <tr></tr>
-            </tbody></table>
+            </div>
         );
     }
 
@@ -87,6 +119,7 @@ class About extends React.Component {
                 photo: '/team-ryan.png',
                 blurb: 'Seasoned hyper growth entrepreneur. Expert in building products, commercializing products and IP, and business development. Executive leader responsible for AR platforms at Blippar. Early strategy leader (first 250 employees) at Uber. MBA from Johns Hopkins University.',
                 linkedin: 'https://www.linkedin.com/in/ryanschmaltz/',
+                twitter: 'https://twitter.com/RyanSchmaltz',
             },
             'erwan': {
                 name: 'Erwan Maigret',
@@ -94,69 +127,163 @@ class About extends React.Component {
                 photo: '/team-erwan.png',
                 blurb: '20+ years experience in 3D software/full stack and engineering leadership. Extensive early stage startup experience (Blippar, Toytalk, Loom.ai). Former Dreamworks Animation R&D engineering lead for feature films (Shrek, Madagascar) and the internal tools used for moviemaking.',
                 linkedin: 'https://www.linkedin.com/in/erwanmaigret/',
+                twitter: 'https://twitter.com/ErwanMaigret',
             },
         };
 
-        const layout = getLayoutWidth();
+        const layout = getLayoutWidth(800);
         if (layout === 0) {
             return (
                 <div>
-                {this.renderBlurb()}
-                <div className="textTitle2">Meet the founders!</div>
-                <table align="center"><tbody><tr>
-                    {this.renderTeamMember(members['ryan'])}
-                </tr><tr>
-                    {this.renderTeamMember(members['erwan'])}
-                </tr></tbody></table>
-                <table align="center" width="100%"><tbody>
-                    <tr>
-                    <td width="10%"></td>
-                    <td width="80%">
-                        <Timeline
-                            dataSource={{
-                            sourceType: 'profile',
-                            screenName: 'peeksio'
-                            }}
-                            options={{
-                            username: 'PeeksIo',
-                            height: '300'
-                            }}
-                        />
-                    </td>
-                    <td width="10%"></td>
-                    </tr>
-                    <tr></tr>
-                </tbody></table>
+                    <div className="sectionBlank" padding="10%">
+                        <table width="100%"><tbody>
+                            <tr>
+                                <td width="10%"></td>
+                                <td width="80%">
+                                    <h3>About US</h3>
+                                </td>
+                                <td width="10%"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td valign="top">
+                                    {this.renderBlurb()}
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td valign="top">
+                                    {this.renderBlurb2()}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody></table>
+                        <br/>
+                    </div>
+                    <div className="sectionDark">
+                        <table width="100%"><tbody>
+                            <tr>
+                                <td width="10%"></td>
+                                <td width="80%">
+                                    <h3>The Founders</h3>
+                                </td>
+                                <td width="10%"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td align="middle">
+                                    {this.renderTeamMember(members['ryan'], true)}
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td align="middle">
+                                    {this.renderTeamMember(members['erwan'], true)}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody></table>
+                        <br/>
+                    </div>
+                    <div className="sectionBlank">
+                        <table align="center" width="100%"><tbody>
+                            <tr>
+                            <td width="10%"></td>
+                            <td width="80%" align="center">
+                                <Timeline
+                                    dataSource={{
+                                    sourceType: 'profile',
+                                    screenName: 'peeksio'
+                                    }}
+                                    options={{
+                                    username: 'PeeksIo',
+                                    height: '300'
+                                    }}
+                                />
+                            </td>
+                            <td width="10%"></td>
+                            </tr>
+                            <tr></tr>
+                        </tbody></table>
+                    </div>
                 </div>
             )
         } else {
             return (
                 <div>
-                {this.renderBlurb()}
-                <div className="textTitle2">Meet the Founders!</div>
-                <table align="center"><tbody><tr>
-                    {this.renderTeamMember(members['ryan'])}
-                    {this.renderTeamMember(members['erwan'])}
-                </tr></tbody></table>
-                <table align="center" width="100%"><tbody>
-                    <tr>
-                    <td width="10%"></td>
-                    <td width="80%">
-                        <Timeline
-                            dataSource={{
-                            sourceType: 'profile',
-                            screenName: 'peeksio'
-                            }}
-                            options={{
-                            username: 'PeeksIo',
-                            height: '300'
-                            }}
-                        />
-                    </td>
-                    <td width="10%"></td>
-                    </tr>
-                    <tr></tr>
-                </tbody></table>
+                    <div className="sectionBlank" padding="10%">
+                        <table width="100%"><tbody>
+                            <tr>
+                                <td width="5%"></td>
+                                <td width="40%">
+                                    <h3>About US</h3>
+                                </td>
+                                <td width="10%"></td>
+                                <td width="40%"></td>
+                                <td width="5%"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td valign="top">
+                                    {this.renderBlurb()}
+                                </td>
+                                <td></td>
+                                <td valign="top">
+                                    {this.renderBlurb2()}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody></table>
+                        <br/>
+                    </div>
+                    <div className="sectionDark">
+                        <table width="100%"><tbody>
+                            <tr>
+                                <td width="5%"></td>
+                                <td width="40%">
+                                    <h3>The Founders</h3>
+                                </td>
+                                <td width="10%"></td>
+                                <td width="40%"></td>
+                                <td width="5%"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    {this.renderTeamMember(members['ryan'])}
+                                </td>
+                                <td></td>
+                                <td>
+                                    {this.renderTeamMember(members['erwan'])}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody></table>
+                        <br/>
+                    </div>
+                    <div className="sectionBlank">
+                        <table align="center" width="100%"><tbody>
+                            <tr>
+                            <td width="10%"></td>
+                            <td width="80%" align="center">
+                                <Timeline
+                                    dataSource={{
+                                    sourceType: 'profile',
+                                    screenName: 'peeksio'
+                                    }}
+                                    options={{
+                                    username: 'PeeksIo',
+                                    height: '300'
+                                    }}
+                                />
+                            </td>
+                            <td width="10%"></td>
+                            </tr>
+                            <tr></tr>
+                        </tbody></table>
+                    </div>
                 </div>
             )
         }
