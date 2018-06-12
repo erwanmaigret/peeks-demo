@@ -232,14 +232,11 @@ class CreaMapPin extends Component {
             return (
                 <div style={PinStyle}>
                 <img src="/creattitude/icon_pin.png" alt="map_pin" width="32px"
-                    onMouseEnter={(e) => this.onMouseEnter(e)}
-                    onMouseLeave={(e) => this.onMouseLeave(e)}
-                    onMouseDown={(e) => this.onMouseDown(e)}
-                    onTouchStart={(e) => this.onTouchStart(e)}
+                    onClick={(e) => this.onMouseDown(e)}
                 />
-                <div className="creaCard">
-                    <h3>{this.props.text}</h3>
-                    <p>{this.props.description}</p>
+                <div className="creaCard" onClick={(e) => this.onMouseDown(e)}>
+                    <p className="creaTitle">{this.props.text}</p>
+                    <p className="creaText">{this.props.description}</p>
                     <button
                         className="creaButton2"
                         onClick={(e) => this.onClick(e)}
@@ -253,9 +250,7 @@ class CreaMapPin extends Component {
             return (
                 <div style={PinStyle}>
                 <img src="/creattitude/icon_pin.png" alt="map_pin" width="32px"
-                    onMouseEnter={(e) => this.onMouseEnter(e)}
-                    onMouseLeave={(e) => this.onMouseLeave(e)}
-                    onMouseDown={(e) => this.onMouseDown(e)}
+                    onClick={(e) => this.onMouseDown(e)}
                 />
                 </div>
             );

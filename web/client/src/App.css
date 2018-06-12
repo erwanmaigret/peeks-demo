@@ -558,9 +558,9 @@ input[type=submit]:active {
 }
 
 .creaCard {
-    border-radius: 10px;
+    border-radius: 4px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin: 10px;
+    margin: 0px;
     width: 200px;
     position: 'absolute';
     left: 0px;
@@ -569,4 +569,16 @@ input[type=submit]:active {
     background-color: #FF733F;
     color: #fff;
     padding: 2px;
+}
+
+.creaTitle {
+    font-size: 16px;
+    font-family: "Work Sans";
+    font-weight: 700;
+}
+.creaText {
+    font-size: 11px;
+    text-align: center;
+    font-family: "Work Sans";
+    font-weight: 400;
 }
