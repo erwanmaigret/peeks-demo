@@ -62,6 +62,18 @@ var global = Function('return this')();
 global.THREE = require('./three.js');
 require('./three/loaders/GLTFLoader.js');
 require('./three/loaders/OBJLoader.js');
+require("./three/shaders/ShaderSkin.js");
+require("./three/shaders/shaders/BleachBypassShader.js");
+require("./three/shaders/shaders/ConvolutionShader.js");
+require("./three/shaders/shaders/CopyShader.js");
+require("./three/shaders/postprocessing/EffectComposer.js");
+require("./three/shaders/postprocessing/RenderPass.js");
+require("./three/shaders/postprocessing/BloomPass.js");
+require("./three/shaders/postprocessing/TexturePass.js");
+require("./three/shaders/postprocessing/ShaderPass.js");
+require("./three/shaders/postprocessing/MaskPass.js");
+require("./three/shaders/Detector.js");
+require("./three/shaders/libs/stats.min.js");
 require('./peeks_three.js');
 
 require("./pages/assets.js");

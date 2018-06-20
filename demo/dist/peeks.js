@@ -132,10 +132,21 @@ global.THREE = __webpack_require__(10);
 __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
-
 __webpack_require__(14);
 __webpack_require__(15);
+__webpack_require__(16);
+__webpack_require__(17);
+__webpack_require__(18);
+__webpack_require__(19);
+__webpack_require__(20);
+__webpack_require__(21);
+__webpack_require__(22);
+__webpack_require__(23);
+__webpack_require__(24);
+__webpack_require__(25);
 
+__webpack_require__(26);
+__webpack_require__(27);
 
 /***/ }),
 /* 1 */
@@ -53825,6 +53836,1665 @@ THREE.OBJLoader = ( function () {
 /* 13 */
 /***/ (function(module, exports) {
 
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ */
+
+
+THREE.ShaderSkin = {
+
+	/* ------------------------------------------------------------------------------------------
+	//	Simple skin shader
+	//		- per-pixel Blinn-Phong diffuse term mixed with half-Lambert wrap-around term (per color component)
+	//		- physically based specular term (Kelemen/Szirmay-Kalos specular reflectance)
+	//
+	//		- diffuse map
+	//		- bump map
+	//		- specular map
+	//		- point, directional and hemisphere lights (use with "lights: true" material option)
+	//		- fog (use with "fog: true" material option)
+	//		- shadow maps
+	//
+	// ------------------------------------------------------------------------------------------ */
+
+	'skinSimple' : {
+
+		uniforms: THREE.UniformsUtils.merge( [
+
+			THREE.UniformsLib[ "fog" ],
+			THREE.UniformsLib[ "lights" ],
+
+			{
+
+				"enableBump": { value: 0 },
+				"enableSpecular": { value: 0 },
+
+				"tDiffuse": { value: null },
+				"tBeckmann": { value: null },
+
+				"diffuse": { value: new THREE.Color( 0xeeeeee ) },
+				"specular": { value: new THREE.Color( 0x111111 ) },
+				"opacity": { value: 1 },
+
+				"uRoughness": { value: 0.15 },
+				"uSpecularBrightness": { value: 0.75 },
+
+				"bumpMap": { value: null },
+				"bumpScale": { value: 1 },
+
+				"specularMap": { value: null },
+
+				"offsetRepeat": { value: new THREE.Vector4( 0, 0, 1, 1 ) },
+
+				"uWrapRGB": { value: new THREE.Vector3( 0.75, 0.375, 0.1875 ) }
+
+			}
+
+		] ),
+
+		fragmentShader: [
+
+			"#define USE_BUMPMAP",
+
+			"uniform bool enableBump;",
+			"uniform bool enableSpecular;",
+
+			"uniform vec3 diffuse;",
+			"uniform vec3 specular;",
+			"uniform float opacity;",
+
+			"uniform float uRoughness;",
+			"uniform float uSpecularBrightness;",
+
+			"uniform vec3 uWrapRGB;",
+
+			"uniform sampler2D tDiffuse;",
+			"uniform sampler2D tBeckmann;",
+
+			"uniform sampler2D specularMap;",
+
+			"varying vec3 vNormal;",
+			"varying vec2 vUv;",
+
+			"varying vec3 vViewPosition;",
+
+			THREE.ShaderChunk[ "common" ],
+			THREE.ShaderChunk[ "bsdfs" ],
+			THREE.ShaderChunk[ "packing" ],
+			THREE.ShaderChunk[ "lights_pars_begin" ],
+			THREE.ShaderChunk[ "shadowmap_pars_fragment" ],
+			THREE.ShaderChunk[ "fog_pars_fragment" ],
+			THREE.ShaderChunk[ "bumpmap_pars_fragment" ],
+
+			// Fresnel term
+
+			"float fresnelReflectance( vec3 H, vec3 V, float F0 ) {",
+
+				"float base = 1.0 - dot( V, H );",
+				"float exponential = pow( base, 5.0 );",
+
+				"return exponential + F0 * ( 1.0 - exponential );",
+
+			"}",
+
+			// Kelemen/Szirmay-Kalos specular BRDF
+
+			"float KS_Skin_Specular( vec3 N,", 		// Bumped surface normal
+									"vec3 L,", 		// Points to light
+									"vec3 V,", 		// Points to eye
+									"float m,",  	// Roughness
+									"float rho_s", 	// Specular brightness
+									") {",
+
+				"float result = 0.0;",
+				"float ndotl = dot( N, L );",
+
+				"if( ndotl > 0.0 ) {",
+
+					"vec3 h = L + V;", // Unnormalized half-way vector
+					"vec3 H = normalize( h );",
+
+					"float ndoth = dot( N, H );",
+
+					"float PH = pow( 2.0 * texture2D( tBeckmann, vec2( ndoth, m ) ).x, 10.0 );",
+
+					"float F = fresnelReflectance( H, V, 0.028 );",
+					"float frSpec = max( PH * F / dot( h, h ), 0.0 );",
+
+					"result = ndotl * rho_s * frSpec;", // BRDF * dot(N,L) * rho_s
+
+				"}",
+
+				"return result;",
+
+			"}",
+
+			"void main() {",
+
+				"vec3 outgoingLight = vec3( 0.0 );",	// outgoing light does not have an alpha, the surface does
+				"vec4 diffuseColor = vec4( diffuse, opacity );",
+
+				"vec4 colDiffuse = texture2D( tDiffuse, vUv );",
+				"colDiffuse.rgb *= colDiffuse.rgb;",
+
+				"diffuseColor = diffuseColor * colDiffuse;",
+
+				"vec3 normal = normalize( vNormal );",
+				"vec3 viewerDirection = normalize( vViewPosition );",
+
+				"float specularStrength;",
+
+				"if ( enableSpecular ) {",
+
+					"vec4 texelSpecular = texture2D( specularMap, vUv );",
+					"specularStrength = texelSpecular.r;",
+
+				"} else {",
+
+					"specularStrength = 1.0;",
+
+				"}",
+
+				"#ifdef USE_BUMPMAP",
+
+					"if ( enableBump ) normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );",
+
+				"#endif",
+
+				// point lights
+
+				"vec3 totalSpecularLight = vec3( 0.0 );",
+				"vec3 totalDiffuseLight = vec3( 0.0 );",
+
+				"#if NUM_POINT_LIGHTS > 0",
+
+					"for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {",
+
+						"vec3 lVector = pointLights[ i ].position + vViewPosition.xyz;",
+
+						"float attenuation = calcLightAttenuation( length( lVector ), pointLights[ i ].distance, pointLights[ i ].decay );",
+
+						"lVector = normalize( lVector );",
+
+						"float pointDiffuseWeightFull = max( dot( normal, lVector ), 0.0 );",
+						"float pointDiffuseWeightHalf = max( 0.5 * dot( normal, lVector ) + 0.5, 0.0 );",
+						"vec3 pointDiffuseWeight = mix( vec3 ( pointDiffuseWeightFull ), vec3( pointDiffuseWeightHalf ), uWrapRGB );",
+
+						"float pointSpecularWeight = KS_Skin_Specular( normal, lVector, viewerDirection, uRoughness, uSpecularBrightness );",
+
+						"totalDiffuseLight += pointLight[ i ].color * ( pointDiffuseWeight * attenuation );",
+						"totalSpecularLight += pointLight[ i ].color * specular * ( pointSpecularWeight * specularStrength * attenuation );",
+
+					"}",
+
+				"#endif",
+
+				// directional lights
+
+				"#if NUM_DIR_LIGHTS > 0",
+
+					"for( int i = 0; i < NUM_DIR_LIGHTS; i++ ) {",
+
+						"vec3 dirVector = directionalLights[ i ].direction;",
+
+						"float dirDiffuseWeightFull = max( dot( normal, dirVector ), 0.0 );",
+						"float dirDiffuseWeightHalf = max( 0.5 * dot( normal, dirVector ) + 0.5, 0.0 );",
+						"vec3 dirDiffuseWeight = mix( vec3 ( dirDiffuseWeightFull ), vec3( dirDiffuseWeightHalf ), uWrapRGB );",
+
+						"float dirSpecularWeight = KS_Skin_Specular( normal, dirVector, viewerDirection, uRoughness, uSpecularBrightness );",
+
+						"totalDiffuseLight += directionalLights[ i ].color * dirDiffuseWeight;",
+						"totalSpecularLight += directionalLights[ i ].color * ( dirSpecularWeight * specularStrength );",
+
+					"}",
+
+				"#endif",
+
+				// hemisphere lights
+
+				"#if NUM_HEMI_LIGHTS > 0",
+
+					"for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {",
+
+						"vec3 lVector = hemisphereLightDirection[ i ];",
+
+						"float dotProduct = dot( normal, lVector );",
+						"float hemiDiffuseWeight = 0.5 * dotProduct + 0.5;",
+
+						"totalDiffuseLight += mix( hemisphereLightGroundColor[ i ], hemisphereLightSkyColor[ i ], hemiDiffuseWeight );",
+
+						// specular (sky light)
+
+						"float hemiSpecularWeight = 0.0;",
+						"hemiSpecularWeight += KS_Skin_Specular( normal, lVector, viewerDirection, uRoughness, uSpecularBrightness );",
+
+						// specular (ground light)
+
+						"vec3 lVectorGround = -lVector;",
+						"hemiSpecularWeight += KS_Skin_Specular( normal, lVectorGround, viewerDirection, uRoughness, uSpecularBrightness );",
+
+						"vec3 hemiSpecularColor = mix( hemisphereLightGroundColor[ i ], hemisphereLightSkyColor[ i ], hemiDiffuseWeight );",
+
+						"totalSpecularLight += hemiSpecularColor * specular * ( hemiSpecularWeight * specularStrength );",
+
+					"}",
+
+				"#endif",
+
+				"outgoingLight += diffuseColor.xyz * ( totalDiffuseLight + ambientLightColor * diffuse ) + totalSpecularLight;",
+
+				"gl_FragColor = linearToOutputTexel( vec4( outgoingLight, diffuseColor.a ) );",	// TODO, this should be pre-multiplied to allow for bright highlights on very transparent objects
+
+				THREE.ShaderChunk[ "fog_fragment" ],
+
+			"}"
+
+		].join( "\n" ),
+
+		vertexShader: [
+
+			"uniform vec4 offsetRepeat;",
+
+			"varying vec3 vNormal;",
+			"varying vec2 vUv;",
+
+			"varying vec3 vViewPosition;",
+
+			THREE.ShaderChunk[ "common" ],
+			THREE.ShaderChunk[ "lights_pars_begin" ],
+			THREE.ShaderChunk[ "shadowmap_pars_vertex" ],
+			THREE.ShaderChunk[ "fog_pars_vertex" ],
+
+			"void main() {",
+
+				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+				"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
+
+				"vViewPosition = -mvPosition.xyz;",
+
+				"vNormal = normalize( normalMatrix * normal );",
+
+				"vUv = uv * offsetRepeat.zw + offsetRepeat.xy;",
+
+				"gl_Position = projectionMatrix * mvPosition;",
+
+				THREE.ShaderChunk[ "shadowmap_vertex" ],
+				THREE.ShaderChunk[ "fog_vertex" ],
+
+			"}"
+
+		].join( "\n" )
+
+	},
+
+	/* ------------------------------------------------------------------------------------------
+	//	Skin shader
+	//		- Blinn-Phong diffuse term (using normal + diffuse maps)
+	//		- subsurface scattering approximation by four blur layers
+	//		- physically based specular term (Kelemen/Szirmay-Kalos specular reflectance)
+	//
+	//		- point and directional lights (use with "lights: true" material option)
+	//
+	//		- based on Nvidia Advanced Skin Rendering GDC 2007 presentation
+	//		  and GPU Gems 3 Chapter 14. Advanced Techniques for Realistic Real-Time Skin Rendering
+	//
+	//			http://developer.download.nvidia.com/presentations/2007/gdc/Advanced_Skin.pdf
+	//			http://http.developer.nvidia.com/GPUGems3/gpugems3_ch14.html
+	// ------------------------------------------------------------------------------------------ */
+
+	'skin' : {
+
+		uniforms: THREE.UniformsUtils.merge( [
+
+			THREE.UniformsLib[ "fog" ],
+			THREE.UniformsLib[ "lights" ],
+
+			{
+
+				"passID": { value: 0 },
+
+				"tDiffuse"	: { value: null },
+				"tNormal"	: { value: null },
+
+				"tBlur1"	: { value: null },
+				"tBlur2"	: { value: null },
+				"tBlur3"	: { value: null },
+				"tBlur4"	: { value: null },
+
+				"tBeckmann"	: { value: null },
+
+				"uNormalScale": { value: 1.0 },
+
+				"diffuse":  { value: new THREE.Color( 0xeeeeee ) },
+				"specular": { value: new THREE.Color( 0x111111 ) },
+				"opacity": 	  { value: 1 },
+
+				"uRoughness": 	  		{ value: 0.15 },
+				"uSpecularBrightness": 	{ value: 0.75 }
+
+			}
+
+		] ),
+
+		fragmentShader: [
+
+			"uniform vec3 diffuse;",
+			"uniform vec3 specular;",
+			"uniform float opacity;",
+
+			"uniform float uRoughness;",
+			"uniform float uSpecularBrightness;",
+
+			"uniform int passID;",
+
+			"uniform sampler2D tDiffuse;",
+			"uniform sampler2D tNormal;",
+
+			"uniform sampler2D tBlur1;",
+			"uniform sampler2D tBlur2;",
+			"uniform sampler2D tBlur3;",
+			"uniform sampler2D tBlur4;",
+
+			"uniform sampler2D tBeckmann;",
+
+			"uniform float uNormalScale;",
+
+			"varying vec3 vNormal;",
+			"varying vec2 vUv;",
+
+			"varying vec3 vViewPosition;",
+
+			THREE.ShaderChunk[ "common" ],
+			THREE.ShaderChunk[ "lights_pars_begin" ],
+			THREE.ShaderChunk[ "fog_pars_fragment" ],
+
+			"float fresnelReflectance( vec3 H, vec3 V, float F0 ) {",
+
+				"float base = 1.0 - dot( V, H );",
+				"float exponential = pow( base, 5.0 );",
+
+				"return exponential + F0 * ( 1.0 - exponential );",
+
+			"}",
+
+			// Kelemen/Szirmay-Kalos specular BRDF
+
+			"float KS_Skin_Specular( vec3 N,", 		// Bumped surface normal
+									"vec3 L,", 		// Points to light
+									"vec3 V,", 		// Points to eye
+									"float m,",  	// Roughness
+									"float rho_s", 	// Specular brightness
+									") {",
+
+				"float result = 0.0;",
+				"float ndotl = dot( N, L );",
+
+				"if( ndotl > 0.0 ) {",
+
+					"vec3 h = L + V;", // Unnormalized half-way vector
+					"vec3 H = normalize( h );",
+
+					"float ndoth = dot( N, H );",
+
+					"float PH = pow( 2.0 * texture2D( tBeckmann, vec2( ndoth, m ) ).x, 10.0 );",
+					"float F = fresnelReflectance( H, V, 0.028 );",
+					"float frSpec = max( PH * F / dot( h, h ), 0.0 );",
+
+					"result = ndotl * rho_s * frSpec;", // BRDF * dot(N,L) * rho_s
+
+				"}",
+
+				"return result;",
+
+			"}",
+
+			"void main() {",
+
+				"vec3 outgoingLight = vec3( 0.0 );",	// outgoing light does not have an alpha, the surface does
+				"vec4 diffuseColor = vec4( diffuse, opacity );",
+
+				"vec4 mSpecular = vec4( specular, opacity );",
+
+				"vec4 colDiffuse = texture2D( tDiffuse, vUv );",
+				"colDiffuse *= colDiffuse;",
+
+				"diffuseColor *= colDiffuse;",
+
+				// normal mapping
+
+				"vec4 posAndU = vec4( -vViewPosition, vUv.x );",
+				"vec4 posAndU_dx = dFdx( posAndU ),  posAndU_dy = dFdy( posAndU );",
+				"vec3 tangent = posAndU_dx.w * posAndU_dx.xyz + posAndU_dy.w * posAndU_dy.xyz;",
+				"vec3 normal = normalize( vNormal );",
+				"vec3 binormal = normalize( cross( tangent, normal ) );",
+				"tangent = cross( normal, binormal );",	// no normalization required
+				"mat3 tsb = mat3( tangent, binormal, normal );",
+
+				"vec3 normalTex = texture2D( tNormal, vUv ).xyz * 2.0 - 1.0;",
+				"normalTex.xy *= uNormalScale;",
+				"normalTex = normalize( normalTex );",
+
+				"vec3 finalNormal = tsb * normalTex;",
+				"normal = normalize( finalNormal );",
+
+				"vec3 viewerDirection = normalize( vViewPosition );",
+
+				// point lights
+
+				"vec3 totalDiffuseLight = vec3( 0.0 );",
+				"vec3 totalSpecularLight = vec3( 0.0 );",
+
+				"#if NUM_POINT_LIGHTS > 0",
+
+					"for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {",
+
+						"vec3 pointVector = normalize( pointLights[ i ].direction );",
+						"float attenuation = calcLightAttenuation( length( lVector ), pointLights[ i ].distance, pointLights[ i ].decay );",
+
+						"float pointDiffuseWeight = max( dot( normal, pointVector ), 0.0 );",
+
+						"totalDiffuseLight += pointLightColor[ i ] * ( pointDiffuseWeight * attenuation );",
+
+						"if ( passID == 1 ) {",
+
+							"float pointSpecularWeight = KS_Skin_Specular( normal, pointVector, viewerDirection, uRoughness, uSpecularBrightness );",
+
+							"totalSpecularLight += pointLightColor[ i ] * mSpecular.xyz * ( pointSpecularWeight * attenuation );",
+
+						"}",
+
+					"}",
+
+				"#endif",
+
+				// directional lights
+
+				"#if NUM_DIR_LIGHTS > 0",
+
+					"for( int i = 0; i < NUM_DIR_LIGHTS; i++ ) {",
+
+						"vec3 dirVector = directionalLights[ i ].direction;",
+
+						"float dirDiffuseWeight = max( dot( normal, dirVector ), 0.0 );",
+
+
+						"totalDiffuseLight += directionalLights[ i ].color * dirDiffuseWeight;",
+
+						"if ( passID == 1 ) {",
+
+							"float dirSpecularWeight = KS_Skin_Specular( normal, dirVector, viewerDirection, uRoughness, uSpecularBrightness );",
+
+							"totalSpecularLight += directionalLights[ i ].color * mSpecular.xyz * dirSpecularWeight;",
+
+						"}",
+
+					"}",
+
+				"#endif",
+
+
+				"outgoingLight += diffuseColor.rgb * ( totalDiffuseLight + totalSpecularLight );",
+
+				"if ( passID == 0 ) {",
+
+					"outgoingLight = sqrt( outgoingLight );",
+
+				"} else if ( passID == 1 ) {",
+
+					//"#define VERSION1",
+
+					"#ifdef VERSION1",
+
+						"vec3 nonblurColor = sqrt(outgoingLight );",
+
+					"#else",
+
+						"vec3 nonblurColor = outgoingLight;",
+
+					"#endif",
+
+					"vec3 blur1Color = texture2D( tBlur1, vUv ).xyz;",
+					"vec3 blur2Color = texture2D( tBlur2, vUv ).xyz;",
+					"vec3 blur3Color = texture2D( tBlur3, vUv ).xyz;",
+					"vec3 blur4Color = texture2D( tBlur4, vUv ).xyz;",
+
+
+					//"gl_FragColor = vec4( blur1Color, gl_FragColor.w );",
+
+					//"gl_FragColor = vec4( vec3( 0.22, 0.5, 0.7 ) * nonblurColor + vec3( 0.2, 0.5, 0.3 ) * blur1Color + vec3( 0.58, 0.0, 0.0 ) * blur2Color, gl_FragColor.w );",
+
+					//"gl_FragColor = vec4( vec3( 0.25, 0.6, 0.8 ) * nonblurColor + vec3( 0.15, 0.25, 0.2 ) * blur1Color + vec3( 0.15, 0.15, 0.0 ) * blur2Color + vec3( 0.45, 0.0, 0.0 ) * blur3Color, gl_FragColor.w );",
+
+
+					"outgoingLight = vec3( vec3( 0.22,  0.437, 0.635 ) * nonblurColor + ",
+										 "vec3( 0.101, 0.355, 0.365 ) * blur1Color + ",
+										 "vec3( 0.119, 0.208, 0.0 )   * blur2Color + ",
+										 "vec3( 0.114, 0.0,   0.0 )   * blur3Color + ",
+										 "vec3( 0.444, 0.0,   0.0 )   * blur4Color );",
+
+					"outgoingLight *= sqrt( colDiffuse.xyz );",
+
+					"outgoingLight += ambientLightColor * diffuse * colDiffuse.xyz + totalSpecularLight;",
+
+					"#ifndef VERSION1",
+
+						"outgoingLight = sqrt( outgoingLight );",
+
+					"#endif",
+
+				"}",
+
+				"gl_FragColor = vec4( outgoingLight, diffuseColor.a );",	// TODO, this should be pre-multiplied to allow for bright highlights on very transparent objects
+
+				THREE.ShaderChunk[ "fog_fragment" ],
+
+			"}"
+
+		].join( "\n" ),
+
+		vertexShader: [
+
+			"#ifdef VERTEX_TEXTURES",
+
+				"uniform sampler2D tDisplacement;",
+				"uniform float uDisplacementScale;",
+				"uniform float uDisplacementBias;",
+
+			"#endif",
+
+			"varying vec3 vNormal;",
+			"varying vec2 vUv;",
+
+			"varying vec3 vViewPosition;",
+
+			THREE.ShaderChunk[ "common" ],
+			THREE.ShaderChunk[ "fog_pars_vertex" ],
+
+			"void main() {",
+
+				"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
+
+				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+
+				"vViewPosition = -mvPosition.xyz;",
+
+				"vNormal = normalize( normalMatrix * normal );",
+
+				"vUv = uv;",
+
+				// displacement mapping
+
+				"#ifdef VERTEX_TEXTURES",
+
+					"vec3 dv = texture2D( tDisplacement, uv ).xyz;",
+					"float df = uDisplacementScale * dv.x + uDisplacementBias;",
+					"vec4 displacedPosition = vec4( vNormal.xyz * df, 0.0 ) + mvPosition;",
+					"gl_Position = projectionMatrix * displacedPosition;",
+
+				"#else",
+
+					"gl_Position = projectionMatrix * mvPosition;",
+
+				"#endif",
+
+				THREE.ShaderChunk[ "fog_vertex" ],
+
+			"}",
+
+
+		].join( "\n" ),
+
+		vertexShaderUV: [
+
+			"varying vec3 vNormal;",
+			"varying vec2 vUv;",
+
+			"varying vec3 vViewPosition;",
+
+			THREE.ShaderChunk[ "common" ],
+
+			"void main() {",
+
+				"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
+
+				"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+
+				"vViewPosition = -mvPosition.xyz;",
+
+				"vNormal = normalize( normalMatrix * normal );",
+
+				"vUv = uv;",
+
+				"gl_Position = vec4( uv.x * 2.0 - 1.0, uv.y * 2.0 - 1.0, 0.0, 1.0 );",
+
+			"}"
+
+		].join( "\n" )
+
+	},
+
+	/* ------------------------------------------------------------------------------------------
+	// Beckmann distribution function
+	//	- to be used in specular term of skin shader
+	//	- render a screen-aligned quad to precompute a 512 x 512 texture
+	//
+	//		- from http://developer.nvidia.com/node/171
+	 ------------------------------------------------------------------------------------------ */
+
+	"beckmann" : {
+
+		uniforms: {},
+
+		vertexShader: [
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+
+				"vUv = uv;",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+			"}"
+
+		].join( "\n" ),
+
+		fragmentShader: [
+
+			"varying vec2 vUv;",
+
+			"float PHBeckmann( float ndoth, float m ) {",
+
+				"float alpha = acos( ndoth );",
+				"float ta = tan( alpha );",
+
+				"float val = 1.0 / ( m * m * pow( ndoth, 4.0 ) ) * exp( -( ta * ta ) / ( m * m ) );",
+				"return val;",
+
+			"}",
+
+			"float KSTextureCompute( vec2 tex ) {",
+
+				// Scale the value to fit within [0,1]  invert upon lookup.
+
+				"return 0.5 * pow( PHBeckmann( tex.x, tex.y ), 0.1 );",
+
+			"}",
+
+			"void main() {",
+
+				"float x = KSTextureCompute( vUv );",
+
+				"gl_FragColor = vec4( x, x, x, 1.0 );",
+
+			"}"
+
+		].join( "\n" )
+
+	}
+
+};
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * Bleach bypass shader [http://en.wikipedia.org/wiki/Bleach_bypass]
+ * - based on Nvidia example
+ * http://developer.download.nvidia.com/shaderlibrary/webpages/shader_library.html#post_bleach_bypass
+ */
+
+THREE.BleachBypassShader = {
+
+	uniforms: {
+
+		"tDiffuse": { value: null },
+		"opacity":  { value: 1.0 }
+
+	},
+
+	vertexShader: [
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+			"vUv = uv;",
+			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+		"}"
+
+	].join( "\n" ),
+
+	fragmentShader: [
+
+		"uniform float opacity;",
+
+		"uniform sampler2D tDiffuse;",
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+			"vec4 base = texture2D( tDiffuse, vUv );",
+
+			"vec3 lumCoeff = vec3( 0.25, 0.65, 0.1 );",
+			"float lum = dot( lumCoeff, base.rgb );",
+			"vec3 blend = vec3( lum );",
+
+			"float L = min( 1.0, max( 0.0, 10.0 * ( lum - 0.45 ) ) );",
+
+			"vec3 result1 = 2.0 * base.rgb * blend;",
+			"vec3 result2 = 1.0 - 2.0 * ( 1.0 - blend ) * ( 1.0 - base.rgb );",
+
+			"vec3 newColor = mix( result1, result2, L );",
+
+			"float A2 = opacity * base.a;",
+			"vec3 mixRGB = A2 * newColor.rgb;",
+			"mixRGB += ( ( 1.0 - A2 ) * base.rgb );",
+
+			"gl_FragColor = vec4( mixRGB, base.a );",
+
+		"}"
+
+	].join( "\n" )
+
+};
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * Convolution shader
+ * ported from o3d sample to WebGL / GLSL
+ * http://o3d.googlecode.com/svn/trunk/samples/convolution.html
+ */
+
+THREE.ConvolutionShader = {
+
+	defines: {
+
+		"KERNEL_SIZE_FLOAT": "25.0",
+		"KERNEL_SIZE_INT": "25"
+
+	},
+
+	uniforms: {
+
+		"tDiffuse":        { value: null },
+		"uImageIncrement": { value: new THREE.Vector2( 0.001953125, 0.0 ) },
+		"cKernel":         { value: [] }
+
+	},
+
+	vertexShader: [
+
+		"uniform vec2 uImageIncrement;",
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+			"vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * uImageIncrement;",
+			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+		"}"
+
+	].join( "\n" ),
+
+	fragmentShader: [
+
+		"uniform float cKernel[ KERNEL_SIZE_INT ];",
+
+		"uniform sampler2D tDiffuse;",
+		"uniform vec2 uImageIncrement;",
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+			"vec2 imageCoord = vUv;",
+			"vec4 sum = vec4( 0.0, 0.0, 0.0, 0.0 );",
+
+			"for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {",
+
+				"sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];",
+				"imageCoord += uImageIncrement;",
+
+			"}",
+
+			"gl_FragColor = sum;",
+
+		"}"
+
+
+	].join( "\n" ),
+
+	buildKernel: function ( sigma ) {
+
+		// We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.
+
+		function gauss( x, sigma ) {
+
+			return Math.exp( - ( x * x ) / ( 2.0 * sigma * sigma ) );
+
+		}
+
+		var i, values, sum, halfWidth, kMaxKernelSize = 25, kernelSize = 2 * Math.ceil( sigma * 3.0 ) + 1;
+
+		if ( kernelSize > kMaxKernelSize ) kernelSize = kMaxKernelSize;
+		halfWidth = ( kernelSize - 1 ) * 0.5;
+
+		values = new Array( kernelSize );
+		sum = 0.0;
+		for ( i = 0; i < kernelSize; ++ i ) {
+
+			values[ i ] = gauss( i - halfWidth, sigma );
+			sum += values[ i ];
+
+		}
+
+		// normalize the kernel
+
+		for ( i = 0; i < kernelSize; ++ i ) values[ i ] /= sum;
+
+		return values;
+
+	}
+
+};
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * Full-screen textured quad shader
+ */
+
+THREE.CopyShader = {
+
+	uniforms: {
+
+		"tDiffuse": { value: null },
+		"opacity":  { value: 1.0 }
+
+	},
+
+	vertexShader: [
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+			"vUv = uv;",
+			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+		"}"
+
+	].join( "\n" ),
+
+	fragmentShader: [
+
+		"uniform float opacity;",
+
+		"uniform sampler2D tDiffuse;",
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+			"vec4 texel = texture2D( tDiffuse, vUv );",
+			"gl_FragColor = opacity * texel;",
+
+		"}"
+
+	].join( "\n" )
+
+};
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.EffectComposer = function ( renderer, renderTarget ) {
+
+	this.renderer = renderer;
+
+	if ( renderTarget === undefined ) {
+
+		var parameters = {
+			minFilter: THREE.LinearFilter,
+			magFilter: THREE.LinearFilter,
+			format: THREE.RGBAFormat,
+			stencilBuffer: false
+		};
+
+		var size = renderer.getDrawingBufferSize();
+		renderTarget = new THREE.WebGLRenderTarget( size.width, size.height, parameters );
+		renderTarget.texture.name = 'EffectComposer.rt1';
+
+	}
+
+	this.renderTarget1 = renderTarget;
+	this.renderTarget2 = renderTarget.clone();
+	this.renderTarget2.texture.name = 'EffectComposer.rt2';
+
+	this.writeBuffer = this.renderTarget1;
+	this.readBuffer = this.renderTarget2;
+
+	this.passes = [];
+
+	// dependencies
+
+	if ( THREE.CopyShader === undefined ) {
+
+		console.error( 'THREE.EffectComposer relies on THREE.CopyShader' );
+
+	}
+
+	if ( THREE.ShaderPass === undefined ) {
+
+		console.error( 'THREE.EffectComposer relies on THREE.ShaderPass' );
+
+	}
+
+	this.copyPass = new THREE.ShaderPass( THREE.CopyShader );
+
+};
+
+Object.assign( THREE.EffectComposer.prototype, {
+
+	swapBuffers: function () {
+
+		var tmp = this.readBuffer;
+		this.readBuffer = this.writeBuffer;
+		this.writeBuffer = tmp;
+
+	},
+
+	addPass: function ( pass ) {
+
+		this.passes.push( pass );
+
+		var size = this.renderer.getDrawingBufferSize();
+		pass.setSize( size.width, size.height );
+
+	},
+
+	insertPass: function ( pass, index ) {
+
+		this.passes.splice( index, 0, pass );
+
+	},
+
+	render: function ( delta ) {
+
+		var maskActive = false;
+
+		var pass, i, il = this.passes.length;
+
+		for ( i = 0; i < il; i ++ ) {
+
+			pass = this.passes[ i ];
+
+			if ( pass.enabled === false ) continue;
+
+			pass.render( this.renderer, this.writeBuffer, this.readBuffer, delta, maskActive );
+
+			if ( pass.needsSwap ) {
+
+				if ( maskActive ) {
+
+					var context = this.renderer.context;
+
+					context.stencilFunc( context.NOTEQUAL, 1, 0xffffffff );
+
+					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer, delta );
+
+					context.stencilFunc( context.EQUAL, 1, 0xffffffff );
+
+				}
+
+				this.swapBuffers();
+
+			}
+
+			if ( THREE.MaskPass !== undefined ) {
+
+				if ( pass instanceof THREE.MaskPass ) {
+
+					maskActive = true;
+
+				} else if ( pass instanceof THREE.ClearMaskPass ) {
+
+					maskActive = false;
+
+				}
+
+			}
+
+		}
+
+	},
+
+	reset: function ( renderTarget ) {
+
+		if ( renderTarget === undefined ) {
+
+			var size = this.renderer.getDrawingBufferSize();
+
+			renderTarget = this.renderTarget1.clone();
+			renderTarget.setSize( size.width, size.height );
+
+		}
+
+		this.renderTarget1.dispose();
+		this.renderTarget2.dispose();
+		this.renderTarget1 = renderTarget;
+		this.renderTarget2 = renderTarget.clone();
+
+		this.writeBuffer = this.renderTarget1;
+		this.readBuffer = this.renderTarget2;
+
+	},
+
+	setSize: function ( width, height ) {
+
+		this.renderTarget1.setSize( width, height );
+		this.renderTarget2.setSize( width, height );
+
+		for ( var i = 0; i < this.passes.length; i ++ ) {
+
+			this.passes[ i ].setSize( width, height );
+
+		}
+
+	}
+
+} );
+
+
+THREE.Pass = function () {
+
+	// if set to true, the pass is processed by the composer
+	this.enabled = true;
+
+	// if set to true, the pass indicates to swap read and write buffer after rendering
+	this.needsSwap = true;
+
+	// if set to true, the pass clears its buffer before rendering
+	this.clear = false;
+
+	// if set to true, the result of the pass is rendered to screen
+	this.renderToScreen = false;
+
+};
+
+Object.assign( THREE.Pass.prototype, {
+
+	setSize: function ( width, height ) {},
+
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		console.error( 'THREE.Pass: .render() must be implemented in derived pass.' );
+
+	}
+
+} );
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.RenderPass = function ( scene, camera, overrideMaterial, clearColor, clearAlpha ) {
+
+	THREE.Pass.call( this );
+
+	this.scene = scene;
+	this.camera = camera;
+
+	this.overrideMaterial = overrideMaterial;
+
+	this.clearColor = clearColor;
+	this.clearAlpha = ( clearAlpha !== undefined ) ? clearAlpha : 0;
+
+	this.clear = true;
+	this.clearDepth = false;
+	this.needsSwap = false;
+
+};
+
+THREE.RenderPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), {
+
+	constructor: THREE.RenderPass,
+
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		var oldAutoClear = renderer.autoClear;
+		renderer.autoClear = false;
+
+		this.scene.overrideMaterial = this.overrideMaterial;
+
+		var oldClearColor, oldClearAlpha;
+
+		if ( this.clearColor ) {
+
+			oldClearColor = renderer.getClearColor().getHex();
+			oldClearAlpha = renderer.getClearAlpha();
+
+			renderer.setClearColor( this.clearColor, this.clearAlpha );
+
+		}
+
+		if ( this.clearDepth ) {
+
+			renderer.clearDepth();
+
+		}
+
+		renderer.render( this.scene, this.camera, this.renderToScreen ? null : readBuffer, this.clear );
+
+		if ( this.clearColor ) {
+
+			renderer.setClearColor( oldClearColor, oldClearAlpha );
+
+		}
+
+		this.scene.overrideMaterial = null;
+		renderer.autoClear = oldAutoClear;
+	}
+
+} );
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.BloomPass = function ( strength, kernelSize, sigma, resolution ) {
+
+	THREE.Pass.call( this );
+
+	strength = ( strength !== undefined ) ? strength : 1;
+	kernelSize = ( kernelSize !== undefined ) ? kernelSize : 25;
+	sigma = ( sigma !== undefined ) ? sigma : 4.0;
+	resolution = ( resolution !== undefined ) ? resolution : 256;
+
+	// render targets
+
+	var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat };
+
+	this.renderTargetX = new THREE.WebGLRenderTarget( resolution, resolution, pars );
+	this.renderTargetX.texture.name = "BloomPass.x";
+	this.renderTargetY = new THREE.WebGLRenderTarget( resolution, resolution, pars );
+	this.renderTargetY.texture.name = "BloomPass.y";
+
+	// copy material
+
+	if ( THREE.CopyShader === undefined )
+		console.error( "THREE.BloomPass relies on THREE.CopyShader" );
+
+	var copyShader = THREE.CopyShader;
+
+	this.copyUniforms = THREE.UniformsUtils.clone( copyShader.uniforms );
+
+	this.copyUniforms[ "opacity" ].value = strength;
+
+	this.materialCopy = new THREE.ShaderMaterial( {
+
+		uniforms: this.copyUniforms,
+		vertexShader: copyShader.vertexShader,
+		fragmentShader: copyShader.fragmentShader,
+		blending: THREE.AdditiveBlending,
+		transparent: true
+
+	} );
+
+	// convolution material
+
+	if ( THREE.ConvolutionShader === undefined )
+		console.error( "THREE.BloomPass relies on THREE.ConvolutionShader" );
+
+	var convolutionShader = THREE.ConvolutionShader;
+
+	this.convolutionUniforms = THREE.UniformsUtils.clone( convolutionShader.uniforms );
+
+	this.convolutionUniforms[ "uImageIncrement" ].value = THREE.BloomPass.blurX;
+	this.convolutionUniforms[ "cKernel" ].value = THREE.ConvolutionShader.buildKernel( sigma );
+
+	this.materialConvolution = new THREE.ShaderMaterial( {
+
+		uniforms: this.convolutionUniforms,
+		vertexShader:  convolutionShader.vertexShader,
+		fragmentShader: convolutionShader.fragmentShader,
+		defines: {
+			"KERNEL_SIZE_FLOAT": kernelSize.toFixed( 1 ),
+			"KERNEL_SIZE_INT": kernelSize.toFixed( 0 )
+		}
+
+	} );
+
+	this.needsSwap = false;
+
+	this.camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+	this.scene  = new THREE.Scene();
+
+	this.quad = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), null );
+	this.quad.frustumCulled = false; // Avoid getting clipped
+	this.scene.add( this.quad );
+
+};
+
+THREE.BloomPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), {
+
+	constructor: THREE.BloomPass,
+
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		if ( maskActive ) renderer.context.disable( renderer.context.STENCIL_TEST );
+
+		// Render quad with blured scene into texture (convolution pass 1)
+
+		this.quad.material = this.materialConvolution;
+
+		this.convolutionUniforms[ "tDiffuse" ].value = readBuffer.texture;
+		this.convolutionUniforms[ "uImageIncrement" ].value = THREE.BloomPass.blurX;
+
+		renderer.render( this.scene, this.camera, this.renderTargetX, true );
+
+
+		// Render quad with blured scene into texture (convolution pass 2)
+
+		this.convolutionUniforms[ "tDiffuse" ].value = this.renderTargetX.texture;
+		this.convolutionUniforms[ "uImageIncrement" ].value = THREE.BloomPass.blurY;
+
+		renderer.render( this.scene, this.camera, this.renderTargetY, true );
+
+		// Render original scene with superimposed blur to texture
+
+		this.quad.material = this.materialCopy;
+
+		this.copyUniforms[ "tDiffuse" ].value = this.renderTargetY.texture;
+
+		if ( maskActive ) renderer.context.enable( renderer.context.STENCIL_TEST );
+
+		renderer.render( this.scene, this.camera, readBuffer, this.clear );
+
+	}
+
+} );
+
+THREE.BloomPass.blurX = new THREE.Vector2( 0.001953125, 0.0 );
+THREE.BloomPass.blurY = new THREE.Vector2( 0.0, 0.001953125 );
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.TexturePass = function ( map, opacity ) {
+
+	THREE.Pass.call( this );
+
+	if ( THREE.CopyShader === undefined )
+		console.error( "THREE.TexturePass relies on THREE.CopyShader" );
+
+	var shader = THREE.CopyShader;
+
+	this.map = map;
+	this.opacity = ( opacity !== undefined ) ? opacity : 1.0;
+
+	this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+
+	this.material = new THREE.ShaderMaterial( {
+
+		uniforms: this.uniforms,
+		vertexShader: shader.vertexShader,
+		fragmentShader: shader.fragmentShader,
+		depthTest: false,
+		depthWrite: false
+
+	} );
+
+	this.needsSwap = false;
+
+	this.camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+	this.scene  = new THREE.Scene();
+
+	this.quad = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), null );
+	this.quad.frustumCulled = false; // Avoid getting clipped
+	this.scene.add( this.quad );
+
+};
+
+THREE.TexturePass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), {
+
+	constructor: THREE.TexturePass,
+
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		var oldAutoClear = renderer.autoClear;
+		renderer.autoClear = false;
+
+		this.quad.material = this.material;
+
+		this.uniforms[ "opacity" ].value = this.opacity;
+		this.uniforms[ "tDiffuse" ].value = this.map;
+		this.material.transparent = ( this.opacity < 1.0 );
+
+		renderer.render( this.scene, this.camera, this.renderToScreen ? null : readBuffer, this.clear );
+
+		renderer.autoClear = oldAutoClear;
+	}
+
+} );
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.ShaderPass = function ( shader, textureID ) {
+
+	THREE.Pass.call( this );
+
+	this.textureID = ( textureID !== undefined ) ? textureID : "tDiffuse";
+
+	if ( shader instanceof THREE.ShaderMaterial ) {
+
+		this.uniforms = shader.uniforms;
+
+		this.material = shader;
+
+	} else if ( shader ) {
+
+		this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+
+		this.material = new THREE.ShaderMaterial( {
+
+			defines: Object.assign( {}, shader.defines ),
+			uniforms: this.uniforms,
+			vertexShader: shader.vertexShader,
+			fragmentShader: shader.fragmentShader
+
+		} );
+
+	}
+
+	this.camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+	this.scene = new THREE.Scene();
+
+	this.quad = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), null );
+	this.quad.frustumCulled = false; // Avoid getting clipped
+	this.scene.add( this.quad );
+
+};
+
+THREE.ShaderPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), {
+
+	constructor: THREE.ShaderPass,
+
+	render: function( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		if ( this.uniforms[ this.textureID ] ) {
+
+			this.uniforms[ this.textureID ].value = readBuffer.texture;
+
+		}
+
+		this.quad.material = this.material;
+
+		if ( this.renderToScreen ) {
+
+			renderer.render( this.scene, this.camera );
+
+		} else {
+
+			renderer.render( this.scene, this.camera, writeBuffer, this.clear );
+
+		}
+
+	}
+
+} );
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.MaskPass = function ( scene, camera ) {
+
+	THREE.Pass.call( this );
+
+	this.scene = scene;
+	this.camera = camera;
+
+	this.clear = true;
+	this.needsSwap = false;
+
+	this.inverse = false;
+
+};
+
+THREE.MaskPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), {
+
+	constructor: THREE.MaskPass,
+
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		var context = renderer.context;
+		var state = renderer.state;
+
+		// don't update color or depth
+
+		state.buffers.color.setMask( false );
+		state.buffers.depth.setMask( false );
+
+		// lock buffers
+
+		state.buffers.color.setLocked( true );
+		state.buffers.depth.setLocked( true );
+
+		// set up stencil
+
+		var writeValue, clearValue;
+
+		if ( this.inverse ) {
+
+			writeValue = 0;
+			clearValue = 1;
+
+		} else {
+
+			writeValue = 1;
+			clearValue = 0;
+
+		}
+
+		state.buffers.stencil.setTest( true );
+		state.buffers.stencil.setOp( context.REPLACE, context.REPLACE, context.REPLACE );
+		state.buffers.stencil.setFunc( context.ALWAYS, writeValue, 0xffffffff );
+		state.buffers.stencil.setClear( clearValue );
+
+		// draw into the stencil buffer
+
+		renderer.render( this.scene, this.camera, readBuffer, this.clear );
+		renderer.render( this.scene, this.camera, writeBuffer, this.clear );
+
+		// unlock color and depth buffer for subsequent rendering
+
+		state.buffers.color.setLocked( false );
+		state.buffers.depth.setLocked( false );
+
+		// only render where stencil is set to 1
+
+		state.buffers.stencil.setFunc( context.EQUAL, 1, 0xffffffff );  // draw if == 1
+		state.buffers.stencil.setOp( context.KEEP, context.KEEP, context.KEEP );
+
+	}
+
+} );
+
+
+THREE.ClearMaskPass = function () {
+
+	THREE.Pass.call( this );
+
+	this.needsSwap = false;
+
+};
+
+THREE.ClearMaskPass.prototype = Object.create( THREE.Pass.prototype );
+
+Object.assign( THREE.ClearMaskPass.prototype, {
+
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+
+		renderer.state.buffers.stencil.setTest( false );
+
+	}
+
+} );
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author mr.doob / http://mrdoob.com/
+ */
+
+var Detector = {
+
+	canvas: !! window.CanvasRenderingContext2D,
+	webgl: ( function () {
+
+		try {
+
+			var canvas = document.createElement( 'canvas' ); return !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) );
+
+		} catch ( e ) {
+
+			return false;
+
+		}
+
+	} )(),
+	workers: !! window.Worker,
+	fileapi: window.File && window.FileReader && window.FileList && window.Blob,
+
+	getWebGLErrorMessage: function () {
+
+		var element = document.createElement( 'div' );
+		element.id = 'webgl-error-message';
+		element.style.fontFamily = 'monospace';
+		element.style.fontSize = '13px';
+		element.style.fontWeight = 'normal';
+		element.style.textAlign = 'center';
+		element.style.background = '#fff';
+		element.style.color = '#000';
+		element.style.padding = '1.5em';
+		element.style.width = '400px';
+		element.style.margin = '5em auto 0';
+
+		if ( ! this.webgl ) {
+
+			element.innerHTML = window.WebGLRenderingContext ? [
+				'Your graphics card does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" style="color:#000">WebGL</a>.<br />',
+				'Find out how to get it <a href="http://get.webgl.org/" style="color:#000">here</a>.'
+			].join( '\n' ) : [
+				'Your browser does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" style="color:#000">WebGL</a>.<br/>',
+				'Find out how to get it <a href="http://get.webgl.org/" style="color:#000">here</a>.'
+			].join( '\n' );
+
+		}
+
+		return element;
+
+	},
+
+	addGetWebGLMessage: function ( parameters ) {
+
+		var parent, id, element;
+
+		parameters = parameters || {};
+
+		parent = parameters.parent !== undefined ? parameters.parent : document.body;
+		id = parameters.id !== undefined ? parameters.id : 'oldie';
+
+		element = Detector.getWebGLErrorMessage();
+		element.id = id;
+
+		parent.appendChild( element );
+
+	}
+
+};
+
+// browserify support
+if ( true ) {
+
+	module.exports = Detector;
+
+}
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+// stats.js - http://github.com/mrdoob/stats.js
+var Stats=function(){function h(a){c.appendChild(a.dom);return a}function k(a){for(var d=0;d<c.children.length;d++)c.children[d].style.display=d===a?"block":"none";l=a}var l=0,c=document.createElement("div");c.style.cssText="position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000";c.addEventListener("click",function(a){a.preventDefault();k(++l%c.children.length)},!1);var g=(performance||Date).now(),e=g,a=0,r=h(new Stats.Panel("FPS","#0ff","#002")),f=h(new Stats.Panel("MS","#0f0","#020"));
+if(self.performance&&self.performance.memory)var t=h(new Stats.Panel("MB","#f08","#201"));k(0);return{REVISION:16,dom:c,addPanel:h,showPanel:k,begin:function(){g=(performance||Date).now()},end:function(){a++;var c=(performance||Date).now();f.update(c-g,200);if(c>e+1E3&&(r.update(1E3*a/(c-e),100),e=c,a=0,t)){var d=performance.memory;t.update(d.usedJSHeapSize/1048576,d.jsHeapSizeLimit/1048576)}return c},update:function(){g=this.end()},domElement:c,setMode:k}};
+Stats.Panel=function(h,k,l){var c=Infinity,g=0,e=Math.round,a=e(window.devicePixelRatio||1),r=80*a,f=48*a,t=3*a,u=2*a,d=3*a,m=15*a,n=74*a,p=30*a,q=document.createElement("canvas");q.width=r;q.height=f;q.style.cssText="width:80px;height:48px";var b=q.getContext("2d");b.font="bold "+9*a+"px Helvetica,Arial,sans-serif";b.textBaseline="top";b.fillStyle=l;b.fillRect(0,0,r,f);b.fillStyle=k;b.fillText(h,t,u);b.fillRect(d,m,n,p);b.fillStyle=l;b.globalAlpha=.9;b.fillRect(d,m,n,p);return{dom:q,update:function(f,
+v){c=Math.min(c,f);g=Math.max(g,f);b.fillStyle=l;b.globalAlpha=1;b.fillRect(0,0,r,m);b.fillStyle=k;b.fillText(e(f)+" "+h+" ("+e(c)+"-"+e(g)+")",t,u);b.drawImage(q,d+a,m,n-a,p,d,m,n-a,p);b.fillRect(d+n-a,m,a,p);b.fillStyle=l;b.globalAlpha=.9;b.fillRect(d+n-a,m,a,e((1-f/v)*p))}}};"object"===typeof module&&(module.exports=Stats);
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
 PEEKS.ThreeLoadTexture = function(asset, material, textureUrl, textureRepeat, flipX, flipY,
     removeBackground, useCache)
 {
@@ -55344,7 +57014,7 @@ THREE.ShaderPeeks = {
 
 
 /***/ }),
-/* 14 */
+/* 26 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.assets', function() {
@@ -55407,7 +57077,7 @@ PEEKS.registerPage('peeks.demo.assets', function() {
 
 
 /***/ }),
-/* 15 */
+/* 27 */
 /***/ (function(module, exports) {
 
 PEEKS.registerPage('peeks.demo.fashion', function() {
