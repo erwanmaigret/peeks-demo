@@ -794,16 +794,26 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                     loader = new THREE.OBJLoader( manager );
                 } else if (extension === 'gltf' || extension === 'glb') {
                     loader = new THREE.GLTFLoader( manager );
+                } else if (extension === 'json') {
+                    loader = new THREE.JSONLoader( manager );
                 }
                 if (loader) {
                     peeksObject.getScene().logDebug('Loading ' + peeksObject.geometryUrl);
 
-                    var onLoad = function ( object ) {
+                    var onLoad = function ( object, materials ) {
                         var clips;
                         peeksObject.getScene().logDebug('Loaded ' + peeksObject.geometryUrl);
                         if (extension === 'gltf' || extension === 'glb') {
                             clips = object.animations;
                             object = object.scene;
+                        } else if (extension === 'json') {
+                            var material;
+                            if (peeksObject.material !== undefined) {
+                                material = peeksObject.material;
+                            } else {
+                                material = materials[0];
+                            }
+                            object = new THREE.Mesh(object, material);
                         }
                         node.add(object);
                         if (autofit) {

@@ -62,6 +62,7 @@ var global = Function('return this')();
 global.THREE = require('./three.js');
 require('./three/loaders/GLTFLoader.js');
 require('./three/loaders/OBJLoader.js');
+require('./three/loaders/JSONLoader.js');
 require("./three/shaders/ShaderSkin.js");
 require("./three/shaders/shaders/BleachBypassShader.js");
 require("./three/shaders/shaders/ConvolutionShader.js");
