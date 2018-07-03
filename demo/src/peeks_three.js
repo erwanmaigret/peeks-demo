@@ -550,9 +550,9 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
         return;
     }
     for (var geomI = 0; geomI < threeObject.children.length; geomI++) {
-        var geometry = threeObject.children[geomI];
-        for (var childI = 0; childI < geometry.children.length; childI++) {
-            var child = geometry.children[childI];
+        var child = threeObject.children[geomI];
+        // for (var childI = 0; childI < geometry.children.length; childI++) {
+        //     var child = geometry.children[childI];
             if (child instanceof THREE.Mesh) {
                 if (child.geometry && child.material) {
                     var refMat = asset.material || {};
@@ -564,7 +564,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                     // In the meantime we'll shut this down instead of fixing it
                     //  since it's based on some internal assumptions on how
                     //  threejs shading is setup
-                    matType = 'MeshPhongMaterial';
                     if (matType === 'velvet') {
                         var shader = THREE.ShaderPeeks["fabric"];
         				var fragmentShader = shader.fragmentShader;
@@ -623,6 +622,22 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         PEEKS.ThreeShaderAttr(material, 'shininess', PEEKS.ThreeFloat(refMat.shininess , 10));
                         PEEKS.ThreeShaderAttr(material, 'emissive', PEEKS.ThreeColor(refMat.emissive, [.05, .05, .05]));
                         PEEKS.ThreeShaderAttr(material, 'specular', PEEKS.ThreeColor(refMat.specular, [.05, .05, .05]));
+                    } else if (matType === 'skin') {
+                        var shader = THREE.ShaderSkin[ "skin" ];
+                        var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+                        var textureLoader = new THREE.TextureLoader();
+                        uniforms[ "tNormal" ].value = textureLoader.load( "/assets/skin/Infinite-Level_02_Tangent_SmoothUV.jpg" );
+                        uniforms[ "uNormalScale" ].value = -1.5;
+                        uniforms[ "tDiffuse" ].value = textureLoader.load( "/assets/skin/Map-COL.jpg" );
+                        uniforms[ "diffuse" ].value.setHex( 0xffffff );
+                        uniforms[ "specular" ].value.setHex( 0x555555 );
+                        uniforms[ "uRoughness" ].value = 0.185;
+                        uniforms[ "uSpecularBrightness" ].value = 0.7;
+                        uniforms[ "passID" ].value = 1;
+                        var parameters = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: uniforms, lights: true };
+                        var material = new THREE.ShaderMaterial( parameters );
+                        material.extensions.derivatives = true;
+                        child.material = material;
                     } else {
                         var material = child.material;
                         if (material.type === undefined) {
@@ -671,7 +686,7 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                     }
                 }
             }
-        }
+        // }
     }
 }
 

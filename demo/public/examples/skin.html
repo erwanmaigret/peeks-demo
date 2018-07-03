@@ -9,46 +9,31 @@
         <section id="wrapper">
             <script src="/peeks.js"></script>
             <script>
-                // if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
                 PEEKS.registerPage('skin', function() {
                     var page = new PEEKS.Asset({
                         bgColor: [0, 0 ,0],
                     });
 
-                    // MATERIALS
-                    var diffuse = 0x555555, specular = 0x555555, shininess = 50;
-                    var shader = THREE.ShaderSkin[ "skin" ];
-                    var uniformsUV = THREE.UniformsUtils.clone( shader.uniforms );
-                    var textureLoader = new THREE.TextureLoader();
-                    uniformsUV[ "tNormal" ].value = textureLoader.load( "/assets/skin/Infinite-Level_02_Tangent_SmoothUV.jpg" );
-                    uniformsUV[ "uNormalScale" ].value = -1.5;
-                    uniformsUV[ "tDiffuse" ].value = textureLoader.load( "/assets/skin/Map-COL.jpg" );
-                    uniformsUV[ "passID" ].value = 0;
-                    uniformsUV[ "diffuse" ].value.setHex( diffuse );
-                    uniformsUV[ "specular" ].value.setHex( specular );
-                    uniformsUV[ "uRoughness" ].value = 0.185;
-                    uniformsUV[ "uSpecularBrightness" ].value = 0.7;
-                    var uniforms = THREE.UniformsUtils.clone( uniformsUV );
-                    uniforms[ "tDiffuse" ].value = uniformsUV[ "tDiffuse" ].value;
-                    uniforms[ "tNormal" ].value = uniformsUV[ "tNormal" ].value;
-                    uniforms[ "passID" ].value = 1;
-                    var parameters = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: uniforms, lights: true };
-                    var parametersUV = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShaderUV, uniforms: uniformsUV, lights: true };
-                    var material = new THREE.ShaderMaterial( parameters );
-                    material.extensions.derivatives = true;
-                    var materialUV = new THREE.ShaderMaterial( parametersUV );
-                    materialUV.extensions.derivatives = true;
-
-                    var skin = page.addMesh({
+                    page.addMesh({
                         geometry: "/assets/skin/LeePerrySmith.json",
                         position: [0, -1, -7],
                         size: 1,
                         onClick: 'animateRotate90',
-                        material: material
+                        material: {type: "skin"}
+                    });
+
+                    page.addLight({
+                        position: [1, 0.5, 1],
+                        intensity: 1.5
+                    });
+
+                    page.addLight({
+                        position: [-1, 0.5, -1],
+                        intensity: 0.5
                     });
                     
                     page.addPage('peeks.toolbar');
-                    page.addPage('peeks.toolbar.lighting');
+                    // page.addPage('peeks.toolbar.lighting');
                     return page;
                 });
                 // Start that page full-screen
