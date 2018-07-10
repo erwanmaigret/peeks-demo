@@ -18,8 +18,12 @@
                         geometry: "/assets/skin/LeePerrySmith.json",
                         position: [0, -1, -7],
                         size: 1,
-                        onClick: 'animateRotate90',
-                        material: {type: "skin"}
+                        onClick: "animateRotate90",
+                        texture: "/assets/skin/Map-COL.jpg" ,
+                        material: {
+                            type: "skin",
+                            normalMap: "/assets/skin/Infinite-Level_02_Tangent_SmoothUV.jpg"
+                        }
                     });
 
                     page.addLight({
