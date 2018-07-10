@@ -626,14 +626,6 @@ PEEKS.Asset.prototype.threeSynchMaterial = function() {
                         var shader = THREE.ShaderSkin[ "skin" ];
                         var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
                         var textureLoader = new THREE.TextureLoader();
-                        // uniforms[ "tNormal" ].value = textureLoader.load( "/assets/skin/Infinite-Level_02_Tangent_SmoothUV.jpg" );
-                        // uniforms[ "uNormalScale" ].value = -1.5;
-                        // uniforms[ "tDiffuse" ].value = textureLoader.load( "/assets/skin/Map-COL.jpg" );
-                        // uniforms[ "diffuse" ].value.setHex( 0xffffff );
-                        // uniforms[ "specular" ].value.setHex( 0x555555 );
-                        // uniforms[ "uRoughness" ].value = 0.185;
-                        // uniforms[ "uSpecularBrightness" ].value = 0.7;
-                        // uniforms[ "passID" ].value = 1;
                         uniforms[ "tNormal" ].value = PEEKS.ThreeTextureLoader(refMat.normalMap);
                         uniforms[ "uNormalScale" ].value = PEEKS.ThreeFloat(refMat.normalScale, -1.5);
                         uniforms[ "tDiffuse" ].value = PEEKS.ThreeTextureLoader(asset.textureUrl);
@@ -830,13 +822,9 @@ PEEKS.Asset.prototype.threeSynch = function(threeObject) {
                             clips = object.animations;
                             object = object.scene;
                         } else if (extension === 'json') {
-                            var material;
-                            if (peeksObject.material !== undefined) {
-                                material = peeksObject.material;
-                            } else {
-                                material = materials[0];
-                            }
-                            object = new THREE.Mesh(object, material);
+                            var tmpObject = new THREE.Mesh(object, materials[0]);
+                            object = new THREE.Group();
+                            object.add(tmpObject);
                         }
                         node.add(object);
                         if (autofit) {
