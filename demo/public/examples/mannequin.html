@@ -1,0 +1,510 @@
+<html>
+    <head>
+        <title>example</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <section id="wrapper">
+            <script src="/peeks.js"></script>
+            <script>
+                function createMannequin(page) {
+                    var femaleHigh = page.addAsset();
+
+                    var model = femaleHigh.addAsset({
+                        onClick: 'animateRotate90',
+                        size: .013,
+                        onFocusStart: function () {},
+                        onFocusEnd: function () {},
+                    });
+
+                    model.mannequin = {
+                    };
+
+                    var mannequin = model.mannequin;
+
+                    var outfit = "skirt";
+                    var waistSize = "M";
+                    var bustSize = "M";
+                    var hipsSize = "M";
+                    var skin = [1.1, 1.1, 1.4];
+                    var modelName = "woman";
+                    var pose = "pose1";
+                    var poseDefault = "pose1";
+                    var fabric = undefined;
+
+                    var getGeometryUrl = function (part, pose, size) {
+                        return "/assets/" + modelName + "_" + pose + "_" + part +
+                            (size ? size : "") +
+                            ".obj";
+                    };
+
+                    var updateGeometry = function(node, mesh, properties, visible) {
+                        if (node === undefined) {
+                            node = model.addMesh({ geometry: getGeometryUrl(mesh, poseDefault) });
+                        }
+                        node.initShapeWeights();
+                        var hipsWeight =
+                            (hipsSize === 'XS') ? -1
+                            : (hipsSize === 'S') ? -.5
+                            : (hipsSize === 'M') ? 0
+                            : (hipsSize === 'L') ? .5
+                            : (hipsSize === 'XL') ? 1
+                            : 0;
+                        var bustWeight =
+                            (bustSize === 'XS') ? -1
+                            : (bustSize === 'S') ? -.5
+                            : (bustSize === 'M') ? 0
+                            : (bustSize === 'L') ? .5
+                            : (bustSize === 'XL') ? 1
+                            : 0;
+                        var waistWeight =
+                            (waistSize === 'XS') ? -1
+                            : (waistSize === 'S') ? -.5
+                            : (waistSize === 'M') ? 0
+                            : (waistSize === 'L') ? .5
+                            : (waistSize === 'XL') ? 1
+                            : 0;
+                        if (mesh === 'jacket' ||
+                            mesh === 'j_blouse' ||
+                            mesh === 'pants' ||
+                            mesh === 'skirt' ||
+                            mesh === 'underwear' ||
+                            mesh === 'body')
+                        {
+                            if (hipsWeight !== 0) {
+                                node.setShape(pose + '_hips_1_1', getGeometryUrl(mesh, pose, '_hips_1_1'), hipsWeight);
+                            }
+                            if (bustWeight !== 0) {
+                                node.setShape(pose + '_breast_1_1', getGeometryUrl(mesh, pose, '_spine1_1_1'), bustWeight);
+                            }
+                            if (waistWeight !== 0) {
+                                node.setShape(pose + '_chest_1_1', getGeometryUrl(mesh, pose, '_spine2_1_1'), waistWeight);
+                            }
+                        }
+                        node.validateShapeWeights();
+                        node.setProperties(properties);
+                        node.setVisible(visible !== undefined ? visible : true);
+                        return node;
+                    };
+
+                    var onSetClothMaterial = function(caller) {
+                        if (caller === undefined) {
+                            caller = this;
+                        }
+                        if (caller.material !== undefined) {
+                            fabric = caller.material;
+                            for (var valueIndex in values) {
+                                var value = values[valueIndex];
+                                if (value.name === 'fabric') {
+                                    for (var fabricIndex in value.values) {
+                                        var fabricValue = value.values[fabricIndex];
+                                        if (fabricValue.material === fabric) {
+                                            value.selectIcon.setPosition(fabricValue.node.position);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (caller.vm !== undefined) {
+                            if (caller.vm.size !== undefined) {
+                                size = caller.vm.size;
+                            }
+                            if (caller.vm.bustSize !== undefined) {
+                                bustSize = caller.vm.bustSize;
+                            }
+                            if (caller.vm.waistSize !== undefined) {
+                                waistSize = caller.vm.waistSize;
+                            }
+                            if (caller.vm.hipsSize !== undefined) {
+                                hipsSize = caller.vm.hipsSize;
+                            }
+                            if (caller.vm.outfit !== undefined) {
+                                outfit = caller.vm.outfit;
+                            }
+                            if (caller.vm.skin !== undefined) {
+                                skin = caller.vm.skin;
+                                for (var valueIndex in values) {
+                                    var value = values[valueIndex];
+                                    if (value.name === 'skin') {
+                                        for (var skinIndex in value.values) {
+                                            var skinValue = value.values[skinIndex];
+                                            if (skinValue.color === skin) {
+                                                value.selectIcon.setPosition(skinValue.node.position);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (caller.vm.next !== undefined) {
+                                var index = outfits.indexOf(outfit);
+                                if (index === -1) return;
+                                else if (index === outfits.length - 1) index = 0;
+                                else index++;
+                                outfit = outfits[index];
+                            }
+                            if (caller.vm.back !== undefined) {
+                                var index = outfits.indexOf(outfit);
+                                if (index === -1) return;
+                                else if (index === 0) index = outfits.length - 1;
+                                else index--;
+                                outfit = outfits[index];
+                            }
+                        }
+
+                        mannequin.shoes = updateGeometry(mannequin.shoes, "highHeels", {
+                            texture: '/assets/material_suede.jpg',
+                            material: { type: "velvet" },
+                        });
+
+                        mannequin.hair = updateGeometry(mannequin.hair, "hair", {
+                            texture: '/assets/woman_hair_diffuse.png',
+                            color: [.7, .4, .1],
+                            material: {
+                                emissive: [.05, .05, .05],
+                                reflectivity: 10,
+                                shininess: 20,
+                                bumpMap: '/assets/woman_hair_normal.png',
+                                bumpScale: .01,
+                             },
+                        });
+                        mannequin.hair.setPosition([0, 10, 0]);
+
+                        mannequin.body = updateGeometry(mannequin.body, "body", {
+                            texture: '/assets/woman_body.png',
+                            color: skin,
+                            material: {
+                                emissive: [.0, .0, .0],
+                                reflectivity: .1,
+                                shininess: .1,
+                            },
+                        });
+
+                        mannequin.pants = updateGeometry(mannequin.pants, "pants", {
+                            texture: fabric.map,
+                            material: fabric,
+                        }, outfit === 'pants');
+
+                        mannequin.skirt = updateGeometry(mannequin.skirt, "skirt", {
+                            texture: fabric.map,
+                            material: fabric,
+                        }, outfit === 'skirt');
+
+                        mannequin.jacket = updateGeometry(mannequin.jacket, "jacket", {
+                            texture: fabric.map,
+                            material: fabric,
+                        }, outfit === 'pants' || outfit === 'skirt');
+
+                        mannequin.blouse = updateGeometry(mannequin.blouse, "j_blouse", {
+                            texture: '/assets/material_white.jpg',
+                            material: {
+                                type: 'velvet',
+                                emissive: [.05, .05, .1],
+                                shininess: 10,
+                                normalMap: '/assets/material_suede_normal.jpg',
+                            },
+                        }, outfit === 'pants' || outfit === 'skirt');
+
+                        mannequin.underwear = updateGeometry(mannequin.underwear, "underwear", {
+                            texture: fabric.map === '/assets/material_dark.jpg'
+                                ? '/assets/woman_underwear_transparency.png'
+                                : fabric.map,
+                            alpha: fabric.map === '/assets/material_dark.jpg'
+                                ? .7
+                                : 1,
+                            material: fabric.map === '/assets/material_dark.jpg'
+                                ? undefined
+                                : fabric,
+                        }, outfit === 'underwear');
+
+                        mannequin.iris = updateGeometry(mannequin.iris, "iris", {
+                            texture: '/assets/woman_iris.png',
+                        });
+
+                        mannequin.sclera = updateGeometry(mannequin.sclera, "sclera", {
+                            texture: '/assets/woman_sclera.png',
+                            material: {
+                                alphaMap: '/assets/woman_sclera_alpha.png'
+                            }
+                        });
+                    };
+
+                    var canvas = page.addCanvas({valign: 'top'});
+                    var fontSize = 30;
+                    var y = .4;
+                    var defaultMaterial;
+                    var yOffsetTitle = .07;
+                    var yOffsetValue = .1;
+                    var xOffset = 0.075;
+                    for (var valueIndex in values) {
+                        var value = values[valueIndex];
+                        if (value.name === 'sizes') {
+                            for (var partIndex in value.values) {
+                                var x = .3;
+                                var partValue = value.values[partIndex];
+                                canvas.addText({
+                                    position: [x, y, 0],
+                                    text: partValue.name.charAt(0).toUpperCase() + partValue.name.slice(1).toLowerCase(),
+                                    fontSize: fontSize,
+                                    fontOutlineStyle: '',
+                                });
+                                y -= yOffsetTitle;
+                                for (var sizeIndex in partValue.values) {
+                                    var sizeValue = partValue.values[sizeIndex];
+                                    sizeValue.node = canvas.addTextButton({
+                                        position: [x, y, 0],
+                                        size: .1,
+                                        label: sizeValue.toUpperCase(),
+                                        fontSize: fontSize,
+                                        vm: {},
+                                        onClick: onSetClothMaterial,
+                                    }).vm[partValue.name + "Size"] = sizeValue.toUpperCase();
+                                    x += xOffset;
+                                }
+                                y -= yOffsetValue;
+                            }
+                        }
+                        else if (value.name === 'fabric') {
+                            var x = .3;
+                            canvas.addText({
+                                position: [x, y, 0],
+                                text: 'Fabric',
+                                fontSize: fontSize,
+                                fontOutlineStyle: '',
+                            });
+                            y -= yOffsetTitle;
+                            value.selectIcon = canvas.addDisc({
+                                position: [x, y, 0],
+                                size: .055,
+                                color: [1, 1, 1]
+                            });
+                            for (var fabricIndex in value.values) {
+                                var fabricValue = value.values[fabricIndex];
+                                fabricValue.node = canvas.addDisc({
+                                    name: fabricValue.name,
+                                    texture: fabricValue.texture,
+                                    position: [x, y, 0],
+                                    size: .05,
+                                    material: fabricValue.material,
+                                    onClick: onSetClothMaterial
+                                });
+                                x += xOffset;
+                            }
+                            y -= yOffsetValue;
+                            defaultMaterial = value.values[1].node;
+                            value.selectIcon.position = defaultMaterial.position;
+                        }
+                        else if (value.name === 'skin') {
+                            var x = .3;
+                            canvas.addText({
+                                position: [x, y, 0],
+                                text: 'Skin',
+                                fontSize: fontSize,
+                                fontOutlineStyle: '',
+                            });
+                            y -= yOffsetTitle;
+                            value.selectIcon = canvas.addDisc({
+                                position: [x, y, 0],
+                                size: .055,
+                                color: [1, 1, 1]
+                            });
+                            for (var skinIndex in value.values) {
+                                var skinValue = value.values[skinIndex];
+                                if (skinValue.color === skin) {
+                                    value.selectIcon.position = [x, y, 0];
+                                }
+                                skinValue.node = canvas.addDisc({
+                                    texture: skinValue.texture,
+                                    position: [x, y, 0],
+                                    size: .05,
+                                    color: skinValue.color,
+                                    textureRepeat: [0.18, 0.18],
+                                    vm: {
+                                        skin: skinValue.color,
+                                    },
+                                    onClick: onSetClothMaterial,
+                                });
+                                x += xOffset;
+                            }
+                            y -= yOffsetValue;
+                        }
+                    }
+
+                    canvas.addImage({
+                        position: [-.15, .08, 0],
+                        rotation: [0, 0, 180],
+                        size: .05,
+                        image: '/assets/play-button.png',
+                        vm: {back: true},
+                        onClick: onSetClothMaterial
+                    });
+                    canvas.addImage({
+                        position: [.15, .08, 0],
+                        size: .05,
+                        image: '/assets/play-button.png',
+                        vm: {next: true},
+                        onClick: onSetClothMaterial
+                    });
+
+
+                    onSetClothMaterial(defaultMaterial);
+
+                    return femaleHigh;
+                }
+
+                var outfits = ["pants", "skirt", "underwear"];
+
+                var values = [
+                {
+                    name: 'sizes',
+                    values: [
+                    {
+                        name: 'bust',
+                        values: ['XS', 'S', 'M', 'L', 'XL'],
+                        currentIndex: 2
+                    },
+                    {
+                        name: 'waist',
+                        values: ['XS', 'S', 'M', 'L', 'XL'],
+                        currentIndex: 2
+                    },
+                    {
+                        name: 'hips',
+                        values: ['XS', 'S', 'M', 'L', 'XL'],
+                        currentIndex: 2
+                    }
+                    ]
+                },
+                {
+                    name: 'fabric',
+                    values: [
+                    {
+                        name: 'red satin',
+                        texture: '/assets/material_red_satin.jpg',
+                        material: {
+                            type: 'velvet',
+                            emissive: [.1,.1,.1],
+                            shininess: 10,
+                            normalMap: undefined,
+                            map: '/assets/material_red_satin.jpg',
+                        }
+                    },
+                    {
+                        name: 'red velvet',
+                        texture: '/assets/material_red_velvet.jpg',
+                        material: {
+                            emissive: [0,0,0],
+                            shininess: 10,
+                            normalMap: '/assets/material_velvet_normal.jpg',
+                            normalScale: [3, 3],
+                            textureRepeat: [2, 2],
+                            map: '/assets/material_red_velvet.jpg',
+                        }
+                    },
+                    {
+                        name: 'suede',
+                        texture: '/assets/material_suede.jpg',
+                        material: {
+                            type: 'velvet',
+                            emissive: [.1,.1,.1],
+                            shininess: 5,
+                            normalMap: '/assets/material_suede_normal.jpg',
+                            map: '/assets/material_suede.jpg',
+                            specularMap: '/assets/material_red_satin.jpg',
+                        }
+                    },
+                    {
+                        name: 'blue satin',
+                        texture: '/assets/material_blue_satin.jpg',
+                        material: {
+                            type: 'velvet',
+                            emissive: [.05,.05,.1],
+                            shininess: 5,
+                            normalMap: '/assets/material_suede_normal.jpg',
+                            map: '/assets/material_blue_satin.jpg',
+                        }
+                    },
+                    {
+                        name: 'white',
+                        texture: '/assets/material_white.jpg',
+                        material: {
+                            emissive: [.1,.0,.0],
+                            shininess: 2,
+                            normalMap: '/assets/material_velvet_normal.jpg',
+                            map: '/assets/material_white.jpg',
+                            textureRepeat: [2, 2],
+                        }
+                    },
+                    {
+                        name: 'dark',
+                        texture: '/assets/material_dark.jpg',
+                        material: {
+                            type: 'velvet',
+                            emissive: [.0,.0,.1],
+                            shininess: 5,
+                            map: '/assets/material_dark.jpg',
+                        }
+                    }
+                    ],
+                    currentIndex: 0
+                },
+                {
+                    name: 'skin',
+                    values: [
+                    {
+                        color: [1.1, 1.1, 1.4],
+                        texture: '/assets/woman_body.png'
+                    },
+                    {
+                        color: [1, 1, 1],
+                        texture: '/assets/woman_body.png'
+                    },
+                    {
+                        color: [1, 1, 0.7],
+                        texture: '/assets/woman_body.png'
+                    },
+                    {
+                        color: [0.4, 0.4, 0.4],
+                        texture: '/assets/woman_body.png'
+                    }
+                    ],
+                    currentIndex: 0
+                }
+                ];
+
+                PEEKS.registerPage('peeks.demo.mannequin', function() {
+                    var page = new PEEKS.Asset({
+                        category: 'white',
+                        gyroscope: 'off',
+                        bgColor: [44/255, 45/255, 46/255],
+                    });
+
+                    var mannequin = createMannequin(page);
+                    // Stand-up
+                    mannequin.setPosition([0, -1, -2.9]);
+                    // Face zoom
+                    //mannequin.setPosition([0, -2, -0.8]);
+                    //mannequin.setRotation([0, -30, 0]);
+
+                    page.addLight({
+                        lightType: 'ambient',
+                        intensity: .4,
+                    });
+                    page.addLight({
+                        position: [1, 1, 1],
+                        intensity: .7,
+                    });
+                    page.addLight({
+                        position: [-1, .5, 1],
+                        intensity: .4,
+                    });
+
+
+                	return page;
+                });
+                PEEKS.start(window, 'peeks.demo.mannequin');
+            </script>
+        </section>
+    </body>
+</html>
